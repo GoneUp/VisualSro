@@ -1,212 +1,213 @@
 Option Strict Off
 Option Explicit On
 Imports VB = Microsoft.VisualBasic
+
 Module modMonsters
-	'SRVB - SREmu VB Open-Source Project
-	'Copyright (C) 2008 DarkInc Community
-	'
-	'This program is free software: you can redistribute it and/or modify
-	'it under the terms of the GNU General Public License as published by
-	'the Free Software Foundation, either version 3 of the License, or
-	'(at your option) any later version.
-	'
-	'This program is distributed in the hope that it will be useful,
-	'but WITHOUT ANY WARRANTY; without even the implied warranty of
-	'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	'GNU General Public License for more details.
-	'
-	'You should have received a copy of the GNU General Public License
-	'along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
-	Private fData As String
-	Private pLen As Short
-	Private i As Short
-	Private x As Short
-	Public tim As Short
-	Public dex As Short
-	
-	
-	Public Function SpawnMonster(ByRef index As Short, ByRef monster_id As Integer, ByRef monster_type As Short, ByRef X_Pos As Double, ByRef Y_Pos As Double) As Object
-		
-		Dim MobsID As String
-		Dim Walking As String
-		'UPGRADE_WARNING: Arrays in Struktur MonsterDataBase müssen möglicherweise initialisiert werden, bevor sie verwendet werden können. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="814DF224-76BD-4BB4-BFFB-EA359CB9FC48"'
-		Dim MonsterDataBase As DAO.Recordset
-		Dim BookMark As Object
-		'UPGRADE_WARNING: Arrays in Struktur MonsterDataBase2 müssen möglicherweise initialisiert werden, bevor sie verwendet werden können. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="814DF224-76BD-4BB4-BFFB-EA359CB9FC48"'
-		Dim MonsterDataBase2 As DAO.Recordset
-		Dim BookMark2 As Object
-		Dim MobHP As String
-		Dim Xps As Integer
-		Dim MobLvl As String
-		Dim DistanceX As Double
-		Dim DistanceY As Double
-		Dim mobmag As Short
-		Dim mobphy As Short
-		'--------------------
-		'dim pozycjaX = X_Pos
-		'dim  pozycjaY = Y_Pos
-		'--------------------
-		
-		OpenSremuDataBase()
-		MonsterDataBase = DataBases.OpenRecordset("Monsters", DAO.RecordsetTypeEnum.dbOpenTable) 'DB Table
-		
-		fData = "D730"
-		fData = fData & "0000"
-		fData = fData & Inverse(DecToHexLong(monster_id))
-		MobsID = (Inverse(DecToHexLong(CInt(Rnd() * 65535) + 10001)))
-		fData = fData & MobsID
-		'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		fData = fData & Inverse(ByteFromInteger(PlayerData(index).XSection)) 'X sector
-		'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		fData = fData & Inverse(ByteFromInteger(PlayerData(index).YSection)) 'ySector
-		'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		fData = fData & Inverse(Float2Hex((X_Pos - ((PlayerData(index).XSection) - 135) * 192) * 10)) 'X
-		fData = fData & "00000000" 'Z
-		'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		fData = fData & Inverse(Float2Hex((Y_Pos - ((PlayerData(index).YSection) - 92) * 192) * 10)) 'Y
-		fData = fData & "DC72"
-		fData = fData & "00" '01 walking
-		fData = fData & "01"
-		
-		If Walking = "01" Then
-			'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fData = fData & Inverse(ByteFromInteger(PlayerData(index).XSection)) 'X sector
-			'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fData = fData & Inverse(ByteFromInteger(PlayerData(index).YSection)) 'ySector
-			'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fData = fData & Inverse(WordFromInteger((X_Pos - 10) - ((PlayerData(index).XSection) - 135) * 192)) 'X walking to coords
-			fData = fData & "0000" 'Z
-			'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fData = fData & Inverse(WordFromInteger((Y_Pos - 2) - ((PlayerData(index).YSection) - 92) * 192)) 'Y walking to coords
-		End If
-		
-		fData = fData & "00"
-		fData = fData & "DC72"
-		fData = fData & "0100"
-		fData = fData & "00" 'Berserker
-		fData = fData & "00004041" 'Playerspeed while walking
-		fData = fData & "00000442" 'Playerspeed while running
-		fData = fData & "0000C842" 'Playerspeed while berserk
-		fData = fData & "00"
-		fData = fData & "00"
-		
-		fData = fData & ByteFromInteger(monster_type)
-		
-		fData = fData & "01"
-		pLen = (Len(fData) - 8) / 2
-		fData = WordFromInteger(pLen) & fData
-		
-		
-		'UPGRADE_WARNING: Die Standardeigenschaft des Objekts BookMark konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		BookMark = VB6.CopyArray(MonsterDataBase.BookMark)
-		
-		MonsterDataBase.index = "Id"
-		MonsterDataBase.Seek(">=", monster_id)
-		
-		With MonsterDataBase
-			MobHP = .Fields("HP").Value 'Finds mob Hp
-			MobLvl = .Fields("Lvl").Value
-			Xps = .Fields("Xp").Value
-			mobmag = .Fields("PhysDef").Value
-			mobphy = .Fields("MagDef").Value
-		End With
-		
-		If MonsterDataBase.NoMatch Then
-			'UPGRADE_WARNING: Die Standardeigenschaft des Objekts BookMark konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			MonsterDataBase.BookMark = BookMark
-		Else
-			For x = 1 To 500 'number of mobs in world was 50
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).ID konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If Mobs(x).ID = "" Then
-					'If monster_type = 4 Then
-					' MobHP = MobHP * 20
-					' ElseIf monster_type = 5 Then
-					' MobHP = MobHP * 100
-					' ElseIf monster_type = 1 Then
-					' MobHP = MobHP * 2
-					'End If
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).HP = MobHP
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().ID konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).ID = MobsID
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Type konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).Type = monster_id
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().XPos konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).XPos = X_Pos
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().YPos konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).YPos = Y_Pos
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).XSector konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).XSector = PlayerData(index).XSection
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).YSector konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).YSector = PlayerData(index).YSection
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).Xps = Xps
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Special konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).Special = monster_type
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().mDef konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).mDef = mobmag
-					'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().pDef konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Mobs(x).pDef = mobphy
-					Exit For
-				End If
-			Next x
-			
-			If monster_type = CDbl("16") Then
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 10
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 10
-			ElseIf monster_type = CDbl("1") Then 
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 2
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 2
-			ElseIf monster_type = CDbl("3") Then 
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 2
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 2
-			ElseIf monster_type = CDbl("4") Then 
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 20
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 20
-			ElseIf monster_type = CDbl("5") Then 
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 100
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 100
-			ElseIf monster_type = CDbl("6") Then 
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 4
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 4
-			ElseIf monster_type = CDbl("17") Then 
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 15
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 20
-			ElseIf monster_type = CDbl("20") Then 
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).HP = Mobs(x).HP * 200
-				'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				Mobs(x).Xps = Xps * 200
-			End If
-		End If
-		For i = 1 To UBound(PlayerData)
-			'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(i).Ingame konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If PlayerData(i).Ingame = True Then
+    'SRVB - SREmu VB Open-Source Project
+    'Copyright (C) 2008 DarkInc Community
+    '
+    'This program is free software: you can redistribute it and/or modify
+    'it under the terms of the GNU General Public License as published by
+    'the Free Software Foundation, either version 3 of the License, or
+    '(at your option) any later version.
+    '
+    'This program is distributed in the hope that it will be useful,
+    'but WITHOUT ANY WARRANTY; without even the implied warranty of
+    'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    'GNU General Public License for more details.
+    '
+    'You should have received a copy of the GNU General Public License
+    'along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    Private fData As String
+    Private pLen As Short
+    Private i As Short
+    Private x As Short
+    Public tim As Short
+    Public dex As Short
+
+
+    Public Function SpawnMonster(ByRef index As Short, ByRef monster_id As Integer, ByRef monster_type As Short, ByRef X_Pos As Double, ByRef Y_Pos As Double) As Object
+
+        Dim MobsID As String
+        Dim Walking As String
+        'UPGRADE_WARNING: Arrays in Struktur MonsterDataBase müssen möglicherweise initialisiert werden, bevor sie verwendet werden können. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="814DF224-76BD-4BB4-BFFB-EA359CB9FC48"'
+        Dim MonsterDataBase As DAO.Recordset
+        Dim BookMark As Object
+        'UPGRADE_WARNING: Arrays in Struktur MonsterDataBase2 müssen möglicherweise initialisiert werden, bevor sie verwendet werden können. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="814DF224-76BD-4BB4-BFFB-EA359CB9FC48"'
+        Dim MonsterDataBase2 As DAO.Recordset
+        Dim BookMark2 As Object
+        Dim MobHP As String
+        Dim Xps As Integer
+        Dim MobLvl As String
+        Dim DistanceX As Double
+        Dim DistanceY As Double
+        Dim mobmag As Short
+        Dim mobphy As Short
+        '--------------------
+        'dim pozycjaX = X_Pos
+        'dim  pozycjaY = Y_Pos
+        '--------------------
+
+        OpenSremuDataBase()
+        MonsterDataBase = DataBases.OpenRecordset("Monsters", DAO.RecordsetTypeEnum.dbOpenTable) 'DB Table
+
+        fData = "D730"
+        fData = fData & "0000"
+        fData = fData & Inverse(DecToHexLong(monster_id))
+        MobsID = (Inverse(DecToHexLong(CInt(Rnd() * 65535) + 10001)))
+        fData = fData & MobsID
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        fData = fData & Inverse(ByteFromInteger(PlayerData(index).XSection)) 'X sector
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        fData = fData & Inverse(ByteFromInteger(PlayerData(index).YSection)) 'ySector
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        fData = fData & Inverse(Float2Hex((X_Pos - ((PlayerData(index).XSection) - 135) * 192) * 10)) 'X
+        fData = fData & "00000000" 'Z
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        fData = fData & Inverse(Float2Hex((Y_Pos - ((PlayerData(index).YSection) - 92) * 192) * 10)) 'Y
+        fData = fData & "DC72"
+        fData = fData & "00" '01 walking
+        fData = fData & "01"
+
+        If Walking = "01" Then
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            fData = fData & Inverse(ByteFromInteger(PlayerData(index).XSection)) 'X sector
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            fData = fData & Inverse(ByteFromInteger(PlayerData(index).YSection)) 'ySector
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            fData = fData & Inverse(WordFromInteger((X_Pos - 10) - ((PlayerData(index).XSection) - 135) * 192)) 'X walking to coords
+            fData = fData & "0000" 'Z
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            fData = fData & Inverse(WordFromInteger((Y_Pos - 2) - ((PlayerData(index).YSection) - 92) * 192)) 'Y walking to coords
+        End If
+
+        fData = fData & "00"
+        fData = fData & "DC72"
+        fData = fData & "0100"
+        fData = fData & "00" 'Berserker
+        fData = fData & "00004041" 'Playerspeed while walking
+        fData = fData & "00000442" 'Playerspeed while running
+        fData = fData & "0000C842" 'Playerspeed while berserk
+        fData = fData & "00"
+        fData = fData & "00"
+
+        fData = fData & ByteFromInteger(monster_type)
+
+        fData = fData & "01"
+        pLen = (Len(fData) - 8) / 2
+        fData = WordFromInteger(pLen) & fData
+
+
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts BookMark konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        BookMark = VB6.CopyArray(MonsterDataBase.Bookmark)
+
+        MonsterDataBase.Index = "Id"
+        MonsterDataBase.Seek(">=", monster_id)
+
+        With MonsterDataBase
+            MobHP = .Fields("HP").Value 'Finds mob Hp
+            MobLvl = .Fields("Lvl").Value
+            Xps = .Fields("Xp").Value
+            mobmag = .Fields("PhysDef").Value
+            mobphy = .Fields("MagDef").Value
+        End With
+
+        If MonsterDataBase.NoMatch Then
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts BookMark konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            MonsterDataBase.Bookmark = BookMark
+        Else
+            For x = 1 To 500 'number of mobs in world was 50
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).ID konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                If Mobs(x).ID = "" Then
+                    'If monster_type = 4 Then
+                    ' MobHP = MobHP * 20
+                    ' ElseIf monster_type = 5 Then
+                    ' MobHP = MobHP * 100
+                    ' ElseIf monster_type = 1 Then
+                    ' MobHP = MobHP * 2
+                    'End If
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).HP = MobHP
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().ID konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).ID = MobsID
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Type konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).Type = monster_id
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().XPos konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).XPos = X_Pos
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().YPos konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).YPos = Y_Pos
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).XSector konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().XSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).XSector = PlayerData(index).XSection
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).YSector konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().YSection konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).YSector = PlayerData(index).YSection
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).Xps = Xps
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Special konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).Special = monster_type
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().mDef konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).mDef = mobmag
+                    'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().pDef konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                    Mobs(x).pDef = mobphy
+                    Exit For
+                End If
+            Next x
+
+            If monster_type = CDbl("16") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 10
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 10
+            ElseIf monster_type = CDbl("1") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 2
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 2
+            ElseIf monster_type = CDbl("3") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 2
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 2
+            ElseIf monster_type = CDbl("4") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 20
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 20
+            ElseIf monster_type = CDbl("5") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 100
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 100
+            ElseIf monster_type = CDbl("6") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 4
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 4
+            ElseIf monster_type = CDbl("17") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 15
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 20
+            ElseIf monster_type = CDbl("20") Then
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(x).HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().HP konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).HP = Mobs(x).HP * 200
+                'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs().Xps konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                Mobs(x).Xps = Xps * 200
+            End If
+        End If
+        For i = 1 To UBound(PlayerData)
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(i).Ingame konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            If PlayerData(i).Ingame = True Then
                 modGlobal.GameSocket(i).SendData(cv_StringFromHex(fData))
             End If
         Next i
@@ -1394,325 +1395,325 @@ Module modMonsters
         End If
         'frmMain.MobWalkTimer.Enabled = True
     End Function
-	
-	Public Function SpawnMonster3(ByRef index As Short) As Object
-		SpawnMonster2(index, 24)
-		SpawnMonster2(index, 25)
-		SpawnMonster2(index, 26)
-		SpawnMonster2(index, 27)
-		SpawnMonster2(index, 28)
-		SpawnMonster2(index, 29)
-		SpawnMonster2(index, 30)
-		SpawnMonster2(index, 31)
-		SpawnMonster2(index, 32)
-		SpawnMonster2(index, 33)
-		SpawnMonster2(index, 34)
-		SpawnMonster2(index, 35)
-		SpawnMonster2(index, 36)
-		SpawnMonster2(index, 37)
-		SpawnMonster2(index, 38)
-		SpawnMonster2(index, 39)
-		SpawnMonster2(index, 40)
-		SpawnMonster2(index, 41)
-		SpawnMonster2(index, 42)
-		SpawnMonster2(index, 43)
-		SpawnMonster2(index, 44)
-		SpawnMonster2(index, 45)
-		SpawnMonster2(index, 46)
-		SpawnMonster2(index, 47)
-		SpawnMonster2(index, 48)
-		SpawnMonster2(index, 49)
-		SpawnMonster2(index, 50)
-		SpawnMonster2(index, 51)
-		SpawnMonster2(index, 52)
-		SpawnMonster2(index, 53)
-		SpawnMonster2(index, 54)
-		SpawnMonster2(index, 55)
-		SpawnMonster2(index, 56)
-		SpawnMonster2(index, 57)
-		SpawnMonster2(index, 58)
-		SpawnMonster2(index, 59)
-		SpawnMonster2(index, 60)
-		SpawnMonster2(index, 61)
-		SpawnMonster2(index, 62)
-		SpawnMonster2(index, 63)
-		SpawnMonster2(index, 64)
-		SpawnMonster2(index, 65)
-		SpawnMonster2(index, 66)
-		SpawnMonster2(index, 67)
-		SpawnMonster2(index, 68)
-		SpawnMonster2(index, 69)
-		SpawnMonster2(index, 70)
-		SpawnMonster2(index, 71)
-		SpawnMonster2(index, 72)
-		SpawnMonster2(index, 73)
-		SpawnMonster2(index, 74)
-		SpawnMonster2(index, 75)
-		SpawnMonster2(index, 76)
-		SpawnMonster2(index, 77)
-		SpawnMonster2(index, 78)
-		SpawnMonster2(index, 79)
-		SpawnMonster2(index, 80)
-		SpawnMonster2(index, 81)
-		SpawnMonster2(index, 82)
-		SpawnMonster2(index, 83)
-		SpawnMonster2(index, 84)
-		SpawnMonster2(index, 85)
-		SpawnMonster2(index, 86)
-		SpawnMonster2(index, 87)
-		SpawnMonster2(index, 88)
-		SpawnMonster2(index, 89)
-		SpawnMonster2(index, 90)
-		SpawnMonster2(index, 91)
-		SpawnMonster2(index, 92)
-		SpawnMonster2(index, 93)
-		SpawnMonster2(index, 94)
-		SpawnMonster2(index, 95)
-		SpawnMonster2(index, 96)
-		SpawnMonster2(index, 97)
-		SpawnMonster2(index, 98)
-		SpawnMonster2(index, 99)
-		SpawnMonster2(index, 100)
-		SpawnMonster2(index, 101)
-		SpawnMonster2(index, 102)
-		SpawnMonster2(index, 103)
-		SpawnMonster2(index, 104)
-		SpawnMonster2(index, 105)
-		SpawnMonster2(index, 106)
-		SpawnMonster2(index, 107)
-		SpawnMonster2(index, 108)
-		SpawnMonster2(index, 109)
-		SpawnMonster2(index, 110)
-		SpawnMonster2(index, 111)
-		SpawnMonster2(index, 112)
-		SpawnMonster2(index, 113)
-		SpawnMonster2(index, 114)
-		SpawnMonster2(index, 115)
-		SpawnMonster2(index, 116)
-		SpawnMonster2(index, 117)
-		SpawnMonster2(index, 118)
-		SpawnMonster2(index, 119)
-		SpawnMonster2(index, 120)
-		SpawnMonster2(index, 121)
-		SpawnMonster2(index, 122)
-		SpawnMonster2(index, 123)
-		SpawnMonster2(index, 124)
-		SpawnMonster2(index, 125)
-		SpawnMonster2(index, 126)
-		SpawnMonster2(index, 127)
-		SpawnMonster2(index, 128)
-		SpawnMonster2(index, 129)
-		SpawnMonster2(index, 130)
-		SpawnMonster2(index, 131)
-		SpawnMonster2(index, 132)
-		SpawnMonster2(index, 133)
-		SpawnMonster2(index, 134)
-		SpawnMonster2(index, 135)
-		SpawnMonster2(index, 136)
-		SpawnMonster2(index, 137)
-		SpawnMonster2(index, 138)
-		SpawnMonster2(index, 139)
-		SpawnMonster2(index, 140)
-		SpawnMonster2(index, 141)
-		SpawnMonster2(index, 142)
-		SpawnMonster2(index, 143)
-		SpawnMonster2(index, 144)
-		SpawnMonster2(index, 145)
-		SpawnMonster2(index, 146)
-		SpawnMonster2(index, 147)
-		SpawnMonster2(index, 148)
-		SpawnMonster2(index, 149)
-		SpawnMonster2(index, 150)
-		SpawnMonster2(index, 151)
-		SpawnMonster2(index, 152)
-		SpawnMonster2(index, 153)
-		SpawnMonster2(index, 154)
-		SpawnMonster2(index, 155)
-		SpawnMonster2(index, 156)
-		SpawnMonster2(index, 157)
-		SpawnMonster2(index, 158)
-		SpawnMonster2(index, 159)
-		SpawnMonster2(index, 160)
-		SpawnMonster2(index, 161)
-		SpawnMonster2(index, 162)
-		SpawnMonster2(index, 163)
-		SpawnMonster2(index, 164)
-		SpawnMonster2(index, 165)
-		SpawnMonster2(index, 166)
-		SpawnMonster2(index, 167)
-		SpawnMonster2(index, 168)
-		SpawnMonster2(index, 169)
-		SpawnMonster2(index, 170)
-		SpawnMonster2(index, 171)
-		SpawnMonster2(index, 172)
-		SpawnMonster2(index, 173)
-		SpawnMonster2(index, 174)
-		SpawnMonster2(index, 175)
-		SpawnMonster2(index, 176)
-		SpawnMonster2(index, 177)
-		SpawnMonster2(index, 178)
-		SpawnMonster2(index, 179)
-		SpawnMonster2(index, 180)
-		SpawnMonster2(index, 181)
-		SpawnMonster2(index, 182)
-		SpawnMonster2(index, 183)
-		SpawnMonster2(index, 184)
-		SpawnMonster2(index, 185)
-		SpawnMonster2(index, 186)
-		SpawnMonster2(index, 187)
-		SpawnMonster2(index, 188)
-		SpawnMonster2(index, 189)
-		SpawnMonster2(index, 190)
-		SpawnMonster2(index, 191)
-		SpawnMonster2(index, 192)
-		SpawnMonster2(index, 193)
-		SpawnMonster2(index, 194)
-		SpawnMonster2(index, 195)
-		SpawnMonster2(index, 196)
-		SpawnMonster2(index, 197)
-		SpawnMonster2(index, 198)
-		SpawnMonster2(index, 199)
-		SpawnMonster2(index, 200)
-		SpawnMonster2(index, 201)
-		SpawnMonster2(index, 202)
-		SpawnMonster2(index, 203)
-		SpawnMonster2(index, 204)
-		SpawnMonster2(index, 205)
-		SpawnMonster2(index, 206)
-		SpawnMonster2(index, 207)
-		SpawnMonster2(index, 208)
-		SpawnMonster2(index, 209)
-		SpawnMonster2(index, 210)
-		SpawnMonster2(index, 211)
-		SpawnMonster2(index, 212)
-		SpawnMonster2(index, 213)
-		SpawnMonster2(index, 214)
-		SpawnMonster2(index, 215)
-		SpawnMonster2(index, 216)
-		SpawnMonster2(index, 217)
-		SpawnMonster2(index, 218)
-		SpawnMonster2(index, 219)
-		SpawnMonster2(index, 220)
-		SpawnMonster2(index, 221)
-		SpawnMonster2(index, 222)
-		SpawnMonster2(index, 223)
-		SpawnMonster2(index, 224)
-		SpawnMonster2(index, 225)
-		SpawnMonster2(index, 226)
-		SpawnMonster2(index, 227)
-		SpawnMonster2(index, 228)
-		SpawnMonster2(index, 229)
-		SpawnMonster2(index, 230)
-		SpawnMonster2(index, 231)
-		SpawnMonster2(index, 232)
-		SpawnMonster2(index, 233)
-		SpawnMonster2(index, 234)
-		SpawnMonster2(index, 235)
-		SpawnMonster2(index, 236)
-		SpawnMonster2(index, 237)
-		SpawnMonster2(index, 238)
-		SpawnMonster2(index, 239)
-		SpawnMonster2(index, 240)
-		SpawnMonster2(index, 241)
-		SpawnMonster2(index, 242)
-		SpawnMonster2(index, 243)
-		SpawnMonster2(index, 244)
-		SpawnMonster2(index, 245)
-		SpawnMonster2(index, 246)
-		SpawnMonster2(index, 247)
-		SpawnMonster2(index, 248)
-		SpawnMonster2(index, 249)
-		SpawnMonster2(index, 250)
-		SpawnMonster2(index, 251)
-		SpawnMonster2(index, 252)
-		SpawnMonster2(index, 253)
-		SpawnMonster2(index, 254)
-		SpawnMonster2(index, 255)
-		SpawnMonster2(index, 256)
-		SpawnMonster2(index, 257)
-		SpawnMonster2(index, 258)
-		SpawnMonster2(index, 259)
-		SpawnMonster2(index, 260)
-		SpawnMonster2(index, 261)
-		SpawnMonster2(index, 262)
-		SpawnMonster2(index, 263)
-		SpawnMonster2(index, 264)
-		SpawnMonster2(index, 265)
-		SpawnMonster2(index, 266)
-		SpawnMonster2(index, 267)
-		SpawnMonster2(index, 268)
-		SpawnMonster2(index, 269)
-		SpawnMonster2(index, 270)
-		SpawnMonster2(index, 271)
-		SpawnMonster2(index, 272)
-		SpawnMonster2(index, 273)
-		SpawnMonster2(index, 274)
-		SpawnMonster2(index, 275)
-		SpawnMonster2(index, 276)
-		SpawnMonster2(index, 277)
-		SpawnMonster2(index, 278)
-		SpawnMonster2(index, 279)
-		SpawnMonster2(index, 280)
-		SpawnMonster2(index, 281)
-		SpawnMonster2(index, 282)
-		SpawnMonster2(index, 283)
-		SpawnMonster2(index, 284)
-		SpawnMonster2(index, 285)
-		SpawnMonster2(index, 286)
-		SpawnMonster2(index, 287)
-		SpawnMonster2(index, 288)
-		SpawnMonster2(index, 289)
-		SpawnMonster2(index, 290)
-		SpawnMonster2(index, 291)
-		SpawnMonster2(index, 292)
-		SpawnMonster2(index, 293)
-		SpawnMonster2(index, 294)
-		SpawnMonster2(index, 295)
-		SpawnMonster2(index, 296)
-		SpawnMonster2(index, 297)
-		SpawnMonster2(index, 298)
-		SpawnMonster2(index, 299)
-		SpawnMonster2(index, 300)
-		SpawnMonster2(index, 301)
-		SpawnMonster2(index, 302)
-		SpawnMonster2(index, 303)
-		SpawnMonster2(index, 304)
-		SpawnMonster2(index, 305)
-		SpawnMonster2(index, 306)
-		SpawnMonster2(index, 307)
-		SpawnMonster2(index, 308)
-		SpawnMonster2(index, 309)
-		SpawnMonster2(index, 310)
-		SpawnMonster2(index, 311)
-		SpawnMonster2(index, 312)
-		SpawnMonster2(index, 313)
-		SpawnMonster2(index, 314)
-		SpawnMonster2(index, 315)
-		SpawnMonster2(index, 316)
-		SpawnMonster2(index, 317)
-		SpawnMonster2(index, 318)
-		SpawnMonster2(index, 319)
-		SpawnMonster2(index, 320)
-		SpawnMonster2(index, 321)
-		SpawnMonster2(index, 322)
-		SpawnMonster2(index, 323)
-		SpawnMonster2(index, 324)
-		SpawnMonster2(index, 325)
-		SpawnMonster2(index, 326)
-		SpawnMonster2(index, 327)
-		SpawnMonster2(index, 328)
-		SpawnMonster2(index, 329)
-		SpawnMonster2(index, 330)
-		SpawnMonster2(index, 331)
-		SpawnMonster2(index, 332)
-		SpawnMonster2(index, 333)
-		SpawnMonster2(index, 334)
-		SpawnMonster2(index, 335)
-		SpawnMonster2(index, 336)
-		SpawnMonster2(index, 337)
-		SpawnMonster2(index, 338)
-		SpawnMonster2(index, 339)
-		SpawnMonster2(index, 340)
-		SpawnMonster2(index, 341)
-	End Function
+
+    Public Function SpawnMonster3(ByRef index As Short) As Object
+        SpawnMonster2(index, 24)
+        SpawnMonster2(index, 25)
+        SpawnMonster2(index, 26)
+        SpawnMonster2(index, 27)
+        SpawnMonster2(index, 28)
+        SpawnMonster2(index, 29)
+        SpawnMonster2(index, 30)
+        SpawnMonster2(index, 31)
+        SpawnMonster2(index, 32)
+        SpawnMonster2(index, 33)
+        SpawnMonster2(index, 34)
+        SpawnMonster2(index, 35)
+        SpawnMonster2(index, 36)
+        SpawnMonster2(index, 37)
+        SpawnMonster2(index, 38)
+        SpawnMonster2(index, 39)
+        SpawnMonster2(index, 40)
+        SpawnMonster2(index, 41)
+        SpawnMonster2(index, 42)
+        SpawnMonster2(index, 43)
+        SpawnMonster2(index, 44)
+        SpawnMonster2(index, 45)
+        SpawnMonster2(index, 46)
+        SpawnMonster2(index, 47)
+        SpawnMonster2(index, 48)
+        SpawnMonster2(index, 49)
+        SpawnMonster2(index, 50)
+        SpawnMonster2(index, 51)
+        SpawnMonster2(index, 52)
+        SpawnMonster2(index, 53)
+        SpawnMonster2(index, 54)
+        SpawnMonster2(index, 55)
+        SpawnMonster2(index, 56)
+        SpawnMonster2(index, 57)
+        SpawnMonster2(index, 58)
+        SpawnMonster2(index, 59)
+        SpawnMonster2(index, 60)
+        SpawnMonster2(index, 61)
+        SpawnMonster2(index, 62)
+        SpawnMonster2(index, 63)
+        SpawnMonster2(index, 64)
+        SpawnMonster2(index, 65)
+        SpawnMonster2(index, 66)
+        SpawnMonster2(index, 67)
+        SpawnMonster2(index, 68)
+        SpawnMonster2(index, 69)
+        SpawnMonster2(index, 70)
+        SpawnMonster2(index, 71)
+        SpawnMonster2(index, 72)
+        SpawnMonster2(index, 73)
+        SpawnMonster2(index, 74)
+        SpawnMonster2(index, 75)
+        SpawnMonster2(index, 76)
+        SpawnMonster2(index, 77)
+        SpawnMonster2(index, 78)
+        SpawnMonster2(index, 79)
+        SpawnMonster2(index, 80)
+        SpawnMonster2(index, 81)
+        SpawnMonster2(index, 82)
+        SpawnMonster2(index, 83)
+        SpawnMonster2(index, 84)
+        SpawnMonster2(index, 85)
+        SpawnMonster2(index, 86)
+        SpawnMonster2(index, 87)
+        SpawnMonster2(index, 88)
+        SpawnMonster2(index, 89)
+        SpawnMonster2(index, 90)
+        SpawnMonster2(index, 91)
+        SpawnMonster2(index, 92)
+        SpawnMonster2(index, 93)
+        SpawnMonster2(index, 94)
+        SpawnMonster2(index, 95)
+        SpawnMonster2(index, 96)
+        SpawnMonster2(index, 97)
+        SpawnMonster2(index, 98)
+        SpawnMonster2(index, 99)
+        SpawnMonster2(index, 100)
+        SpawnMonster2(index, 101)
+        SpawnMonster2(index, 102)
+        SpawnMonster2(index, 103)
+        SpawnMonster2(index, 104)
+        SpawnMonster2(index, 105)
+        SpawnMonster2(index, 106)
+        SpawnMonster2(index, 107)
+        SpawnMonster2(index, 108)
+        SpawnMonster2(index, 109)
+        SpawnMonster2(index, 110)
+        SpawnMonster2(index, 111)
+        SpawnMonster2(index, 112)
+        SpawnMonster2(index, 113)
+        SpawnMonster2(index, 114)
+        SpawnMonster2(index, 115)
+        SpawnMonster2(index, 116)
+        SpawnMonster2(index, 117)
+        SpawnMonster2(index, 118)
+        SpawnMonster2(index, 119)
+        SpawnMonster2(index, 120)
+        SpawnMonster2(index, 121)
+        SpawnMonster2(index, 122)
+        SpawnMonster2(index, 123)
+        SpawnMonster2(index, 124)
+        SpawnMonster2(index, 125)
+        SpawnMonster2(index, 126)
+        SpawnMonster2(index, 127)
+        SpawnMonster2(index, 128)
+        SpawnMonster2(index, 129)
+        SpawnMonster2(index, 130)
+        SpawnMonster2(index, 131)
+        SpawnMonster2(index, 132)
+        SpawnMonster2(index, 133)
+        SpawnMonster2(index, 134)
+        SpawnMonster2(index, 135)
+        SpawnMonster2(index, 136)
+        SpawnMonster2(index, 137)
+        SpawnMonster2(index, 138)
+        SpawnMonster2(index, 139)
+        SpawnMonster2(index, 140)
+        SpawnMonster2(index, 141)
+        SpawnMonster2(index, 142)
+        SpawnMonster2(index, 143)
+        SpawnMonster2(index, 144)
+        SpawnMonster2(index, 145)
+        SpawnMonster2(index, 146)
+        SpawnMonster2(index, 147)
+        SpawnMonster2(index, 148)
+        SpawnMonster2(index, 149)
+        SpawnMonster2(index, 150)
+        SpawnMonster2(index, 151)
+        SpawnMonster2(index, 152)
+        SpawnMonster2(index, 153)
+        SpawnMonster2(index, 154)
+        SpawnMonster2(index, 155)
+        SpawnMonster2(index, 156)
+        SpawnMonster2(index, 157)
+        SpawnMonster2(index, 158)
+        SpawnMonster2(index, 159)
+        SpawnMonster2(index, 160)
+        SpawnMonster2(index, 161)
+        SpawnMonster2(index, 162)
+        SpawnMonster2(index, 163)
+        SpawnMonster2(index, 164)
+        SpawnMonster2(index, 165)
+        SpawnMonster2(index, 166)
+        SpawnMonster2(index, 167)
+        SpawnMonster2(index, 168)
+        SpawnMonster2(index, 169)
+        SpawnMonster2(index, 170)
+        SpawnMonster2(index, 171)
+        SpawnMonster2(index, 172)
+        SpawnMonster2(index, 173)
+        SpawnMonster2(index, 174)
+        SpawnMonster2(index, 175)
+        SpawnMonster2(index, 176)
+        SpawnMonster2(index, 177)
+        SpawnMonster2(index, 178)
+        SpawnMonster2(index, 179)
+        SpawnMonster2(index, 180)
+        SpawnMonster2(index, 181)
+        SpawnMonster2(index, 182)
+        SpawnMonster2(index, 183)
+        SpawnMonster2(index, 184)
+        SpawnMonster2(index, 185)
+        SpawnMonster2(index, 186)
+        SpawnMonster2(index, 187)
+        SpawnMonster2(index, 188)
+        SpawnMonster2(index, 189)
+        SpawnMonster2(index, 190)
+        SpawnMonster2(index, 191)
+        SpawnMonster2(index, 192)
+        SpawnMonster2(index, 193)
+        SpawnMonster2(index, 194)
+        SpawnMonster2(index, 195)
+        SpawnMonster2(index, 196)
+        SpawnMonster2(index, 197)
+        SpawnMonster2(index, 198)
+        SpawnMonster2(index, 199)
+        SpawnMonster2(index, 200)
+        SpawnMonster2(index, 201)
+        SpawnMonster2(index, 202)
+        SpawnMonster2(index, 203)
+        SpawnMonster2(index, 204)
+        SpawnMonster2(index, 205)
+        SpawnMonster2(index, 206)
+        SpawnMonster2(index, 207)
+        SpawnMonster2(index, 208)
+        SpawnMonster2(index, 209)
+        SpawnMonster2(index, 210)
+        SpawnMonster2(index, 211)
+        SpawnMonster2(index, 212)
+        SpawnMonster2(index, 213)
+        SpawnMonster2(index, 214)
+        SpawnMonster2(index, 215)
+        SpawnMonster2(index, 216)
+        SpawnMonster2(index, 217)
+        SpawnMonster2(index, 218)
+        SpawnMonster2(index, 219)
+        SpawnMonster2(index, 220)
+        SpawnMonster2(index, 221)
+        SpawnMonster2(index, 222)
+        SpawnMonster2(index, 223)
+        SpawnMonster2(index, 224)
+        SpawnMonster2(index, 225)
+        SpawnMonster2(index, 226)
+        SpawnMonster2(index, 227)
+        SpawnMonster2(index, 228)
+        SpawnMonster2(index, 229)
+        SpawnMonster2(index, 230)
+        SpawnMonster2(index, 231)
+        SpawnMonster2(index, 232)
+        SpawnMonster2(index, 233)
+        SpawnMonster2(index, 234)
+        SpawnMonster2(index, 235)
+        SpawnMonster2(index, 236)
+        SpawnMonster2(index, 237)
+        SpawnMonster2(index, 238)
+        SpawnMonster2(index, 239)
+        SpawnMonster2(index, 240)
+        SpawnMonster2(index, 241)
+        SpawnMonster2(index, 242)
+        SpawnMonster2(index, 243)
+        SpawnMonster2(index, 244)
+        SpawnMonster2(index, 245)
+        SpawnMonster2(index, 246)
+        SpawnMonster2(index, 247)
+        SpawnMonster2(index, 248)
+        SpawnMonster2(index, 249)
+        SpawnMonster2(index, 250)
+        SpawnMonster2(index, 251)
+        SpawnMonster2(index, 252)
+        SpawnMonster2(index, 253)
+        SpawnMonster2(index, 254)
+        SpawnMonster2(index, 255)
+        SpawnMonster2(index, 256)
+        SpawnMonster2(index, 257)
+        SpawnMonster2(index, 258)
+        SpawnMonster2(index, 259)
+        SpawnMonster2(index, 260)
+        SpawnMonster2(index, 261)
+        SpawnMonster2(index, 262)
+        SpawnMonster2(index, 263)
+        SpawnMonster2(index, 264)
+        SpawnMonster2(index, 265)
+        SpawnMonster2(index, 266)
+        SpawnMonster2(index, 267)
+        SpawnMonster2(index, 268)
+        SpawnMonster2(index, 269)
+        SpawnMonster2(index, 270)
+        SpawnMonster2(index, 271)
+        SpawnMonster2(index, 272)
+        SpawnMonster2(index, 273)
+        SpawnMonster2(index, 274)
+        SpawnMonster2(index, 275)
+        SpawnMonster2(index, 276)
+        SpawnMonster2(index, 277)
+        SpawnMonster2(index, 278)
+        SpawnMonster2(index, 279)
+        SpawnMonster2(index, 280)
+        SpawnMonster2(index, 281)
+        SpawnMonster2(index, 282)
+        SpawnMonster2(index, 283)
+        SpawnMonster2(index, 284)
+        SpawnMonster2(index, 285)
+        SpawnMonster2(index, 286)
+        SpawnMonster2(index, 287)
+        SpawnMonster2(index, 288)
+        SpawnMonster2(index, 289)
+        SpawnMonster2(index, 290)
+        SpawnMonster2(index, 291)
+        SpawnMonster2(index, 292)
+        SpawnMonster2(index, 293)
+        SpawnMonster2(index, 294)
+        SpawnMonster2(index, 295)
+        SpawnMonster2(index, 296)
+        SpawnMonster2(index, 297)
+        SpawnMonster2(index, 298)
+        SpawnMonster2(index, 299)
+        SpawnMonster2(index, 300)
+        SpawnMonster2(index, 301)
+        SpawnMonster2(index, 302)
+        SpawnMonster2(index, 303)
+        SpawnMonster2(index, 304)
+        SpawnMonster2(index, 305)
+        SpawnMonster2(index, 306)
+        SpawnMonster2(index, 307)
+        SpawnMonster2(index, 308)
+        SpawnMonster2(index, 309)
+        SpawnMonster2(index, 310)
+        SpawnMonster2(index, 311)
+        SpawnMonster2(index, 312)
+        SpawnMonster2(index, 313)
+        SpawnMonster2(index, 314)
+        SpawnMonster2(index, 315)
+        SpawnMonster2(index, 316)
+        SpawnMonster2(index, 317)
+        SpawnMonster2(index, 318)
+        SpawnMonster2(index, 319)
+        SpawnMonster2(index, 320)
+        SpawnMonster2(index, 321)
+        SpawnMonster2(index, 322)
+        SpawnMonster2(index, 323)
+        SpawnMonster2(index, 324)
+        SpawnMonster2(index, 325)
+        SpawnMonster2(index, 326)
+        SpawnMonster2(index, 327)
+        SpawnMonster2(index, 328)
+        SpawnMonster2(index, 329)
+        SpawnMonster2(index, 330)
+        SpawnMonster2(index, 331)
+        SpawnMonster2(index, 332)
+        SpawnMonster2(index, 333)
+        SpawnMonster2(index, 334)
+        SpawnMonster2(index, 335)
+        SpawnMonster2(index, 336)
+        SpawnMonster2(index, 337)
+        SpawnMonster2(index, 338)
+        SpawnMonster2(index, 339)
+        SpawnMonster2(index, 340)
+        SpawnMonster2(index, 341)
+    End Function
 End Module

@@ -404,8 +404,8 @@ foundsocket:
         End If
 
 
-        Debug.Print("Loginsocket " & index & "is closed through an Error!")
-        frmLog.Log_Item_Add("Loginsocket " & index & "is closed through an Error!")
+        Debug.Print("Loginsocket " & index & " is closed through an Error!")
+        frmLog.Log_Item_Add("Loginsocket " & index & "  is closed through an Error!")
 
     End Sub
 

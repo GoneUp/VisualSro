@@ -1,5 +1,7 @@
 Option Strict Off
 Option Explicit On
+Imports MySql.Data.MySqlClient
+
 Module modLoginserver
 	'SRVB - SREmu VB Open-Source Project
 	'Copyright (C) 2008 DarkInc Community
@@ -33,7 +35,7 @@ Module modLoginserver
 		Dim fData As String
 		Dim pLen As String
 		'UPGRADE_WARNING: Arrays in Struktur ServerDataBase müssen möglicherweise initialisiert werden, bevor sie verwendet werden können. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="814DF224-76BD-4BB4-BFFB-EA359CB9FC48"'
-		Dim ServerDataBase As DAO.Recordset
+        Dim ServerDataBase As DAO.Recordset
 		Dim BookMark As Object
 		Dim ServerNames As String
 		Dim ServerIds As String
@@ -41,14 +43,37 @@ Module modLoginserver
 		Dim ServerUsersMax As String
 		Dim ServerNewOld As String
 		Dim ServerStatus As String
-        OpenSremuDataBase()
-		
-        'ServerDataBase = DataBases.OpenRecordset("Server", DAO.RecordsetTypeEnum.dbOpenTable) 'DB Table
+        'OpenSremuDataBase()
+        'Mysql stuff
 
-        'BookMark = VB6.CopyArray(ServerDataBase.Bookmark)
+
+        Dim query As String = "SELECT * FROM servers"
+        Dim connection As New MySqlConnection(MySQLConfig)
+        Dim cmd As New MySqlCommand(query, connection)
+
+        'connection.Open()
+        'Dim reader2 As MySqlDataReader
+        'reader2 = cmd.ExecuteReader()
+
+        'ServerIds = reader2.GetValue(1)
+        'ServerNames = reader2.GetValue(2)
+        'ServerUsers = reader2.GetValue(3)
+        'ServerUsersMax = reader2.GetValue(4)
+        'ServerStatus = reader2.GetValue(5)
+
+        ServerIds = 100
+        ServerNames = "Vis"
+        ServerUsers = 100
+        ServerUsersMax = 500
+        ServerStatus = "01"
+        ServerNewOld = 0
+
+        'connection.Close()
 
         '//Commited out because we will add mysql database 
-        ' With ServerDataBase
+
+        'Try
+        'With ServerDataBase
         'ServerIds = .Fields("Serverid").Value
         'ServerNames = .Fields("ServerName").Value
         'ServerUsers = .Fields("ServerUsers").Value
@@ -56,6 +81,9 @@ Module modLoginserver
         'ServerNewOld = "1" '!ServerNewOld
         'ServerStatus = .Fields("ServerStatus").Value
         'End With
+        'Catch ex As Exception
+        'Debug.Print(ex.Message)
+        'End Try
 
         sSize = CShort("&H" & Mid(dData, 3, 2) & Mid(dData, 1, 2))
         sOpcode = Mid(dData, 7, 2) & Mid(dData, 5, 2)
@@ -124,14 +152,14 @@ Module modLoginserver
                 fData = fData & "0000"
                 fData = fData & "0115"
                 fData = fData & "1200" & cv_HexFromString("SRO_Global_TestBed") & "00"
-                fData = fData & "0" & ServerNewOld '1 or 0
-                fData = fData & ServerIds 'Server ID
-                fData = fData & WordFromInteger(Len(ServerNames))
-                fData = fData & cv_HexFromString(ServerNames)
-                fData = fData & WordFromInteger(ServerUsers) 'Users
-                fData = fData & WordFromInteger(ServerUsersMax) 'Max users (500)
-                fData = fData & "0" & ServerStatus 'Servermode (00 = check, 01 = online)
-                fData = fData & "00" 'End serverlist
+                fData = fData & "0" & ServerNewOld                     '1 or 0
+                fData = fData & ServerIds                        'Server ID
+                fData = fData & WordFromInteger(Len((ServerNames)))
+                fData = fData & cv_HexFromString((ServerNames))
+                fData = fData & WordFromInteger((ServerUsers))           'Users
+                fData = fData & WordFromInteger((ServerUsersMax))       'Max users (500)
+                fData = fData & "0" & ServerStatus                      'Servermode (00 = check, 01 = online)
+                fData = fData & "00"                            'End serverlist
 
                 pLen = CStr((Len(fData) - 8) / 2)
                 fData = WordFromInteger(pLen) & fData
@@ -207,8 +235,8 @@ Module modLoginserver
 		'Dim BookMark As Variant
 		Dim month1 As String
 		Dim day1 As String
-		news = "Welcome to SroMuX!"
-		msg = "<b>Welcome To SroMuX!<br><font color=red>-Manneke</font></b>"
+        news = "Welcome to VisualSro!"
+        msg = "<b>Welcome To Visual Silkroad!<br><font color=red>-The Visro Team (GoneUp, Manneke and Seponer)</font></b>"
 		
 		
 		

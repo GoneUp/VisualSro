@@ -281,7 +281,6 @@
     <Compile Include="Modules\modMonsters.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Modules\modMySql.vb" />
     <Compile Include="Modules\modNPC.vb">
       <SubType>Code</SubType>
     </Compile>

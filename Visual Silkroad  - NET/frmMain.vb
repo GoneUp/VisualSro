@@ -13,7 +13,7 @@ Friend Class frmMain
     Private Sub MySqlButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
         'New MySQl Test
-        modMySql.TestConnection()
+        modDataBase.TestConnection()
 
     End Sub
     Public Sub BanButton_Click(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles BanButton.Click

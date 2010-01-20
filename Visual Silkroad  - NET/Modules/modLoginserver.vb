@@ -43,34 +43,19 @@ Module modLoginserver
 		Dim ServerUsersMax As String
 		Dim ServerNewOld As String
 		Dim ServerStatus As String
-        'OpenSremuDataBase()
-        'Mysql stuff
 
+        'Test Data 
 
-        Dim query As String = "SELECT * FROM servers"
-        Dim connection As New MySqlConnection(MySQLConfig)
-        Dim cmd As New MySqlCommand(query, connection)
-
-        'connection.Open()
-        'Dim reader2 As MySqlDataReader
-        'reader2 = cmd.ExecuteReader()
-
-        'ServerIds = reader2.GetValue(1)
-        'ServerNames = reader2.GetValue(2)
-        'ServerUsers = reader2.GetValue(3)
-        'ServerUsersMax = reader2.GetValue(4)
-        'ServerStatus = reader2.GetValue(5)
-
-        ServerIds = 100
-        ServerNames = "Vis"
+        ServerIds = 1234
+        ServerNames = "ViSro"
         ServerUsers = 100
         ServerUsersMax = 500
-        ServerStatus = "01"
-        ServerNewOld = 0
+        ServerStatus = "1"
+        ServerNewOld = "1"
 
-        'connection.Close()
 
         '//Commited out because we will add mysql database 
+        'OpenSremuDataBase()
 
         'Try
         'With ServerDataBase
@@ -150,8 +135,8 @@ Module modLoginserver
 
                 fData = "01A1"
                 fData = fData & "0000"
-                fData = fData & "0115"
-                fData = fData & "1200" & cv_HexFromString("SRO_Global_TestBed") & "00"
+                fData = fData & "0139"
+                fData = fData & "1300" & cv_HexFromString("SRO_Russia_Official") & "00"
                 fData = fData & "0" & ServerNewOld                     '1 or 0
                 fData = fData & ServerIds                        'Server ID
                 fData = fData & WordFromInteger(Len((ServerNames)))

@@ -1,5 +1,5 @@
 ﻿Imports Microsoft.VisualBasic
-	Imports MySql.Data.MySqlClient
+Imports MySql.Data.MySqlClient
 	Imports System
 	Imports System.Data
 	Imports System.Runtime.CompilerServices

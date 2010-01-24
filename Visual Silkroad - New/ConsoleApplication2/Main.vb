@@ -36,8 +36,10 @@ Namespace GameServer
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
-            Console.ReadLine()
+
             db.TableList()
+            Console.ReadLine()
+
         End Sub
 
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)

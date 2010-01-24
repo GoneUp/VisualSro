@@ -7,6 +7,7 @@
        
 
         writer.Create(opLoginClientInfo)
+
         writer.Byte(208)
         writer.Byte(0)
         writer.HexString(name)

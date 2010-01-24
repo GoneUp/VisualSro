@@ -2,10 +2,10 @@
 #Region "Vom Windows Form-Designer generierter Code "
 	<System.Diagnostics.DebuggerNonUserCode()> Public Sub New()
 		MyBase.New()
-		'Dieser Aufruf ist für den Windows Form-Designer erforderlich.
+		'Dieser Aufruf ist f? den Windows Form-Designer erforderlich.
 		InitializeComponent()
 	End Sub
-	'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
+	'Das Formular ?erschreibt den L?chvorgang, um die Komponentenliste zu bereinigen.
 	<System.Diagnostics.DebuggerNonUserCode()> Protected Overloads Overrides Sub Dispose(ByVal Disposing As Boolean)
 		If Disposing Then
 			Static fTerminateCalled As Boolean
@@ -19,7 +19,7 @@
 		End If
 		MyBase.Dispose(Disposing)
 	End Sub
-	'Wird vom Windows Form-Designer benötigt.
+	'Wird vom Windows Form-Designer ben?igt.
 	Private components As System.ComponentModel.IContainer
 	Public ToolTip1 As System.Windows.Forms.ToolTip
 	Public WithEvents Accounts As System.Windows.Forms.ToolStripMenuItem
@@ -69,9 +69,9 @@
 	Public WithEvents WalkAttackDelay As Microsoft.VisualBasic.Compatibility.VB6.TimerArray
 	Public WithEvents tmrCleanup As Microsoft.VisualBasic.Compatibility.VB6.TimerArray
 	Public WithEvents tmrQuit As Microsoft.VisualBasic.Compatibility.VB6.TimerArray
-	'Hinweis: Die folgende Prozedur ist für den Windows Form-Designer erforderlich.
-	'Das Verändern mit dem Windows Form-Designer ist nicht möglich.
-	'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
+	'Hinweis: Die folgende Prozedur ist f? den Windows Form-Designer erforderlich.
+	'Das Ver?dern mit dem Windows Form-Designer ist nicht m?lich.
+	'Das Bearbeiten mit dem Code-Editor ist nicht m?lich.
 	<System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
@@ -103,6 +103,7 @@
         Me._tmrQuit_0 = New System.Windows.Forms.Timer(Me.components)
         Me._LoginSocket_0 = New AxMSWinsockLib.AxWinsock
         Me.frmStatus = New System.Windows.Forms.GroupBox
+        Me.Button1 = New System.Windows.Forms.Button
         Me.StopButton = New System.Windows.Forms.Button
         Me._AboutButton_1 = New System.Windows.Forms.Button
         Me.StartButton = New System.Windows.Forms.Button
@@ -122,8 +123,6 @@
         Me.WalkAttackDelay = New Microsoft.VisualBasic.Compatibility.VB6.TimerArray(Me.components)
         Me.tmrCleanup = New Microsoft.VisualBasic.Compatibility.VB6.TimerArray(Me.components)
         Me.tmrQuit = New Microsoft.VisualBasic.Compatibility.VB6.TimerArray(Me.components)
-        Me.AxWinsockArray1 = New VisualSro.AxWinsockArray(Me.components)
-        Me.Button1 = New System.Windows.Forms.Button
         Me.MainMenu1.SuspendLayout()
         CType(Me._GameSocket_0, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me._LoginSocket_0, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -137,7 +136,6 @@
         CType(Me.WalkAttackDelay, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tmrCleanup, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tmrQuit, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.AxWinsockArray1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'MainMenu1
@@ -311,6 +309,15 @@
         Me.frmStatus.TabStop = False
         Me.frmStatus.Text = "Server Status"
         '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(104, 139)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(89, 32)
+        Me.Button1.TabIndex = 8
+        Me.Button1.Text = "MySQL Stuff"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'StopButton
         '
         Me.StopButton.BackColor = System.Drawing.SystemColors.Window
@@ -446,15 +453,6 @@
         'tmrQuit
         '
         '
-        'Button1
-        '
-        Me.Button1.Location = New System.Drawing.Point(104, 139)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(89, 32)
-        Me.Button1.TabIndex = 8
-        Me.Button1.Text = "MySQL Stuff"
-        Me.Button1.UseVisualStyleBackColor = True
-        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -488,7 +486,6 @@
         CType(Me.WalkAttackDelay, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tmrCleanup, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tmrQuit, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.AxWinsockArray1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

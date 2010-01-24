@@ -99,19 +99,19 @@ Friend Class frmMain
     Private Sub AttackDelay_Tick(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles AttackDelay.Tick
         Dim index As Short = AttackDelay.GetIndex(eventSender)
 
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Busy konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Busy konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         PlayerData(index).Busy = False
         AttackDelay(index).Enabled = False
 
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).UsingSkill konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).UsingSkill konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         If PlayerData(index).UsingSkill = True Then
-            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().UsingSkill konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().UsingSkill konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             PlayerData(index).UsingSkill = False
-            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Attacking konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Attacking konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             PlayerData(index).Attacking = False
-            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().AttackingID konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().AttackingID konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             PlayerData(index).AttackingID = ""
-            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).Attacking konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).Attacking konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         ElseIf PlayerData(index).Attacking = True Then
             Call NormalAttack(index)
         End If
@@ -121,11 +121,11 @@ Friend Class frmMain
     Private Sub BerserkTimer_Tick(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles BerserkTimer.Tick
         Dim index As Short = BerserkTimer.GetIndex(eventSender)
 
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts modGlobal.PlayerData(index).BerserkBar konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts modGlobal.PlayerData().BerserkBar konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts modGlobal.PlayerData(index).BerserkBar konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts modGlobal.PlayerData().BerserkBar konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         modGlobal.PlayerData(index).BerserkBar = modGlobal.PlayerData(index).BerserkBar - 1
 
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts modGlobal.PlayerData(index).BerserkBar konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts modGlobal.PlayerData(index).BerserkBar konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         If modGlobal.PlayerData(index).BerserkBar <= 0 Then
             Call HandleBerserk(index, False)
         End If
@@ -135,7 +135,7 @@ Friend Class frmMain
     Private Sub CastingTimer_Tick(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles CastingTimer.Tick
         Dim index As Short = CastingTimer.GetIndex(eventSender)
 
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Busy konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Busy konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         PlayerData(index).Busy = False
         CastingTimer(index).Enabled = False
         Call StartBuff(index)
@@ -150,7 +150,7 @@ Friend Class frmMain
     End Sub
 
     Private Sub mobattack_Tick(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles mobattack.Tick
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(dex).Attacking konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts Mobs(dex).Attacking konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         If Mobs(dex).Attacking = True Then
             Call MobSendAttack(dex)
         End If
@@ -191,7 +191,7 @@ Friend Class frmMain
     Private Sub tmrCleanup_Tick(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles tmrCleanup.Tick
         Dim index As Short = tmrCleanup.GetIndex(eventSender)
 
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Ingame konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData().Ingame konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         PlayerData(index).Ingame = False
         GameSocket(index).Close()
         modGlobal.GameSocket.Unload(index)
@@ -221,10 +221,10 @@ Friend Class frmMain
     Private Sub WalkAttackDelay_Tick(ByVal eventSender As System.Object, ByVal eventArgs As System.EventArgs) Handles WalkAttackDelay.Tick
         Dim index As Short = WalkAttackDelay.GetIndex(eventSender)
 
-        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).Attacking konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).Attacking konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         If PlayerData(index).Attacking = True Then
             Call NormalAttack(index)
-            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).AttackSkillID konnte nicht aufgelöst werden. Klicken Sie hier für weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Die Standardeigenschaft des Objekts PlayerData(index).AttackSkillID konnte nicht aufgel?t werden. Klicken Sie hier f? weitere Informationen: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         ElseIf PlayerData(index).AttackSkillID <> "" Then
             Call AttackSkill(index)
         End If
@@ -255,6 +255,10 @@ Friend Class frmMain
     Private Sub Button1_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
 
         frmMySQLTestForm.Show()
+
+    End Sub
+
+    Private Sub _AboutButton_1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles _AboutButton_1.Click
 
     End Sub
 End Class

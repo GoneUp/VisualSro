@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F08483F9-6798-4AA9-B585-763A52FBF825}</ProjectGuid>
+    <ProjectGuid>{114134D5-E272-4647-924D-D577AE24D7DD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>GameServer.GameServer.Program</StartupObject>
-    <RootNamespace>GameServer</RootNamespace>
-    <AssemblyName>GameServer</AssemblyName>
+    <StartupObject>LoginServer.GameServer.Program</StartupObject>
+    <RootNamespace>LoginServer</RootNamespace>
+    <AssemblyName>LoginServer</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -24,7 +24,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>GameServer.xml</DocumentationFile>
+    <DocumentationFile>LoginServer.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,7 +33,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>GameServer.xml</DocumentationFile>
+    <DocumentationFile>LoginServer.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <ItemGroup>
@@ -63,8 +63,17 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Frameworks\ClientList.vb" />
+    <Compile Include="Frameworks\convert.vb" />
+    <Compile Include="Frameworks\Converter.vb" />
+    <Compile Include="Frameworks\db.vb" />
+    <Compile Include="Frameworks\IniFile.vb" />
+    <Compile Include="Frameworks\PacketReader.vb" />
+    <Compile Include="Frameworks\PacketWriter.vb" />
+    <Compile Include="Frameworks\Parser.vb" />
+    <Compile Include="Frameworks\ReadPacket.vb" />
+    <Compile Include="Frameworks\Server.vb" />
     <Compile Include="Functions\LoginServer.vb" />
-    <Compile Include="Functions\Opcodes.vb" />
     <Compile Include="Main.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -81,16 +90,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Frameworks\ClientList.vb" />
-    <Compile Include="Frameworks\convert.vb" />
-    <Compile Include="Frameworks\Converter.vb" />
-    <Compile Include="Frameworks\db.vb" />
-    <Compile Include="Frameworks\IniFile.vb" />
-    <Compile Include="Frameworks\PacketReader.vb" />
-    <Compile Include="Frameworks\PacketWriter.vb" />
-    <Compile Include="Frameworks\Parser.vb" />
-    <Compile Include="Frameworks\ReadPacket.vb" />
-    <Compile Include="Frameworks\Server.vb" />
+    <Compile Include="Functions\Opcodes.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

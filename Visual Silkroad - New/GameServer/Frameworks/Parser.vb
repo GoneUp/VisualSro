@@ -12,7 +12,7 @@ Namespace GameServer
                 Case opLoginClientHandshake 'Client accepts
                     Console.WriteLine("Handshake")
 
-                Case opLoginClientInfo 'GateWay
+                Case opLoginClientInfoReq 'GateWay
                     GateWay(rp.index)
                     Console.WriteLine("Gateway")
 

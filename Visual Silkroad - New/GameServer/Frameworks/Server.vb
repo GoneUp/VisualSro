@@ -25,6 +25,7 @@ Namespace GameServer
 
         Public Shared Event OnServerStarted As dServerStarted
 
+
         Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
             Try
                 Dim sock As Socket = serverSocket.EndAccept(ar)
@@ -62,6 +63,8 @@ Namespace GameServer
                 Catch exception2 As Exception
                     RaiseEvent OnServerError(exception2)
                 End Try
+            Else
+                Console.WriteLine(buffer)
             End If
         End Sub
 
@@ -70,7 +73,7 @@ Namespace GameServer
             ClientList.GetSocket(index).Send(buff)
 
         End Sub
-
+  
 
         Public Shared Sub SendToAll(ByVal buff() As Byte)
             For i As Integer = 0 To MaxClients

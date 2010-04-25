@@ -3,7 +3,7 @@ Imports MySql.Data.MySqlClient
 	Imports System
 	Imports System.Data
 	Imports System.Runtime.CompilerServices
-Namespace GameServer
+Namespace LoginServer
 
     Public Class db
         Private Shared connection As MySqlConnection
@@ -100,6 +100,18 @@ Namespace GameServer
             End Try
             Return getsDb
         End Function
+        Public Shared Function GetDataSet(ByVal command As String) As DataSet
+
+            Dim reader As New MySqlDataAdapter(command, connection)
+            Dim tmpset As New DataSet
+            reader.Fill(tmpset)
+
+
+
+            Return tmpset
+        End Function
+
+
 
         Public Shared Function GetDataInt(ByVal command As String, ByVal column As String) As Integer
             Dim reader As MySqlDataReader = Nothing

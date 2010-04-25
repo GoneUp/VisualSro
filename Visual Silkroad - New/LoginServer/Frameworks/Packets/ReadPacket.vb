@@ -1,7 +1,7 @@
 ﻿Imports Microsoft.VisualBasic
 	Imports System
 	Imports System.IO
-Namespace GameServer
+Namespace LoginServer
 
     Public Class ReadPacket
         Private br As BinaryReader
@@ -13,6 +13,7 @@ Namespace GameServer
 
         Public Sub New(ByVal buffer() As Byte, ByVal index As Integer)
             Me.INDEX_Renamed = index
+            Me.BUFFER_Renamed = buffer
             Me.ms = New MemoryStream(buffer)
             Me.br = New BinaryReader(Me.ms)
             Dim param As String = Convert.BytesToHex(buffer)

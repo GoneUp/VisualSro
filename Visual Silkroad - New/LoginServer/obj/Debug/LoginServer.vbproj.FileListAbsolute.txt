@@ -7,3 +7,14 @@ C:\Users\Henry\Desktop\JaveQ Projekt\VisualSro-xp-dev2\Visual Silkroad - New\Log
 C:\Users\Henry\Desktop\JaveQ Projekt\VisualSro-xp-dev2\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.exe
 C:\Users\Henry\Desktop\JaveQ Projekt\VisualSro-xp-dev2\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.xml
 C:\Users\Henry\Desktop\JaveQ Projekt\VisualSro-xp-dev2\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.pdb
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.exe
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.xml
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.pdb
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\bin\Debug\LoginServer.exe
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\bin\Debug\LoginServer.pdb
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\bin\Debug\LoginServer.xml
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.Resources.resources
+C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.vbproj.GenerateResource.Cache
+Z:\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.xml
+Z:\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.pdb

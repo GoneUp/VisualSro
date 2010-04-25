@@ -37,7 +37,7 @@
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=5.2.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data, Version=6.2.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -63,9 +63,27 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Functions\LoginServer.vb" />
-    <Compile Include="Functions\Opcodes.vb" />
-    <Compile Include="Main.vb" />
+    <Compile Include="Console\Commands.vb" />
+    <Compile Include="Frameworks\Converter\convert.vb" />
+    <Compile Include="Frameworks\Converter\Converter.vb" />
+    <Compile Include="Frameworks\Converter\Utils.vb" />
+    <Compile Include="Frameworks\Database\db.vb" />
+    <Compile Include="Frameworks\Database\IniFile.vb" />
+    <Compile Include="Frameworks\Database\GameDb.vb" />
+    <Compile Include="Frameworks\Packets\Opcodes.vb" />
+    <Compile Include="Frameworks\Packets\PacketReader.vb" />
+    <Compile Include="Frameworks\Packets\PacketWriter.vb" />
+    <Compile Include="Frameworks\Packets\ReadPacket.vb" />
+    <Compile Include="Frameworks\Server\ClientList.vb" />
+    <Compile Include="Frameworks\Server\Server.vb" />
+    <Compile Include="Functions\Auth\LoginAuth.vb" />
+    <Compile Include="Functions\Character\cCharListing.vb" />
+    <Compile Include="Functions\Character\cChar.vb" />
+    <Compile Include="Functions\Character\Character.vb" />
+    <Compile Include="Functions\Items\cInventory.vb" />
+    <Compile Include="Functions\Items\cInvItem.vb" />
+    <Compile Include="Functions\Parser.vb" />
+    <Compile Include="Console\Main.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -81,16 +99,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Frameworks\ClientList.vb" />
-    <Compile Include="Frameworks\convert.vb" />
-    <Compile Include="Frameworks\Converter.vb" />
-    <Compile Include="Frameworks\db.vb" />
-    <Compile Include="Frameworks\IniFile.vb" />
-    <Compile Include="Frameworks\PacketReader.vb" />
-    <Compile Include="Frameworks\PacketWriter.vb" />
-    <Compile Include="Frameworks\Parser.vb" />
-    <Compile Include="Frameworks\ReadPacket.vb" />
-    <Compile Include="Frameworks\Server.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -112,7 +120,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LoginServer.sln" />
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

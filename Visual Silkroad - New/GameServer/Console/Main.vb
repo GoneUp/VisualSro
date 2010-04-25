@@ -27,18 +27,25 @@ Namespace GameServer
             Console.BackgroundColor = ConsoleColor.White
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
-            Console.Title = "LOGINSERVER ALPHA"
-            Console.WriteLine("Starting Server")
+            Console.Title = "GAMESERVER ALPHA"
+            Console.WriteLine("Starting Agent Server")
             password = "sremu"
             db.Connect("127.0.0.1", 3306, "visualsro", "root", password)
             Server.ip = "127.0.0.1"
-            Server.port = 15779 'Loginserver
+            Server.port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
 
-            db.TableList()
-            Console.ReadLine()
+            GameDbUpdate.Interval = 1
+            GameDbUpdate.Start()
+
+
+read:
+            Dim msg As String = Console.ReadLine()
+            CheckCommand(msg)
+            GoTo read
+
 
         End Sub
 

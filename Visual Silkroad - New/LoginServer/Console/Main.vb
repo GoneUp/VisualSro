@@ -1,6 +1,6 @@
 ﻿Imports Microsoft.VisualBasic
 Imports System
-Namespace GameServer
+Namespace LoginServer
 
     Friend Class Program
         Private Shared Sub db_OnConnectedToDatabase()
@@ -27,18 +27,24 @@ Namespace GameServer
             Console.BackgroundColor = ConsoleColor.White
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
-            Console.Title = "GAMESERVER ALPHA"
-            Console.WriteLine("Starting Agent Server")
+            Console.Title = "LOGINSERVER ALPHA"
+            Console.WriteLine("Starting Server")
             password = "sremu"
-            db.Connect("127.0.0.1", 3306, "visualsro", "root", password)
+            db.Connect("192.168.178.20", 3306, "visualsro", "sremu", password)
             Server.ip = "127.0.0.1"
-            Server.port = 15780
+            Server.port = 15779 'Loginserver
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
 
-            db.TableList()
-            Console.ReadLine()
+            LoginDbUpdate.Interval = 1
+            LoginDbUpdate.Start()
+
+read:
+            Dim msg As String = Console.ReadLine()
+            CheckCommand(msg)
+            GoTo read
+
 
         End Sub
 
@@ -48,7 +54,9 @@ Namespace GameServer
         End Sub
 
         Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index As Integer)
+
             Dim rp As New ReadPacket(buffer, index)
+            Dim buff As Byte() = rp.buffer
             Parser.Parse(rp)
         End Sub
 
@@ -61,6 +69,8 @@ Namespace GameServer
         Private Shared Sub Server_OnServerStarted(ByVal time As String)
             Console.WriteLine("Server Started: " & time)
         End Sub
+
+
     End Class
 End Namespace
 

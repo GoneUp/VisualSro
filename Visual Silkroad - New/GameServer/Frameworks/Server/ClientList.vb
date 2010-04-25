@@ -5,6 +5,7 @@ Namespace GameServer
 
     Public Class ClientList
         Public Shared lista(1500) As Socket
+        Public Shared OnCharListing(1500) As cCharListing
 
         Public Shared Sub Add(ByVal sock As Socket)
             For i As Integer = 0 To lista.Length - 1

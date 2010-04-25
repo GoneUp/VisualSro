@@ -1,7 +1,7 @@
 ﻿Imports Microsoft.VisualBasic
 	Imports System
 	Imports System.IO
-Namespace GameServer
+Namespace LoginServer
 
     Friend Class PacketWriter
         Private bw As BinaryWriter
@@ -37,7 +37,7 @@ Namespace GameServer
         Public Function GetBytes() As Byte()
             Dim buffer(0) As Byte
             Me.ms.Position = 0L
-            Dim num As UShort = CUShort((Me.dataLen - 8) / 2)
+            Dim num As UShort = (bw.BaseStream.Length - 6)
             Me.bw.Write(num)
             Me.bw.Close()
             buffer = Me.ms.ToArray()

@@ -3,7 +3,7 @@
 	Imports System.Net
 	Imports System.Net.Sockets
 	Imports System.Runtime.CompilerServices
-Namespace GameServer
+Namespace LoginServer
 
     Public Class Server
         Private Shared buffer(&H1000 - 1) As Byte
@@ -73,7 +73,7 @@ Namespace GameServer
             ClientList.GetSocket(index).Send(buff)
 
         End Sub
-  
+
 
         Public Shared Sub SendToAll(ByVal buff() As Byte)
             For i As Integer = 0 To MaxClients

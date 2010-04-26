@@ -135,7 +135,7 @@
         ElseIf Users(UserIndex).Pw <> Pw Then
             'pw falsch
             Users(UserIndex).FailedLogins += 1
-            LoginServer.db.UpdateData("UPDATE user SET failed_logins = '" & Users(UserIndex).FailedLogins & "' WHERE id = '" & Users(UserIndex).Id & "'")
+            LoginServer.db.UpdateData("UPDATE users SET failed_logins = '" & Users(UserIndex).FailedLogins & "' WHERE id = '" & Users(UserIndex).Id & "'")
 
             writer.Byte(2) 'login failed
             writer.Byte(1)
@@ -151,7 +151,7 @@
             If Users(UserIndex).FailedLogins = 3 Then
 
                 Users(UserIndex).FailedLogins = 0
-                LoginServer.db.UpdateData("UPDATE user SET failed_logins = '0' WHERE id = '" & Users(UserIndex).Id & "'")
+                LoginServer.db.UpdateData("UPDATE users SET failed_logins = '0' WHERE id = '" & Users(UserIndex).Id & "'")
 
                 LoginServer.Server.Dissconnect(index)
             End If

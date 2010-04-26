@@ -37,8 +37,8 @@ Namespace GameServer
             Server.OnlineClient = 0
             Server.Start()
 
-            GameDbUpdate.Interval = 1
-            GameDbUpdate.Start()
+            GameServer.DatabaseCore.GameDbUpdate.Interval = 1
+            GameServer.DatabaseCore.GameDbUpdate.Start()
 
 
 read:

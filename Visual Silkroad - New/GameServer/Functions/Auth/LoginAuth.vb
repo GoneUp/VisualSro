@@ -32,19 +32,19 @@
             Dim name As String = packet.String(packet.Word)
             Dim password As String = packet.String(packet.Word)
 
-            Dim UserIndex As Integer = GetUserWithID(name)
+            Dim UserIndex As Integer = GameServer.DatabaseCore.GetUserWithID(name)
 
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
 
 
-            If Users(UserIndex).Name = name And Users(UserIndex).Pw = password Then
+            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password Then
                 writer.Byte(1)
                 GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.ClientList.OnCharListing(index_) = New cCharListing
                 GameServer.ClientList.OnCharListing(index_).LoginInformation = New cCharListing.UserArray
-                GameServer.ClientList.OnCharListing(index_).LoginInformation = Users(UserIndex)
+                GameServer.ClientList.OnCharListing(index_).LoginInformation = GameServer.DatabaseCore.Users(UserIndex)
 
             Else
                 GameServer.Server.Dissconnect(index_)

@@ -132,7 +132,7 @@
 
         Dim i As Integer = 0
 
-        For i = 0 To Users.Length
+        For i = 0 To (Users.Length - 1)
             If Users(i).Name = id Then
                 Exit For
             End If

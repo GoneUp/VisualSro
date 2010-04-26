@@ -5,12 +5,12 @@
         Select Case msg
 
             Case "/info"
-                Console.WriteLine("This Emulator is from GoneUp. " & vbNewLine & "Specical Thanks to:" & vbNewLine & "Winderus for the Framework." & vbNewLine & "SREmu Team" & _
+                Console.WriteLine("This Emulator is from GoneUp. " & vbNewLine & "Specical Thanks to:" & vbNewLine & "Windrius for the Framework." & vbNewLine & "SREmu Team" & _
                                     vbNewLine & "Dickernoob for CSREmu" & vbNewLine & "Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
             Case "/help"
-                Console.WriteLine("Commands: " & vbNewLine & "/info for the credits")
+                Console.WriteLine("Commands: " & vbNewLine & "/info for the credits" & vbNewLine & "/clear - Nothing to say..")
 
 
             Case "/clear"

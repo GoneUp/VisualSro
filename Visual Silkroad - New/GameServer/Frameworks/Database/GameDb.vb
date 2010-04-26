@@ -1,4 +1,4 @@
-﻿Namespace GameServer
+﻿Namespace GameServer.DatabaseCore
     Module GameDb
 
         'Timer
@@ -13,6 +13,8 @@
         Public Chars() As [cChar]
 
         Private First As Boolean = False
+
+        Public UniqueIdCounter As Integer = 1
 
 
 
@@ -94,6 +96,9 @@
                 Chars(i).BerserkBar = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
                 Chars(i).PVP = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
                 Chars(i).SetCharStats()
+
+                Chars(i).UniqueId = UniqueIdCounter
+                UniqueIdCounter += 1
             Next
 
 
@@ -120,6 +125,40 @@
 
         End Function
 
+        Public Function FillCharList(ByVal chararray As cCharListing) As cCharListing
+
+            Dim playerCharCount As Integer = 0
+
+
+            For i = 0 To (CharCount - 1)
+                If chararray.LoginInformation.Id = Chars(i).AccountID Then
+                    If chararray.Chars(0) Is Nothing Then
+                        chararray.Chars(0) = New [cChar]
+                        chararray.Chars(0) = Chars(i)
+                        playerCharCount = 1
+
+                    ElseIf chararray.Chars(1) Is Nothing Then
+                        chararray.Chars(1) = New [cChar]
+                        chararray.Chars(1) = Chars(i)
+                        playerCharCount = 2
+
+                    ElseIf chararray.Chars(2) Is Nothing Then
+                        chararray.Chars(2) = New [cChar]
+                        chararray.Chars(2) = Chars(i)
+                        playerCharCount = 3
+
+                    ElseIf chararray.Chars(3) Is Nothing Then
+                        chararray.Chars(3) = New [cChar]
+                        chararray.Chars(3) = Chars(i)
+                        playerCharCount = 4
+                    End If
+                End If
+            Next
+            chararray.NumberOfChars = playerCharCount
+            Return chararray
+        End Function
 
     End Module
+
+
 End Namespace

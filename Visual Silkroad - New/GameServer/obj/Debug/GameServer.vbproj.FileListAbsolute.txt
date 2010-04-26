@@ -28,3 +28,21 @@ C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - Ne
 Z:\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\GameServer\obj\Debug\GameServer.exe
 Z:\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\GameServer\obj\Debug\GameServer.xml
 Z:\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\GameServer\obj\Debug\GameServer.pdb
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.exe
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.xml
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.pdb
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\bin\Debug\GameServer.exe
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\bin\Debug\GameServer.pdb
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\bin\Debug\GameServer.xml
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.Resources.resources
+C:\Users\Henry\Desktop\Emualtor\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.vbproj.GenerateResource.Cache
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.exe
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.xml
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.pdb
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\bin\Debug\GameServer.exe
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\bin\Debug\GameServer.pdb
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\bin\Debug\GameServer.xml
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.Resources.resources
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Debug\GameServer.vbproj.GenerateResource.Cache

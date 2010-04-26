@@ -9,8 +9,6 @@
     End Structure
 
     Public LoginInformation As UserArray
-    Public Char1 As [cChar]
-    Public Char2 As [cChar]
-    Public Char3 As [cChar]
-    Public Char4 As [cChar]
+    Public Chars(4) As [cChar]
+    Public NumberOfChars As Byte
 End Class

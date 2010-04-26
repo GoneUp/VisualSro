@@ -5,7 +5,7 @@
         Select Case msg
 
             Case "/info"
-                Console.WriteLine("This Emulator is from GoneUp. " & vbNewLine & "Specical Thanks to:" & vbNewLine & "Winderus for the Framework." & vbNewLine & "SREmu Team" & _
+                Console.WriteLine("This Emulator is from GoneUp. " & vbNewLine & "Specical Thanks to:" & vbNewLine & "Windrius for the Framework." & vbNewLine & "SREmu Team" & _
                                     vbNewLine & "Dickernoob for CSREmu" & vbNewLine & "Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 

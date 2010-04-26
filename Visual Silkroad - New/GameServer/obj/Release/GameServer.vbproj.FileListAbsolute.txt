@@ -7,3 +7,12 @@ C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - Ne
 C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\GameServer\obj\Release\GameServer.exe
 C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\GameServer\obj\Release\GameServer.xml
 C:\Users\Henry\Desktop\JaveQ Projekt\From Scratch -MySroEmu\Visual Silkroad - New\GameServer\obj\Release\GameServer.pdb
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\bin\Release\GameServer.exe
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\bin\Release\GameServer.pdb
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\bin\Release\GameServer.xml
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Release\GameServer.Resources.resources
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Release\GameServer.vbproj.GenerateResource.Cache
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Release\GameServer.exe
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Release\GameServer.xml
+C:\Users\Henry\Desktop\Emulator\Clean2\Visual Silkroad - New\GameServer\obj\Release\GameServer.pdb

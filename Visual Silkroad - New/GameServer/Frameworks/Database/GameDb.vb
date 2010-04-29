@@ -1,5 +1,6 @@
 ﻿Namespace GameServer.DatabaseCore
     Module GameDb
+  
 
         'Timer
         Public WithEvents GameDbUpdate As New Timers.Timer
@@ -11,6 +12,10 @@
         'Chars
         Public CharCount As Integer
         Public Chars() As [cChar]
+
+        'Itemcount
+        Public ItemCount As Integer
+        Public AllItems() As cInvItem
 
         Private First As Boolean = False
 
@@ -28,6 +33,7 @@
 
             GetUserData()
             GetCharData()
+            GetItemData()
             If First = False Then
                 Console.WriteLine("Loading complete!")
                 First = True
@@ -72,35 +78,58 @@
                 Chars(i).Experience = CULng(tmp.Tables(0).Rows(i).ItemArray(6))
                 Chars(i).Strength = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
                 Chars(i).Intelligence = CUInt(tmp.Tables(0).Rows(i).ItemArray(8))
-                Chars(i).Gold = CUInt(tmp.Tables(0).Rows(i).ItemArray(11))
-                Chars(i).SkillPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(12))
-                Chars(i).GM = CUInt(tmp.Tables(0).Rows(i).ItemArray(13))
-                Chars(i).XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(14))
-                Chars(i).YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(15))
-                Chars(i).X = CDbl(tmp.Tables(0).Rows(i).ItemArray(16))
-                Chars(i).Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(17))
-                Chars(i).Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(18))
-                Chars(i).CHP = CUInt(tmp.Tables(0).Rows(i).ItemArray(19))
-                Chars(i).CMP = CUInt(tmp.Tables(0).Rows(i).ItemArray(20))
-                Chars(i).MinPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(21))
-                Chars(i).MaxPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(22))
-                Chars(i).MinMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(23))
-                Chars(i).MaxMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(24))
-                Chars(i).PhyDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(25))
-                Chars(i).MagDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(26))
-                Chars(i).Hit = CUInt(tmp.Tables(0).Rows(i).ItemArray(27))
-                Chars(i).Parry = CUInt(tmp.Tables(0).Rows(i).ItemArray(28))
-                Chars(i).WalkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(29))
-                Chars(i).RunSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(30))
-                Chars(i).BerserkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(31))
-                Chars(i).BerserkBar = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
-                Chars(i).PVP = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
+                Chars(i).Attributes = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
+                Chars(i).HP = CUInt(tmp.Tables(0).Rows(i).ItemArray(10))
+                Chars(i).MP = CUInt(tmp.Tables(0).Rows(i).ItemArray(11))
+                Chars(i).Gold = CUInt(tmp.Tables(0).Rows(i).ItemArray(14))
+                Chars(i).SkillPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(15))
+                Chars(i).GM = CBool(tmp.Tables(0).Rows(i).ItemArray(16))
+                Chars(i).XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
+                Chars(i).YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
+                Chars(i).X = CDbl(tmp.Tables(0).Rows(i).ItemArray(19))
+                Chars(i).Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(20)) 'xsec
+                Chars(i).Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(21))
+                Chars(i).CHP = CUInt(tmp.Tables(0).Rows(i).ItemArray(22))
+                Chars(i).CMP = CUInt(tmp.Tables(0).Rows(i).ItemArray(23))
+                Chars(i).MinPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(24))
+                Chars(i).MaxPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(25))
+                Chars(i).MinMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(26))
+                Chars(i).MaxMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(27))
+                Chars(i).PhyDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(28))
+                Chars(i).MagDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(29))
+                Chars(i).Hit = CUInt(tmp.Tables(0).Rows(i).ItemArray(30))
+                Chars(i).Parry = CUInt(tmp.Tables(0).Rows(i).ItemArray(31))
+                Chars(i).WalkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
+                Chars(i).RunSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(33))
+                Chars(i).BerserkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(34))
+                Chars(i).BerserkBar = CUInt(tmp.Tables(0).Rows(i).ItemArray(35))
+                Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
+                Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
                 Chars(i).SetCharStats()
 
                 Chars(i).UniqueId = UniqueIdCounter
                 UniqueIdCounter += 1
             Next
 
+
+
+        End Sub
+
+        Public Sub GetItemData()
+            Dim tmp As DataSet = GameServer.db.GetDataSet("SELECT * From items")
+            ItemCount = tmp.Tables(0).Rows.Count
+
+            ReDim AllItems(ItemCount - 1)
+
+            For i = 0 To (ItemCount - 1)
+                AllItems(i) = New cInvItem
+                AllItems(i).Pk2Id = CInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                AllItems(i).OwnerCharID = CInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                AllItems(i).Plus = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
+                AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
+                AllItems(i).Amount = CByte(tmp.Tables(0).Rows(i).ItemArray(5))
+                AllItems(i).Durability = CByte(tmp.Tables(0).Rows(i).ItemArray(6))
+            Next
 
 
         End Sub
@@ -158,6 +187,35 @@
             Return chararray
         End Function
 
+        Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
+
+            Dim inventory As New cInventory([char].MaxSlots)
+
+
+            For i = 0 To (AllItems.Length - 1)
+                If AllItems(i).OwnerCharID = [char].CharacterId Then
+                    inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                End If
+            Next
+
+            Return inventory
+
+        End Function
+
+        Public Function CheckNick(ByVal nick As String) As Boolean
+
+
+            Dim free As Boolean = True
+            For i = 0 To Chars.Length - 1
+                If Chars(i).CharacterName = nick Then
+                    free = False
+                End If
+            Next
+
+
+            Return free
+
+        End Function
     End Module
 
 

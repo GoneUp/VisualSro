@@ -25,13 +25,14 @@ Public Class cInvItem
 
 
     ' Fields
-    Public postition As Integer = 0
-    Public amount As Integer = 0
-    Public durability As Integer = 0
+    Public OwnerCharID As Integer = 0
+    Public Slot As Integer = 0
+    Public Amount As Integer = 0
+    Public Durability As Integer = 0
     Private ibluestatCount As Byte
     Private ibluestats As sBlueStat()
-    Public objectTypID As Long = 0
-    Public pluslevel As Byte = 0
+    Public Pk2Id As Long = 0
+    Public Plus As Byte = 0
 
     ' Nested Types
     <Serializable(), StructLayout(LayoutKind.Sequential)> _

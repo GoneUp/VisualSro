@@ -70,6 +70,7 @@
     <Compile Include="Frameworks\Database\db.vb" />
     <Compile Include="Frameworks\Database\IniFile.vb" />
     <Compile Include="Frameworks\Database\GameDb.vb" />
+    <Compile Include="Frameworks\Database\SilkroadData.vb" />
     <Compile Include="Frameworks\Packets\Opcodes.vb" />
     <Compile Include="Frameworks\Packets\PacketReader.vb" />
     <Compile Include="Frameworks\Packets\PacketWriter.vb" />
@@ -84,6 +85,7 @@
     <Compile Include="Functions\Items\cInvItem.vb" />
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Console\Main.vb" />
+    <Compile Include="Functions\Players.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

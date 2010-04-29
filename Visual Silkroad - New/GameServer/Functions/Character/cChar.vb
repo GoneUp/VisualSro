@@ -1,7 +1,8 @@
 ﻿Public Class [cChar]
 
-    Sub New()
-    End Sub
+ 
+
+
 
     Public AccountID As UInteger
     Public CharacterName As String
@@ -34,8 +35,8 @@
     Public Parry As UShort
     Public Strength As UShort
     Public Intelligence As UShort
-    Public GM As Byte
-    Public PVP As SByte
+    Public GM As Boolean
+    Public PVP As Byte
     Public XSector As Byte
     Public YSector As Byte
     Public X As Single
@@ -44,14 +45,7 @@
     Public MaxSlots As Byte
 
 
-    Public Structure sSkillData
-        Public ID As String
-        Public Name As String
-        Public Level As String
-        Public Index As UInt32
-    End Structure
 
-    Public _objectID As Long
     Sub SetCharStats()
 
         ' Player.Stats[Index_].HP = (uint)((double)Math.Pow(1.02, (Player.Stats[Index_].Level - 1)) * Player.Stats[Index_].Strength * 10); 

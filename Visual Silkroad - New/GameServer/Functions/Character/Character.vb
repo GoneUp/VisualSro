@@ -11,6 +11,7 @@
                     CharList(Index_)
                 Case 3 'Char delete
                 Case 4 'Nick Check
+                    CheckNick(pack, Index_)
                 Case 5 'Restore
             End Select
         End Sub
@@ -47,7 +48,24 @@
                     writer.DWord(0)
 
                     'Now Items
-                    writer.Byte(0) '0 items for now
+                    Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(i).MaxSlots)
+                    inventory = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(i))
+
+                    Dim PlayerItemCount As Integer = 0
+                    For b = 0 To 9
+                        If inventory.UserItems(b).Pk2Id <> 0 Then
+                            PlayerItemCount += 1
+                        End If
+                    Next
+
+                    writer.Byte(PlayerItemCount)
+
+                    For b = 0 To 9
+                        If inventory.UserItems(b).Pk2Id <> 0 Then
+                            writer.DWord(inventory.UserItems(b).Pk2Id)
+                            writer.Byte(inventory.UserItems(b).Plus)
+                        End If
+                    Next
 
                     writer.Byte(0) 'Char End
 
@@ -63,5 +81,29 @@
 
 
         End Sub
+
+        Public Sub CheckNick(ByVal pack As PacketReader, ByVal Index_ As Integer)
+
+            Dim nick As String = pack.String(pack.Word)
+            Dim free As Boolean = GameServer.DatabaseCore.CheckNick(nick)
+            Dim writer As New PacketWriter
+
+            writer.Create(ServerOpcodes.CharList)
+            writer.Byte(4) 'nick check
+
+            If free = True Then
+                writer.Byte(1)
+            Else
+                writer.Byte(2)
+                writer.Byte(10)
+
+            End If
+
+            GameServer.Server.Send(writer.GetBytes, Index_)
+
+
+        End Sub
+
+
     End Module
 End Namespace

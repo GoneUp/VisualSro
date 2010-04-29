@@ -4,7 +4,7 @@ Source Host: localhost
 Source Database: visualsro
 Target Host: localhost
 Target Database: visualsro
-Date: 25.04.2010 15:40:15
+Date: 29.04.2010 14:31:19
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -50,8 +50,25 @@ CREATE TABLE `characters` (
   `berserkspeed` int(10) unsigned NOT NULL DEFAULT '100',
   `berserking` tinyint(1) NOT NULL DEFAULT '0',
   `pvp` int(10) unsigned NOT NULL DEFAULT '255',
+  `maxitemslots` int(1) NOT NULL DEFAULT '45',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for items
+-- ----------------------------
+DROP TABLE IF EXISTS `items`;
+CREATE TABLE `items` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` int(10) unsigned NOT NULL,
+  `owner` int(10) NOT NULL,
+  `plusvalue` int(10) unsigned NOT NULL DEFAULT '0',
+  `slot` int(10) unsigned NOT NULL,
+  `type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'CH = 0, ETC = 1',
+  `quantity` int(10) unsigned NOT NULL DEFAULT '1',
+  `durability` int(10) unsigned NOT NULL DEFAULT '30',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for masteries
@@ -120,9 +137,13 @@ CREATE TABLE `users` (
 -- ----------------------------
 -- Records 
 -- ----------------------------
-INSERT INTO `characters` VALUES ('8', '2', 'lulz', '1907', '34', '1', '0', '20', '30', '0', '200', '300', '0', '0', '0', '0', '1', '168', '98', '978', '1097', '40', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255');
+INSERT INTO `characters` VALUES ('8', '2', 'GoneUp', '1907', '34', '1', '0', '20', '30', '0', '200', '300', '0', '0', '0', '0', '1', '168', '98', '978', '1097', '40', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '254', '45');
+INSERT INTO `characters` VALUES ('9', '2', 'manneke', '1907', '22', '1', '0', '20', '30', '0', '200', '300', '0', '0', '0', '0', '0', '168', '98', '978', '1097', '40', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45');
+INSERT INTO `characters` VALUES ('10', '2', 'Windrius', '1907', '22', '1', '0', '20', '30', '0', '200', '300', '0', '0', '0', '0', '0', '168', '98', '978', '1097', '40', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45');
+INSERT INTO `items` VALUES ('1', '133', '8', '20', '6', '0', '1', '30');
+INSERT INTO `items` VALUES ('2', '277', '8', '15', '7', '0', '1', '30');
 INSERT INTO `news` VALUES ('1', 'Opening', '<center><font color=red><b>Welcome to the Visual Silkroad Project</b></font></center>', '25', '4');
 INSERT INTO `servers` VALUES ('3', 'VisualSro', '0', '500', '1', '127.0.0.1', '15780');
-INSERT INTO `servers` VALUES ('8', 'Test2', '250', '500', '1', '127.0.0.1', '15000');
+INSERT INTO `servers` VALUES ('8', 'Test2', '250', '500', '1', '127.0.0.1', '15780');
 INSERT INTO `users` VALUES ('2', 'test', 'test', '0', '0');
-INSERT INTO `users` VALUES ('3', 'ghgfh', 'fgh', '2', '1');
+INSERT INTO `users` VALUES ('3', 'test2', 'test', '2', '1');

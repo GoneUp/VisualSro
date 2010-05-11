@@ -12,7 +12,8 @@
         PatchReq = 6100
         InfoReq = 2001 'cleint whoami
         Login = 6103
-        CharList = 7007
+        Character = 7007
+        IngameReq = 7001
 
     End Enum
 
@@ -25,7 +26,13 @@
         LaucherInfo = &HA104
         ServerList = &HA101
         LoginAuthInfo = &HA103
-        CharList = &HB007
+        Character = &HB007
+        IngameReqRepley = &HB001
+
+        LoadingStart = &H34A5
+        CharacterInfo = &H3013
+        LoadingEnd = &H34A6
+
 
     End Enum
 

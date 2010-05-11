@@ -127,56 +127,60 @@
             writer.Word(0)
             writer.Byte(0)
             LoginServer.Server.Send(writer.GetBytes, index)
-        End If
 
-        If Users(UserIndex).Banned = True Then
-            LoginServer.Server.Dissconnect(index)
+        Else
 
-        ElseIf Users(UserIndex).Pw <> Pw Then
-            'pw falsch
-            Users(UserIndex).FailedLogins += 1
-            LoginServer.db.UpdateData("UPDATE users SET failed_logins = '" & Users(UserIndex).FailedLogins & "' WHERE id = '" & Users(UserIndex).Id & "'")
-
-            writer.Byte(2) 'login failed
-            writer.Byte(1)
-            writer.Byte(3)
-            writer.Word(0)
-            writer.Byte(0)
-            writer.Byte(CByte(Users(UserIndex).FailedLogins)) 'number of falied logins
-            writer.Word(0)
-            writer.Byte(0)
-
-            LoginServer.Server.Send(writer.GetBytes, index)
-
-            If Users(UserIndex).FailedLogins = 3 Then
-
-                Users(UserIndex).FailedLogins = 0
-                LoginServer.db.UpdateData("UPDATE users SET failed_logins = '0' WHERE id = '" & Users(UserIndex).Id & "'")
-
+            If Users(UserIndex).Banned = True Then
                 LoginServer.Server.Dissconnect(index)
-            End If
 
+            ElseIf Users(UserIndex).Pw <> Pw Then
+                'pw falsch
+                Users(UserIndex).FailedLogins += 1
+                LoginServer.db.UpdateData("UPDATE users SET failed_logins = '" & Users(UserIndex).FailedLogins & "' WHERE id = '" & Users(UserIndex).Id & "'")
 
-        ElseIf Users(UserIndex).Name = ID And Users(UserIndex).Pw = Pw Then
-            Dim ServerIndex As Integer = GetServerIndexById(serverid)
-
-            If (ServerAcUs(ServerIndex) + 1) > ServerMaxUs(ServerIndex) Then
-                writer.Byte(4)
-                writer.Byte(2) 'Server traffic... 
-                LoginServer.Server.Send(writer.GetBytes, index)
-
-            Else
-                'sucess
+                writer.Byte(2) 'login failed
                 writer.Byte(1)
-                writer.Byte(242)
-                writer.Byte(1)
+                writer.Byte(3)
                 writer.Word(0)
-                writer.Word(ServerIP(ServerIndex).Length)
-                writer.String(ServerIP(ServerIndex))
-                writer.Word(ServerPort(ServerIndex))
-                LoginServer.Server.Send(writer.GetBytes, index)
-            End If
+                writer.Byte(0)
+                writer.Byte(CByte(Users(UserIndex).FailedLogins)) 'number of falied logins
+                writer.Word(0)
+                writer.Byte(0)
 
+                LoginServer.Server.Send(writer.GetBytes, index)
+
+                If Users(UserIndex).FailedLogins = 3 Then
+
+                    Users(UserIndex).FailedLogins = 0
+                    LoginServer.db.UpdateData("UPDATE users SET failed_logins = '0' WHERE id = '" & Users(UserIndex).Id & "'")
+
+                    LoginServer.Server.Dissconnect(index)
+                End If
+
+
+            ElseIf Users(UserIndex).Name = ID And Users(UserIndex).Pw = Pw Then
+                Dim ServerIndex As Integer = GetServerIndexById(serverid)
+
+                If (ServerAcUs(ServerIndex) + 1) > ServerMaxUs(ServerIndex) Then
+                    writer.Byte(4)
+                    writer.Byte(2) 'Server traffic... 
+                    LoginServer.Server.Send(writer.GetBytes, index)
+
+                Else
+                    'sucess
+                    writer.Byte(1)
+                    writer.Byte(242)
+                    writer.Byte(1)
+                    writer.Word(0)
+                    writer.Word(ServerIP(ServerIndex).Length)
+                    writer.String(ServerIP(ServerIndex))
+                    writer.Word(ServerPort(ServerIndex))
+                    LoginServer.Server.Send(writer.GetBytes, index)
+                End If
+
+
+
+            End If
 
 
 

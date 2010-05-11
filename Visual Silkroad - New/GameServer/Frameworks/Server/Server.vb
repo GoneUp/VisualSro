@@ -46,6 +46,7 @@ Namespace GameServer
         End Sub
 
         Private Shared Sub ReceiveData(ByVal ar As IAsyncResult)
+newa:
             Dim asyncState As Socket = CType(ar.AsyncState, Socket)
             Dim index As Integer = ClientList.FindIndex(asyncState)
             If asyncState.Connected Then
@@ -62,6 +63,7 @@ Namespace GameServer
                     End If
                 Catch exception2 As Exception
                     RaiseEvent OnServerError(exception2)
+                    'GoTo newa
                 End Try
             Else
                 Console.WriteLine(buffer)

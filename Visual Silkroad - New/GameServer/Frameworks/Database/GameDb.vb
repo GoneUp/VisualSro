@@ -17,6 +17,10 @@
         Public ItemCount As Integer
         Public AllItems() As cInvItem
 
+        'Masterys
+        Public MasteryCount As Integer
+        Public Masterys() As cMastery
+
         Private First As Boolean = False
 
         Public UniqueIdCounter As Integer = 1
@@ -43,9 +47,11 @@
 
         End Sub
 
+#Region "Get from DB"
+
         Public Sub GetUserData()
 
-            Dim tmp As DataSet = GameServer.db.GetDataSet("SELECT * From Users")
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From Users")
             UserCount = tmp.Tables(0).Rows.Count
 
             ReDim Users(UserCount - 1) '-1 machen
@@ -62,7 +68,7 @@
 
         Public Sub GetCharData()
 
-            Dim tmp As DataSet = GameServer.db.GetDataSet("SELECT * From characters")
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From characters")
             CharCount = tmp.Tables(0).Rows.Count
 
             ReDim Chars(CharCount - 1) '-1 machen
@@ -116,7 +122,7 @@
         End Sub
 
         Public Sub GetItemData()
-            Dim tmp As DataSet = GameServer.db.GetDataSet("SELECT * From items")
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From items")
             ItemCount = tmp.Tables(0).Rows.Count
 
             ReDim AllItems(ItemCount - 1)
@@ -134,6 +140,28 @@
 
         End Sub
 
+        Public Sub GetMasteryData()
+
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From masteries")
+            MasteryCount = tmp.Tables(0).Rows.Count
+
+            ReDim Masterys(MasteryCount - 1)
+
+            For i = 0 To MasteryCount - 1
+                Masterys(i) = New cMastery
+                Masterys(i).MasteryID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                Masterys(i).Level = CByte(tmp.Tables(0).Rows(i).ItemArray(1))
+                Masterys(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+            Next
+
+
+
+        End Sub
+
+
+#End Region
+
+#Region "Get Things from Array"
         Public Function GetUserWithID(ByVal id As String) As Integer
 
             Dim i As Integer = 0
@@ -158,25 +186,29 @@
 
             Dim playerCharCount As Integer = 0
 
+            chararray.Chars(0) = New [cChar]
+            chararray.Chars(1) = New [cChar]
+            chararray.Chars(2) = New [cChar]
+            chararray.Chars(3) = New [cChar]
 
             For i = 0 To (CharCount - 1)
                 If chararray.LoginInformation.Id = Chars(i).AccountID Then
-                    If chararray.Chars(0) Is Nothing Then
+                    If chararray.Chars(0).CharacterId = 0 Then
                         chararray.Chars(0) = New [cChar]
                         chararray.Chars(0) = Chars(i)
                         playerCharCount = 1
 
-                    ElseIf chararray.Chars(1) Is Nothing Then
+                    ElseIf chararray.Chars(1).CharacterId = 0 Then
                         chararray.Chars(1) = New [cChar]
                         chararray.Chars(1) = Chars(i)
                         playerCharCount = 2
 
-                    ElseIf chararray.Chars(2) Is Nothing Then
+                    ElseIf chararray.Chars(2).CharacterId = 0 Then
                         chararray.Chars(2) = New [cChar]
                         chararray.Chars(2) = Chars(i)
                         playerCharCount = 3
 
-                    ElseIf chararray.Chars(3) Is Nothing Then
+                    ElseIf chararray.Chars(3).CharacterId = 0 Then
                         chararray.Chars(3) = New [cChar]
                         chararray.Chars(3) = Chars(i)
                         playerCharCount = 4
@@ -216,6 +248,8 @@
             Return free
 
         End Function
+
+#End Region
     End Module
 
 

@@ -17,6 +17,7 @@
     <OptionCompare>Binary</OptionCompare>
     <OptionStrict>Off</OptionStrict>
     <OptionInfer>On</OptionInfer>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,7 +68,7 @@
     <Compile Include="Frameworks\Converter\convert.vb" />
     <Compile Include="Frameworks\Converter\Converter.vb" />
     <Compile Include="Frameworks\Converter\Utils.vb" />
-    <Compile Include="Frameworks\Database\db.vb" />
+    <Compile Include="Frameworks\Database\DataBase.vb" />
     <Compile Include="Frameworks\Database\IniFile.vb" />
     <Compile Include="Frameworks\Database\GameDb.vb" />
     <Compile Include="Frameworks\Database\SilkroadData.vb" />
@@ -81,6 +82,7 @@
     <Compile Include="Functions\Character\cCharListing.vb" />
     <Compile Include="Functions\Character\cChar.vb" />
     <Compile Include="Functions\Character\Character.vb" />
+    <Compile Include="Functions\Character\cMastery.vb" />
     <Compile Include="Functions\Items\cInventory.vb" />
     <Compile Include="Functions\Items\cInvItem.vb" />
     <Compile Include="Functions\Parser.vb" />
@@ -111,6 +113,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

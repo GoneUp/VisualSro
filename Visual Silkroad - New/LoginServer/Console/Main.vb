@@ -51,6 +51,7 @@ read:
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
             Console.WriteLine("Client Connected : " & ip)
             Server.Send(New Byte() {1, 0, 0, 80, 0, 0, 1}, index)
+            Server.OnlineClient += 1
         End Sub
 
         Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index As Integer)

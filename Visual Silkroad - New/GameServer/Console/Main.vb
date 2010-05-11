@@ -18,8 +18,10 @@ Namespace GameServer
             AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
             AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
             AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
-            AddHandler db.OnDatabaseError, AddressOf Program.db_OnDatabaseError
-            AddHandler db.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
+            AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
+            AddHandler DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
+
+
             Console.WindowHeight = 10
             Console.BufferHeight = 30
             Console.WindowWidth = 60
@@ -30,7 +32,7 @@ Namespace GameServer
             Console.Title = "GAMESERVER ALPHA"
             Console.WriteLine("Starting Agent Server")
             password = "sremu"
-            db.Connect("127.0.0.1", 3306, "visualsro", "root", password)
+            DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", password)
             Server.ip = "127.0.0.1"
             Server.port = 15780
             Server.MaxClients = 1500
@@ -52,6 +54,7 @@ read:
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
             Console.WriteLine("Client Connected : " & ip)
             Server.Send(New Byte() {1, 0, 0, 80, 0, 0, 1}, index)
+            Server.OnlineClient += 1
         End Sub
 
         Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index As Integer)

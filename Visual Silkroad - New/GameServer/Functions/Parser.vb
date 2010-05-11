@@ -22,8 +22,12 @@ Namespace GameServer
                 Case ClientOpcodes.Login
                     GameServer.Functions.CheckLogin(rp.index, pack)
 
-                Case ClientOpcodes.CharList
+                Case ClientOpcodes.Character
                     GameServer.Functions.HandleCharPacket(rp.index, pack)
+
+                Case ClientOpcodes.IngameReq
+                    GameServer.Functions.CharLoading(rp.index, pack)
+
 
                 Case Else
                     Console.WriteLine("opCode: " & rp.opcode & " Packet : " & rp.data)

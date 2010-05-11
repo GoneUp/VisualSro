@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("GameServer (windrius)")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Windrius")> 
-<Assembly: AssemblyProduct("GameServer (windrius)")> 
+<Assembly: AssemblyTitle("GameServer")> 
+<Assembly: AssemblyDescription("Visual Silkroad Emulator")> 
+<Assembly: AssemblyCompany("GoneUp & Windrius & manneke")> 
+<Assembly: AssemblyProduct("GameServer")> 
 <Assembly: AssemblyCopyright("Copyright © Windrius 2010")> 
 <Assembly: AssemblyTrademark("")> 
 

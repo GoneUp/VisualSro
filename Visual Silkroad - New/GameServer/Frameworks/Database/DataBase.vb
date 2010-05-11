@@ -5,7 +5,7 @@ Imports MySql.Data.MySqlClient
 	Imports System.Runtime.CompilerServices
 Namespace GameServer
 
-    Public Class db
+    Public Class DataBase
         Private Shared connection As MySqlConnection
         Private Shared ConnectionString As String
         Private Shared da As MySqlDataAdapter

@@ -102,9 +102,16 @@ Namespace LoginServer
         End Function
         Public Shared Function GetDataSet(ByVal command As String) As DataSet
 
+
             Dim reader As New MySqlDataAdapter(command, connection)
             Dim tmpset As New DataSet
-            reader.Fill(tmpset)
+
+            Try
+                reader.Fill(tmpset)
+            Catch ex As MySqlException
+                RaiseEvent OnDatabaseError(ex)
+            End Try
+
 
 
 

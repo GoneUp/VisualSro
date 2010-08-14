@@ -11,6 +11,8 @@ Namespace GameServer
         Private ms As MemoryStream
         Private OPCODE_Renamed As String
 
+        
+
         Public Sub New(ByVal buffer() As Byte, ByVal index As Integer)
             Me.INDEX_Renamed = index
             Me.BUFFER_Renamed = buffer

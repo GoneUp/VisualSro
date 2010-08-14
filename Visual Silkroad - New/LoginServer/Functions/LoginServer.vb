@@ -1,5 +1,15 @@
 ﻿Module Login
 
+
+    Public Sub ClientInfo(ByVal packet As LoginServer.PacketReader)
+        Dim locale As Byte = packet.Byte
+        Dim clientname As String = packet.String(packet.Word)
+        Dim version As UInt32 = packet.DWord
+
+        Debug.Print(String.Format("[Client Info][Locale: {0}][Name: {1}][Version: {2}]", locale, clientname, version))
+
+    End Sub
+
     Public Sub GateWay(ByVal index As Integer)
         Dim writer As New LoginServer.PacketWriter
         Dim name As String = "GatewayServer"
@@ -25,7 +35,7 @@
     End Sub
 
     Public Sub SendLauncherInfo(ByVal index As Integer)
-      
+
         LoginServer.Server.Send(New Byte() {5, 0, 13, 96, 0, 0, 1, 1, 0, 4, 161}, index)
 
         Dim numberofnews As Integer = LoginDb.NewsNumber
@@ -131,7 +141,20 @@
         Else
 
             If Users(UserIndex).Banned = True Then
-                LoginServer.Server.Dissconnect(index)
+
+                writer.Byte(2) 'failed
+                writer.Byte(2) 'gebannt
+                writer.Byte(1) 'unknown
+                writer.Word(Users(UserIndex).BannReason.Length)
+                writer.String(Users(UserIndex).BannReason) 'grund
+                writer.Word(Users(UserIndex).BannTime.Year) 'jahr
+                writer.Word(Users(UserIndex).BannTime.Month) 'monat
+                writer.Word(Users(UserIndex).BannTime.Day) 'tag
+                writer.DWord(0) 'unknwon
+                writer.DWord(0) 'unknwon
+                writer.Word(0) 'unknwon
+                LoginServer.Server.Send(writer.GetBytes, index)
+
 
             ElseIf Users(UserIndex).Pw <> Pw Then
                 'pw falsch
@@ -168,10 +191,15 @@
 
                 Else
                     'sucess
+
+                    Dim sock As Net.Sockets.Socket = LoginServer.ClientList.GetSocket(index)
+                    Dim endpoint = sock.RemoteEndPoint
+                    Dim split1 As String() = endpoint.ToString.Split(":")
+                    Dim split2 As String() = split1(0).Split(".")
+                    Dim key As UInt32 = CByte(split2(0)) + CByte(split2(1)) + CByte(split2(2)) + CByte(split2(3))
+
                     writer.Byte(1)
-                    writer.Byte(242)
-                    writer.Byte(1)
-                    writer.Word(0)
+                    writer.DWord(key)
                     writer.Word(ServerIP(ServerIndex).Length)
                     writer.String(ServerIP(ServerIndex))
                     writer.Word(ServerPort(ServerIndex))

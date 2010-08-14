@@ -16,13 +16,9 @@ Namespace LoginServer
         Private Shared serverSocket As Socket
 
         Public Shared Event OnClientConnect As dConnection
-
         Public Shared Event OnClientDisconnect As dDisconnected
-
         Public Shared Event OnReceiveData As dReceive
-
         Public Shared Event OnServerError As dError
-
         Public Shared Event OnServerStarted As dServerStarted
 
 
@@ -35,7 +31,7 @@ Namespace LoginServer
                 sock.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), sock)
                 serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
             Catch exception As Exception
-                RaiseEvent OnServerError(exception)
+                RaiseEvent OnServerError(exception, -1)
             End Try
         End Sub
 
@@ -61,7 +57,7 @@ Namespace LoginServer
                         RaiseEvent OnClientDisconnect(asyncState.RemoteEndPoint.ToString(), index)
                     End If
                 Catch exception2 As Exception
-                    RaiseEvent OnServerError(exception2)
+                    RaiseEvent OnServerError(exception2, index)
                 End Try
             Else
                 Console.WriteLine(buffer)
@@ -72,6 +68,10 @@ Namespace LoginServer
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
             ClientList.GetSocket(index).Send(buff)
 
+            If LoginServer.Program.Logpackets = True Then
+                Dim rp As New ReadPacket(buffer, index)
+                PacketLog.LogPacket(rp, True)
+            End If
         End Sub
 
 
@@ -102,7 +102,7 @@ Namespace LoginServer
                 serverSocket.Listen(5)
                 serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
             Catch exception As Exception
-                RaiseEvent OnServerError(exception)
+                RaiseEvent OnServerError(exception, -2)
             Finally
                 Dim time As String = DateTime.Now.ToString()
                 RaiseEvent OnServerStarted(time)
@@ -159,7 +159,7 @@ Namespace LoginServer
 
         Public Delegate Sub dDisconnected(ByVal ip As String, ByVal index As Integer)
 
-        Public Delegate Sub dError(ByVal ex As Exception)
+        Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
 
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
 

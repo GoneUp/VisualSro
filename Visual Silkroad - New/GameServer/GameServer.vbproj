@@ -73,6 +73,7 @@
     <Compile Include="Frameworks\Database\GameDb.vb" />
     <Compile Include="Frameworks\Database\SilkroadData.vb" />
     <Compile Include="Frameworks\Packets\Opcodes.vb" />
+    <Compile Include="Frameworks\Packets\PacketLog.vb" />
     <Compile Include="Frameworks\Packets\PacketReader.vb" />
     <Compile Include="Frameworks\Packets\PacketWriter.vb" />
     <Compile Include="Frameworks\Packets\ReadPacket.vb" />
@@ -85,6 +86,7 @@
     <Compile Include="Functions\Character\cMastery.vb" />
     <Compile Include="Functions\Items\cInventory.vb" />
     <Compile Include="Functions\Items\cInvItem.vb" />
+    <Compile Include="Functions\Items\cItem.vb" />
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Console\Main.vb" />
     <Compile Include="Functions\Players.vb" />

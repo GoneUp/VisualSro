@@ -32,6 +32,8 @@
         Public Pw As String
         Public FailedLogins As Integer
         Public Banned As Boolean
+        Public BannTime As Date
+        Public BannReason As String
     End Structure
 
     Private First As Boolean
@@ -51,7 +53,7 @@
         GetUserData()
 
         If First = False Then
-            Console.WriteLine("--Loading Completed.--")
+            Console.WriteLine("Loading Completed.")
             First = True
         End If
 
@@ -124,6 +126,8 @@
             Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
             Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
             Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
+            Users(i).BannReason = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
+            Users(i).BannTime = CDate(tmp.Tables(0).Rows(i).ItemArray(6))
         Next
 
     End Sub

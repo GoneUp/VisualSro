@@ -34,7 +34,7 @@ Namespace GameServer
         End Sub
 
         Public Shared Sub DeleteData(ByVal command As String)
-            InsertData(command)
+            SaveQuery(command)
         End Sub
 
         Public Shared Function GetData(ByVal command As String, ByVal index As Integer) As String
@@ -104,7 +104,12 @@ Namespace GameServer
 
             Dim reader As New MySqlDataAdapter(command, connection)
             Dim tmpset As New DataSet
-            reader.Fill(tmpset)
+
+            Try
+                reader.Fill(tmpset)
+            Catch ex As MySqlException
+                RaiseEvent OnDatabaseError(ex)
+            End Try
 
 
 
@@ -173,6 +178,18 @@ Namespace GameServer
             Return count
         End Function
 
+        Public Shared Sub SaveQuery(ByVal command As String)
+            'Dim command2 As New MySqlCommand(command, connection)
+            'command2.ExecuteNonQuery()
+            Try
+                Dim writer As New IO.StreamWriter(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt", True)
+                writer.WriteLine(command)
+                writer.Close()
+            Catch exception As Exception
+                RaiseEvent OnDatabaseError(exception)
+            End Try
+        End Sub
+
         Public Shared Sub InsertData(ByVal command As String)
             Dim command2 As New MySqlCommand(command, connection)
             Try
@@ -181,6 +198,7 @@ Namespace GameServer
                 RaiseEvent OnDatabaseError(exception)
             End Try
         End Sub
+
 
         Public Shared Sub TableList()
             Dim reader As MySqlDataReader = Nothing
@@ -202,7 +220,7 @@ Namespace GameServer
         End Sub
 
         Public Shared Sub UpdateData(ByVal command As String)
-            InsertData(command)
+            SaveQuery(command)
         End Sub
 
         Public Delegate Sub dConnected()

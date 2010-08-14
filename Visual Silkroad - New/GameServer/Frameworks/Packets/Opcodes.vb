@@ -14,6 +14,7 @@
         Login = 6103
         Character = 7007
         IngameReq = 7001
+        JoinWorldReq = 3012
 
     End Enum
 
@@ -21,6 +22,7 @@
 
     Enum ServerOpcodes
 
+        Handshake = &H5000
         ServerInfo = &H2001 'Gateway
         PatchInfo = &H600D 'Patch Info
         LaucherInfo = &HA104
@@ -32,6 +34,9 @@
         LoadingStart = &H34A5
         CharacterInfo = &H3013
         LoadingEnd = &H34A6
+        CharacterID = &H3020
+        CharacterStats = &H303D
+        JoinWorldReply = &H3809
 
 
     End Enum

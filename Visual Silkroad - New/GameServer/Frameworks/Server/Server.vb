@@ -35,7 +35,7 @@ Namespace GameServer
                 sock.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), sock)
                 serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
             Catch exception As Exception
-                RaiseEvent OnServerError(exception)
+                RaiseEvent OnServerError(exception, -1)
             End Try
         End Sub
 
@@ -62,7 +62,7 @@ newa:
                         RaiseEvent OnClientDisconnect(asyncState.RemoteEndPoint.ToString(), index)
                     End If
                 Catch exception2 As Exception
-                    RaiseEvent OnServerError(exception2)
+                    RaiseEvent OnServerError(exception2, index)
                     'GoTo newa
                 End Try
             Else
@@ -74,6 +74,10 @@ newa:
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
             ClientList.GetSocket(index).Send(buff)
 
+            If GameServer.Program.Logpackets = True Then
+                Dim rp As New ReadPacket(buffer, index)
+                PacketLog.LogPacket(rp, True)
+            End If
         End Sub
 
 
@@ -104,11 +108,10 @@ newa:
                 serverSocket.Listen(5)
                 serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
             Catch exception As Exception
-                RaiseEvent OnServerError(exception)
+                RaiseEvent OnServerError(exception, -2)
             Finally
                 Dim time As String = DateTime.Now.ToString()
                 RaiseEvent OnServerStarted(time)
-                'MonsterProb.SpawnMonsters();
             End Try
         End Sub
 
@@ -161,7 +164,7 @@ newa:
 
         Public Delegate Sub dDisconnected(ByVal ip As String, ByVal index As Integer)
 
-        Public Delegate Sub dError(ByVal ex As Exception)
+        Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
 
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
 

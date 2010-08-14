@@ -20,6 +20,7 @@
 
     Enum ServerOpcodes
 
+        Handshake = &H5000
         ServerInfo = &H2001 'Gateway
         PatchInfo = &H600D 'Patch Info
         LaucherInfo = &HA104

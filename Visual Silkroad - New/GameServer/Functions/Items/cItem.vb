@@ -1,0 +1,74 @@
+﻿Public Class cItem
+
+
+    Public ITEM_TYPE As UInteger
+    Public ITEM_TYPE_NAME As String
+    Public ITEM_MALL As Byte
+    Public CLASS_A As Byte
+    Public CLASS_B As Byte
+    Public CLASS_C As Byte
+    Public RACE As Byte
+    Public SHOP_PRICE As ULong
+    Public MIN_REPAIR As UShort
+    Public MAX_REPAIR As UShort
+    Public STORE_PRICE As ULong
+    Public SELL_PRICE As ULong
+    Public LV_REQ As Byte
+    Public REQ1 As Integer
+    Public REQ1_LV As Byte
+    Public REQ2 As Integer
+    Public REQ2_LV As Byte
+    Public REQ3 As Integer
+    Public REQ3_LV As Byte
+    Public MAX_POSSES As Integer
+    Public MAX_STACK As UShort
+    Public GENDER As Byte
+    Public MIN_DURA As Single
+    Public MAX_DURA As Single
+    Public MIN_PHYSDEF As Double
+    Public MAX_PHYSDEF As Double
+    Public PHYSDEF_INC As Double
+    Public MIN_PARRY As Single
+    Public MAX_PARRY As Single
+    Public MIN_ABSORB As Double
+    Public MAX_ABSORB As Double
+    Public ABSORB_INC As Double
+    Public MIN_BLOCK As Single
+    Public MAX_BLOCK As Single
+    Public MAGDEF_MIN As Double
+    Public MAGDEF_MAX As Double
+    Public MAGDEF_INC As Double
+    Public MIN_APHYS_REINFORCE As Single
+    Public MAX_APHYS_REINFORCE As Single
+    Public MIN_AMAG_REINFORCE As Single
+    Public MAX_AMAG_REINFORCE As Single
+    Public ATTACK_DISTANCE As Single
+    Public MIN_LPHYATK As Double
+    Public MAX_LPHYATK As Double
+    Public MIN_HPHYATK As Double
+    Public MAX_HPHYATK As Double
+    Public PHYATK_INC As Double
+    Public MIN_LMAGATK As Double
+    Public MAX_LMAGATK As Double
+    Public MIN_HMAGATK As Double
+    Public MAX_HMAGATK As Double
+    Public MAGATK_INC As Double
+    Public MIN_LPHYS_REINFORCE As Single
+    Public MAX_LPHYS_REINFORCE As Single
+    Public MIN_HPHYS_REINFORCE As Single
+    Public MAX_HPHYS_REINFORCE As Single
+    Public MIN_LMAG_REINFORCE As Single
+    Public MAX_LMAG_REINFORCE As Single
+    Public MIN_HMAG_REINFORCE As Single
+    Public MAX_HMAG_REINFORCE As Single
+    Public MIN_ATTACK_RATING As Single
+    Public MAX_ATTACK_RATING As Single
+    Public MIN_CRITICAL As Single
+    Public MAX_CRITICAL As Single
+    Public USE_TIME As Integer  ' steht drin wieviel HP ein potion heilt           //*******************************
+    Public USE_TIME2 As Integer ' steht drin wieviel prozent HP ein grain heilt    //* Das hier muss wahrscheinlich
+    Public USE_TIME3 As Integer ' steht drin wieviel MP ein potion heilt           //* umbenannt werden, USE_TIME
+    Public USE_TIME4 As Integer ' steht drin wieviel prozent MP ein grain heilt    //* passt nicht ganz.
+
+
+End Class

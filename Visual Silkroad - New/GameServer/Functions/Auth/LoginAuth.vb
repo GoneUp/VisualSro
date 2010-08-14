@@ -4,7 +4,7 @@
     Module LoginAuth
 
         Public Sub GateWay(ByVal index As Integer)
-            Dim writer As New GameServer.PacketWriter
+            Dim writer As New PacketWriter
             Dim name As String = "AgentServer"
             writer.Create(ServerOpcodes.ServerInfo)
             writer.Word(name.Length)
@@ -28,18 +28,23 @@
         End Sub
 
         Public Sub CheckLogin(ByVal index_ As Integer, ByVal packet As PacketReader)
-            packet.DWord()
+            Dim key As UInteger = packet.DWord()
             Dim name As String = packet.String(packet.Word)
             Dim password As String = packet.String(packet.Word)
 
+            'Checking
             Dim UserIndex As Integer = GameServer.DatabaseCore.GetUserWithID(name)
-
+            Dim sock As Net.Sockets.Socket = GameServer.ClientList.GetSocket(index_)
+            Dim endpoint = sock.RemoteEndPoint
+            Dim split1 As String() = endpoint.ToString.Split(":")
+            Dim split2 As String() = split1(0).Split(".")
+            Dim realkey As UInt32 = CByte(split2(0)) + CByte(split2(1)) + CByte(split2(2)) + CByte(split2(3))
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
 
 
-            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password Then
+            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password And key = realkey Then
                 writer.Byte(1)
                 GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.ClientList.OnCharListing(index_) = New cCharListing
@@ -47,6 +52,8 @@
                 GameServer.ClientList.OnCharListing(index_).LoginInformation = GameServer.DatabaseCore.Users(UserIndex)
 
             Else
+                writer.Byte(2)
+                writer.Byte(2)
                 GameServer.Server.Dissconnect(index_)
             End If
 

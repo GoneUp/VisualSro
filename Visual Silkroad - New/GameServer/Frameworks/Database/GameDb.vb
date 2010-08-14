@@ -31,23 +31,39 @@
 
             GameDbUpdate.Stop()
             GameDbUpdate.Interval = 60000 '1minute
+
             If First = False Then
-                Console.WriteLine("Loading Data from Database. This can take some Time.")
+                Console.WriteLine("Execute all saved Querys. This can take some Time.")
+                ExecuteSavedQuerys()
+                Console.WriteLine("Query saving done. Loading Data from DB now.")
+
+                GetCharData() 'Only Update for the First Time! 
+                GetItemData()
+                GetMasteryData()
+                First = True
             End If
 
             GetUserData()
-            GetCharData()
-            GetItemData()
-            If First = False Then
-                Console.WriteLine("Loading complete!")
-                First = True
-            End If
+
+
 
             GameDbUpdate.Start()
 
         End Sub
 
 #Region "Get from DB"
+        Public Sub ExecuteSavedQuerys()
+            Try
+                Dim lines() As String = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
+                For Each commando In lines
+                    DataBase.InsertData(commando)
+                Next
+                IO.File.Delete(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
+            Catch ex As Exception
+                'Console.WriteLine("Database Error: " & ex.Message)
+            End Try
+
+        End Sub
 
         Public Sub GetUserData()
 
@@ -225,7 +241,7 @@
 
 
             For i = 0 To (AllItems.Length - 1)
-                If AllItems(i).OwnerCharID = [char].CharacterId Then
+                If AllItems(i).OwnerCharID = [char].UniqueId Then
                     inventory.UserItems(AllItems(i).Slot) = AllItems(i)
                 End If
             Next

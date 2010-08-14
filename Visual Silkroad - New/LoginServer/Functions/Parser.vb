@@ -21,6 +21,7 @@ Namespace LoginServer
                     GateWay(rp.index)
 
                 Case ClientOpcodes.PatchReq  'Client sends Patch Info
+                    ClientInfo(pack)
                     SendPatchInfo(rp.index)
 
                 Case ClientOpcodes.LauncherReq
@@ -30,7 +31,6 @@ Namespace LoginServer
                     SendServerList(rp.index)
 
                 Case ClientOpcodes.Login
-
                     HandleLogin(pack, rp.index)
 
                 Case Else

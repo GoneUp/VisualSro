@@ -16,11 +16,11 @@ Namespace LoginServer
             Me.BUFFER_Renamed = buffer
             Me.ms = New MemoryStream(buffer)
             Me.br = New BinaryReader(Me.ms)
-            Dim param As String = Convert.BytesToHex(buffer)
+            Dim param As String = convert.BytesToHex(buffer)
             Dim num As UShort = Me.br.ReadUInt16()
             If num > 0 Then
-                Me.DATA_Renamed = Convert.Mid(param, 12, num * 2)
-                Me.BUFFER_Renamed = Convert.ToByteArray(Me.DATA_Renamed)
+                Me.DATA_Renamed = convert.Mid(param, 12, num * 2)
+                Me.BUFFER_Renamed = convert.ToByteArray(Me.DATA_Renamed)
             End If
             Me.OPCODE_Renamed = Me.br.ReadUInt16().ToString("X")
             Me.br.ReadUInt16()

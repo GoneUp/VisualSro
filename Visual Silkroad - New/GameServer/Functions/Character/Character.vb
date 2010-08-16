@@ -40,7 +40,7 @@
                     writer.String(ClientList.OnCharListing(Index_).Chars(i).CharacterName)
                     writer.Byte(ClientList.OnCharListing(Index_).Chars(i).Volume)
                     writer.Byte(ClientList.OnCharListing(Index_).Chars(i).Level)
-                    writer.LWord(ClientList.OnCharListing(Index_).Chars(i).Experience)
+                    writer.QWord(ClientList.OnCharListing(Index_).Chars(i).Experience)
                     writer.Word(ClientList.OnCharListing(Index_).Chars(i).Strength)
                     writer.Word(ClientList.OnCharListing(Index_).Chars(i).Intelligence)
                     writer.Word(ClientList.OnCharListing(Index_).Chars(i).Attributes)
@@ -409,9 +409,9 @@
             writer.Byte(chari.Level)  ' Level
             writer.Byte(chari.Level)  ' Highest Level
 
-            writer.LWord(chari.Experience)  ' EXP Bar
+            writer.QWord(chari.Experience)  ' EXP Bar
             writer.DWord(chari.SkillPointBar)  ' SP Bar
-            writer.LWord(chari.Gold)  ' Gold Amount
+            writer.QWord(chari.Gold)  ' Gold Amount
             writer.DWord(chari.SkillPoints)  ' SP Amount
             writer.Word(chari.Attributes)  ' Stat Points
             writer.Byte(chari.BerserkBar)  ' Berserk Bar
@@ -430,61 +430,65 @@
             writer.Byte(0)  ' Amount of Items  
 
 
-            writer.Byte(5)  ' Avatar Item Max
+            writer.Byte(4)  ' Avatar Item Max
             writer.Byte(0)  ' Amount of Avatars
 
             writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
 
-            writer.Byte(0) 'mastery list
             writer.Byte(1) 'mastery start
-            'writer.Byte(1) 'mastery 
-            'writer.DWord(1) 'id
-            'writer.Byte(1) 'lv
-            writer.Byte(2)  ' Mastery End
+            writer.DWord(257) ' Mastery
+            writer.Byte(140) ' Mastery Level
+            writer.Byte(1) ' Mastery Start
+            writer.DWord(258) ' Mastery
+            writer.Byte(140) ' Mastery Level
+            writer.Byte(1) ' Mastery Start
+            writer.DWord(259) ' Mastery
+            writer.Byte(140) ' Mastery Level
+            writer.Byte(1) ' Mastery Start
+            writer.DWord(273) ' Mastery
+            writer.Byte(140) ' Mastery Level
+            writer.Byte(1) ' Mastery Start
+            writer.DWord(274) ' Mastery
+            writer.Byte(140) ' Mastery Level
+            writer.Byte(1) ' Mastery Start
+            writer.DWord(275) ' Mastery
+            writer.Byte(140) ' Mastery Level
+            writer.Byte(1) ' Mastery Start
+            writer.DWord(276) ' Mastery
+            writer.Byte(140) ' Mastery Level
 
-            writer.Byte(0) 'skill list
-            'writer.Byte(1) 'skill start
-            'writer.DWord(1)
-            writer.Byte(3)  ' Skill List End
+            writer.Byte(2) 'mastery end
+            writer.Byte(0) 'mastery end
+
+            writer.Byte(1)
+            writer.DWord(3)
+            writer.Byte(1)
+            writer.Byte(2)
 
 
-            writer.Word(0)  ' Amount of Completed Quests
-            'writer.DWord(&H11010000) 'kp
+            writer.Word(1)  ' Amount of Completed Quests
+            writer.DWord(1) 'event
 
-            writer.Byte(0)  ' Amount of Pending Quests
-
-            'UNKNWON
-            'writer.DWord(1) 'id
-            'writer.Byte(&H12)
-            'writer.DWord(1)
-            'writer.Word(&H131)
-            'writer.DWord(1)
-            'writer.Word(&H141)
-            'writer.DWord(1)
-            'writer.Word(2)
-            'writer.DWord(16777474)
-            'writer.DWord(0)
-
-            'writer.Byte(0)  ' Quest List End
+            writer.Word(0)  ' Amount of Pending Quests
 
 
             '''''''''''''''''''''/
             ' ID, Position, State, Speed
 
-            writer.DWord(chari.CharacterId)  ' Unique ID
+            writer.DWord(chari.UniqueId)  ' Unique ID
             writer.Byte(chari.XSector)  ' X Sector
             writer.Byte(chari.YSector)  ' Y Sector
             writer.Float(chari.X)  ' X
             writer.Float(chari.Z)  ' Z
             writer.Float(chari.Y)  ' Y
-            writer.Word(&H0)  ' Angle
+            writer.Word(0)  ' Angle
             writer.Byte(0)  ' Destination
             writer.Byte(1)  ' Walk & Run Flag
             writer.Byte(0)  ' No Destination
-            writer.Word(&H0)  ' Angle
+            writer.Word(0)  ' Angle
             writer.Byte(0)  ' Death Flag
             writer.Byte(0)  ' Movement Flag
-            writer.Byte(0)  ' Berserker Flag
+            writer.Byte(chari.Berserk)  ' Berserker Flag
             writer.Float(chari.WalkSpeed)  ' Walking Speed
             writer.Float(chari.RunSpeed)  ' Running Speed
             writer.Float(chari.BerserkSpeed)  ' Berserk Speed
@@ -492,13 +496,13 @@
 
 
             writer.Byte(0)  ' Buff Flag
+
             '''''''''''''''''''''/
             ' Name, Job, PK
-
             writer.Word(chari.CharacterName.Length)  ' Player Name Length
             writer.String(chari.CharacterName)  ' Player Name
             writer.Word(0)  ' Alias Name Length
-            writer.String("")  ' Alias Name
+            'writer.String("")  ' Alias Name
             writer.Byte(0)  ' Job Level
             writer.Byte(1)  ' Job Type
             writer.DWord(0)  ' @@@@@@@@@@@@@ ' TRADER || CURRENT EXP
@@ -518,7 +522,7 @@
             writer.DWord(0)  ' @@@@@@@@@@@@@
             writer.Word(0)  ' @@@@@@@@@@@@@
             writer.DWord(chari.AccountID)  ' Account ID
-            writer.Byte(1)  'GM Flag
+            writer.Byte(0)  'GM Flag
             writer.Byte(7)  ' @@@@@@@@@@@@@
             '''''''''''''''''''''/
 
@@ -542,10 +546,11 @@
             ' Other
             writer.Word(1)  'unknown
             writer.Word(1)
-            writer.Word(256)
+            writer.Byte(0)
+            writer.Byte(1)
 
-            FakeChar(Index_)
-            ' Server.Send(writer.GetBytes, Index_)
+
+            Server.Send(writer.GetBytes, Index_)
 
 
 
@@ -556,7 +561,7 @@
 
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterID)
-            writer.DWord(905318) 'charid
+            writer.DWord(chari.UniqueId) 'charid
             writer.Word(13) 'moon pos
             writer.Byte(9) 'hours
             writer.Byte(28) 'minute
@@ -583,43 +588,6 @@
             writer.Word(PlayerData(index_).Strength)
             writer.Word(PlayerData(index_).Intelligence)
             Server.Send(writer.GetBytes, index_)
-
-        End Sub
-
-        Public Sub FakeChar(ByVal index_)
-            Server.Send((New Byte() {63, 1, &H13, &H30, 0, 0, _
-                                        &HA, &HE, &H78, &H88, &H73, &H7, &H0, &H0, &H22, &H1, &H1, &H0, &H0, &H0, &H0, &H0, _
-&H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, _
-&H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &HC8, &H0, &H0, &H0, &HC8, &H0, _
-&H0, &H0, &H1, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H2D, &H8, &H1, &H38, &HE, _
-&H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H2C, &H0, &H0, &H0, &H0, _
-&H4, &H39, &HE, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H2C, &H0, _
-&H0, &H0, &H0, &H5, &H3A, &HE, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, _
-&H0, &H2C, &H0, &H0, &H0, &H0, &H6, &H30, &HE, &H0, &H0, &H0, &H0, &H0, &H0, &H0, _
-&H0, &H0, &H0, &H0, &H3E, &H0, &H0, &H0, &H0, &H7, &HE8, &H29, &H0, &H0, &H0, &H0, _
-&H0, &H0, &H0, &H0, &H0, &H0, &H0, &H2E, &H0, &H0, &H0, &H0, &HD, &H42, &H1D, &H0, _
-&H0, &H1, &H0, &HE, &H43, &H1D, &H0, &H0, &H1, &H0, &HF, &H1A, &H4B, &H0, &H0, &H14, _
-&H0, &H4, &H0, &H0, &H1, &H1, &H1, &H0, &H0, &H0, &H1, &H2, &H1, &H0, &H0, &H0, _
-&H1, &H3, &H1, &H0, &H0, &H0, &H1, &H11, &H1, &H0, &H0, &H0, &H1, &H12, &H1, &H0, _
-&H0, &H0, &H1, &H13, &H1, &H0, &H0, &H0, &H1, &H14, &H1, &H0, &H0, &H0, &H2, &H0, _
-&H2, &H1, &H0, &H1, &H0, &H0, &H0, &H0, &H0, &H66, &HD0, &HD, &H0, &HA8, &H62, &HA6, _
-&H31, &H68, &H44, &H0, &H0, &H20, &H42, &HBD, &HD8, &H87, &H44, &HF2, &H84, &H0, &H1, &H0, _
-&HF2, &H84, &H0, &H0, &H0, &H0, &H0, &H80, &H41, &H0, &H0, &H48, &H42, &H0, &H0, &HC8, _
-&H42, &H0, &H6, &H0, &HFB, &HFB, &HE2, &HE2, &HE2, &HE2, &H0, &H0, &H0, &H1, &H0, &H0, _
-&H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &HFF, &H1, &H0, _
-&H0, &H0, &H0, &H0, &H0, &H0, &H90, &H64, &H4, &H0, &H0, &H7, &H4, &H1, &H4A, &HEA, _
-&H3, &H0, &H64, &H2, &H4A, &HF0, &H3, &H0, &H64, &H3, &H4A, &HEE, &H3, &H0, &H64, &H4, _
-&H4A, &HF8, &H3, &H0, &H64, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H1, &H0, &H1, _
-&H0, &H0, &H1}), index_)
-
-
-
-
-
-
-
-
-
 
         End Sub
     End Module

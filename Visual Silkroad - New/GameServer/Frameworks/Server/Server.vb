@@ -16,13 +16,9 @@ Namespace GameServer
         Private Shared serverSocket As Socket
 
         Public Shared Event OnClientConnect As dConnection
-
         Public Shared Event OnClientDisconnect As dDisconnected
-
         Public Shared Event OnReceiveData As dReceive
-
         Public Shared Event OnServerError As dError
-
         Public Shared Event OnServerStarted As dServerStarted
 
 
@@ -75,8 +71,8 @@ newa:
             ClientList.GetSocket(index).Send(buff)
 
             If GameServer.Program.Logpackets = True Then
-                Dim rp As New ReadPacket(buffer, index)
-                PacketLog.LogPacket(rp, True)
+                Dim rp As New ReadPacket(buff, index)
+                PacketLog.LogPacket(rp, True, buff)
             End If
         End Sub
 

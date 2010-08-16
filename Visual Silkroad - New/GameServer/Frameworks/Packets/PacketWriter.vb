@@ -36,7 +36,7 @@ Public Class PacketWriter
 
     Public Function GetBytes() As Byte()
         Dim buffer(0) As Byte
-        Me.ms.Position = 0L
+        Me.ms.Position = 0
         Dim num As UShort = (bw.BaseStream.Length - 6)
         Me.bw.Write(num)
         Me.bw.Close()
@@ -54,7 +54,7 @@ Public Class PacketWriter
         Me.dataLen += data.Length
     End Sub
 
-    Public Sub LWord(ByVal data As ULong)
+    Public Sub QWord(ByVal data As ULong)
         Me.bw.Write(data)
         Me.dataLen += &H10
     End Sub

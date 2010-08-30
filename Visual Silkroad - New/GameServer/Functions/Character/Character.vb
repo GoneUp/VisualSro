@@ -7,17 +7,19 @@
 
             Select Case tag
                 Case 1 'Crweate
-                    CreateChar(pack, Index_)
+                    OnCreateChar(pack, Index_)
                 Case 2 'Char List
-                    CharList(Index_)
+                    OnCharList(Index_)
                 Case 3 'Char delete
+                    OnDeleteChar(pack, Index_)
                 Case 4 'Nick Check
-                    CheckNick(pack, Index_)
+                    OnCheckNick(pack, Index_)
                 Case 5 'Restore
+                    OnRestoreChar(pack, Index_)
             End Select
         End Sub
 
-        Public Sub CharList(ByVal Index_ As Integer)
+        Public Sub OnCharList(ByVal Index_ As Integer)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Character)
@@ -46,7 +48,16 @@
                     writer.Word(ClientList.OnCharListing(Index_).Chars(i).Attributes)
                     writer.DWord(ClientList.OnCharListing(Index_).Chars(i).CHP)
                     writer.DWord(ClientList.OnCharListing(Index_).Chars(i).CMP)
-                    writer.DWord(0)
+                    If ClientList.OnCharListing(Index_).Chars(i).Deleted = True Then
+                        Dim diff As Long = DateDiff(DateInterval.Minute, DateTime.Now, ClientList.OnCharListing(Index_).Chars(i).DeletionTime)
+                        writer.Byte(1) 'to delete
+                        writer.DWord(diff)
+                        writer.Word(0)
+                        writer.Byte(0) 'In Academy
+                    Else
+                        writer.DWord(0)
+                    End If
+
 
                     'Now Items
                     Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(i).MaxSlots)
@@ -76,7 +87,7 @@
             End If
         End Sub
 
-        Public Sub CheckNick(ByVal pack As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnCheckNick(ByVal pack As PacketReader, ByVal Index_ As Integer)
 
             Dim nick As String = pack.String(pack.Word)
             Dim free As Boolean = GameServer.DatabaseCore.CheckNick(nick)
@@ -96,11 +107,45 @@
             End If
 
             GameServer.Server.Send(writer.GetBytes, Index_)
-
-
         End Sub
 
-        Public Sub CreateChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnDeleteChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
+            Dim nick As String = pack.String(pack.Word)
+            For i = 0 To ClientList.OnCharListing(Index_).NumberOfChars - 1
+                If ClientList.OnCharListing(Index_).Chars(i).CharacterName = nick Then
+                    ClientList.OnCharListing(Index_).Chars(i).Deleted = True
+                    Dim dat As DateTime = DateTime.Now
+                    Dim dat1 = dat.AddDays(7)
+                    ClientList.OnCharListing(Index_).Chars(i).DeletionTime = dat1
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='1', deletion_time='{0}' where id='{1}'", dat1.ToString, ClientList.OnCharListing(Index_).Chars(i).UniqueId))
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Character)
+                    writer.Byte(3) 'type = delte
+                    writer.Byte(1) 'sucess
+                    Server.Send(writer.GetBytes, Index_)
+                End If
+            Next
+        End Sub
+
+
+        Public Sub OnRestoreChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
+            Dim nick As String = pack.String(pack.Word)
+            For i = 0 To ClientList.OnCharListing(Index_).NumberOfChars - 1
+                If ClientList.OnCharListing(Index_).Chars(i).CharacterName = nick Then
+                    ClientList.OnCharListing(Index_).Chars(i).Deleted = False
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'", ClientList.OnCharListing(Index_).Chars(i).UniqueId))
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Character)
+                    writer.Byte(5) 'type = restore
+                    writer.Byte(1) 'sucess
+                    Server.Send(writer.GetBytes, Index_)
+                End If
+            Next
+        End Sub
+
+        Public Sub OnCreateChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
 
 
             Dim nick As String = pack.String(pack.Word)
@@ -117,7 +162,7 @@
             If model >= 1907 And model <= 1932 = False And model >= 14717 And model <= 14743 = False Then
                 'Wrong Model Code! 
                 GameServer.Server.Dissconnect(Index_)
-                Console.WriteLine(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
+                Commands.WriteLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
             End If
 
             Dim _refitems(4) As cItem
@@ -129,7 +174,7 @@
             For i = 1 To 4
                 If _refitems(i).ITEM_TYPE_NAME.EndsWith("_DEF") = False Then
                     GameServer.Server.Dissconnect(Index_)
-                    Console.WriteLine(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
+                    Commands.WriteLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
                 End If
                 Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
             Next
@@ -199,36 +244,54 @@
                 DatabaseCore.Chars(NewCharacterIndex).Parry = parrymin
 
 
-                GameServer.DataBase.SaveQuery("INSERT INTO characters (account, name, chartype, volume) VALUE ('" & ClientList.OnCharListing(Index_).LoginInformation.Id & "','" & nick & "','" & model & "','" & volume & "')")
+                GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume) VALUE ('{0}','{1}','{2}','{3}','{4}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume))
 
                 ' Masterys
 
                 If model >= 1907 And model <= 1932 Then
                     'Chinese Char
-                    Dim mastery As New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = 1
-
                     '257 - 259
+
+                    Dim mastery As New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 257
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 258
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 259
                     AddMasteryToDB(mastery)
 
                     '273 - 276
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 273
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 274
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 275
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 276
                     AddMasteryToDB(mastery)
 
@@ -244,70 +307,94 @@
                     mastery.MasteryID = 513
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 514
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 515
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 516
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 517
                     AddMasteryToDB(mastery)
 
+                    mastery = New cMastery
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.Level = 1
                     mastery.MasteryID = 518
                     AddMasteryToDB(mastery)
                 End If
 
 
                 'ITEMS
+                For I = 0 To 44
+                    Dim to_add As New cInvItem
+                    to_add.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+                    to_add.Pk2Id = 0
+                    to_add.Plus = 0
+                    to_add.Amount = 0
+                    to_add.Slot = I
+                    AddItemToDB(to_add)
+                Next
 
                 '1 =  Body
                 '2 = Legs
                 '3 = foot
                 '4 = Waffe
-
                 Dim item As New cInvItem
                 item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(1)
                 item.Plus = Math.Round(Rnd() * 3, 0)
-                item.Amount = 1
+                item.Amount = 0
                 item.Slot = 1
-                AddItemToDB(item)
+                UpdateItem(item)
 
                 item = New cInvItem
                 item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(2)
                 item.Plus = Math.Round(Rnd() * 3, 0)
-                item.Amount = 1
+                item.Amount = 0
                 item.Slot = 4
-                AddItemToDB(item)
+                UpdateItem(item)
 
                 item = New cInvItem
                 item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(3)
                 item.Plus = Math.Round(Rnd() * 3, 0)
-                item.Amount = 1
+                item.Amount = 0
                 item.Slot = 5
-                AddItemToDB(item)
+                UpdateItem(item)
 
                 item = New cInvItem
                 item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(4)
                 item.Plus = Math.Round(Rnd() * 5, 0)
-                item.Amount = 1
+                item.Amount = 0
                 item.Slot = 6
-                AddItemToDB(item)
+                UpdateItem(item)
 
                 If _items(4) = 3632 Or _items(4) = 3633 Then 'Sword or Blade need a Shield
                     item = New cInvItem
                     item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     item.Pk2Id = 251
-                    item.Plus = Math.Round(Rnd() * 5, 0)
-                    item.Amount = 1
+                    item.Plus = Math.Round(Rnd() * 9, 0)
+                    item.Amount = 0
                     item.Slot = 7
-                    AddItemToDB(item)
+                    UpdateItem(item)
+
 
                 ElseIf _items(4) = 3636 Then 'Bow --> Give some Arrows
                     item = New cInvItem
@@ -315,24 +402,24 @@
                     item.Pk2Id = 62
                     item.Amount = 123
                     item.Slot = 7
-                    AddItemToDB(item)
+                    UpdateItem(item)
 
-                ElseIf _items(4) = 10730 Or _items(4) = 10734 Or _items(4) = 10737 Then 'EU Weapons who need a staff
+                ElseIf _items(4) = 10730 Or _items(4) = 10734 Or _items(4) = 10737 Then 'EU Weapons who need a shield
                     item = New cInvItem
                     item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     item.Pk2Id = 10738
-                    item.Plus = Math.Round(Rnd() * 5, 0)
-                    item.Amount = 1
+                    item.Plus = Math.Round(Rnd() * 9, 0)
+                    item.Amount = 0
                     item.Slot = 7
-                    AddItemToDB(item)
+                    UpdateItem(item)
 
-                ElseIf _items(4) = -1 Then 'Bow --> Give some Arrows
+                ElseIf _items(4) = -1 Then 'Armbrust --> Bolt
                     item = New cInvItem
                     item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     item.Pk2Id = 62
                     item.Amount = 123
                     item.Slot = 7
-                    AddItemToDB(item)
+                    UpdateItem(item)
                 End If
 
                 'Finish
@@ -341,6 +428,18 @@
                 Server.Send(writer.GetBytes, Index_)
             End If
         End Sub
+        Public Sub UpdateItem(ByVal item As cInvItem)
+            For i = 0 To DatabaseCore.AllItems.Count - 1
+                If DatabaseCore.AllItems(i).OwnerCharID = item.OwnerCharID And DatabaseCore.AllItems(i).Slot = item.Slot Then
+                    DatabaseCore.AllItems(i) = item
+                    DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", item.Pk2Id, item.Plus, item.Durability, item.Amount, item.OwnerCharID, item.Slot))
+                    Exit For
+                End If
+            Next
+        End Sub
+
+
+
         Public Sub AddItemToDB(ByVal item As cInvItem)
 
             Dim NewIndex As UInteger = DatabaseCore.ItemCount + 1
@@ -351,7 +450,7 @@
 
             DatabaseCore.AllItems(NewIndex - 1) = item
 
-            DataBase.SaveQuery(String.Format("INSERT INTO items(itemtype, owner, plusvalue, slot) VALUE ('{0}','{1}','{2}','{3}')", item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot))
+            DataBase.SaveQuery(String.Format("INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability, "item" & item.Slot))
         End Sub
 
         Public Sub AddMasteryToDB(ByVal toadd As cMastery)
@@ -380,26 +479,57 @@
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
 
-            writer = New PacketWriter
-            writer.Create(ServerOpcodes.LoadingStart)
-            Server.Send(writer.GetBytes, Index_)
 
             'Main
             If ClientList.OnCharListing(Index_).Chars(0).CharacterName = SelectedNick Then
                 PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(0)
+                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(0).MaxSlots)
+                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(0))
 
             ElseIf ClientList.OnCharListing(Index_).Chars(1).CharacterName = SelectedNick Then
                 PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(1)
+                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(1).MaxSlots)
+                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(1))
 
             ElseIf ClientList.OnCharListing(Index_).Chars(2).CharacterName = SelectedNick Then
                 PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(2)
+                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(2).MaxSlots)
+                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(2))
 
             ElseIf ClientList.OnCharListing(Index_).Chars(3).CharacterName = SelectedNick Then
                 PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(3)
+                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(3).MaxSlots)
+                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(3))
 
             End If
 
 
+
+
+
+            writer = New PacketWriter
+            writer.Create(ServerOpcodes.LoadingStart)
+            Server.Send(writer.GetBytes, Index_)
+
+            OnCharacterInfo(Index_)
+
+            writer = New PacketWriter
+            writer.Create(ServerOpcodes.LoadingEnd)
+            Server.Send(writer.GetBytes, Index_)
+
+
+            writer = New PacketWriter
+            writer.Create(ServerOpcodes.CharacterID)
+            writer.DWord(PlayerData(Index_).UniqueId) 'charid
+            writer.Word(13) 'moon pos
+            writer.Byte(9) 'hours
+            writer.Byte(28) 'minute
+            Server.Send(writer.GetBytes, Index_)
+
+        End Sub
+        Public Sub OnCharacterInfo(ByVal Index_ As Integer)
+
+            Dim writer As New PacketWriter
             Dim chari As [cChar] = PlayerData(Index_)
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterInfo)
@@ -425,9 +555,33 @@
             writer.Byte(0)  ' Rank
             '''''''''''''''''''/
 
+            'INVENTORY HERE
 
+            Inventorys(Index_).CalculateItemCount()
             writer.Byte(chari.MaxSlots)  ' Max Item Slot (0 Minimum + 13) (96 Maximum + 13)
-            writer.Byte(0)  ' Amount of Items  
+            writer.Byte(Inventorys(Index_).ItemCount)  ' Amount of Items  
+
+            For Each _item As cInvItem In Inventorys(Index_).UserItems
+                If _item.Pk2Id <> 0 Then
+                    Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+
+                    writer.Byte(_item.Slot)
+                    writer.DWord(_item.Pk2Id)
+
+                    Select Case refitem.CLASS_A
+                        Case 1 'Equipment
+
+                            writer.Byte(_item.Plus)
+                            writer.QWord(0) 'blue, unknwown
+                            writer.DWord(_item.Durability)
+                            writer.Byte(0)
+                        Case 2 'Pets
+
+                        Case 3 'etc
+                            writer.Word(_item.Amount)
+                    End Select
+                End If
+            Next
 
 
             writer.Byte(4)  ' Avatar Item Max
@@ -435,35 +589,21 @@
 
             writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
 
-            writer.Byte(1) 'mastery start
-            writer.DWord(257) ' Mastery
-            writer.Byte(140) ' Mastery Level
-            writer.Byte(1) ' Mastery Start
-            writer.DWord(258) ' Mastery
-            writer.Byte(140) ' Mastery Level
-            writer.Byte(1) ' Mastery Start
-            writer.DWord(259) ' Mastery
-            writer.Byte(140) ' Mastery Level
-            writer.Byte(1) ' Mastery Start
-            writer.DWord(273) ' Mastery
-            writer.Byte(140) ' Mastery Level
-            writer.Byte(1) ' Mastery Start
-            writer.DWord(274) ' Mastery
-            writer.Byte(140) ' Mastery Level
-            writer.Byte(1) ' Mastery Start
-            writer.DWord(275) ' Mastery
-            writer.Byte(140) ' Mastery Level
-            writer.Byte(1) ' Mastery Start
-            writer.DWord(276) ' Mastery
-            writer.Byte(140) ' Mastery Level
+            For Each mastery As cMastery In DatabaseCore.Masterys
+                If mastery.OwnerID = chari.UniqueId Then
+                    writer.Byte(1) 'mastery start
+                    writer.DWord(mastery.MasteryID) ' Mastery
+                    writer.Byte(mastery.Level) ' Mastery Level
+                End If
+            Next
 
             writer.Byte(2) 'mastery end
             writer.Byte(0) 'mastery end
 
-            writer.Byte(1)
-            writer.DWord(3)
-            writer.Byte(1)
-            writer.Byte(2)
+            writer.Byte(1) 'skill start
+            writer.DWord(3) 'id
+            writer.Byte(1) 'skill finsih
+            writer.Byte(2) 'end
 
 
             writer.Word(1)  ' Amount of Completed Quests
@@ -522,7 +662,7 @@
             writer.DWord(0)  ' @@@@@@@@@@@@@
             writer.Word(0)  ' @@@@@@@@@@@@@
             writer.DWord(chari.AccountID)  ' Account ID
-            writer.Byte(0)  'GM Flag
+            writer.Byte(1)  'GM Flag
             writer.Byte(7)  ' @@@@@@@@@@@@@
             '''''''''''''''''''''/
 
@@ -552,27 +692,10 @@
 
             Server.Send(writer.GetBytes, Index_)
 
-
-
-            writer = New PacketWriter
-            writer.Create(ServerOpcodes.LoadingEnd)
-            Server.Send(writer.GetBytes, Index_)
-
-
-            writer = New PacketWriter
-            writer.Create(ServerOpcodes.CharacterID)
-            writer.DWord(chari.UniqueId) 'charid
-            writer.Word(13) 'moon pos
-            writer.Byte(9) 'hours
-            writer.Byte(28) 'minute
-            Server.Send(writer.GetBytes, Index_)
-
-            StatsPacket(Index_)
+            OnStatsPacket(Index_)
 
         End Sub
-
-        Public Sub StatsPacket(ByVal index_ As Integer)
-
+        Public Sub OnStatsPacket(ByVal index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.CharacterStats)
             writer.DWord(PlayerData(index_).MinPhy)
@@ -588,7 +711,12 @@
             writer.Word(PlayerData(index_).Strength)
             writer.Word(PlayerData(index_).Intelligence)
             Server.Send(writer.GetBytes, index_)
+        End Sub
 
+        Public Sub OnJoinWorldRequest(ByVal Index_ As Integer)
+            PlayerData(Index_).Ingame = True
+            SpawnMe(Index_)
+            SpawnOtherPlayer(Index_)
         End Sub
     End Module
 End Namespace

@@ -1,3 +1,0 @@
-﻿Module Chat
-
-End Module

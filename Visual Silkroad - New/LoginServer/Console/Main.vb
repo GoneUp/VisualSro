@@ -8,12 +8,12 @@ Namespace LoginServer
 
 
         Private Shared Sub db_OnConnectedToDatabase()
-            Console.WriteLine("Connected to database at: " & DateTime.Now.ToString())
+            Commands.WriteLog("Connected to database at: " & DateTime.Now.ToString())
 
         End Sub
 
         Private Shared Sub db_OnDatabaseError(ByVal ex As Exception)
-            Console.WriteLine("Database error: " & ex.Message)
+            Commands.WriteLog("Database error: " & ex.Message)
         End Sub
 
         Shared Sub Main()
@@ -33,17 +33,14 @@ Namespace LoginServer
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
             Console.Title = "LOGINSERVER ALPHA"
-            Console.WriteLine("Starting Server")
-            password = "sremu"
-            db.Connect("192.168.178.20", 3306, "visualsro", "sremu", password)
+            Commands.WriteLog("Starting Server")
+            db.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
             Server.ip = "127.0.0.1"
             Server.port = 15779 'Loginserver
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
-
-            LoginDbUpdate.Interval = 1
-            LoginDbUpdate.Start()
+            LoginDb.UpdateData()
 
 read:
             Dim msg As String = Console.ReadLine()
@@ -54,7 +51,7 @@ read:
         End Sub
 
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-            Console.WriteLine("Client Connected : " & ip)
+            Commands.WriteLog("Client Connected : " & ip)
             Server.OnlineClient += 1
 
             Dim pack As New LoginServer.PacketWriter
@@ -81,10 +78,10 @@ read:
                 read = read + length + 6
 
                 Dim rp As New ReadPacket(newbuff, index)
-                Parser.Parse(rp)
                 If Logpackets = True Then
                     PacketLog.LogPacket(rp, False)
                 End If
+                Parser.Parse(rp)
             Loop
 
 
@@ -93,13 +90,13 @@ read:
 
         Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
 
-            Console.WriteLine("Server Error: " & ex.Message & " Index: " & index) '-1 = on client connect + -2 = on server start
+            Commands.WriteLog("Server Error: " & ex.Message & " Index: " & index) '-1 = on client connect + -2 = on server start
 
 
         End Sub
 
         Private Shared Sub Server_OnServerStarted(ByVal time As String)
-            Console.WriteLine("Server Started: " & time)
+            Commands.WriteLog("Server Started: " & time)
         End Sub
 
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)

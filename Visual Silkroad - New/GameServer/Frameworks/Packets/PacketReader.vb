@@ -64,6 +64,9 @@ Namespace GameServer
             Return Me.br.ReadBoolean()
         End Function
 
+        Public Function ByteArray(ByVal Count As Integer) As Byte()
+            Return Me.br.ReadBytes(Count)
+        End Function
     End Class
 End Namespace
 

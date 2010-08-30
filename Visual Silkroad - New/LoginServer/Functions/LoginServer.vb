@@ -83,7 +83,7 @@
 
         writer.Create(ServerOpcodes.ServerList)
         writer.Byte(1)
-        writer.Byte(57)
+        writer.Byte(57) 'locale
 
         writer.Word(name.Length)
         writer.String(name)
@@ -196,7 +196,7 @@
                     Dim endpoint = sock.RemoteEndPoint
                     Dim split1 As String() = endpoint.ToString.Split(":")
                     Dim split2 As String() = split1(0).Split(".")
-                    Dim key As UInt32 = CByte(split2(0)) + CByte(split2(1)) + CByte(split2(2)) + CByte(split2(3))
+                    Dim key As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
 
                     writer.Byte(1)
                     writer.DWord(key)

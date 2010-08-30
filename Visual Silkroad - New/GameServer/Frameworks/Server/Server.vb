@@ -1,8 +1,9 @@
 ﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.Net
-	Imports System.Net.Sockets
-	Imports System.Runtime.CompilerServices
+Imports System
+Imports System.Net
+Imports System.Net.Sockets
+Imports System.Runtime.CompilerServices
+Imports GameServer.GameServer.Functions
 Namespace GameServer
 
     Public Class Server
@@ -36,9 +37,14 @@ Namespace GameServer
         End Sub
 
         Public Shared Sub Dissconnect(ByVal index As Integer)
-            Dim socket As Socket = ClientList.GetSocket(index)
-            ClientList.Delete(index)
-            socket.Shutdown(SocketShutdown.Both)
+            Try
+                Dim socket As Socket = ClientList.GetSocket(index)
+                ClientList.Delete(index)
+                socket.Shutdown(SocketShutdown.Both)
+                OnlineClient -= 1
+                GameServer.ClientList.OnCharListing(index).LoginInformation.LoggedIn = False
+            Catch
+            End Try
         End Sub
 
         Private Shared Sub ReceiveData(ByVal ar As IAsyncResult)
@@ -59,10 +65,15 @@ newa:
                     End If
                 Catch exception2 As Exception
                     RaiseEvent OnServerError(exception2, index)
+                    Array.Clear(buffer, 0, buffer.Length)
+                    If asyncState.Connected = True Then
+                        asyncState.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
+                    End If
+
                     'GoTo newa
                 End Try
             Else
-                Console.WriteLine(buffer)
+                Commands.WriteLog(buffer.ToString)
             End If
         End Sub
 
@@ -77,25 +88,69 @@ newa:
         End Sub
 
 
-        Public Shared Sub SendToAll(ByVal buff() As Byte)
-            For i As Integer = 0 To MaxClients
+        Public Shared Sub SendToAllIngame(ByVal buff() As Byte)
+            For i As Integer = 0 To OnlineClient
                 Dim socket As Socket = ClientList.GetSocket(i)
-                If (socket IsNot Nothing) AndAlso socket.Connected Then
-                    socket.Send(buff)
+                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
+                    If player.Ingame = True Then
+                        socket.Send(buff)
+                    End If
                 End If
             Next i
         End Sub
 
-        Public Shared Sub SendToAll(ByVal buff() As Byte, ByVal index As Integer)
+        Public Shared Sub SendToAllIngame(ByVal buff() As Byte, ByVal index As Integer)
             For i As Integer = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)
-                If ((socket IsNot Nothing) AndAlso socket.Connected) AndAlso (i <> index) Then
-                    socket.Send(buff)
+                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> index) Then
+                    If player.Ingame = True Then
+                        socket.Send(buff)
+                    End If
                 End If
             Next i
         End Sub
 
 
+
+        Public Shared Sub SendToAllInRange(ByVal buff() As Byte, ByVal Index As Integer)
+            Dim range As Integer = 750
+
+            For i As Integer = 0 To OnlineClient
+                Dim socket As Socket = ClientList.GetSocket(i)
+                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
+                    If distance < range Then
+                        'In Rage 
+                        If player.Ingame = True Then
+                            socket.Send(buff)
+                        End If
+                    End If
+
+                End If
+            Next i
+        End Sub
+
+        Public Shared Sub SendToAllInRangeExpectMe(ByVal buff() As Byte, ByVal Index As Integer)
+            Dim range As Integer = 750
+
+            For i As Integer = 0 To OnlineClient
+                Dim socket As Socket = ClientList.GetSocket(i)
+                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) Then
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
+                    If distance < range Then
+                        'In Rage 
+                        If player.Ingame = True Then
+                            socket.Send(buff)
+                        End If
+                    End If
+
+                End If
+            Next i
+        End Sub
         Public Shared Sub Start()
             Dim localEP As New IPEndPoint(IPAddress.Any, PORT_Renamed)
             serverSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)

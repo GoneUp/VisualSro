@@ -1,0 +1,54 @@
+[29.08.2010 23:47:52]       Starting Agent Server
+[29.08.2010 23:47:54]       Connected to database at: 29.08.2010 23:47:54
+[29.08.2010 23:47:54]       Server Started: 29.08.2010 23:47:54
+[29.08.2010 23:47:54]       Started Server. Loading Data now.
+[29.08.2010 23:47:54]       Execute all saved Querys. This can take some Time.
+[29.08.2010 23:47:54]       Query saving done. Loading Data from DB now.
+[29.08.2010 23:47:57]       Loaded 9554 Ref-Items.
+[29.08.2010 23:47:57]       Inital Loding complete!
+[29.08.2010 23:51:43]       Client Connected : 127.0.0.1:50650
+[29.08.2010 23:51:58]       Client Connected : 127.0.0.1:50651
+[29.08.2010 23:52:34]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 191.
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 50.
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Parser.vb:Zeile 44.
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Console\Main.vb:Zeile 91.
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Frameworks\Server\Server.vb:Zeile 57. Index: 1
+[29.08.2010 23:52:35]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 191.
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 50.
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Parser.vb:Zeile 44.
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Console\Main.vb:Zeile 91.
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Frameworks\Server\Server.vb:Zeile 57. Index: 1
+[29.08.2010 23:52:36]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 191.
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 50.
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Parser.vb:Zeile 44.
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Console\Main.vb:Zeile 91.
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Frameworks\Server\Server.vb:Zeile 57. Index: 1
+[29.08.2010 23:52:36]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 191.
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 50.
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Parser.vb:Zeile 44.
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Console\Main.vb:Zeile 91.
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Frameworks\Server\Server.vb:Zeile 57. Index: 1
+[29.08.2010 23:52:37]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 191.
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 50.
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Parser.vb:Zeile 44.
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Console\Main.vb:Zeile 91.
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Frameworks\Server\Server.vb:Zeile 57. Index: 1
+[29.08.2010 23:52:37]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 191.
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Players\Players.vb:Zeile 50.
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Functions\Parser.vb:Zeile 44.
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Console\Main.vb:Zeile 91.
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) in C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\GameServer\Frameworks\Server\Server.vb:Zeile 57. Index: 1
+[29.08.2010 23:55:24]       Starting Agent Server
+[29.08.2010 23:55:24]       Connected to database at: 29.08.2010 23:55:24
+[29.08.2010 23:55:24]       Server Started: 29.08.2010 23:55:24
+[29.08.2010 23:55:24]       Started Server. Loading Data now.
+[29.08.2010 23:55:24]       Execute all saved Querys. This can take some Time.
+[29.08.2010 23:55:24]       Query saving done. Loading Data from DB now.
+[29.08.2010 23:55:25]       Loaded 9554 Ref-Items.
+[29.08.2010 23:55:25]       Inital Loding complete!
+[29.08.2010 23:55:44]       Client Connected : 127.0.0.1:50661
+[29.08.2010 23:56:09]       Client Connected : 127.0.0.1:50662
+[29.08.2010 23:58:31]       Server Error: Das Quellarray ist nicht lang genug. Überprüfen Sie srcIndex, die Länge und die Untergrenze des Arrays. Stack:    bei System.Array.Copy(Array sourceArray, Int32 sourceIndex, Array destinationArray, Int32 destinationIndex, Int32 length, Boolean reliable)
+   bei System.Array.ConstrainedCopy(Array sourceArray, Int32 sourceIndex, Array destinationArray, Int32 destinationIndex, Int32 length)
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index)
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) Index: 0

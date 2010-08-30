@@ -2,7 +2,6 @@
 	Imports System
 	Imports System.IO
 Namespace GameServer
-
     Public Class ReadPacket
         Private br As BinaryReader
         Private BUFFER_Renamed() As Byte
@@ -11,7 +10,7 @@ Namespace GameServer
         Private ms As MemoryStream
         Private OPCODE_Renamed As String
 
-        
+
 
         Public Sub New(ByVal buffer() As Byte, ByVal index As Integer)
             Me.INDEX_Renamed = index

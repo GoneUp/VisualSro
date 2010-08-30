@@ -1,0 +1,134 @@
+[28.08.2010 00:12:53]       Starting Server
+[28.08.2010 00:12:53]       Connected to database at: 28.08.2010 00:12:53
+[28.08.2010 00:12:53]       Server Started: 28.08.2010 00:12:53
+[28.08.2010 00:12:53]       Load Data from Database.
+[28.08.2010 00:12:53]       Loading Completed.
+[28.08.2010 00:13:55]       Starting Server
+[28.08.2010 00:13:55]       Connected to database at: 28.08.2010 00:13:55
+[28.08.2010 00:13:55]       Server Started: 28.08.2010 00:13:55
+[28.08.2010 00:13:55]       Load Data from Database.
+[28.08.2010 00:13:55]       Loading Completed.
+[28.08.2010 15:40:51]       Starting Server
+[28.08.2010 15:40:53]       Connected to database at: 28.08.2010 15:40:53
+[28.08.2010 15:40:53]       Server Started: 28.08.2010 15:40:53
+[28.08.2010 15:40:53]       Load Data from Database.
+[28.08.2010 15:40:54]       Loading Completed.
+[28.08.2010 15:41:36]       Client Connected : 127.0.0.1:54615
+[28.08.2010 15:43:41]       Client Connected : 127.0.0.1:54624
+[28.08.2010 15:47:05]       Starting Server
+[28.08.2010 15:47:05]       Connected to database at: 28.08.2010 15:47:05
+[28.08.2010 15:47:05]       Server Started: 28.08.2010 15:47:05
+[28.08.2010 15:47:05]       Load Data from Database.
+[28.08.2010 15:47:05]       Loading Completed.
+[28.08.2010 15:47:24]       Client Connected : 127.0.0.1:54634
+[28.08.2010 15:52:17]       Client Connected : 127.0.0.1:54670
+[28.08.2010 15:52:49]       Starting Server
+[28.08.2010 15:52:49]       Connected to database at: 28.08.2010 15:52:49
+[28.08.2010 15:52:49]       Server Started: 28.08.2010 15:52:49
+[28.08.2010 15:52:49]       Load Data from Database.
+[28.08.2010 15:52:49]       Loading Completed.
+[28.08.2010 15:53:19]       Client Connected : 127.0.0.1:54674
+[28.08.2010 17:21:20]       Starting Server
+[28.08.2010 17:21:20]       Connected to database at: 28.08.2010 17:21:20
+[28.08.2010 17:21:20]       Server Started: 28.08.2010 17:21:20
+[28.08.2010 17:21:20]       Load Data from Database.
+[28.08.2010 17:21:20]       Loading Completed.
+[28.08.2010 17:28:07]       Starting Server
+[28.08.2010 17:28:08]       Connected to database at: 28.08.2010 17:28:08
+[28.08.2010 17:28:08]       Server Started: 28.08.2010 17:28:08
+[28.08.2010 17:28:08]       Load Data from Database.
+[28.08.2010 17:28:08]       Loading Completed.
+[28.08.2010 17:28:24]       Client Connected : 127.0.0.1:54859
+[28.08.2010 17:34:31]       Client Connected : 127.0.0.1:55161
+[28.08.2010 17:37:28]       Starting Server
+[28.08.2010 17:37:28]       Connected to database at: 28.08.2010 17:37:28
+[28.08.2010 17:37:28]       Server Started: 28.08.2010 17:37:28
+[28.08.2010 17:37:28]       Load Data from Database.
+[28.08.2010 17:37:28]       Loading Completed.
+[28.08.2010 17:37:43]       Client Connected : 127.0.0.1:55232
+[28.08.2010 17:38:53]       Client Connected : 127.0.0.1:55258
+[28.08.2010 17:39:25]       Client Connected : 127.0.0.1:55272
+[28.08.2010 17:40:32]       Client Connected : 127.0.0.1:55298
+[28.08.2010 17:41:51]       Client Connected : 127.0.0.1:55328
+[28.08.2010 17:45:57]       Database error: Timeout expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+[28.08.2010 17:48:43]       Client Connected : 127.0.0.1:55481
+[28.08.2010 17:49:26]       Starting Server
+[28.08.2010 17:49:27]       Connected to database at: 28.08.2010 17:49:27
+[28.08.2010 17:49:27]       Server Started: 28.08.2010 17:49:27
+[28.08.2010 17:49:27]       Load Data from Database.
+[28.08.2010 17:49:27]       Loading Completed.
+[28.08.2010 18:18:23]       Starting Server
+[28.08.2010 18:18:24]       Connected to database at: 28.08.2010 18:18:24
+[28.08.2010 18:18:24]       Server Started: 28.08.2010 18:18:24
+[28.08.2010 18:18:24]       Load Data from Database.
+[28.08.2010 18:18:24]       Loading Completed.
+[28.08.2010 18:18:37]       Client Connected : 84.157.131.208:57163
+[28.08.2010 18:19:00]       Server Error: Die arithmetische Operation hat einen Überlauf verursacht. Index: 0
+[28.08.2010 18:21:04]       Client Connected : 84.157.131.208:57222
+[28.08.2010 18:21:04]       opCode: 6900 Packet : 6903000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+[28.08.2010 18:22:44]       Starting Server
+[28.08.2010 18:22:45]       Connected to database at: 28.08.2010 18:22:45
+[28.08.2010 18:22:45]       Server Started: 28.08.2010 18:22:45
+[28.08.2010 18:22:45]       Load Data from Database.
+[28.08.2010 18:22:45]       Loading Completed.
+[28.08.2010 18:23:04]       Starting Server
+[28.08.2010 18:23:04]       Connected to database at: 28.08.2010 18:23:04
+[28.08.2010 18:23:05]       Server Started: 28.08.2010 18:23:05
+[28.08.2010 18:23:05]       Load Data from Database.
+[28.08.2010 18:23:05]       Loading Completed.
+[28.08.2010 18:23:13]       Client Connected : 127.0.0.1:57262
+[28.08.2010 18:23:43]       Starting Server
+[28.08.2010 18:23:43]       Connected to database at: 28.08.2010 18:23:43
+[28.08.2010 18:23:43]       Server Started: 28.08.2010 18:23:43
+[28.08.2010 18:23:43]       Load Data from Database.
+[28.08.2010 18:23:43]       Loading Completed.
+[28.08.2010 18:23:56]       Client Connected : 84.157.131.208:57276
+[28.08.2010 18:25:22]       Starting Server
+[28.08.2010 18:25:22]       Connected to database at: 28.08.2010 18:25:22
+[28.08.2010 18:25:22]       Server Started: 28.08.2010 18:25:22
+[28.08.2010 18:25:22]       Load Data from Database.
+[28.08.2010 18:25:22]       Loading Completed.
+[28.08.2010 18:25:55]       Client Connected : 84.157.131.208:57305
+[28.08.2010 18:27:32]       Starting Server
+[28.08.2010 18:27:33]       Connected to database at: 28.08.2010 18:27:33
+[28.08.2010 18:27:33]       Server Started: 28.08.2010 18:27:33
+[28.08.2010 18:27:33]       Load Data from Database.
+[28.08.2010 18:27:33]       Loading Completed.
+[28.08.2010 18:37:11]       Client Connected : 94.224.65.101:7547
+[28.08.2010 18:38:17]       Client Connected : 94.224.65.101:7559
+[28.08.2010 18:40:59]       Client Connected : 127.0.0.1:57638
+[28.08.2010 18:41:57]       Client Connected : 94.224.65.101:7596
+[28.08.2010 18:42:15]       Client Connected : 94.224.65.101:7600
+[28.08.2010 18:42:22]       Client Connected : 94.224.65.101:7602
+[28.08.2010 18:42:39]       Client Connected : 84.157.131.208:57649
+[28.08.2010 18:46:39]       Client Connected : 84.157.131.208:57723
+[28.08.2010 18:48:45]       Client Connected : 94.224.65.101:7668
+[28.08.2010 18:48:59]       Client Connected : 94.224.65.101:7676
+[28.08.2010 18:50:02]       Starting Server
+[28.08.2010 18:50:03]       Connected to database at: 28.08.2010 18:50:03
+[28.08.2010 18:50:03]       Server Started: 28.08.2010 18:50:03
+[28.08.2010 18:50:03]       Load Data from Database.
+[28.08.2010 18:50:03]       Loading Completed.
+[28.08.2010 18:50:21]       Client Connected : 84.157.131.208:57745
+[28.08.2010 18:51:54]       Client Connected : 94.224.65.101:7700
+[28.08.2010 18:52:01]       Client Connected : 94.224.65.101:7702
+[28.08.2010 18:57:27]       Client Connected : 127.0.0.1:57818
+[28.08.2010 18:58:35]       Client Connected : 127.0.0.1:57836
+[28.08.2010 18:59:56]       Starting Server
+[28.08.2010 18:59:56]       Connected to database at: 28.08.2010 18:59:56
+[28.08.2010 18:59:56]       Server Started: 28.08.2010 18:59:56
+[28.08.2010 18:59:57]       Load Data from Database.
+[28.08.2010 18:59:57]       Loading Completed.
+[28.08.2010 19:00:09]       Client Connected : 127.0.0.1:57849
+[28.08.2010 19:01:04]       Client Connected : 94.224.65.101:7802
+[28.08.2010 19:01:21]       Client Connected : 94.224.65.101:7804
+[28.08.2010 19:07:43]       Client Connected : 94.224.65.101:7900
+[28.08.2010 19:08:05]       Client Connected : 94.224.65.101:7903
+[28.08.2010 19:14:12]       Starting Server
+[28.08.2010 19:14:13]       Connected to database at: 28.08.2010 19:14:13
+[28.08.2010 19:14:13]       Server Started: 28.08.2010 19:14:13
+[28.08.2010 19:14:13]       Load Data from Database.
+[28.08.2010 19:14:13]       Loading Completed.
+[28.08.2010 19:14:50]       Client Connected : 127.0.0.1:57981
+[28.08.2010 19:15:31]       Client Connected : 94.224.65.101:7982
+[28.08.2010 19:15:48]       Client Connected : 94.224.65.101:7985

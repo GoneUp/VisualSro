@@ -1,9 +1,5 @@
 ﻿Public Class [cChar]
 
- 
-
-
-
     Public AccountID As UInteger
     Public CharacterName As String
     Public CharacterId As UInteger
@@ -43,7 +39,14 @@
     Public Z As Single
     Public Y As Single
     Public MaxSlots As Byte
+    Public Angle As UInt16
+    Public Deleted As Boolean
+    Public DeletionTime As DateTime
 
+    Public SpawnedPlayers As New List(Of Integer)
+    Public SpawnedMonsters As New List(Of Integer)
+    Public SpawnedItems As New List(Of Integer)
+    Public Ingame As Boolean = False
 
 
     Sub SetCharStats()

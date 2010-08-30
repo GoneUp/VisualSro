@@ -28,11 +28,12 @@ Public Class cInvItem
     Public OwnerCharID As Integer = 0
     Public Slot As Integer = 0
     Public Amount As Integer = 0
-    Public Durability As Integer = 0
+    Public Durability As Integer = 30
     Private ibluestatCount As Byte
     Private ibluestats As sBlueStat()
     Public Pk2Id As Long = 0
     Public Plus As Byte = 0
+    Public DatabaseID As UInteger = 0
 
     ' Nested Types
     <Serializable(), StructLayout(LayoutKind.Sequential)> _

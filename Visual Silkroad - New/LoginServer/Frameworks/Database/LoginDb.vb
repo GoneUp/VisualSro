@@ -45,7 +45,7 @@
         LoginDbUpdate.Interval = 60000 '1minute
 
         If First = False Then
-            Console.WriteLine("Load Data from Database.")
+            Commands.WriteLog("Load Data from Database.")
         End If
 
         GetServerData()
@@ -53,7 +53,7 @@
         GetUserData()
 
         If First = False Then
-            Console.WriteLine("Loading Completed.")
+            Commands.WriteLog("Loading Completed.")
             First = True
         End If
 

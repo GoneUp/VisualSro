@@ -16,6 +16,7 @@
         'Itemcount
         Public ItemCount As Integer
         Public AllItems() As cInvItem
+        Public LastDatabaseID As Integer
 
         'Masterys
         Public MasteryCount As Integer
@@ -30,20 +31,24 @@
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
 
             GameDbUpdate.Stop()
-            GameDbUpdate.Interval = 60000 '1minute
+            GameDbUpdate.Interval = 20000 '1minute
+            Try
+                If First = False Then
+                    Commands.WriteLog("Execute all saved Querys. This can take some Time.")
+                    ExecuteSavedQuerys()
+                    Commands.WriteLog("Query saving done. Loading Data from DB now.")
 
-            If First = False Then
-                Console.WriteLine("Execute all saved Querys. This can take some Time.")
-                ExecuteSavedQuerys()
-                Console.WriteLine("Query saving done. Loading Data from DB now.")
+                    GetCharData() 'Only Update for the First Time! 
+                    GetItemData()
+                    GetMasteryData()
+                    First = True
+                End If
 
-                GetCharData() 'Only Update for the First Time! 
-                GetItemData()
-                GetMasteryData()
-                First = True
-            End If
+                GetUserData()
+            Catch ex As Exception
 
-            GetUserData()
+            End Try
+
 
 
 
@@ -60,7 +65,7 @@
                 Next
                 IO.File.Delete(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
             Catch ex As Exception
-                'Console.WriteLine("Database Error: " & ex.Message)
+                'Commands .WriteLog ("Database Error: " & ex.Message)
             End Try
 
         End Sub
@@ -103,6 +108,8 @@
                 Chars(i).Attributes = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
                 Chars(i).HP = CUInt(tmp.Tables(0).Rows(i).ItemArray(10))
                 Chars(i).MP = CUInt(tmp.Tables(0).Rows(i).ItemArray(11))
+                Chars(i).Deleted = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
+                Chars(i).DeletionTime = (tmp.Tables(0).Rows(i).ItemArray(13))
                 Chars(i).Gold = CUInt(tmp.Tables(0).Rows(i).ItemArray(14))
                 Chars(i).SkillPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(15))
                 Chars(i).GM = CBool(tmp.Tables(0).Rows(i).ItemArray(16))
@@ -145,12 +152,17 @@
 
             For i = 0 To (ItemCount - 1)
                 AllItems(i) = New cInvItem
+                AllItems(i).DatabaseID = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 AllItems(i).Pk2Id = CInt(tmp.Tables(0).Rows(i).ItemArray(1))
-                AllItems(i).OwnerCharID = CInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                AllItems(i).OwnerCharID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
                 AllItems(i).Plus = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
                 AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
-                AllItems(i).Amount = CByte(tmp.Tables(0).Rows(i).ItemArray(5))
-                AllItems(i).Durability = CByte(tmp.Tables(0).Rows(i).ItemArray(6))
+                AllItems(i).Amount = CUShort(tmp.Tables(0).Rows(i).ItemArray(5))
+                AllItems(i).Durability = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
+
+                If AllItems(i).DatabaseID >= LastDatabaseID Then
+                    LastDatabaseID = AllItems(i).DatabaseID
+                End If
             Next
 
 
@@ -165,9 +177,10 @@
 
             For i = 0 To MasteryCount - 1
                 Masterys(i) = New cMastery
-                Masterys(i).MasteryID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                Masterys(i).Level = CByte(tmp.Tables(0).Rows(i).ItemArray(1))
-                Masterys(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                Masterys(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                Masterys(i).MasteryID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                Masterys(i).Level = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
+
             Next
 
 
@@ -236,33 +249,23 @@
         End Function
 
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
-
             Dim inventory As New cInventory([char].MaxSlots)
-
-
             For i = 0 To (AllItems.Length - 1)
                 If AllItems(i).OwnerCharID = [char].UniqueId Then
                     inventory.UserItems(AllItems(i).Slot) = AllItems(i)
                 End If
             Next
-
             Return inventory
-
         End Function
 
         Public Function CheckNick(ByVal nick As String) As Boolean
-
-
             Dim free As Boolean = True
             For i = 0 To Chars.Length - 1
                 If Chars(i).CharacterName = nick Then
                     free = False
                 End If
             Next
-
-
             Return free
-
         End Function
 
 #End Region

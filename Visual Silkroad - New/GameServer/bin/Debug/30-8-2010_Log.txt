@@ -1,0 +1,74 @@
+[30.08.2010 16:05:12]       opCode: 7074 Packet : 01048A0F000000
+[30.08.2010 16:05:35]       Client Connected : 127.0.0.1:50930
+[30.08.2010 16:05:54]       [Join_World][2][Index: 0]
+[30.08.2010 16:05:54]       opCode: 70EA Packet : 0400000000000000
+[30.08.2010 16:05:54]       opCode: 70EA Packet : 0400000000000000
+[30.08.2010 16:05:58]       opCode: 70EA Packet : 0400000000000000
+[30.08.2010 16:06:49]       opCode: 7158 Packet : 01014903000000
+[30.08.2010 16:07:25]       Client Connected : 127.0.0.1:50936
+[30.08.2010 16:07:34]       [Join_World][2][Index: 0]
+[30.08.2010 16:07:41]       opCode: 7045 Packet : 05000000
+[30.08.2010 16:25:52]       Starting Agent Server
+[30.08.2010 16:25:52]       Connected to database at: 30.08.2010 16:25:52
+[30.08.2010 16:25:52]       Server Started: 30.08.2010 16:25:52
+[30.08.2010 16:25:52]       Started Server. Loading Data now.
+[30.08.2010 16:25:52]       Execute all saved Querys. This can take some Time.
+[30.08.2010 16:25:54]       Query saving done. Loading Data from DB now.
+[30.08.2010 16:25:55]       Loaded 9554 Ref-Items.
+[30.08.2010 16:25:55]       Inital Loding complete!
+[30.08.2010 16:28:19]       Starting Agent Server
+[30.08.2010 16:28:19]       Connected to database at: 30.08.2010 16:28:19
+[30.08.2010 16:28:19]       Server Started: 30.08.2010 16:28:19
+[30.08.2010 16:28:19]       Started Server. Loading Data now.
+[30.08.2010 16:28:19]       Execute all saved Querys. This can take some Time.
+[30.08.2010 16:28:19]       Query saving done. Loading Data from DB now.
+[30.08.2010 16:28:20]       Loaded 9554 Ref-Items.
+[30.08.2010 16:28:20]       Inital Loding complete!
+[30.08.2010 16:30:13]       Starting Agent Server
+[30.08.2010 16:30:14]       Connected to database at: 30.08.2010 16:30:14
+[30.08.2010 16:30:14]       Server Started: 30.08.2010 16:30:14
+[30.08.2010 16:30:14]       Started Server. Loading Data now.
+[30.08.2010 16:30:14]       Execute all saved Querys. This can take some Time.
+[30.08.2010 16:30:14]       Query saving done. Loading Data from DB now.
+[30.08.2010 16:30:14]       Loaded 9554 Ref-Items.
+[30.08.2010 16:30:14]       Inital Loding complete!
+[30.08.2010 16:30:59]       Client Connected : 84.197.104.142:25556
+[30.08.2010 16:31:07]       Client Connected : 127.0.0.1:51070
+[30.08.2010 16:31:09]       [Join_World][2][Index: 0]
+[30.08.2010 16:31:20]       [Join_World][2][Index: 1]
+[30.08.2010 16:31:31]       opCode: 7045 Packet : 05000000
+[30.08.2010 16:32:25]       [PM][False Index][Sender: GoneUp]
+[30.08.2010 16:32:41]       [PM][False Index][Sender: GoneUfzejjfz]
+[30.08.2010 16:33:01]       opCode: 7023 Packet : 459C
+[30.08.2010 16:33:03]       opCode: 7024 Packet : 78FF
+[30.08.2010 16:33:04]       opCode: 7023 Packet : 78FF
+[30.08.2010 16:33:04]       opCode: 7024 Packet : 78BF
+[30.08.2010 16:33:06]       opCode: 7023 Packet : E0D0
+[30.08.2010 16:33:08]       opCode: 7024 Packet : BDC5
+[30.08.2010 16:34:32]       Client Connected : 127.0.0.1:51082
+[30.08.2010 16:35:54]       Client Connected : 84.197.104.142:25604
+[30.08.2010 16:36:05]       Client Connected : 127.0.0.1:51088
+[30.08.2010 16:36:14]       [Join_World][2][Index: 1]
+[30.08.2010 16:36:42]       opCode: 2 Packet : 0200
+[30.08.2010 16:36:42]       opCode: 69 Packet : 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+[30.08.2010 16:36:47]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index)
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet)
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp)
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index)
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) Index: 1
+[30.08.2010 16:36:47]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index)
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet)
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp)
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index)
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) Index: 1
+[30.08.2010 16:36:48]       Server Error: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt. Stack:    bei GameServer.GameServer.Functions.Players.DespawnPlayerRange(Int32 Index)
+   bei GameServer.GameServer.Functions.Players.OnPlayerMovement(Int32 Index_, PacketReader packet)
+   bei GameServer.GameServer.Parser.Parse(ReadPacket rp)
+   bei GameServer.GameServer.Program.Server_OnReceiveData(Byte[] buffer, Int32 index)
+   bei GameServer.GameServer.Server.ReceiveData(IAsyncResult ar) Index: 1
+[30.08.2010 16:37:47]       [PM][False Index][Sender: hi]
+[30.08.2010 16:38:23]       Client Connected : 127.0.0.1:51090
+[30.08.2010 16:38:32]       [Join_World][2][Index: 2]
+[30.08.2010 16:38:32]       opCode: 70EA Packet : 0400000000000000
+[30.08.2010 16:38:32]       opCode: 70EA Packet : 0400000000000000
+[30.08.2010 16:38:37]       opCode: 7045 Packet : 03000000

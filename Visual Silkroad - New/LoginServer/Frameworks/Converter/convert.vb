@@ -58,12 +58,12 @@ Namespace LoginServer
             Try
                 Return param.Substring(0, length)
             Catch exception As Exception
-                Console.WriteLine("****** Left Error ******")
-                Console.WriteLine(exception.Message)
-                Console.WriteLine("****** Source ******")
-                Console.WriteLine(String.Concat(New Object() {"Data: ", param, " Length: ", length}))
-                Console.WriteLine("****** Stack Trace ******")
-                Console.WriteLine(exception.StackTrace)
+                Commands.WriteLog("****** Left Error ******")
+                Commands.WriteLog(exception.Message)
+                Commands.WriteLog("****** Source ******")
+                Commands.WriteLog(String.Concat(New Object() {"Data: ", param, " Length: ", length}))
+                Commands.WriteLog("****** Stack Trace ******")
+                Commands.WriteLog(exception.StackTrace)
                 Console.ReadLine()
             End Try
             Return Nothing
@@ -73,12 +73,12 @@ Namespace LoginServer
             Try
                 Return param.Substring(startIndex)
             Catch exception As Exception
-                Console.WriteLine("****** Mid Error ******")
-                Console.WriteLine(exception.Message)
-                Console.WriteLine("****** Source ******")
-                Console.WriteLine(String.Concat(New Object() {"Data: ", param, " Start Index: ", startIndex}))
-                Console.WriteLine("****** Stack Trace ******")
-                Console.WriteLine(exception.StackTrace)
+                Commands.WriteLog("****** Mid Error ******")
+                Commands.WriteLog(exception.Message)
+                Commands.WriteLog("****** Source ******")
+                Commands.WriteLog(String.Concat(New Object() {"Data: ", param, " Start Index: ", startIndex}))
+                Commands.WriteLog("****** Stack Trace ******")
+                Commands.WriteLog(exception.StackTrace)
                 Console.ReadLine()
             End Try
             Return Nothing
@@ -88,12 +88,12 @@ Namespace LoginServer
             Try
                 Return param.Substring(startIndex, length)
             Catch exception As Exception
-                Console.WriteLine("****** Mid Error ******")
-                Console.WriteLine(exception.Message)
-                Console.WriteLine("****** Source ******")
-                Console.WriteLine(String.Concat(New Object() {"Data: ", param, " Start Index: ", startIndex, " Length: ", length}))
-                Console.WriteLine("****** Stack Trace ******")
-                Console.WriteLine(exception.StackTrace)
+                Commands.WriteLog("****** Mid Error ******")
+                Commands.WriteLog(exception.Message)
+                Commands.WriteLog("****** Source ******")
+                Commands.WriteLog(String.Concat(New Object() {"Data: ", param, " Start Index: ", startIndex, " Length: ", length}))
+                Commands.WriteLog("****** Stack Trace ******")
+                Commands.WriteLog(exception.StackTrace)
                 Console.ReadLine()
             End Try
             Return Nothing
@@ -103,12 +103,12 @@ Namespace LoginServer
             Try
                 Return param.Substring(param.Length - length, length)
             Catch exception As Exception
-                Console.WriteLine("****** Right Error ******")
-                Console.WriteLine(exception.Message)
-                Console.WriteLine("****** Source ******")
-                Console.WriteLine(String.Concat(New Object() {"Data: ", param, " Length: ", length}))
-                Console.WriteLine("****** Stack Trace ******")
-                Console.WriteLine(exception.StackTrace)
+                Commands.WriteLog("****** Right Error ******")
+                Commands.WriteLog(exception.Message)
+                Commands.WriteLog("****** Source ******")
+                Commands.WriteLog(String.Concat(New Object() {"Data: ", param, " Length: ", length}))
+                Commands.WriteLog("****** Stack Trace ******")
+                Commands.WriteLog(exception.StackTrace)
                 Console.ReadLine()
             End Try
             Return Nothing
@@ -123,7 +123,7 @@ Namespace LoginServer
                 Next i
                 Return buffer
             End If
-            Console.WriteLine("Packet Error: " & HexString)
+            Commands.WriteLog("Packet Error: " & HexString)
             Return Nothing
         End Function
 

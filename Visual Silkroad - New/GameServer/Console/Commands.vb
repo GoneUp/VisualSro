@@ -2,39 +2,52 @@
 
     Public Sub CheckCommand(ByVal msg As String)
 
-        Select Case msg
-
-            Case "/info"
-                Console.WriteLine("This Emulator is from GoneUp. ")
-                Console.WriteLine("Specical Thanks to:")
-                Console.WriteLine("Drew Benton")
-                Console.WriteLine("Windrius for the Framework.")
-                Console.WriteLine("SREmu Team")
-                Console.WriteLine("Dickernoob for CSREmu")
-                Console.WriteLine("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
+        If msg.StartsWith("/info") Then
+            Commands.WriteLog("This Emulator is from GoneUp. ")
+            Commands.WriteLog("Specical Thanks to:")
+            Commands.WriteLog("Drew Benton")
+            Commands.WriteLog("Windrius for the Framework.")
+            Commands.WriteLog("SREmu Team")
+            Commands.WriteLog("Dickernoob for CSREmu")
+            Commands.WriteLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
-            Case "/help"
-                Console.WriteLine("Commands: ")
-                Console.WriteLine("/info for the credits")
-                Console.WriteLine("/packets to enable packetlog")
-                Console.WriteLine("/clear")
+        ElseIf msg.StartsWith("/help") Then
+            Commands.WriteLog("Commands: ")
+            Commands.WriteLog("/info for the credits")
+            Commands.WriteLog("/packets to enable packetlog")
+            Commands.WriteLog("/notice [Message] - To write a global Message ")
+            Commands.WriteLog("/clear")
 
-            Case "/packets"
+        ElseIf msg.StartsWith("/packets") Then
 
-                GameServer.Program.Logpackets = True
-                Console.WriteLine("Log Packets started!")
+            GameServer.Program.Logpackets = True
+            Commands.WriteLog("Log Packets started!")
 
 
-            Case "/clear"
-                Console.Clear()
+        ElseIf msg.StartsWith("/clear") Then
+            Console.Clear()
 
-        End Select
+
+        ElseIf msg.StartsWith("/notice") Then
+            Dim spit As String = msg.Substring(8)
+            ' GameServer.Functions.WriteNotice(spit)
+
+
+        End If
 
 
 
     End Sub
 
+    Public Sub WriteLog(ByVal Message As String)
+        Dim i = Date.Now
+        Dim writer As New IO.StreamWriter(System.AppDomain.CurrentDomain.BaseDirectory & (String.Format("{0}-{1}-{2}_Log.txt", i.Day, i.Month, i.Year)), True)
+        writer.WriteLine(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
+        writer.Close()
+
+        Console.WriteLine(Message)
+    End Sub
 
 
 

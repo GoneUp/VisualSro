@@ -9,11 +9,11 @@
             For i As Integer = 0 To paths.Length - 1
                 DumpItemFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
             Next
-            Console.WriteLine("Loaded " & RefItems.Count & " Ref-Items.")
+            Commands.WriteLog("Loaded " & RefItems.Count & " Ref-Items.")
 
 
         Catch ex As Exception
-            Console.WriteLine("Error at Loading Data! Message: " & ex.Message)
+            Commands.WriteLog("Error at Loading Data! Message: " & ex.Message)
         End Try
 
 

@@ -60,7 +60,7 @@ Namespace LoginServer
                     RaiseEvent OnServerError(exception2, index)
                 End Try
             Else
-                Console.WriteLine(buffer)
+                Commands.WriteLog(buffer.ToString)
             End If
         End Sub
 
@@ -156,14 +156,11 @@ Namespace LoginServer
         End Property
 
         Public Delegate Sub dConnection(ByVal ip As String, ByVal index As Integer)
-
         Public Delegate Sub dDisconnected(ByVal ip As String, ByVal index As Integer)
-
         Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
-
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
-
         Public Delegate Sub dServerStarted(ByVal time As String)
+
     End Class
 End Namespace
 

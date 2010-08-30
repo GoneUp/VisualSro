@@ -195,6 +195,7 @@ Namespace GameServer
             Try
                 command2.ExecuteNonQuery()
             Catch exception As Exception
+                'command2.Cancel()
                 RaiseEvent OnDatabaseError(exception)
             End Try
         End Sub
@@ -204,12 +205,12 @@ Namespace GameServer
             Dim reader As MySqlDataReader = Nothing
             Dim command As New MySqlCommand("SHOW TABLES", connection)
             Try
-                Console.WriteLine("****** Tables ******")
+                Commands.WriteLog("****** Tables ******")
                 reader = command.ExecuteReader()
                 Do While reader.Read()
-                    Console.WriteLine(reader.GetString(0))
+                    Commands.WriteLog(reader.GetString(0))
                 Loop
-                Console.WriteLine("********************")
+                Commands.WriteLog("********************")
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception)
             Finally

@@ -34,7 +34,7 @@ Namespace LoginServer
                     HandleLogin(pack, rp.index)
 
                 Case Else
-                    Console.WriteLine("opCode: " & rp.opcode & " Packet : " & rp.data)
+                    Commands.WriteLog("opCode: " & rp.opcode & " Packet : " & rp.data)
             End Select
         End Sub
 

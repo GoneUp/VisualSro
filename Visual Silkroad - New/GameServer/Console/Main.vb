@@ -8,12 +8,12 @@ Namespace GameServer
         Public Shared Logpackets As Boolean = False
 
         Private Shared Sub db_OnConnectedToDatabase()
-            Console.WriteLine("Connected to database at: " & DateTime.Now.ToString())
+            Commands.WriteLog("Connected to database at: " & DateTime.Now.ToString())
 
         End Sub
 
         Private Shared Sub db_OnDatabaseError(ByVal ex As Exception)
-            Console.WriteLine("Database error: " & ex.Message)
+            Commands.WriteLog("Database error: " & ex.Message)
         End Sub
 
         Shared Sub Main()
@@ -34,20 +34,19 @@ Namespace GameServer
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
             Console.Title = "GAMESERVER ALPHA"
-            Console.WriteLine("Starting Agent Server")
+            Commands.WriteLog("Starting Agent Server")
             DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
             Server.ip = "127.0.0.1"
             Server.port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
-            Console.WriteLine("Started Server. Loading Data now.")
+            Commands.WriteLog("Started Server. Loading Data now.")
 
-            GameServer.DatabaseCore.GameDbUpdate.Interval = 1
-            GameServer.DatabaseCore.GameDbUpdate.Start()
+            GameServer.DatabaseCore.UpdateData()
             SilkroadData.DumpItemFiles()
 
-            Console.WriteLine("Inital Loding complete!")
+            Commands.WriteLog("Inital Loding complete!")
 
 read:
             Dim msg As String = Console.ReadLine()
@@ -58,7 +57,7 @@ read:
         End Sub
 
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-            Console.WriteLine("Client Connected : " & ip)
+            Commands.WriteLog("Client Connected : " & ip)
             Server.OnlineClient += 1
 
             Dim pack As New PacketWriter
@@ -85,10 +84,11 @@ read:
                 read = read + length + 6
 
                 Dim rp As New ReadPacket(newbuff, index)
-                Parser.Parse(rp)
                 If Logpackets = True Then
-                    PacketLog.LogPacket(rp, False)
+                    PacketLog.LogPacket(rp, False, newbuff)
                 End If
+
+                Parser.Parse(rp)
             Loop
 
 
@@ -96,18 +96,23 @@ read:
         End Sub
 
         Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
-
-            Console.WriteLine("Server Error: " & ex.Message & " Index: " & index) '-1 = on client connect + -2 = on server start
-
-
+            Commands.WriteLog("Server Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index) '-1 = on client connect + -2 = on server start
         End Sub
 
         Private Shared Sub Server_OnServerStarted(ByVal time As String)
-            Console.WriteLine("Server Started: " & time)
+            Commands.WriteLog("Server Started: " & time)
         End Sub
 
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
             Server.OnlineClient -= 1
+            Try
+                If Functions.PlayerData(index) IsNot Nothing Then
+                    Functions.DespawnPlayer(index)
+                End If
+                GameServer.ClientList.OnCharListing(index) = Nothing
+                Functions.PlayerData(index) = Nothing
+            Catch ex As Exception
+            End Try
         End Sub
     End Class
 End Namespace

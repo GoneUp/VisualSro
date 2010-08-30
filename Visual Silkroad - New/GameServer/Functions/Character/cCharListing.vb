@@ -6,6 +6,7 @@
         Public Pw As String
         Public FailedLogins As String
         Public Banned As Boolean
+        Public LoggedIn As Boolean
     End Structure
 
     Public LoginInformation As UserArray

@@ -38,22 +38,31 @@
             Dim endpoint = sock.RemoteEndPoint
             Dim split1 As String() = endpoint.ToString.Split(":")
             Dim split2 As String() = split1(0).Split(".")
-            Dim realkey As UInt32 = CByte(split2(0)) + CByte(split2(1)) + CByte(split2(2)) + CByte(split2(3))
+            Dim realkey As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
 
+
+      
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
 
+            If GameServer.DatabaseCore.Users(UserIndex).LoggedIn = True Then
+                writer.Byte(2)
+                writer.Byte(2) 'Server Full aka User is already logged in
+                GameServer.Server.Send(writer.GetBytes, index_)
+                GameServer.Server.Dissconnect(index_)
+            End If
 
-            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password And key = realkey Then
+            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password Then 'And key = realkey Then
                 writer.Byte(1)
                 GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.ClientList.OnCharListing(index_) = New cCharListing
                 GameServer.ClientList.OnCharListing(index_).LoginInformation = New cCharListing.UserArray
                 GameServer.ClientList.OnCharListing(index_).LoginInformation = GameServer.DatabaseCore.Users(UserIndex)
-
+                GameServer.ClientList.OnCharListing(index_).LoginInformation.LoggedIn = True
             Else
                 writer.Byte(2)
                 writer.Byte(2)
+                GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.Server.Dissconnect(index_)
             End If
 

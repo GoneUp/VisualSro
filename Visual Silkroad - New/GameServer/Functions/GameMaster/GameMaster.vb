@@ -82,9 +82,9 @@
             Dim ToXSector As Byte = packet.Byte
             Dim ToYSector As Byte = packet.Byte
             Dim Angle As UInt16 = packet.Word 'Not sure 
-            Dim ToYPos As UInt16 = (packet.Word)
-            Dim ToZPos As UInt16 = (packet.Word)
-            Dim ToXPos As UInt16 = (packet.Word)
+            Dim ToYPos As Single = (packet.Float)
+            Dim ToZPos As Single = (packet.Float)
+            Dim ToXPos As Single = (packet.Float)
 
 
             PlayerData(index_).XSector = ToXSector
@@ -92,6 +92,17 @@
             PlayerData(index_).X = ToXPos
             PlayerData(index_).Z = ToZPos
             PlayerData(index_).Y = ToYPos
+
+            Dim writer As New PacketWriter
+            writer.Create(&H3055)
+            writer.Word(&H5A30)
+            'Server.Send(writer.GetBytes, index_)
+            'OnCharacterInfo(index_)
+
+            Dim pa As New PacketReader(New Byte() {&H2})
+
+            OnLogout(pa, index_)
+
         End Sub
         Public Sub OnSetWeather(ByVal packet As PacketReader)
 

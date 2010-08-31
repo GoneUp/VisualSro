@@ -1,0 +1,10 @@
+[31.08.2010 16:16:33]       Starting Server
+[31.08.2010 16:16:48]       Database error: Unable to connect to any of the specified MySQL hosts.
+[31.08.2010 16:16:48]       Server Started: 31.08.2010 16:16:48
+[31.08.2010 16:16:48]       Load Data from Database.
+[31.08.2010 16:16:50]       Database error: Unable to connect to any of the specified MySQL hosts.
+[31.08.2010 18:14:29]       Starting Server
+[31.08.2010 18:14:30]       Connected to database at: 31.08.2010 18:14:30
+[31.08.2010 18:14:30]       Server Started: 31.08.2010 18:14:30
+[31.08.2010 18:14:30]       Load Data from Database.
+[31.08.2010 18:14:31]       Loading Completed.

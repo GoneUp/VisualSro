@@ -75,26 +75,39 @@
                 End If
             Next
 
-            Dim writer As New PacketWriter 'Reply to sender
-            writer.Create(ServerOpcodes.Chat_Accept)
-            writer.Byte(1)
-            writer.Byte(ChatModes.PmIncome)
-            writer.Byte(counter)
-            Server.Send(writer.GetBytes, Index_)
-
-            writer.Create(ServerOpcodes.Chat)
-            writer.Byte(ChatModes.PmIncome)
-            writer.Word(senderlength)
-            writer.String(sender)
-
-            writer.Word(messagelength)
-            writer.UString(message)
+            Dim writer As New PacketWriter
 
             If senderindex <> -1 Then
+                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Byte(1)
+                writer.Byte(ChatModes.PmIncome)
+                writer.Byte(counter)
+                Server.Send(writer.GetBytes, Index_)
+
+                writer.Create(ServerOpcodes.Chat)
+                writer.Byte(ChatModes.PmIncome)
+                writer.Word(PlayerData(Index_).CharacterName.Length)
+                writer.String(PlayerData(Index_).CharacterName)
+
+                writer.Word(messagelength)
+                writer.UString(message)
+
                 Server.Send(writer.GetBytes, senderindex)
+
             Else
-                Commands.WriteLog("[PM][False Index][Sender: " & sender & "]")
+                'Opposite not online
+                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Byte(2)
+                writer.Byte(3) 'error byte
+                writer.Byte(ChatModes.PmIncome)
+                writer.Byte(counter)
+
+                Server.Send(writer.GetBytes, Index_)
+
+
             End If
+
+       
 
 
 

@@ -1,0 +1,46 @@
+[31.08.2010 16:16:33]       Starting Agent Server
+[31.08.2010 16:16:35]       Database error: Unable to connect to any of the specified MySQL hosts.
+[31.08.2010 16:16:35]       Server Started: 31.08.2010 16:16:35
+[31.08.2010 16:16:35]       Started Server. Loading Data now.
+[31.08.2010 16:16:36]       Execute all saved Querys. This can take some Time.
+[31.08.2010 16:16:48]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:48]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:48]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:48]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:48]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:48]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:48]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:49]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:50]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:51]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:51]       Database error: Connection must be valid and open.
+[31.08.2010 16:16:52]       Database error: Connection must be valid and open.
+[31.08.2010 18:14:29]       Starting Agent Server
+[31.08.2010 18:14:30]       Connected to database at: 31.08.2010 18:14:30
+[31.08.2010 18:14:30]       Server Started: 31.08.2010 18:14:30
+[31.08.2010 18:14:30]       Started Server. Loading Data now.
+[31.08.2010 18:14:30]       Execute all saved Querys. This can take some Time.
+[31.08.2010 18:14:33]       Query saving done. Loading Data from DB now.
+[31.08.2010 18:14:35]       Loaded 9554 Ref-Items.
+[31.08.2010 18:14:35]       Inital Loding complete!

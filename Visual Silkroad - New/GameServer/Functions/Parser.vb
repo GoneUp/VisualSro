@@ -57,6 +57,9 @@ Namespace GameServer
                 Case ClientOpcodes.ItemMove
                     GameServer.Functions.OnInventory(packet, rp.index)
 
+                Case "704F" 'ClientOpcodes.Action
+                    GameServer.Functions.OnPlayerAction(packet, rp.index)
+
                 Case ClientOpcodes.Exit
                     GameServer.Functions.OnLogout(packet, rp.index)
 

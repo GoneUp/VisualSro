@@ -17,7 +17,6 @@ Namespace LoginServer
         End Sub
 
         Shared Sub Main()
-            Dim password As String
             AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
             AddHandler Server.OnClientDisconnect, AddressOf Program.Server_OnClientDisconnect
             AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
@@ -25,6 +24,8 @@ Namespace LoginServer
             AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
             AddHandler db.OnDatabaseError, AddressOf Program.db_OnDatabaseError
             AddHandler db.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
+
+
             Console.WindowHeight = 10
             Console.BufferHeight = 30
             Console.WindowWidth = 60

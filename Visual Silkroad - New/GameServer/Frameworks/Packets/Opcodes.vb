@@ -20,7 +20,7 @@
         Movement = 7021
         GameMaster = 7010
         Chat = 7025
-        Action = &H704F
+        Action = 704F
         Emotion = 3091
         [Exit] = 7005
         Target = 7045

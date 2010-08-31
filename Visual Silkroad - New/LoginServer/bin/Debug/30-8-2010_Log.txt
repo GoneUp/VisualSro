@@ -128,3 +128,73 @@
 [30.08.2010 16:35:47]       Client Connected : 84.197.104.142:25601
 [30.08.2010 16:35:58]       Client Connected : 127.0.0.1:51087
 [30.08.2010 16:38:09]       Client Connected : 127.0.0.1:51089
+[30.08.2010 19:16:17]       Starting Server
+[30.08.2010 19:16:19]       Connected to database at: 30.08.2010 19:16:18
+[30.08.2010 19:16:19]       Server Error: Normalerweise darf jede Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils einmal verwendet werden Index: -2
+[30.08.2010 19:16:19]       Server Started: 30.08.2010 19:16:19
+[30.08.2010 19:16:19]       Load Data from Database.
+[30.08.2010 19:16:19]       Loading Completed.
+[30.08.2010 19:16:37]       Starting Server
+[30.08.2010 19:16:38]       Connected to database at: 30.08.2010 19:16:38
+[30.08.2010 19:16:38]       Server Error: Normalerweise darf jede Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils einmal verwendet werden Index: -2
+[30.08.2010 19:16:38]       Server Started: 30.08.2010 19:16:38
+[30.08.2010 19:16:38]       Load Data from Database.
+[30.08.2010 19:16:38]       Loading Completed.
+[30.08.2010 19:16:54]       Starting Server
+[30.08.2010 19:16:55]       Connected to database at: 30.08.2010 19:16:55
+[30.08.2010 19:16:55]       Server Error: Normalerweise darf jede Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils einmal verwendet werden Index: -2
+[30.08.2010 19:16:55]       Server Started: 30.08.2010 19:16:55
+[30.08.2010 19:16:55]       Load Data from Database.
+[30.08.2010 19:16:55]       Loading Completed.
+[30.08.2010 19:22:52]       Starting Server
+[30.08.2010 19:22:53]       Connected to database at: 30.08.2010 19:22:53
+[30.08.2010 19:22:53]       Server Error: Normalerweise darf jede Socketadresse (Protokoll, Netzwerkadresse oder Anschluss) nur jeweils einmal verwendet werden Index: -2
+[30.08.2010 19:22:53]       Server Started: 30.08.2010 19:22:53
+[30.08.2010 19:22:53]       Load Data from Database.
+[30.08.2010 19:22:53]       Loading Completed.
+[30.08.2010 19:23:27]       Starting Server
+[30.08.2010 19:23:27]       Connected to database at: 30.08.2010 19:23:27
+[30.08.2010 19:40:38]       Starting Server
+[30.08.2010 19:40:40]       Connected to database at: 30.08.2010 19:40:40
+[30.08.2010 19:40:40]       Server Started: 30.08.2010 19:40:40
+[30.08.2010 19:40:40]       Load Data from Database.
+[30.08.2010 19:40:40]       Loading Completed.
+[30.08.2010 19:40:51]       Client Connected : 84.197.104.142:27705
+[30.08.2010 19:41:49]       Client Connected : 127.0.0.1:49305
+[30.08.2010 19:41:53]       Client Connected : 84.197.104.142:27717
+[30.08.2010 19:50:37]       Starting Server
+[30.08.2010 19:50:38]       Connected to database at: 30.08.2010 19:50:38
+[30.08.2010 19:50:38]       Server Started: 30.08.2010 19:50:38
+[30.08.2010 19:50:38]       Load Data from Database.
+[30.08.2010 19:50:38]       Loading Completed.
+[30.08.2010 19:50:52]       Client Connected : 127.0.0.1:49715
+[30.08.2010 19:56:26]       Client Connected : 127.0.0.1:49725
+[30.08.2010 20:00:01]       Starting Server
+[30.08.2010 20:00:01]       Connected to database at: 30.08.2010 20:00:01
+[30.08.2010 20:00:01]       Server Started: 30.08.2010 20:00:01
+[30.08.2010 20:00:01]       Load Data from Database.
+[30.08.2010 20:00:01]       Loading Completed.
+[30.08.2010 20:00:12]       Client Connected : 84.197.104.142:28117
+[30.08.2010 20:00:21]       Client Connected : 84.197.104.142:28119
+[30.08.2010 20:00:28]       Client Connected : 127.0.0.1:49733
+[30.08.2010 20:12:59]       Client Connected : 84.197.104.142:28272
+[30.08.2010 20:13:09]       Client Connected : 84.197.104.142:28274
+[30.08.2010 20:28:04]       Client Connected : 127.0.0.1:49897
+[30.08.2010 20:31:42]       Client Connected : 127.0.0.1:49912
+[30.08.2010 20:32:47]       Client Connected : 127.0.0.1:49918
+[30.08.2010 20:33:45]       Client Connected : 127.0.0.1:49921
+[30.08.2010 20:45:18]       Client Connected : 84.197.104.142:28577
+[30.08.2010 20:45:29]       Client Connected : 84.197.104.142:28579
+[30.08.2010 20:46:20]       Starting Server
+[30.08.2010 20:46:20]       Connected to database at: 30.08.2010 20:46:20
+[30.08.2010 20:46:20]       Server Started: 30.08.2010 20:46:20
+[30.08.2010 20:46:20]       Load Data from Database.
+[30.08.2010 20:46:20]       Loading Completed.
+[30.08.2010 20:46:50]       Client Connected : 84.197.104.142:28599
+[30.08.2010 20:46:56]       Client Connected : 84.197.104.142:28600
+[30.08.2010 20:47:16]       Client Connected : 127.0.0.1:49941
+[30.08.2010 20:50:54]       Client Connected : 127.0.0.1:49948
+[30.08.2010 21:05:17]       Client Connected : 84.197.104.142:28813
+[30.08.2010 21:05:24]       Client Connected : 84.197.104.142:28815
+[30.08.2010 21:06:52]       Client Connected : 84.197.104.142:28838
+[30.08.2010 21:06:58]       Client Connected : 84.197.104.142:28839

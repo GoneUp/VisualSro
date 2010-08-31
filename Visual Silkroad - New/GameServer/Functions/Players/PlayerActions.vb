@@ -34,5 +34,21 @@
 
             End Select
         End Sub
+        Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim action As Byte = packet.Byte
+
+            'UpdateState(1, action, Index_)
+
+
+        End Sub
+
+        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Action)
+            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.Byte(Type)
+            writer.Byte(State)
+            Server.SendToAllInRange(writer.GetBytes, Index_)
+        End Sub
     End Module
 End Namespace

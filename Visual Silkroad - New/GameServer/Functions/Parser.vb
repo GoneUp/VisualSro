@@ -12,10 +12,6 @@ Namespace GameServer
             Select Case rp.opcode
 
                 Case ClientOpcodes.Ping
-                    Dim writer As New PacketWriter
-                    writer.Create(&H3055)
-                    writer.Word(&H5A30)
-                    'Server.Send(writer.GetBytes, rp.index)
 
                     '=============Login=============
                 Case ClientOpcodes.Handshake  'Client accepts
@@ -36,7 +32,7 @@ Namespace GameServer
                     GameServer.Functions.OnJoinWorldRequest(rp.index)
                     Commands.WriteLog("[Join_World][1][Index: " & rp.index & "]")
 
-                Case "34C5"
+                Case &H34C5
                     GameServer.Functions.OnJoinWorldRequest(rp.index)
                     Commands.WriteLog("[Join_World][2][Index: " & rp.index & "]")
 
@@ -57,8 +53,14 @@ Namespace GameServer
                 Case ClientOpcodes.ItemMove
                     GameServer.Functions.OnInventory(packet, rp.index)
 
-                Case "704F" 'ClientOpcodes.Action
+                Case ClientOpcodes.Action
                     GameServer.Functions.OnPlayerAction(packet, rp.index)
+
+                Case ClientOpcodes.Angle_Update
+                    GameServer.Functions.OnAngleUpdate(packet, rp.index)
+
+                Case ClientOpcodes.Teleport_Reply
+                    GameServer.Functions.OnTeleportRequest(rp.index)
 
                 Case ClientOpcodes.Exit
                     GameServer.Functions.OnLogout(packet, rp.index)

@@ -8,3 +8,102 @@
 [31.08.2010 18:14:30]       Server Started: 31.08.2010 18:14:30
 [31.08.2010 18:14:30]       Load Data from Database.
 [31.08.2010 18:14:31]       Loading Completed.
+[31.08.2010 18:20:04]       Starting Server
+[31.08.2010 18:20:05]       Connected to database at: 31.08.2010 18:20:05
+[31.08.2010 18:20:05]       Server Started: 31.08.2010 18:20:05
+[31.08.2010 18:20:05]       Load Data from Database.
+[31.08.2010 18:20:05]       Loading Completed.
+[31.08.2010 18:28:20]       Starting Server
+[31.08.2010 18:28:20]       Connected to database at: 31.08.2010 18:28:20
+[31.08.2010 18:28:20]       Server Started: 31.08.2010 18:28:20
+[31.08.2010 18:28:20]       Load Data from Database.
+[31.08.2010 18:28:20]       Loading Completed.
+[31.08.2010 18:30:49]       Client Connected : 84.197.104.142:50306
+[31.08.2010 18:32:11]       Client Connected : 127.0.0.1:58574
+[31.08.2010 18:33:09]       Client Connected : 84.197.104.142:50349
+[31.08.2010 18:35:05]       Client Connected : 84.197.104.142:50393
+[31.08.2010 18:35:14]       Client Connected : 84.197.104.142:50398
+[31.08.2010 18:41:12]       Client Connected : 127.0.0.1:59641
+[31.08.2010 18:41:13]       Client Connected : 84.197.104.142:50499
+[31.08.2010 18:42:12]       Client Connected : 84.197.104.142:50518
+[31.08.2010 18:43:21]       Client Connected : 127.0.0.1:59898
+[31.08.2010 18:44:34]       Client Connected : 84.197.104.142:50552
+[31.08.2010 18:47:26]       Client Connected : 84.197.104.142:50596
+[31.08.2010 18:48:02]       Client Connected : 84.197.104.142:50616
+[31.08.2010 18:48:10]       Client Connected : 84.197.104.142:50618
+[31.08.2010 18:49:05]       Client Connected : 84.197.104.142:50633
+[31.08.2010 18:52:05]       Client Connected : 84.197.104.142:50683
+[31.08.2010 18:53:35]       Client Connected : 127.0.0.1:61114
+[31.08.2010 18:54:13]       Client Connected : 127.0.0.1:61230
+[31.08.2010 18:55:42]       Client Connected : 84.197.104.142:50733
+[31.08.2010 18:58:09]       Client Connected : 84.197.104.142:50779
+[31.08.2010 18:58:21]       Server Error: Eine vorhandene Verbindung wurde vom Remotehost geschlossen Index: -1
+[31.08.2010 18:59:41]       Starting Server
+[31.08.2010 18:59:42]       Connected to database at: 31.08.2010 18:59:42
+[31.08.2010 18:59:42]       Server Started: 31.08.2010 18:59:42
+[31.08.2010 18:59:42]       Load Data from Database.
+[31.08.2010 18:59:42]       Loading Completed.
+[31.08.2010 18:59:46]       Client Connected : 84.197.104.142:50796
+[31.08.2010 18:59:53]       Client Connected : 84.197.104.142:50798
+[31.08.2010 19:00:40]       Client Connected : 127.0.0.1:63107
+[31.08.2010 19:00:48]       Client Connected : 84.197.104.142:50819
+[31.08.2010 19:01:43]       Client Connected : 127.0.0.1:63424
+[31.08.2010 19:02:26]       Client Connected : 127.0.0.1:63648
+[31.08.2010 19:26:34]       Starting Server
+[31.08.2010 19:26:34]       Connected to database at: 31.08.2010 19:26:34
+[31.08.2010 19:26:34]       Server Started: 31.08.2010 19:26:34
+[31.08.2010 19:26:34]       Load Data from Database.
+[31.08.2010 19:26:34]       Loading Completed.
+[31.08.2010 19:40:46]       Starting Server
+[31.08.2010 19:40:47]       Connected to database at: 31.08.2010 19:40:47
+[31.08.2010 19:40:47]       Server Started: 31.08.2010 19:40:47
+[31.08.2010 19:40:47]       Load Data from Database.
+[31.08.2010 19:40:47]       Loading Completed.
+[31.08.2010 19:42:29]       Client Connected : 127.0.0.1:59756
+[31.08.2010 19:44:47]       Client Connected : 84.197.104.142:51485
+[31.08.2010 19:44:54]       Client Connected : 84.197.104.142:51487
+[31.08.2010 19:49:15]       Starting Server
+[31.08.2010 19:49:20]       Connected to database at: 31.08.2010 19:49:19
+[31.08.2010 19:49:20]       Server Started: 31.08.2010 19:49:20
+[31.08.2010 19:49:20]       Load Data from Database.
+[31.08.2010 19:49:20]       Loading Completed.
+[31.08.2010 19:55:55]       Starting Server
+[31.08.2010 19:55:56]       Connected to database at: 31.08.2010 19:55:56
+[31.08.2010 19:55:56]       Server Started: 31.08.2010 19:55:56
+[31.08.2010 19:55:56]       Load Data from Database.
+[31.08.2010 19:55:56]       Loading Completed.
+[31.08.2010 19:56:07]       Client Connected : 127.0.0.1:64246
+[31.08.2010 19:57:33]       Client Connected : 127.0.0.1:64572
+[31.08.2010 19:58:55]       Client Connected : 84.197.104.142:51719
+[31.08.2010 19:59:30]       Client Connected : 84.197.104.142:51725
+[31.08.2010 20:14:20]       Client Connected : 127.0.0.1:53207
+[31.08.2010 20:14:24]       Client Connected : 84.197.104.142:51984
+[31.08.2010 20:14:30]       Client Connected : 84.197.104.142:51996
+[31.08.2010 20:17:07]       Client Connected : 84.197.104.142:52054
+[31.08.2010 20:17:57]       Client Connected : 84.197.104.142:52062
+[31.08.2010 20:19:37]       Client Connected : 127.0.0.1:54756
+[31.08.2010 20:21:20]       Client Connected : 127.0.0.1:55280
+[31.08.2010 20:21:29]       Client Connected : 127.0.0.1:55321
+[31.08.2010 20:23:47]       Client Connected : 127.0.0.1:55930
+[31.08.2010 20:28:13]       Starting Server
+[31.08.2010 20:28:13]       Connected to database at: 31.08.2010 20:28:13
+[31.08.2010 20:28:13]       Server Started: 31.08.2010 20:28:13
+[31.08.2010 20:28:13]       Load Data from Database.
+[31.08.2010 20:28:13]       Loading Completed.
+[31.08.2010 20:28:29]       Client Connected : 127.0.0.1:56578
+[31.08.2010 20:28:40]       Client Connected : 127.0.0.1:56640
+[31.08.2010 20:30:15]       Client Connected : 127.0.0.1:57122
+[31.08.2010 20:31:25]       Client Connected : 127.0.0.1:57496
+[31.08.2010 20:31:56]       Client Connected : 127.0.0.1:57655
+[31.08.2010 20:32:31]       Client Connected : 84.197.104.142:52262
+[31.08.2010 20:32:35]       Client Connected : 84.197.104.142:52265
+[31.08.2010 20:34:38]       Starting Server
+[31.08.2010 20:34:39]       Connected to database at: 31.08.2010 20:34:39
+[31.08.2010 20:34:39]       Server Started: 31.08.2010 20:34:39
+[31.08.2010 20:34:39]       Load Data from Database.
+[31.08.2010 20:34:39]       Loading Completed.
+[31.08.2010 20:34:45]       Client Connected : 84.197.104.142:52302
+[31.08.2010 20:34:56]       Client Connected : 84.197.104.142:52305
+[31.08.2010 20:36:07]       Client Connected : 127.0.0.1:58943
+[31.08.2010 20:39:02]       Client Connected : 84.197.104.142:52359
+[31.08.2010 20:39:14]       Client Connected : 84.197.104.142:52362

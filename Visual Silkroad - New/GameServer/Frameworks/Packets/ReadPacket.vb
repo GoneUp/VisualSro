@@ -23,7 +23,7 @@ Namespace GameServer
                 Me.DATA_Renamed = convert.Mid(param, 12, num * 2)
                 Me.BUFFER_Renamed = convert.ToByteArray(Me.DATA_Renamed)
             End If
-            Me.OPCODE_Renamed = Me.br.ReadUInt16().ToString("X")
+            Me.OPCODE_Renamed = Me.br.ReadUInt16
             Me.br.ReadUInt16()
         End Sub
 

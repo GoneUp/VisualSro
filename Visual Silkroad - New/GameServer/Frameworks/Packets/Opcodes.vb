@@ -7,26 +7,28 @@
     Enum ClientOpcodes As UInteger
 
         'Login
-        Ping = 2002
-        Handshake = 9000
-        PatchReq = 6100
-        InfoReq = 2001 'cleint whoami
-        Login = 6103
-        Character = 7007
-        IngameReq = 7001
-        JoinWorldReq = 3012
+        Ping = &H2002
+        Handshake = &H9000
+        PatchReq = &H6100
+        InfoReq = &H2001 'cleint whoami
+        Login = &H6103
+        Character = &H7007
+        IngameReq = &H7001
+        JoinWorldReq = &H3012
 
         'Ingame
-        Movement = 7021
-        GameMaster = 7010
-        Chat = 7025
-        Action = 704F
-        Emotion = 3091
-        [Exit] = 7005
-        Target = 7045
-        ItemMove = 7034
-        Alchemy = 7150
-        Angle_Update = 7024
+        Movement = &H7021
+        GameMaster = &H7010
+        Chat = &H7025
+        Action = &H704F
+        Emotion = &H3091
+        [Exit] = &H7005
+        Target = &H7045
+        ItemMove = &H7034
+        Alchemy = &H7150
+        Angle_Update = &H7024
+        Teleport_Reply = &H34B6
+
 
     End Enum
 
@@ -59,6 +61,8 @@
         Alchemy = &HB150
         Angle_Update = &HB024
         Teleport_Start = &HB05A
+        Weather = &H3809
+        Teleport_Annonce = &H34B5
 
         EquipItem = &H3038
         UnEquipItem = &H3039

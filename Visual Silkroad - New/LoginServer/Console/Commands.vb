@@ -8,6 +8,7 @@
                 Commands.WriteLog("This Emulator is from GoneUp. ")
                 Commands.WriteLog("Specical Thanks to:")
                 Commands.WriteLog("Drew Benton")
+                Commands.WriteLog("manneke for the great help")
                 Commands.WriteLog("Windrius for the Framework.")
                 Commands.WriteLog("SREmu Team")
                 Commands.WriteLog("Dickernoob for CSREmu")

@@ -32,7 +32,13 @@
 
         ElseIf msg.StartsWith("/notice") Then
             Dim spit As String = msg.Substring(8)
-            ' GameServer.Functions.WriteNotice(spit)
+            GameServer.Functions.SendNotice(spit(1))
+
+
+        ElseIf msg.StartsWith("/wetter") Then
+            Dim spit As String = msg.Substring(8)
+            Dim spit2 As String() = spit.Split(" ")
+            GameServer.Functions.OnSetWeather(CByte(spit2(0)), CByte(spit2(1)), 1)
 
 
         End If

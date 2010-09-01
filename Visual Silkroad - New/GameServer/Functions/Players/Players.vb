@@ -269,8 +269,21 @@
             Next refindex
         End Sub
 
-        Public Sub DespawnPlayer(ByVal Index As Integer)
+        Public Sub DespawnPlayerTeleport(ByVal Index As Integer)
 
+            For i = 0 To PlayerData(Index).SpawnedPlayers.Count - 1
+                Dim Other_Index As Integer = PlayerData(Index).SpawnedPlayers(i)
+                If PlayerData(Other_Index).SpawnedPlayers.Contains(Index) = True Then
+                    Server.Send(CreateDespawnPacket(PlayerData(Index).UniqueId), Other_Index)
+                    PlayerData(Other_Index).SpawnedPlayers.Remove(Index)
+
+                    Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index)
+                    PlayerData(Index).SpawnedPlayers.Remove(Other_Index)
+                End If
+            Next
+        End Sub
+
+        Public Sub DespawnPlayer(ByVal Index As Integer)
             For i = 0 To PlayerData(Index).SpawnedPlayers.Count - 1
                 Dim Other_Index As Integer = PlayerData(Index).SpawnedPlayers(i)
                 If PlayerData(Other_Index).SpawnedPlayers.Contains(Index) = True Then

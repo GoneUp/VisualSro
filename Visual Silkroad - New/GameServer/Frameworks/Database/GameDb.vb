@@ -29,10 +29,11 @@
 
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
-
-            GameDbUpdate.Stop()
-            GameDbUpdate.Interval = 20000 '1minute
             Try
+
+                GameDbUpdate.Stop()
+                GameDbUpdate.Interval = 20000 '20 secs
+
                 If First = False Then
                     Commands.WriteLog("Execute all saved Querys. This can take some Time.")
                     ExecuteSavedQuerys()
@@ -45,15 +46,11 @@
                 End If
 
                 GetUserData()
+                GameDbUpdate.Start()
+
             Catch ex As Exception
-
+                Commands.WriteLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
             End Try
-
-
-
-
-            GameDbUpdate.Start()
-
         End Sub
 
 #Region "Get from DB"

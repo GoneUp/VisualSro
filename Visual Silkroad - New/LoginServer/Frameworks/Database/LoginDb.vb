@@ -41,24 +41,28 @@
 
     Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
 
-        LoginDbUpdate.Stop()
-        LoginDbUpdate.Interval = 60000 '1minute
+        Try
+            LoginDbUpdate.Stop()
+            LoginDbUpdate.Interval = 20000 '20 secs
 
-        If First = False Then
-            Commands.WriteLog("Load Data from Database.")
-        End If
+            If First = False Then
+                Commands.WriteLog("Load Data from Database.")
+            End If
 
-        GetServerData()
-        GetNewsData()
-        GetUserData()
+            GetServerData()
+            GetNewsData()
+            GetUserData()
 
-        If First = False Then
-            Commands.WriteLog("Loading Completed.")
-            First = True
-        End If
+            If First = False Then
+                Commands.WriteLog("Loading Completed.")
+                First = True
+            End If
 
-        LoginDbUpdate.Start()
+            LoginDbUpdate.Start()
 
+        Catch ex As Exception
+            Commands.WriteLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+        End Try
     End Sub
 
 

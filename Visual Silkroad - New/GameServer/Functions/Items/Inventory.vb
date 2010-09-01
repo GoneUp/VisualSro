@@ -36,9 +36,13 @@
                         new_item.Slot = oldslot
                         Inventorys(index_).UserItems(oldslot) = new_item
                         DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", new_item.Pk2Id, new_item.Plus, new_item.Durability, new_item.Amount, new_item.OwnerCharID, oldslot))
+                    Else
+                        new_item.Slot = oldslot
+                        Inventorys(index_).UserItems(oldslot) = new_item
                     End If
 
                     Inventorys(index_).UserItems(newslot) = old_item
+
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.ItemMove)

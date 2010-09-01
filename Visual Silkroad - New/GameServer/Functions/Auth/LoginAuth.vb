@@ -45,14 +45,14 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
 
-            If GameServer.DatabaseCore.Users(UserIndex).LoggedIn = True Then
+            If GameServer.DatabaseCore.Users(UserIndex).LoggedIn = True Or GameServer.DatabaseCore.Users(UserIndex).Banned = True Then
                 writer.Byte(2)
                 writer.Byte(2) 'Server Full aka User is already logged in
                 GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.Server.Dissconnect(index_)
             End If
 
-            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password Then 'And key = realkey Then
+            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password And key = realkey Then
                 writer.Byte(1)
                 GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.ClientList.OnCharListing(index_) = New cCharListing

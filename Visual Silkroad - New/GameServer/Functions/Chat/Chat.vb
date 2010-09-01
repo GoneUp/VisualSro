@@ -103,15 +103,20 @@
                 writer.Byte(counter)
 
                 Server.Send(writer.GetBytes, Index_)
-
-
             End If
+        End Sub
 
-       
+        Public Sub SendPm(ByVal Rev_Index As Integer, ByVal Message As String, ByVal SenderName As String)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Chat)
+            writer.Byte(ChatModes.PmIncome)
+            writer.Word(SenderName.Length)
+            writer.String(SenderName)
 
+            writer.Word(Message.Length)
+            writer.UString(Message)
 
-
-
+            Server.Send(writer.GetBytes, Rev_Index)
         End Sub
 
         Public Sub OnGameMasterChat(ByVal Packet As PacketReader, ByVal Index_ As Integer)

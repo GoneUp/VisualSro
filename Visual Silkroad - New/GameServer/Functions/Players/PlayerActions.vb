@@ -52,7 +52,7 @@
         End Sub
 
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)
-            DespawnPlayer(Index_)
+            DespawnPlayerTeleport(Index_)
             PlayerData(Index_).Ingame = False
 
             Dim writer As New PacketWriter

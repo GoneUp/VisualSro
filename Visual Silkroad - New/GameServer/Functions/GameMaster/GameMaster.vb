@@ -18,9 +18,13 @@
 						OnMoveToUser(Packet, Index)
 
 					Case GmTypes.RecallUser
-						OnRecallUser(Packet, Index)
+                        OnRecallUser(Packet, Index)
 
-				End Select
+                    Case GmTypes.Ban
+                        OnBanUser(Packet, Index)
+
+
+                End Select
             Else
                 'Server.Dissconnect(Index)
                 'Hack Versuch
@@ -31,7 +35,7 @@
             Dim pk2id As UInteger = packet.DWord
             Dim plus As Byte = packet.Byte  'Or Count
 
-            For i = 13 To PlayerData(index_).MaxSlots
+            For i = 13 To PlayerData(index_).MaxSlots - 1
                 If Inventorys(index_).UserItems(i).Pk2Id = 0 Then
                     Dim temp_item As cInvItem = Inventorys(index_).UserItems(i)
                     temp_item.Pk2Id = pk2id
@@ -52,6 +56,9 @@
                         temp_item.Amount = plus
                     End If
 
+                    If temp_item.Slot = 0 Then
+                        Debug.Print(0)
+                    End If
 
                     Inventorys(index_).UserItems(i) = temp_item
                     UpdateItem(Inventorys(index_).UserItems(i)) 'SAVE IT
@@ -77,6 +84,8 @@
                     End Select
 
                     Server.Send(writer.GetBytes, index_)
+
+                    Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
                     Exit For
                 End If
             Next
@@ -96,6 +105,8 @@
             PlayerData(index_).X = ToXPos
             PlayerData(index_).Z = ToZPos
             PlayerData(index_).Y = ToYPos
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).XSector, PlayerData(index_).YSector, Math.Round(PlayerData(index_).X), Math.Round(PlayerData(index_).Z), Math.Round(PlayerData(index_).Y), PlayerData(index_).UniqueId))
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Teleport_Annonce)
@@ -134,6 +145,8 @@
 					PlayerData(index_).Z = ToZPos
 					PlayerData(index_).Y = ToYPos
 
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).XSector, PlayerData(index_).YSector, Math.Round(PlayerData(index_).X), Math.Round(PlayerData(index_).Z), Math.Round(PlayerData(index_).Y), PlayerData(index_).UniqueId))
+
 					Dim writer As New PacketWriter
 					writer.Create(ServerOpcodes.Teleport_Annonce)
 					writer.Byte(PlayerData(index_).XSector)
@@ -147,7 +160,7 @@
 		End Sub
 
 		Private Sub OnRecallUser(ByVal packet As PacketReader, ByVal index_ As Integer)
-			Dim NameLength As Byte = packet.Word
+            Dim NameLength As UInt16 = packet.Word
 			Dim Name As String = packet.String(NameLength)
 
 			For i As Integer = 0 To Server.OnlineClient
@@ -165,6 +178,8 @@
 					PlayerData(i).Z = ToZPos
 					PlayerData(i).Y = ToYPos
 
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(i).XSector, PlayerData(i).YSector, Math.Round(PlayerData(i).X), Math.Round(PlayerData(i).Z), Math.Round(PlayerData(i).Y), PlayerData(i).UniqueId))
+
 					Dim writer As New PacketWriter
 					writer.Create(ServerOpcodes.Teleport_Annonce)
 					writer.Byte(PlayerData(i).XSector)
@@ -174,8 +189,34 @@
 					Exit For
 				End If
 			Next
+        End Sub
 
-		End Sub
+        Public Sub OnBanUser(ByVal Packet As PacketReader, ByVal index_ As Integer)
+            Dim NameLength As UInt16 = Packet.Word
+            Dim Name As String = Packet.String(NameLength)
+
+            For i As Integer = 0 To DatabaseCore.CharCount
+                If DatabaseCore.Chars(i).CharacterName = Name Then
+                    DataBase.InsertData(String.Format("UPDATE users SET banned='1', bantime = '3000-01-01', banreason = 'You got banned by: {0}' where id='{1}'", PlayerData(index_).CharacterName, DatabaseCore.Chars(i).AccountID))
+
+                    For U = 0 To DatabaseCore.UserCount
+                        If DatabaseCore.Users(U).Id = DatabaseCore.Chars(i).AccountID Then
+                            DatabaseCore.Users(U).Banned = True
+                        End If
+                    Next
+
+                    SendPm(index_, "User got banned.", "[SERVER]")
+                    Exit For
+                End If
+            Next
+
+            For i As Integer = 0 To Server.OnlineClient
+                If PlayerData(i).CharacterName = Name Then
+                    Server.Dissconnect(i)
+                End If
+            Next i
+
+        End Sub
 
         Enum GmTypes
             FindUser = &H1
@@ -185,7 +226,7 @@
             MoveToUser = &H8
 			WayPoints = &H10
 			RecallUser = &H11
-			Ban = &H13
+            Ban = &HD
 			MoveToNpc = &H31
 		End Enum
 

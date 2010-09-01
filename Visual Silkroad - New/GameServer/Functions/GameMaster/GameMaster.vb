@@ -14,8 +14,13 @@
                     Case GmTypes.WayPoints 'Teleport
                         OnGmTeleport(Packet, Index)
 
+					Case GmTypes.MoveToUser
+						OnMoveToUser(Packet, Index)
 
-                End Select
+					Case GmTypes.RecallUser
+						OnRecallUser(Packet, Index)
+
+				End Select
             Else
                 'Server.Dissconnect(Index)
                 'Hack Versuch
@@ -108,7 +113,69 @@
             Server.SendToAllIngame(writer.GetBytes, index_)
 
 
-        End Sub
+		End Sub
+
+		Private Sub OnMoveToUser(ByVal packet As PacketReader, ByVal index_ As Integer)
+			Dim NameLength As Byte = packet.Word
+			Dim Name As String = packet.String(NameLength)
+
+			For i As Integer = 0 To Server.OnlineClient
+				If PlayerData(i).CharacterName = Name Then
+					Dim ToXSector As Byte = PlayerData(i).XSector
+					Dim ToYSector As Byte = PlayerData(i).YSector
+					Dim ToXPos As Single = PlayerData(i).X
+					Dim ToZPos As Single = PlayerData(i).Z
+					Dim ToYPos As Single = PlayerData(i).Y
+					Dim Angle As UInt16 = PlayerData(i).Angle
+
+					PlayerData(index_).XSector = ToXSector
+					PlayerData(index_).YSector = ToYSector
+					PlayerData(index_).X = ToXPos
+					PlayerData(index_).Z = ToZPos
+					PlayerData(index_).Y = ToYPos
+
+					Dim writer As New PacketWriter
+					writer.Create(ServerOpcodes.Teleport_Annonce)
+					writer.Byte(PlayerData(index_).XSector)
+					writer.Byte(PlayerData(index_).YSector)
+					Server.Send(writer.GetBytes, index_)
+
+					Exit For
+				End If
+			Next
+
+		End Sub
+
+		Private Sub OnRecallUser(ByVal packet As PacketReader, ByVal index_ As Integer)
+			Dim NameLength As Byte = packet.Word
+			Dim Name As String = packet.String(NameLength)
+
+			For i As Integer = 0 To Server.OnlineClient
+				If PlayerData(i).CharacterName = Name Then
+					Dim ToXSector As Byte = PlayerData(index_).XSector
+					Dim ToYSector As Byte = PlayerData(index_).YSector
+					Dim ToXPos As Single = PlayerData(index_).X
+					Dim ToZPos As Single = PlayerData(index_).Z
+					Dim ToYPos As Single = PlayerData(index_).Y
+					Dim Angle As UInt16 = PlayerData(index_).Angle
+
+					PlayerData(i).XSector = ToXSector
+					PlayerData(i).YSector = ToYSector
+					PlayerData(i).X = ToXPos
+					PlayerData(i).Z = ToZPos
+					PlayerData(i).Y = ToYPos
+
+					Dim writer As New PacketWriter
+					writer.Create(ServerOpcodes.Teleport_Annonce)
+					writer.Byte(PlayerData(i).XSector)
+					writer.Byte(PlayerData(i).YSector)
+					Server.Send(writer.GetBytes, i)
+
+					Exit For
+				End If
+			Next
+
+		End Sub
 
         Enum GmTypes
             FindUser = &H1
@@ -116,10 +183,11 @@
             MakeMonster = &H6
             MakeItem = &H7
             MoveToUser = &H8
-            WayPoints = &H10
-            Ban = &H13
-            MoveToNpc = &H31
-        End Enum
+			WayPoints = &H10
+			RecallUser = &H11
+			Ban = &H13
+			MoveToNpc = &H31
+		End Enum
 
     End Module
 End Namespace

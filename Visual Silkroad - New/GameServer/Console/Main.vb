@@ -35,7 +35,7 @@ Namespace GameServer
             Console.Clear()
             Console.Title = "GAMESERVER ALPHA"
             Commands.WriteLog("Starting Agent Server")
-            DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
+			DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "")
             Server.ip = "127.0.0.1"
             Server.port = 15780
             Server.MaxClients = 1500

@@ -96,17 +96,15 @@
             writer.Create(ServerOpcodes.Character)
             writer.Byte(4) 'nick check
 
-            If free = True Or nick.StartsWith("[GM]") = True Then
-                writer.Byte(1)
-            Else
-                writer.Byte(2)
-                writer.Byte(13)
-                '13 invalid 10 server error
+			If free And (nick.ToLowerInvariant.Contains("gm") Or nick.ToLowerInvariant.Contains("admin") Or nick.ToLowerInvariant.Contains("helper") Or nick.ToLowerInvariant.Contains("dev")) = False Then
+				writer.Byte(1)
+			Else
+				writer.Byte(2)
+				writer.Byte(13)
+				'13 invalid 10 server error
+			End If
 
-
-            End If
-
-            GameServer.Server.Send(writer.GetBytes, Index_)
+			GameServer.Server.Send(writer.GetBytes, Index_)
         End Sub
 
         Public Sub OnDeleteChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
@@ -122,312 +120,310 @@
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Character)
                     writer.Byte(3) 'type = delte
-                    writer.Byte(1) 'sucess
-                    Server.Send(writer.GetBytes, Index_)
-                End If
-            Next
-        End Sub
+					writer.Byte(1) 'success
+					Server.Send(writer.GetBytes, Index_)
+				End If
+			Next
+		End Sub
 
 
-        Public Sub OnRestoreChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
-            Dim nick As String = pack.String(pack.Word)
-            For i = 0 To ClientList.OnCharListing(Index_).NumberOfChars - 1
-                If ClientList.OnCharListing(Index_).Chars(i).CharacterName = nick Then
-                    ClientList.OnCharListing(Index_).Chars(i).Deleted = False
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'", ClientList.OnCharListing(Index_).Chars(i).UniqueId))
+		Public Sub OnRestoreChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
+			Dim nick As String = pack.String(pack.Word)
+			For i = 0 To ClientList.OnCharListing(Index_).NumberOfChars - 1
+				If ClientList.OnCharListing(Index_).Chars(i).CharacterName = nick Then
+					ClientList.OnCharListing(Index_).Chars(i).Deleted = False
+					DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'", ClientList.OnCharListing(Index_).Chars(i).UniqueId))
 
-                    Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Character)
-                    writer.Byte(5) 'type = restore
-                    writer.Byte(1) 'sucess
-                    Server.Send(writer.GetBytes, Index_)
-                End If
-            Next
-        End Sub
+					Dim writer As New PacketWriter
+					writer.Create(ServerOpcodes.Character)
+					writer.Byte(5) 'type = restore
+					writer.Byte(1) 'success
+					Server.Send(writer.GetBytes, Index_)
+				End If
+			Next
+		End Sub
 
-        Public Sub OnCreateChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
+		Public Sub OnCreateChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
+			Dim nick As String = pack.String(pack.Word)
+			Dim model As UInt32 = pack.DWord
+			Dim volume As Byte = pack.Byte
+			Dim _items(4) As UInt32
+			_items(1) = pack.DWord
+			_items(2) = pack.DWord
+			_items(3) = pack.DWord
+			_items(4) = pack.DWord
 
+			'Check it
 
-            Dim nick As String = pack.String(pack.Word)
-            Dim model As UInt32 = pack.DWord
-            Dim volume As Byte = pack.Byte
-            Dim _items(4) As UInt32
-            _items(1) = pack.DWord
-            _items(2) = pack.DWord
-            _items(3) = pack.DWord
-            _items(4) = pack.DWord
+			If model >= 1907 And model <= 1932 = False And model >= 14717 And model <= 14743 = False Then
+				'Wrong Model Code! 
+				GameServer.Server.Dissconnect(Index_)
+				Commands.WriteLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
+			End If
 
-            'Check it
+			Dim _refitems(4) As cItem
+			_refitems(1) = GetItemByID(_items(1))
+			_refitems(2) = GetItemByID(_items(2))
+			_refitems(3) = GetItemByID(_items(3))
+			_refitems(4) = GetItemByID(_items(4))
 
-            If model >= 1907 And model <= 1932 = False And model >= 14717 And model <= 14743 = False Then
-                'Wrong Model Code! 
-                GameServer.Server.Dissconnect(Index_)
-                Commands.WriteLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
-            End If
+			For i = 1 To 4
+				If _refitems(i).ITEM_TYPE_NAME.EndsWith("_DEF") = False Then
+					GameServer.Server.Dissconnect(Index_)
+					Commands.WriteLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
+				End If
+				Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
+			Next
 
-            Dim _refitems(4) As cItem
-            _refitems(1) = GetItemByID(_items(1))
-            _refitems(2) = GetItemByID(_items(2))
-            _refitems(3) = GetItemByID(_items(3))
-            _refitems(4) = GetItemByID(_items(4))
+			'Creation
+			Dim writer As New PacketWriter
+			writer.Create(ServerOpcodes.Character)
+			writer.Byte(1) 'create
 
-            For i = 1 To 4
-                If _refitems(i).ITEM_TYPE_NAME.EndsWith("_DEF") = False Then
-                    GameServer.Server.Dissconnect(Index_)
-                    Commands.WriteLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
-                End If
-                Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
-            Next
+			Dim free As Boolean = GameServer.DatabaseCore.CheckNick(nick)
+			If free = False Or nick.StartsWith("[GM]") = True Then
+				writer.Byte(4)
+				writer.Byte(13)
+				GameServer.Server.Send(writer.GetBytes, Index_)
 
-            'Creation
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Character)
-            writer.Byte(1) 'create
+			Else
 
-            Dim free As Boolean = GameServer.DatabaseCore.CheckNick(nick)
-            If free = False Or nick.StartsWith("[GM]") = True Then
-                writer.Byte(4)
-                writer.Byte(13)
-                GameServer.Server.Send(writer.GetBytes, Index_)
+				GameServer.DatabaseCore.CharCount += 1
+				Array.Resize(GameServer.DatabaseCore.Chars, GameServer.DatabaseCore.CharCount)
 
-            Else
+				Dim newchar As New [cChar]
+				Dim NewCharacterIndex As Integer = GameServer.DatabaseCore.CharCount - 1
 
-                GameServer.DatabaseCore.CharCount += 1
-                Array.Resize(GameServer.DatabaseCore.Chars, GameServer.DatabaseCore.CharCount)
+				DatabaseCore.Chars(NewCharacterIndex) = New [cChar]
+				DatabaseCore.Chars(NewCharacterIndex).AccountID = ClientList.OnCharListing(Index_).LoginInformation.Id
+				DatabaseCore.Chars(NewCharacterIndex).CharacterName = nick
+				DatabaseCore.Chars(NewCharacterIndex).CharacterId = DatabaseCore.UniqueIdCounter
+				DatabaseCore.Chars(NewCharacterIndex).UniqueId = DatabaseCore.UniqueIdCounter
+				DatabaseCore.UniqueIdCounter += 1
+				DatabaseCore.Chars(NewCharacterIndex).HP = 200
+				DatabaseCore.Chars(NewCharacterIndex).MP = 200
+				DatabaseCore.Chars(NewCharacterIndex).CHP = 200
+				DatabaseCore.Chars(NewCharacterIndex).CMP = 200
+				DatabaseCore.Chars(NewCharacterIndex).Model = model
+				DatabaseCore.Chars(NewCharacterIndex).Volume = volume
+				DatabaseCore.Chars(NewCharacterIndex).Level = 1
 
-                Dim newchar As New [cChar]
-                Dim NewCharacterIndex As Integer = GameServer.DatabaseCore.CharCount - 1
+				DatabaseCore.Chars(NewCharacterIndex).WalkSpeed = 16
+				DatabaseCore.Chars(NewCharacterIndex).RunSpeed = 50
+				DatabaseCore.Chars(NewCharacterIndex).BerserkSpeed = 100
+				DatabaseCore.Chars(NewCharacterIndex).Strength = 20
+				DatabaseCore.Chars(NewCharacterIndex).Intelligence = 20
+				DatabaseCore.Chars(NewCharacterIndex).PVP = 0
+				DatabaseCore.Chars(NewCharacterIndex).XSector = 168
+				DatabaseCore.Chars(NewCharacterIndex).YSector = 98
+				DatabaseCore.Chars(NewCharacterIndex).X = 978
+				DatabaseCore.Chars(NewCharacterIndex).Z = 1097
+				DatabaseCore.Chars(NewCharacterIndex).Y = 40
+				DatabaseCore.Chars(NewCharacterIndex).MaxSlots = 45
 
-                DatabaseCore.Chars(NewCharacterIndex) = New [cChar]
-                DatabaseCore.Chars(NewCharacterIndex).AccountID = ClientList.OnCharListing(Index_).LoginInformation.Id
-                DatabaseCore.Chars(NewCharacterIndex).CharacterName = nick
-                DatabaseCore.Chars(NewCharacterIndex).CharacterId = DatabaseCore.UniqueIdCounter
-                DatabaseCore.Chars(NewCharacterIndex).UniqueId = DatabaseCore.UniqueIdCounter
-                DatabaseCore.UniqueIdCounter += 1
-                DatabaseCore.Chars(NewCharacterIndex).HP = 200
-                DatabaseCore.Chars(NewCharacterIndex).MP = 200
-                DatabaseCore.Chars(NewCharacterIndex).CHP = 200
-                DatabaseCore.Chars(NewCharacterIndex).CMP = 200
-                DatabaseCore.Chars(NewCharacterIndex).Model = model
-                DatabaseCore.Chars(NewCharacterIndex).Volume = volume
-                DatabaseCore.Chars(NewCharacterIndex).Level = 1
+				Dim magdefmin As Double = 3.0
+				Dim phydefmin As Double = 6.0
+				Dim parrymin As UShort = 11
+				Dim phyatkmin As UShort = 6
+				Dim phyatkmax As UShort = 9
+				Dim magatkmin As UShort = 6
+				Dim magatkmax As UShort = 10
+				Dim hit As UShort = 11
 
-                DatabaseCore.Chars(NewCharacterIndex).WalkSpeed = 16
-                DatabaseCore.Chars(NewCharacterIndex).RunSpeed = 50
-                DatabaseCore.Chars(NewCharacterIndex).BerserkSpeed = 100
-                DatabaseCore.Chars(NewCharacterIndex).Strength = 20
-                DatabaseCore.Chars(NewCharacterIndex).Intelligence = 20
-                DatabaseCore.Chars(NewCharacterIndex).PVP = 0
-                DatabaseCore.Chars(NewCharacterIndex).XSector = 168
-                DatabaseCore.Chars(NewCharacterIndex).YSector = 98
-                DatabaseCore.Chars(NewCharacterIndex).X = 978
-                DatabaseCore.Chars(NewCharacterIndex).Z = 1097
-                DatabaseCore.Chars(NewCharacterIndex).Y = 40
-                DatabaseCore.Chars(NewCharacterIndex).MaxSlots = 45
-
-                Dim magdefmin As Double = 3.0
-                Dim phydefmin As Double = 6.0
-                Dim parrymin As UShort = 11
-                Dim phyatkmin As UShort = 6
-                Dim phyatkmax As UShort = 9
-                Dim magatkmin As UShort = 6
-                Dim magatkmax As UShort = 10
-                Dim hit As UShort = 11
-
-                DatabaseCore.Chars(NewCharacterIndex).MinPhy = phyatkmin
-                DatabaseCore.Chars(NewCharacterIndex).MaxPhy = phyatkmax
-                DatabaseCore.Chars(NewCharacterIndex).MinMag = magatkmin
-                DatabaseCore.Chars(NewCharacterIndex).MaxMag = magatkmax
-                DatabaseCore.Chars(NewCharacterIndex).PhyDef = phydefmin
-                DatabaseCore.Chars(NewCharacterIndex).MagDef = magdefmin
-                DatabaseCore.Chars(NewCharacterIndex).Hit = hit
-                DatabaseCore.Chars(NewCharacterIndex).Parry = parrymin
+				DatabaseCore.Chars(NewCharacterIndex).MinPhy = phyatkmin
+				DatabaseCore.Chars(NewCharacterIndex).MaxPhy = phyatkmax
+				DatabaseCore.Chars(NewCharacterIndex).MinMag = magatkmin
+				DatabaseCore.Chars(NewCharacterIndex).MaxMag = magatkmax
+				DatabaseCore.Chars(NewCharacterIndex).PhyDef = phydefmin
+				DatabaseCore.Chars(NewCharacterIndex).MagDef = magdefmin
+				DatabaseCore.Chars(NewCharacterIndex).Hit = hit
+				DatabaseCore.Chars(NewCharacterIndex).Parry = parrymin
 
 
-                GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume) VALUE ('{0}','{1}','{2}','{3}','{4}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume))
+				GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume) VALUE ('{0}','{1}','{2}','{3}','{4}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume))
 
-                ' Masterys
+				' Masterys
 
-                If model >= 1907 And model <= 1932 Then
-                    'Chinese Char
-                    '257 - 259
+				If model >= 1907 And model <= 1932 Then
+					'Chinese Char
+					'257 - 259
 
-                    Dim mastery As New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 257
-                    AddMasteryToDB(mastery)
+					Dim mastery As New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 257
+					AddMasteryToDB(mastery)
 
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 258
-                    AddMasteryToDB(mastery)
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 258
+					AddMasteryToDB(mastery)
 
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 259
-                    AddMasteryToDB(mastery)
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 259
+					AddMasteryToDB(mastery)
 
-                    '273 - 276
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 273
-                    AddMasteryToDB(mastery)
+					'273 - 276
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 273
+					AddMasteryToDB(mastery)
 
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 274
-                    AddMasteryToDB(mastery)
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 274
+					AddMasteryToDB(mastery)
 
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 275
-                    AddMasteryToDB(mastery)
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 275
+					AddMasteryToDB(mastery)
 
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 276
-                    AddMasteryToDB(mastery)
-
-
-                ElseIf model >= 14717 And model <= 14743 Then
-
-                    'Europe Char
-                    '513 - 518
-
-                    Dim mastery As New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = 1
-                    mastery.MasteryID = 513
-                    AddMasteryToDB(mastery)
-
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 514
-                    AddMasteryToDB(mastery)
-
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 515
-                    AddMasteryToDB(mastery)
-
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 516
-                    AddMasteryToDB(mastery)
-
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 517
-                    AddMasteryToDB(mastery)
-
-                    mastery = New cMastery
-                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
-                    mastery.Level = 1
-                    mastery.MasteryID = 518
-                    AddMasteryToDB(mastery)
-                End If
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 276
+					AddMasteryToDB(mastery)
 
 
-                'ITEMS
-                For I = 0 To 44
-                    Dim to_add As New cInvItem
-                    to_add.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                    to_add.Pk2Id = 0
-                    to_add.Plus = 0
-                    to_add.Amount = 0
-                    to_add.Slot = I
-                    AddItemToDB(to_add)
-                Next
+				ElseIf model >= 14717 And model <= 14743 Then
 
-                '1 =  Body
-                '2 = Legs
-                '3 = foot
-                '4 = Waffe
-                Dim item As New cInvItem
-                item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                item.Pk2Id = _items(1)
-                item.Plus = Math.Round(Rnd() * 3, 0)
-                item.Amount = 0
-                item.Slot = 1
-                UpdateItem(item)
+					'Europe Char
+					'513 - 518
 
-                item = New cInvItem
-                item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                item.Pk2Id = _items(2)
-                item.Plus = Math.Round(Rnd() * 3, 0)
-                item.Amount = 0
-                item.Slot = 4
-                UpdateItem(item)
+					Dim mastery As New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+					mastery.Level = 1
+					mastery.MasteryID = 513
+					AddMasteryToDB(mastery)
 
-                item = New cInvItem
-                item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                item.Pk2Id = _items(3)
-                item.Plus = Math.Round(Rnd() * 3, 0)
-                item.Amount = 0
-                item.Slot = 5
-                UpdateItem(item)
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 514
+					AddMasteryToDB(mastery)
 
-                item = New cInvItem
-                item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                item.Pk2Id = _items(4)
-                item.Plus = Math.Round(Rnd() * 5, 0)
-                item.Amount = 0
-                item.Slot = 6
-                UpdateItem(item)
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 515
+					AddMasteryToDB(mastery)
 
-                If _items(4) = 3632 Or _items(4) = 3633 Then 'Sword or Blade need a Shield
-                    item = New cInvItem
-                    item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                    item.Pk2Id = 251
-                    item.Plus = Math.Round(Rnd() * 9, 0)
-                    item.Amount = 0
-                    item.Slot = 7
-                    UpdateItem(item)
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 516
+					AddMasteryToDB(mastery)
+
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 517
+					AddMasteryToDB(mastery)
+
+					mastery = New cMastery
+					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+					mastery.Level = 1
+					mastery.MasteryID = 518
+					AddMasteryToDB(mastery)
+				End If
 
 
-                ElseIf _items(4) = 3636 Then 'Bow --> Give some Arrows
-                    item = New cInvItem
-                    item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                    item.Pk2Id = 62
-                    item.Amount = 123
-                    item.Slot = 7
-                    UpdateItem(item)
+				'ITEMS
+				For I = 0 To 44
+					Dim to_add As New cInvItem
+					to_add.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+					to_add.Pk2Id = 0
+					to_add.Plus = 0
+					to_add.Amount = 0
+					to_add.Slot = I
+					AddItemToDB(to_add)
+				Next
 
-                ElseIf _items(4) = 10730 Or _items(4) = 10734 Or _items(4) = 10737 Then 'EU Weapons who need a shield
-                    item = New cInvItem
-                    item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                    item.Pk2Id = 10738
-                    item.Plus = Math.Round(Rnd() * 9, 0)
-                    item.Amount = 0
-                    item.Slot = 7
-                    UpdateItem(item)
+				'1 =  Body
+				'2 = Legs
+				'3 = foot
+				'4 = Waffe
+				Dim item As New cInvItem
+				item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+				item.Pk2Id = _items(1)
+				item.Plus = Math.Round(Rnd() * 3, 0)
+				item.Amount = 0
+				item.Slot = 1
+				UpdateItem(item)
 
-                ElseIf _items(4) = -1 Then 'Armbrust --> Bolt
-                    item = New cInvItem
-                    item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
-                    item.Pk2Id = 62
-                    item.Amount = 123
-                    item.Slot = 7
-                    UpdateItem(item)
-                End If
+				item = New cInvItem
+				item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+				item.Pk2Id = _items(2)
+				item.Plus = Math.Round(Rnd() * 3, 0)
+				item.Amount = 0
+				item.Slot = 4
+				UpdateItem(item)
 
-                'Finish
+				item = New cInvItem
+				item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+				item.Pk2Id = _items(3)
+				item.Plus = Math.Round(Rnd() * 3, 0)
+				item.Amount = 0
+				item.Slot = 5
+				UpdateItem(item)
 
-                writer.Byte(1) 'sucess
-                Server.Send(writer.GetBytes, Index_)
-            End If
-        End Sub
+				item = New cInvItem
+				item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+				item.Pk2Id = _items(4)
+				item.Plus = Math.Round(Rnd() * 5, 0)
+				item.Amount = 0
+				item.Slot = 6
+				UpdateItem(item)
+
+				If _items(4) = 3632 Or _items(4) = 3633 Then 'Sword or Blade need a Shield
+					item = New cInvItem
+					item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+					item.Pk2Id = 251
+					item.Plus = Math.Round(Rnd() * 9, 0)
+					item.Amount = 0
+					item.Slot = 7
+					UpdateItem(item)
+
+
+				ElseIf _items(4) = 3636 Then 'Bow --> Give some Arrows
+					item = New cInvItem
+					item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+					item.Pk2Id = 62
+					item.Amount = 123
+					item.Slot = 7
+					UpdateItem(item)
+
+				ElseIf _items(4) = 10730 Or _items(4) = 10734 Or _items(4) = 10737 Then	'EU Weapons who need a shield
+					item = New cInvItem
+					item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+					item.Pk2Id = 10738
+					item.Plus = Math.Round(Rnd() * 9, 0)
+					item.Amount = 0
+					item.Slot = 7
+					UpdateItem(item)
+
+				ElseIf _items(4) = -1 Then 'Armbrust --> Bolt
+					item = New cInvItem
+					item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+					item.Pk2Id = 62
+					item.Amount = 123
+					item.Slot = 7
+					UpdateItem(item)
+				End If
+
+				'Finish
+
+				writer.Byte(1) 'success
+				Server.Send(writer.GetBytes, Index_)
+			End If
+		End Sub
         Public Sub UpdateItem(ByVal item As cInvItem)
             For i = 0 To DatabaseCore.AllItems.Count - 1
                 If DatabaseCore.AllItems(i).OwnerCharID = item.OwnerCharID And DatabaseCore.AllItems(i).Slot = item.Slot Then
@@ -479,32 +475,14 @@
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
 
-
-            'Main
-            If ClientList.OnCharListing(Index_).Chars(0).CharacterName = SelectedNick Then
-                PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(0)
-                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(0).MaxSlots)
-                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(0))
-
-            ElseIf ClientList.OnCharListing(Index_).Chars(1).CharacterName = SelectedNick Then
-                PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(1)
-                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(1).MaxSlots)
-                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(1))
-
-            ElseIf ClientList.OnCharListing(Index_).Chars(2).CharacterName = SelectedNick Then
-                PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(2)
-                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(2).MaxSlots)
-                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(2))
-
-            ElseIf ClientList.OnCharListing(Index_).Chars(3).CharacterName = SelectedNick Then
-                PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(3)
-                Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(3).MaxSlots)
-                Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(3))
-
-            End If
-
-
-
+			'Main
+			For i = 0 To 3
+				If ClientList.OnCharListing(Index_).Chars(i).CharacterName = SelectedNick Then
+					PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(i)
+					Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(i).MaxSlots)
+					Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(i))
+				End If
+			Next
 
 
             writer = New PacketWriter
@@ -662,7 +640,7 @@
             writer.DWord(0)  ' @@@@@@@@@@@@@
             writer.Word(0)  ' @@@@@@@@@@@@@
             writer.DWord(chari.AccountID)  ' Account ID
-            writer.Byte(1)  'GM Flag
+			writer.Byte(1)	'TODO: Get GM Flag from db - GM Flag
             writer.Byte(7)  ' @@@@@@@@@@@@@
             '''''''''''''''''''''/
 

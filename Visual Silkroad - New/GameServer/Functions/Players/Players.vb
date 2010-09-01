@@ -263,8 +263,8 @@
                         If PlayerData(Index).SpawnedPlayers.Contains(refindex) = False Then
                             Server.Send(CreateSpawnPacket(refindex), Index)
                             PlayerData(Index).SpawnedPlayers.Add(refindex)
-                        End If
-                    End If
+						End If
+					End If
                 End If
             Next refindex
         End Sub

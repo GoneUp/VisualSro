@@ -107,7 +107,8 @@
             If e.ITEM_TYPE = id Then
                 Return e
             End If
-        Next
+		Next
+		Throw New Exception("Item couldn't be found!")
     End Function
 
 End Module

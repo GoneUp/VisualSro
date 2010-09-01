@@ -42,7 +42,7 @@
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.ItemMove)
-                    writer.Byte(1) 'sucess
+					writer.Byte(1) 'success
                     writer.Byte(0) 'type
                     writer.Byte(oldslot)
                     writer.Byte(newslot)

@@ -3,11 +3,11 @@
     Public Sub CheckCommand(ByVal msg As String)
 
         If msg.StartsWith("/info") Then
-            Commands.WriteLog("This Emulator is from GoneUp. ")
+			Commands.WriteLog("This Emulator is from GoneUp.")
             Commands.WriteLog("Specical Thanks to:")
             Commands.WriteLog("Drew Benton")
             Commands.WriteLog("manneke for the great help")
-            Commands.WriteLog("Windrius for the Framework.")
+			Commands.WriteLog("Windrius for the original Framework")
             Commands.WriteLog("SREmu Team")
             Commands.WriteLog("Dickernoob for CSREmu")
             Commands.WriteLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
@@ -35,14 +35,21 @@
             GameServer.Functions.SendNotice(spit(1))
 
 
-        ElseIf msg.StartsWith("/wetter") Then
-            Dim spit As String = msg.Substring(8)
-            Dim spit2 As String() = spit.Split(" ")
-            GameServer.Functions.OnSetWeather(CByte(spit2(0)), CByte(spit2(1)), 1)
+		ElseIf msg.StartsWith("/weather") Then
+			Dim spit As String = msg.Substring(9)
+			Dim spit2 As String() = spit.Split(" ")
+			GameServer.Functions.OnSetWeather(CByte(spit2(0)), CByte(spit2(1)), 1)
 
+		ElseIf msg = "/normalweather" Then
+			GameServer.Functions.OnSetWeather(1, 75, 1)
 
-        End If
+		ElseIf msg = "/rain" Then
+			GameServer.Functions.OnSetWeather(2, 75, 1)
 
+		ElseIf msg = "/snow" Then
+			GameServer.Functions.OnSetWeather(3, 75, 1)
+
+		End If
 
 
     End Sub

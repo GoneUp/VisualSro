@@ -84,6 +84,14 @@
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Word(PlayerData(Index_).Angle)
             Server.SendToAllInRange(writer.GetBytes, Index_)
-        End Sub
-    End Module
+		End Sub
+
+		Public Sub OnEmotion(ByVal packet As PacketReader, ByVal index_ As Integer)
+			Dim writer As New PacketWriter
+			writer.Create(ServerOpcodes.Emotion)
+			writer.DWord(PlayerData(index_).UniqueId)
+			writer.Byte(packet.Byte)
+			Server.SendToAllInRange(writer.GetBytes, index_)
+		End Sub
+	End Module
 End Namespace

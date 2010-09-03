@@ -526,7 +526,7 @@
             writer.DWord(0)  ' @@@@@@@@@@@@@
             writer.DWord(chari.CHP)  ' HP
             writer.DWord(chari.CMP)  ' MP
-            writer.Byte(1)  ' Icon
+			writer.Byte(chari.HelperIcon)	' Icon
             writer.Byte(0)  ' Daily PK (/15)
             writer.Word(0)  ' Total PK
             writer.DWord(0)  ' PK Penalty Point

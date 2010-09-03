@@ -52,7 +52,7 @@
         End Sub
 
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)
-            DespawnPlayerTeleport(Index_)
+            DespawnPlayer(Index_)
             PlayerData(Index_).Ingame = False
 
             Dim writer As New PacketWriter
@@ -92,6 +92,18 @@
 			writer.DWord(PlayerData(index_).UniqueId)
 			writer.Byte(packet.Byte)
 			Server.SendToAllInRange(writer.GetBytes, index_)
+		End Sub
+
+		Public Sub OnHelperIcon(ByVal packet As PacketReader, ByVal index_ As Integer)
+			PlayerData(index_).HelperIcon = packet.Byte
+
+			Dim writer As New PacketWriter
+			writer.Create(ServerOpcodes.HelperIcon)
+			writer.DWord(PlayerData(index_).UniqueId)
+			writer.Byte(PlayerData(index_).HelperIcon)
+			Server.SendToAllInRange(writer.GetBytes, index_)
+
+			DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(index_).HelperIcon, PlayerData(index_).UniqueId))
 		End Sub
 	End Module
 End Namespace

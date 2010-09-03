@@ -29,11 +29,10 @@
 
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
+
+            GameDbUpdate.Stop()
+            GameDbUpdate.Interval = 20000 '1minute
             Try
-
-                GameDbUpdate.Stop()
-                GameDbUpdate.Interval = 20000 '20 secs
-
                 If First = False Then
                     Commands.WriteLog("Execute all saved Querys. This can take some Time.")
                     ExecuteSavedQuerys()
@@ -46,11 +45,15 @@
                 End If
 
                 GetUserData()
-                GameDbUpdate.Start()
-
             Catch ex As Exception
-                Commands.WriteLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+
             End Try
+
+
+
+
+            GameDbUpdate.Start()
+
         End Sub
 
 #Region "Get from DB"
@@ -130,7 +133,8 @@
                 Chars(i).BerserkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(34))
                 Chars(i).BerserkBar = CUInt(tmp.Tables(0).Rows(i).ItemArray(35))
                 Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
-                Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
+				Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
+				Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))
                 Chars(i).SetCharStats()
 
                 Chars(i).UniqueId = UniqueIdCounter

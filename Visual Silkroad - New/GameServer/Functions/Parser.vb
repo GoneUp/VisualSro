@@ -68,6 +68,9 @@ Namespace GameServer
 				Case ClientOpcodes.Emotion
 					GameServer.Functions.OnEmotion(packet, rp.index)
 
+				Case ClientOpcodes.HelperIcon
+					GameServer.Functions.OnHelperIcon(packet, rp.index)
+
 				Case Else
 					Commands.WriteLog("opCode: " & rp.opcode & " Packet : " & rp.data)
 			End Select

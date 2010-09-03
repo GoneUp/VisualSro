@@ -134,7 +134,7 @@
             writer.DWord(0)
             writer.Byte(0)
             writer.Byte(chari.PVP)
-            writer.Byte(1)
+			writer.Byte(1)
 
             Return writer.GetBytes
         End Function
@@ -241,7 +241,8 @@
                     Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         If PlayerData(refindex).SpawnedPlayers.Contains(Index) = False Then
-                            Server.Send(CreateSpawnPacket(Index), refindex)
+							Server.Send(CreateSpawnPacket(Index), refindex)
+							Server.Send(CreateHelperIconPacket(Index), refindex) 'TODO: Is there a proper way to do this?
                             PlayerData(refindex).SpawnedPlayers.Add(Index)
                         End If
                     End If
@@ -261,7 +262,8 @@
                     Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         If PlayerData(Index).SpawnedPlayers.Contains(refindex) = False Then
-                            Server.Send(CreateSpawnPacket(refindex), Index)
+							Server.Send(CreateSpawnPacket(refindex), Index)
+							Server.Send(CreateHelperIconPacket(refindex), Index)	'TODO: Is there a proper way to do this?
                             PlayerData(Index).SpawnedPlayers.Add(refindex)
 						End If
 					End If
@@ -308,6 +310,15 @@
                     PlayerData(Index).SpawnedPlayers.Remove(Other_Index)
                 End If
             Next
-        End Sub
-    End Module
+		End Sub
+
+		Public Function CreateHelperIconPacket(ByVal index_ As Integer) As Byte()
+			Dim writer As New PacketWriter
+			writer.Create(ServerOpcodes.HelperIcon)
+			writer.DWord(PlayerData(index_).UniqueId)
+			writer.Byte(PlayerData(index_).HelperIcon)
+			Return writer.GetBytes()
+		End Function
+
+	End Module
 End Namespace

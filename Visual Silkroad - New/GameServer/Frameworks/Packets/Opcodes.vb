@@ -10,7 +10,7 @@
 		Ping = &H2002
 		Handshake = &H9000
 		PatchReq = &H6100
-		InfoReq = &H2001 'cleint whoami
+		InfoReq = &H2001 'client whoami
 		Login = &H6103
 		Character = &H7007
 		IngameReq = &H7001
@@ -21,13 +21,14 @@
 		GameMaster = &H7010
 		Chat = &H7025
 		Action = &H704F
-		Emotion = &H3091 'Charm Action too?
+		Emotion = &H3091
 		[Exit] = &H7005
 		Target = &H7045
 		ItemMove = &H7034
 		Alchemy = &H7150
 		Angle_Update = &H7024
 		Teleport_Reply = &H34B6
+		HelperIcon = &H7402
 
 
 	End Enum
@@ -63,8 +64,8 @@
 		Teleport_Start = &HB05A
 		Weather = &H3809
 		Teleport_Annonce = &H34B5
-
-		Emotion = &H3091 'Charm Action too?
+		Emotion = &H3091
+		HelperIcon = &HB402
 
 		EquipItem = &H3038
 		UnEquipItem = &H3039

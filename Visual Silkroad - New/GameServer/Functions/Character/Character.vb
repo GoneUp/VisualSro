@@ -213,13 +213,17 @@
 				DatabaseCore.Chars(NewCharacterIndex).BerserkSpeed = 100
 				DatabaseCore.Chars(NewCharacterIndex).Strength = 20
 				DatabaseCore.Chars(NewCharacterIndex).Intelligence = 20
-				DatabaseCore.Chars(NewCharacterIndex).PVP = 0
-				DatabaseCore.Chars(NewCharacterIndex).XSector = 168
-				DatabaseCore.Chars(NewCharacterIndex).YSector = 98
-				DatabaseCore.Chars(NewCharacterIndex).X = 978
-				DatabaseCore.Chars(NewCharacterIndex).Z = 1097
-				DatabaseCore.Chars(NewCharacterIndex).Y = 40
-				DatabaseCore.Chars(NewCharacterIndex).MaxSlots = 45
+                DatabaseCore.Chars(NewCharacterIndex).PVP = 0
+                DatabaseCore.Chars(NewCharacterIndex).MaxSlots = 45
+                Dim pos As New Position
+                pos.XSector = 168
+                pos.YSector = 98
+                pos.X = 978
+                pos.Z = 1097
+                pos.Y = 40
+                DatabaseCore.Chars(NewCharacterIndex).Position = pos
+
+
 
 				Dim magdefmin As Double = 3.0
 				Dim phydefmin As Double = 6.0
@@ -550,7 +554,7 @@
                         Case 1 'Equipment
 
                             writer.Byte(_item.Plus)
-                            writer.QWord(0) 'blue, unknwown
+                            writer.QWord(0)
                             writer.DWord(_item.Durability)
                             writer.Byte(0)
                         Case 2 'Pets
@@ -594,11 +598,11 @@
             ' ID, Position, State, Speed
 
             writer.DWord(chari.UniqueId)  ' Unique ID
-            writer.Byte(chari.XSector)  ' X Sector
-            writer.Byte(chari.YSector)  ' Y Sector
-            writer.Float(chari.X)  ' X
-            writer.Float(chari.Z)  ' Z
-            writer.Float(chari.Y)  ' Y
+            writer.Byte(chari.Position.XSector)  ' X Sector
+            writer.Byte(chari.Position.YSector)  ' Y Sector
+            writer.Float(chari.Position.X)  ' X
+            writer.Float(chari.Position.Z)  ' Z
+            writer.Float(chari.Position.Y)  ' Y
             writer.Word(0)  ' Angle
             writer.Byte(0)  ' Destination
             writer.Byte(1)  ' Walk & Run Flag

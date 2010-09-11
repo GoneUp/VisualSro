@@ -69,11 +69,20 @@ Namespace GameServer
 					GameServer.Functions.OnEmotion(packet, rp.index)
 
 				Case ClientOpcodes.HelperIcon
-					GameServer.Functions.OnHelperIcon(packet, rp.index)
+                    GameServer.Functions.OnHelperIcon(packet, rp.index)
 
-				Case Else
-					Commands.WriteLog("opCode: " & rp.opcode & " Packet : " & rp.data)
-			End Select
+                    '====EXCHANGE
+                Case ClientOpcodes.Exchange_Invite
+                    GameServer.Functions.OnExchangeInvite(packet, rp.index)
+
+                Case ClientOpcodes.Exchange_Invite_Accept
+                    GameServer.Functions.OnExchangeInviteReply(packet, rp.index)
+
+
+
+                Case Else
+                    Commands.WriteLog("opCode: " & rp.opcode & " Packet : " & rp.data)
+            End Select
         End Sub
 
         <StructLayout(LayoutKind.Sequential)> _

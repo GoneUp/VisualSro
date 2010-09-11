@@ -7,48 +7,43 @@
         Public Inventorys(5000) As cInventory
         'Mobs
         'Skills
+        'Exchange
+        Public ExchangeData As New List(Of cExchange)
+
 
         Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
 
             Dim tag As Byte = packet.Byte
             If tag = 1 Then
                 '01 A8 60 61 02 FE FF 70 04
-                Dim ToXSector As Byte = packet.Byte
-                Dim ToYSector As Byte = packet.Byte
-                Dim ToXPos As Integer = CInt(packet.Word)
-                Dim ToZPos As Single = (packet.Word)
-                Dim ToYPos As Integer = CInt(packet.Word)
-                Debug.Print(ToXSector & " -- " & ToYSector & " -- " & ToXPos & " -- " & ToZPos & " -- " & ToYPos)
-                Debug.Print("X:" & ((ToXSector - 135) * 192) + (ToXPos / 10) & " Y:" & ((ToYSector - 92) * 192) + (ToYPos / 10))
+                Dim to_pos As New Position
+                to_pos.XSector = packet.Byte
+                to_pos.YSector = packet.Byte
+                to_pos.X = CInt(packet.Word)
+                to_pos.Z = packet.Word
+                to_pos.Y = CInt(packet.Word)
+                Debug.Print(to_pos.XSector & " -- " & to_pos.YSector & " -- " & to_pos.X & " -- " & to_pos.Z & " -- " & to_pos.Y)
+                Debug.Print("X:" & ((to_pos.XSector - 135) * 192) + (to_pos.X / 10) & " Y:" & ((to_pos.YSector - 92) * 192) + (to_pos.Y / 10))
 
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Movement)
                 writer.DWord(PlayerData(Index_).UniqueId)
                 writer.Byte(1) 'destination
-                writer.Byte(ToXSector)
-                writer.Byte(ToYSector)
-                writer.Word(CUInt(ToXPos))
-                writer.Word((ToZPos))
-                writer.Word(CUInt(ToYPos))
+                writer.Byte(to_pos.XSector)
+                writer.Byte(to_pos.YSector)
+                writer.Word(CUInt(to_pos.X))
+                writer.Word((to_pos.Z))
+                writer.Word(CUInt(to_pos.Y))
                 writer.Byte(0) '1= source
-                'writer.Byte(PlayerData(Index_).XSector)
-                'writer.Byte(PlayerData(Index_).YSector)
-                'writer.Word((PlayerData(Index_).X))
-                'writer.DWord((PlayerData(Index_).Z))
-                'writer.Word((PlayerData(Index_).Y))
+     
 
-                PlayerData(Index_).XSector = ToXSector
-                PlayerData(Index_).YSector = ToYSector
-                PlayerData(Index_).X = ToXPos
-                PlayerData(Index_).Z = ToZPos
-                PlayerData(Index_).Y = ToYPos
 
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).XSector, PlayerData(Index_).YSector, PlayerData(Index_).X, PlayerData(Index_).Z, PlayerData(Index_).Y, PlayerData(Index_).UniqueId))
-
-                SpawnMe(Index_)
+                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
+                SpawnMeAtMovement(Index_, to_pos)
                 SpawnOtherPlayer(Index_) 'Spawn before sending the Packet is to prevent chrashes
                 DespawnPlayerRange(Index_)
+                PlayerData(Index_).Position = to_pos
                 Server.SendToAllInRange(writer.GetBytes, Index_)
             Else
 
@@ -69,7 +64,7 @@
             writer.DWord(chari.Model)
             writer.Byte(chari.Volume)
             writer.Byte(0)
-            writer.Byte(0)
+            writer.Byte(chari.HelperIcon)
 
             'items
             Dim inventory As New cInventory(chari.MaxSlots)
@@ -100,11 +95,11 @@
             writer.Byte(0)
 
             writer.DWord(chari.UniqueId)
-            writer.Byte(chari.XSector)
-            writer.Byte(chari.YSector)
-            writer.Float(chari.X)
-            writer.Float(chari.Z)
-            writer.Float(chari.Y)
+            writer.Byte(chari.Position.XSector)
+            writer.Byte(chari.Position.YSector)
+            writer.Float(chari.Position.X)
+            writer.Float(chari.Position.Z)
+            writer.Float(chari.Position.Y)
 
             writer.Word(chari.Angle)
             writer.Byte(0) 'dest
@@ -139,7 +134,7 @@
             Return writer.GetBytes
         End Function
 
-        Public Function CreateSpawnPacket(ByVal Index As Integer, ByVal ToXSec As Byte, ByVal ToYSec As Byte, ByVal ToXCord As Integer, ByVal ToZCord As Integer, ByVal ToYCord As Integer) As Byte()
+        Public Function CreateSpawnPacket(ByVal Index As Integer, ByVal ToPos As Position) As Byte()
 
             Dim chari As [cChar] = PlayerData(Index) 'Only for faster Code writing
 
@@ -148,7 +143,7 @@
             writer.DWord(chari.Model)
             writer.Byte(chari.Volume)
             writer.Byte(0)
-            writer.Byte(0)
+            writer.Byte(chari.HelperIcon)
 
             'items
             Dim inventory As New cInventory(chari.MaxSlots)
@@ -179,20 +174,20 @@
             writer.Byte(0)
 
             writer.DWord(chari.UniqueId)
-            writer.Byte(chari.XSector)
-            writer.Byte(chari.YSector)
-            writer.Float(chari.X)
-            writer.Float(chari.Z)
-            writer.Float(chari.Y)
+            writer.Byte(chari.Position.XSector)
+            writer.Byte(chari.Position.YSector)
+            writer.Float(chari.Position.X)
+            writer.Float(chari.Position.Z)
+            writer.Float(chari.Position.Y)
 
             writer.Word(chari.Angle)
             writer.Byte(1) 'dest
             writer.Byte(1) 'walk run flag
-            writer.Byte(ToXSec)
-            writer.Byte(ToYSec)
-            writer.Word(ToXCord)
-            writer.Word(ToZCord)
-            writer.Word(ToYCord)
+            writer.Byte(ToPos.XSector)
+            writer.Byte(ToPos.YSector)
+            writer.Word(ToPos.X)
+            writer.Word(ToPos.Z)
+            writer.Word(ToPos.Y)
 
             writer.Byte(1)
             writer.Byte(3) 'movement flag
@@ -238,7 +233,7 @@
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         If PlayerData(refindex).SpawnedPlayers.Contains(Index) = False Then
 							Server.Send(CreateSpawnPacket(Index), refindex)
@@ -251,6 +246,25 @@
 
         End Sub
 
+        Public Sub SpawnMeAtMovement(ByVal Index As Integer, ByVal ToPos As Position)
+            Dim range As Integer = 750
+
+            For refindex As Integer = 0 To Server.OnlineClient - 1
+                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
+                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
+                    If distance < range Then
+                        If PlayerData(refindex).SpawnedPlayers.Contains(Index) = False Then
+                            Server.Send(CreateSpawnPacket(Index, ToPos), refindex)
+                            Server.Send(CreateHelperIconPacket(Index), refindex) 'TODO: Is there a proper way to do this?
+                            PlayerData(refindex).SpawnedPlayers.Add(Index)
+                        End If
+                    End If
+                End If
+            Next refindex
+
+        End Sub
 
         Public Sub SpawnOtherPlayer(ByVal Index As Integer)
             Dim range As Integer = 750
@@ -259,7 +273,7 @@
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         If PlayerData(Index).SpawnedPlayers.Contains(refindex) = False Then
 							Server.Send(CreateSpawnPacket(refindex), Index)
@@ -300,7 +314,7 @@
 
             For i = 0 To PlayerData(Index).SpawnedPlayers.Count - 1
                 Dim Other_Index As Integer = PlayerData(Index).SpawnedPlayers(i)
-                Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - PlayerData(Other_Index).X) ^ 2 + (PlayerData(Index).Y - PlayerData(Other_Index).Y) ^ 2)) 'Calculate Distance
+                Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - PlayerData(Other_Index).Position.X) ^ 2 + (PlayerData(Index).Position.Y - PlayerData(Other_Index).Position.Y) ^ 2)) 'Calculate Distance
                 If distance > range Then
                     'Despawn for both
                     Server.Send(CreateDespawnPacket(PlayerData(Index).UniqueId), Other_Index)

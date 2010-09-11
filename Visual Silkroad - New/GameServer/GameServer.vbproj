@@ -69,7 +69,6 @@
     <Compile Include="Frameworks\Converter\Converter.vb" />
     <Compile Include="Frameworks\Converter\Utils.vb" />
     <Compile Include="Frameworks\Database\DataBase.vb" />
-    <Compile Include="Frameworks\Database\IniFile.vb" />
     <Compile Include="Frameworks\Database\GameDb.vb" />
     <Compile Include="Frameworks\Database\SilkroadData.vb" />
     <Compile Include="Frameworks\Packets\Opcodes.vb" />
@@ -85,11 +84,14 @@
     <Compile Include="Functions\Character\cChar.vb" />
     <Compile Include="Functions\Character\Character.vb" />
     <Compile Include="Functions\Character\cMastery.vb" />
+    <Compile Include="Functions\Exchange\cExchange.vb" />
+    <Compile Include="Functions\Exchange\Exchange.vb" />
     <Compile Include="Functions\GameMaster\GameMaster.vb" />
     <Compile Include="Functions\Items\cInventory.vb" />
     <Compile Include="Functions\Items\cInvItem.vb" />
     <Compile Include="Functions\Items\cItem.vb" />
     <Compile Include="Functions\Items\Inventory.vb" />
+    <Compile Include="Functions\Monster\cMonster.vb" />
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Console\Main.vb" />
     <Compile Include="Functions\Chat\Chat.vb" />
@@ -133,9 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Functions\Monster\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

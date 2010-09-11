@@ -112,7 +112,17 @@ newa:
             Next i
         End Sub
 
-
+        Public Shared Sub SendToAllIngameExpectme(ByVal buff() As Byte, ByVal index As Integer)
+            For i As Integer = 0 To MaxClients
+                Dim socket As Socket = ClientList.GetSocket(i)
+                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> index) Then
+                    If player.Ingame = True Then
+                        socket.Send(buff)
+                    End If
+                End If
+            Next i
+        End Sub
 
         Public Shared Sub SendToAllInRange(ByVal buff() As Byte, ByVal Index As Integer)
             Dim range As Integer = 750
@@ -121,7 +131,7 @@ newa:
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         'In Rage 
                         If player.Ingame = True Then
@@ -140,7 +150,7 @@ newa:
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).X - player.X) ^ 2 + (PlayerData(Index).Y - player.Y) ^ 2)) 'Calculate Distance
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         'In Rage 
                         If player.Ingame = True Then

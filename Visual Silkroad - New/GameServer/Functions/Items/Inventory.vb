@@ -6,6 +6,10 @@
             Select Case type
                 Case 0 'normales Movement
                     OnNormalMove(packet, index_)
+                Case 4 'Inventory --> Exchange
+                    OnExchangeAddItem(packet, index_)
+                Case 5 'Exchange --> Inventory
+
                 Case 7 'drop
                     OnDropItem(packet, index_)
             End Select
@@ -16,6 +20,10 @@
             Dim oldslot As Byte = packet.Byte
             Dim newslot As Byte = packet.Byte
             Dim amout As UInt16 = packet.Word
+
+            If PlayerData(index_).InExchange = True Then
+                Exit Sub
+            End If
 
             If Inventorys(index_).UserItems(oldslot).Pk2Id <> 0 Then
                 If oldslot >= 0 Then
@@ -96,6 +104,56 @@
 
             Inventorys(index_).ReOrderItems(index_)
         End Sub
+
+        Public Sub OnExchangeAddItem(ByVal packet As PacketReader, ByVal index_ As Integer)
+            Dim slot As Byte = packet.Byte
+            Dim ExListInd As Integer = PlayerData(index_).ExchangeID
+
+            If ExListInd = -1 Or Inventorys(index_).UserItems(slot).Pk2Id = 0 Then 'Security...
+                Exit Sub
+            End If
+
+            If ExchangeData(ExListInd).Player1Index = index_ Then
+                For i = 0 To 11 'Find free Exchange Slot
+                    If ExchangeData(ExListInd).Items1(i) = -1 Then
+                        ExchangeData(ExListInd).Items1(i) = slot
+
+                        Dim writer As New PacketWriter
+                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Byte(1)
+                        writer.Byte(4)
+                        writer.Byte(slot)
+                        writer.Byte(0)
+                        Server.Send(writer.GetBytes, index_)
+
+                        Exchange.OnExchangeUpdateItems(ExListInd)
+                    End If
+                Next
+
+            ElseIf ExchangeData(ExListInd).Player2Index = index_ Then
+                For i = 0 To 11 'Find free Exchange Slot
+                    If ExchangeData(ExListInd).Items2(i) = -1 Then
+                        ExchangeData(ExListInd).Items2(i) = slot
+
+
+                        Dim writer As New PacketWriter
+                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Byte(1)
+                        writer.Byte(4)
+                        writer.Byte(slot)
+                        writer.Byte(0)
+                        Server.Send(writer.GetBytes, index_)
+
+                        Exchange.OnExchangeUpdateItems(ExListInd)
+                    End If
+                Next
+            End If
+
+
+
+
+        End Sub
+
 
         Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte) As Byte()
             Dim writer As New PacketWriter

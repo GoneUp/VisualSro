@@ -109,11 +109,11 @@
 				Chars(i).Gold = CUInt(tmp.Tables(0).Rows(i).ItemArray(14))
 				Chars(i).SkillPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(15))
 				Chars(i).GM = CBool(tmp.Tables(0).Rows(i).ItemArray(16))
-				Chars(i).XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
-				Chars(i).YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
-				Chars(i).X = CDbl(tmp.Tables(0).Rows(i).ItemArray(19))
-				Chars(i).Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(20)) 'xsec
-				Chars(i).Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(21))
+                Chars(i).Position.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
+                Chars(i).Position.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
+                Chars(i).Position.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(19))
+                Chars(i).Position.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(20)) 'xsec
+                Chars(i).Position.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(21))
 				Chars(i).CHP = CUInt(tmp.Tables(0).Rows(i).ItemArray(22))
 				Chars(i).CMP = CUInt(tmp.Tables(0).Rows(i).ItemArray(23))
 				Chars(i).MinPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(24))
@@ -156,11 +156,7 @@
 				AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
 				AllItems(i).Amount = CUShort(tmp.Tables(0).Rows(i).ItemArray(5))
 				AllItems(i).Durability = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
-
-				If AllItems(i).DatabaseID >= LastDatabaseID Then
-					LastDatabaseID = AllItems(i).DatabaseID
-				End If
-			Next
+            Next
 
 
 		End Sub

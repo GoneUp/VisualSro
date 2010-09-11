@@ -93,25 +93,23 @@
 
         Public Sub OnGmTeleport(ByVal packet As PacketReader, ByVal index_ As Integer)
 
-            Dim ToXSector As Byte = packet.Byte
-            Dim ToYSector As Byte = packet.Byte
-            Dim ToXPos As Single = packet.Float
-            Dim ToZPos As Single = packet.Float
-            Dim ToYPos As Single = packet.Float
+            Dim to_pos As New Position
+            to_pos.XSector = packet.Byte
+            to_pos.YSector = packet.Byte
+            to_pos.X = packet.Float
+            to_pos.Z = packet.Float
+            to_pos.Y = packet.Float
             Dim Angle As UInt16 = packet.Word 'Not sure 
 
-            PlayerData(index_).XSector = ToXSector
-            PlayerData(index_).YSector = ToYSector
-            PlayerData(index_).X = ToXPos
-            PlayerData(index_).Z = ToZPos
-            PlayerData(index_).Y = ToYPos
+            PlayerData(index_).Position = to_pos
+        
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).XSector, PlayerData(index_).YSector, Math.Round(PlayerData(index_).X), Math.Round(PlayerData(index_).Z), Math.Round(PlayerData(index_).Y), PlayerData(index_).UniqueId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector, Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z), Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).UniqueId))
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Teleport_Annonce)
-            writer.Byte(PlayerData(index_).XSector)
-            writer.Byte(PlayerData(index_).YSector)
+            writer.Byte(PlayerData(index_).Position.XSector)
+            writer.Byte(PlayerData(index_).Position.YSector)
             Server.Send(writer.GetBytes, index_)
 
         End Sub
@@ -132,25 +130,15 @@
 
 			For i As Integer = 0 To Server.OnlineClient
 				If PlayerData(i).CharacterName = Name Then
-					Dim ToXSector As Byte = PlayerData(i).XSector
-					Dim ToYSector As Byte = PlayerData(i).YSector
-					Dim ToXPos As Single = PlayerData(i).X
-					Dim ToZPos As Single = PlayerData(i).Z
-					Dim ToYPos As Single = PlayerData(i).Y
-					Dim Angle As UInt16 = PlayerData(i).Angle
 
-					PlayerData(index_).XSector = ToXSector
-					PlayerData(index_).YSector = ToYSector
-					PlayerData(index_).X = ToXPos
-					PlayerData(index_).Z = ToZPos
-					PlayerData(index_).Y = ToYPos
-
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).XSector, PlayerData(index_).YSector, Math.Round(PlayerData(index_).X), Math.Round(PlayerData(index_).Z), Math.Round(PlayerData(index_).Y), PlayerData(index_).UniqueId))
+                    PlayerData(index_).Position = PlayerData(i).Position
+					
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector, Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z), Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).UniqueId))
 
 					Dim writer As New PacketWriter
 					writer.Create(ServerOpcodes.Teleport_Annonce)
-					writer.Byte(PlayerData(index_).XSector)
-					writer.Byte(PlayerData(index_).YSector)
+                    writer.Byte(PlayerData(index_).Position.XSector)
+                    writer.Byte(PlayerData(index_).Position.YSector)
 					Server.Send(writer.GetBytes, index_)
 
 					Exit For
@@ -164,30 +152,20 @@
 			Dim Name As String = packet.String(NameLength)
 
 			For i As Integer = 0 To Server.OnlineClient
-				If PlayerData(i).CharacterName = Name Then
-					Dim ToXSector As Byte = PlayerData(index_).XSector
-					Dim ToYSector As Byte = PlayerData(index_).YSector
-					Dim ToXPos As Single = PlayerData(index_).X
-					Dim ToZPos As Single = PlayerData(index_).Z
-					Dim ToYPos As Single = PlayerData(index_).Y
-					Dim Angle As UInt16 = PlayerData(index_).Angle
+                If PlayerData(i).CharacterName = Name Then
 
-					PlayerData(i).XSector = ToXSector
-					PlayerData(i).YSector = ToYSector
-					PlayerData(i).X = ToXPos
-					PlayerData(i).Z = ToZPos
-					PlayerData(i).Y = ToYPos
+                    PlayerData(i).Position = PlayerData(index_).Position
 
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(i).XSector, PlayerData(i).YSector, Math.Round(PlayerData(i).X), Math.Round(PlayerData(i).Z), Math.Round(PlayerData(i).Y), PlayerData(i).UniqueId))
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(i).Position.XSector, PlayerData(i).Position.YSector, Math.Round(PlayerData(i).Position.X), Math.Round(PlayerData(i).Position.Z), Math.Round(PlayerData(i).Position.Y), PlayerData(i).UniqueId))
 
-					Dim writer As New PacketWriter
-					writer.Create(ServerOpcodes.Teleport_Annonce)
-					writer.Byte(PlayerData(i).XSector)
-					writer.Byte(PlayerData(i).YSector)
-					Server.Send(writer.GetBytes, i)
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Teleport_Annonce)
+                    writer.Byte(PlayerData(i).Position.XSector)
+                    writer.Byte(PlayerData(i).Position.YSector)
+                    Server.Send(writer.GetBytes, i)
 
-					Exit For
-				End If
+                    Exit For
+                End If
 			Next
         End Sub
 

@@ -30,6 +30,11 @@
 		Teleport_Reply = &H34B6
 		HelperIcon = &H7402
 
+        Exchange_Invite = &H7081
+        Exchange_Invite_Accept = &H3080
+        Exchange_Confirm = &H7082
+        Exchange_Approve = &H7083
+
 
 	End Enum
 
@@ -75,7 +80,16 @@
 		GroupSpawnStart = &H3017
 		GroupSpawnData = &H3019
 		GroupSpawnEnd = &H3018
-		Target = &HB045
+        Target = &HB045
+
+        'Exchange
+        Exchange_Invite = &H3080
+        Exchange_Invite_Reply = &HB081
+        Exchange_Start = &H3085
+        Exchange_UpdateItems = &H308C
+        Exchange_Confirm_Reply = &HB082
+        Exchange_Confirm_Other = &H3086
+        Exchange_Approve_Reply = &HB083
 
 		[Exit] = &HB005
 		Exit2 = &H300A

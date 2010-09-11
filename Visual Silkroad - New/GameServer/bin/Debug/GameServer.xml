@@ -33,7 +33,7 @@ GameServer
 	<param name="Index"></param>
 	<returns></returns>
 	<remarks></remarks>
-</member><member name="M:GameServer.GameServer.Functions.Alchemy.CheckForSucess(System.Byte,System.Int32)">
+</member><member name="M:GameServer.GameServer.Functions.Alchemy.CheckForSuccess(System.Byte,System.Int32)">
 	<summary>
  Radom...
  </summary>

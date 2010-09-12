@@ -36,14 +36,13 @@
                 writer.Word((to_pos.Z))
                 writer.Word(CUInt(to_pos.Y))
                 writer.Byte(0) '1= source
-     
-
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
                 SpawnMeAtMovement(Index_, to_pos)
+                PlayerData(Index_).Position = to_pos
                 SpawnOtherPlayer(Index_) 'Spawn before sending the Packet is to prevent chrashes
                 DespawnPlayerRange(Index_)
-                PlayerData(Index_).Position = to_pos
+
                 Server.SendToAllInRange(writer.GetBytes, Index_)
             Else
 
@@ -107,7 +106,7 @@
             writer.Byte(0) 'dest
             writer.Word(chari.Angle)
             writer.Byte(0) ' death flag
-            writer.Byte(0) 'movement flag
+            writer.Byte(chari.ActionFlag) 'action flag
             writer.Byte(chari.Berserk) 'berserk activated
             writer.Float(chari.WalkSpeed)
             writer.Float(chari.RunSpeed)
@@ -189,8 +188,8 @@
             writer.Word(ToPos.Z)
             writer.Word(ToPos.Y)
 
-            writer.Byte(1)
-            writer.Byte(3) 'movement flag
+            writer.Byte(1) 'movement flag
+            writer.Byte(chari.ActionFlag) 'action flag
             writer.Byte(chari.Berserk) 'berserk activated
 
             writer.Float(chari.WalkSpeed)

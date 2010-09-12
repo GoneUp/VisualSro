@@ -71,14 +71,21 @@ Namespace GameServer
 				Case ClientOpcodes.HelperIcon
                     GameServer.Functions.OnHelperIcon(packet, rp.index)
 
-                    '====EXCHANGE
+                    '=========EXCHANGE======
                 Case ClientOpcodes.Exchange_Invite
                     GameServer.Functions.OnExchangeInvite(packet, rp.index)
 
                 Case ClientOpcodes.Exchange_Invite_Accept
                     GameServer.Functions.OnExchangeInviteReply(packet, rp.index)
 
+                Case ClientOpcodes.Exchange_Confirm
+                    GameServer.Functions.OnExchangeConfirm(packet, rp.index)
 
+                Case ClientOpcodes.Exchange_Approve
+                    GameServer.Functions.OnExchangeApprove(packet, rp.index)
+
+                Case ClientOpcodes.Exchange_Abort
+                    GameServer.Functions.OnExchangeAbort(packet, rp.index)
 
                 Case Else
                     Commands.WriteLog("opCode: " & rp.opcode & " Packet : " & rp.data)

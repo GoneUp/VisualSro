@@ -26,11 +26,18 @@ Namespace GameServer
         Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
             Try
                 Dim sock As Socket = serverSocket.EndAccept(ar)
-                ClientList.Add(sock)
-                Dim index As Integer = ClientList.FindIndex(sock)
-                RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
-                sock.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), sock)
-                serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+                If OnlineClient + 1 <= 1500 Then
+                    ClientList.Add(sock)
+                    Dim index As Integer = ClientList.FindIndex(sock)
+                    RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
+                    sock.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), sock)
+                    serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+                Else
+                    'More then 1500 Sockets
+                    sock.Disconnect(False)
+                    WriteLog("Socket Stack Full!")
+                End If
+
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -1)
             End Try
@@ -48,7 +55,6 @@ Namespace GameServer
         End Sub
 
         Private Shared Sub ReceiveData(ByVal ar As IAsyncResult)
-newa:
             Dim asyncState As Socket = CType(ar.AsyncState, Socket)
             Dim index As Integer = ClientList.FindIndex(asyncState)
             If asyncState.Connected Then
@@ -69,8 +75,6 @@ newa:
                     If asyncState.Connected = True Then
                         asyncState.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
                     End If
-
-                    'GoTo newa
                 End Try
             Else
                 Commands.WriteLog(buffer.ToString)
@@ -112,7 +116,7 @@ newa:
             Next i
         End Sub
 
-        Public Shared Sub SendToAllIngameExpectme(ByVal buff() As Byte, ByVal index As Integer)
+        Public Shared Sub SendToAllIngameExpectMe(ByVal buff() As Byte, ByVal index As Integer)
             For i As Integer = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame

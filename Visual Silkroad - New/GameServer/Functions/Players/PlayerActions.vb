@@ -36,10 +36,10 @@
         End Sub
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim action As Byte = packet.Byte
+            If PlayerData(Index_).ActionFlag = action Then
 
-            'UpdateState(1, action, Index_)
-
-
+            End If
+            UpdateState(1, action, Index_)
         End Sub
 
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer)
@@ -49,6 +49,7 @@
             writer.Byte(Type)
             writer.Byte(State)
             Server.SendToAllInRange(writer.GetBytes, Index_)
+            PlayerData(Index_).ActionFlag = State
         End Sub
 
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)

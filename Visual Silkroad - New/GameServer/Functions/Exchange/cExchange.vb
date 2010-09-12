@@ -7,6 +7,20 @@
     Public Items1(11) As Integer
     Public Items2(11) As Integer
 
+    Public Player1Gold As UInt32
+    Public Player2Gold As UInt32
+
+
+    'Security
+    Public ConfirmPlyr1 As Boolean = False
+    Public ConfirmPlyr2 As Boolean = False
+
+    Public ApprovePlyr1 As Boolean = False
+    Public ApprovePlyr2 As Boolean = False
+
+    Public Aborted As Boolean = False
+    Public AbortedFrom As Integer = -1
+
     Sub New()
         For i = 0 To Items1.Length - 1
             Items1(i) = -1

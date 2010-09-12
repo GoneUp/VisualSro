@@ -38,7 +38,8 @@
     Public Angle As UInt16
     Public Deleted As Boolean
 	Public DeletionTime As DateTime
-	Public HelperIcon As Byte
+    Public HelperIcon As Byte
+    Public ActionFlag As Byte
 
     Public SpawnedPlayers As New List(Of Integer)
     Public SpawnedMonsters As New List(Of Integer)

@@ -4,28 +4,28 @@
 Namespace GameServer
 
     Public Class ClientList
-        Public Shared lista(1500) As Socket
+        Public Shared List(1500) As Socket
         Public Shared OnCharListing(1500) As cCharListing
         Public Shared PlayerData(1500) As [cChar]
 
         Public Shared Sub Add(ByVal sock As Socket)
-            For i As Integer = 0 To lista.Length - 1
-                If lista(i) Is Nothing Then
-                    lista(i) = sock
+            For i As Integer = 0 To List.Length - 1
+                If List(i) Is Nothing Then
+                    List(i) = sock
                     Return
                 End If
             Next i
         End Sub
 
         Public Shared Sub Delete(ByVal index As Integer)
-            If lista(index) IsNot Nothing Then
-                lista(index) = Nothing
+            If List(index) IsNot Nothing Then
+                List(index) = Nothing
             End If
         End Sub
 
         Public Shared Function FindIndex(ByVal sock As Socket) As Integer
-            For i As Integer = 0 To lista.Length - 1
-                If sock Is lista(i) Then
+            For i As Integer = 0 To List.Length - 1
+                If sock Is List(i) Then
                     Return i
                 End If
             Next i
@@ -34,8 +34,8 @@ Namespace GameServer
 
         Public Shared Function GetSocket(ByVal index As Integer) As Socket
             Dim socket As Socket = Nothing
-            If (lista(index) IsNot Nothing) AndAlso lista(index).Connected Then
-                socket = lista(index)
+            If (List(index) IsNot Nothing) AndAlso List(index).Connected Then
+                socket = List(index)
             End If
             Return socket
         End Function

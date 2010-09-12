@@ -34,6 +34,7 @@
         Exchange_Invite_Accept = &H3080
         Exchange_Confirm = &H7082
         Exchange_Approve = &H7083
+        Exchange_Abort = &H7084
 
 
 	End Enum
@@ -61,7 +62,7 @@
 		Movement = &HB021
 		Chat_Accept = &HB025
 		Chat = &H3026
-		Action = &HBF30
+        Action = &H30BF
 		ItemMove = &HB034
 		UniqueAnnonce = &H300C
 		Alchemy = &HB150
@@ -90,6 +91,11 @@
         Exchange_Confirm_Reply = &HB082
         Exchange_Confirm_Other = &H3086
         Exchange_Approve_Reply = &HB083
+        Exchange_Finsih = &H3087
+        Exchange_Error = &H3088
+        Exchange_Gold = &H3089
+        Exchange_Abort_Reply = &HB034
+
 
 		[Exit] = &HB005
 		Exit2 = &H300A

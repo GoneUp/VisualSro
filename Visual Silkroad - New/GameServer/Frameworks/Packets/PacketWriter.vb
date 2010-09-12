@@ -88,7 +88,5 @@ Namespace GameServer
             Me.bw.Write(data)
             Me.dataLen += 4
         End Sub
-
-
     End Class
 End Namespace

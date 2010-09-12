@@ -22,10 +22,10 @@
 
         Public Sub OnExchangeInviteReply(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim type As Byte = Packet.Byte
-            Dim succes As Byte = Packet.Byte
+            Dim succes As Boolean = Packet.Boolean
             Dim writer As New PacketWriter
 
-            If succes = 1 Then
+            If succes = True Then
 
                 writer.Create(ServerOpcodes.Exchange_Start)
                 writer.DWord(PlayerData(PlayerData(Index_).InExchangeWith).UniqueId)
@@ -44,14 +44,22 @@
 
                 PlayerData(Index_).ExchangeID = tmp_ex.ExchangeID
                 PlayerData(PlayerData(Index_).InExchangeWith).ExchangeID = tmp_ex.ExchangeID
+                PlayerData(Index_).InExchange = True
+                PlayerData(PlayerData(Index_).InExchangeWith).InExchange = True
 
-            Else
-                writer.Create(ServerOpcodes.Exchange_Invite_Reply)
-                writer.Byte(2)
+            ElseIf succes = False Then
+                writer.Create(ServerOpcodes.Exchange_Error)
+                writer.Byte(&H28)
                 Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
+
+                writer.Create(ServerOpcodes.Exchange_Error)
+                writer.Byte(&H28)
+                Server.Send(writer.GetBytes, Index_)
 
                 PlayerData(PlayerData(Index_).InExchangeWith).InExchangeWith = -1
                 PlayerData(Index_).InExchangeWith = -1
+                PlayerData(Index_).InExchange = False
+                PlayerData(PlayerData(Index_).InExchangeWith).InExchange = False
             End If
         End Sub
 
@@ -160,6 +168,24 @@
 
         Public Sub OnExchangeConfirm(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             If PlayerData(Index_).InExchange = True Then
+                Dim exlist As Integer = PlayerData(Index_).ExchangeID
+
+                If ExchangeData(exlist).Player1Index = Index_ Then
+                    If ExchangeData(exlist).ConfirmPlyr1 = False Then
+                        ExchangeData(exlist).ConfirmPlyr1 = True
+                    Else
+                        'Hack Attempt
+                        Exit Sub
+                    End If
+
+                ElseIf ExchangeData(exlist).Player2Index = Index_ Then
+                    If ExchangeData(exlist).ConfirmPlyr2 = False Then
+                        ExchangeData(exlist).ConfirmPlyr2 = True
+                    Else
+                        'Hack Attempt
+                        Exit Sub
+                    End If
+                End If
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Exchange_Confirm_Reply)
                 writer.Byte(1)
@@ -167,6 +193,181 @@
 
                 writer.Create(ServerOpcodes.Exchange_Confirm_Other)
                 Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
+            End If
+        End Sub
+
+        Public Sub OnExchangeApprove(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+
+            If PlayerData(Index_).InExchange = True Then
+                Dim exlist As Integer = PlayerData(Index_).ExchangeID
+                Dim writer As New PacketWriter
+
+                If ExchangeData(exlist).Player1Index = Index_ Then
+                    If ExchangeData(exlist).ApprovePlyr1 = False And ExchangeData(exlist).ApprovePlyr2 = False Then
+                        ExchangeData(exlist).ApprovePlyr1 = True
+
+                        writer.Create(ServerOpcodes.Exchange_Approve_Reply)
+                        writer.Byte(1)
+                        Server.Send(writer.GetBytes, Index_)
+
+                    ElseIf ExchangeData(exlist).ApprovePlyr1 = False And ExchangeData(exlist).ApprovePlyr2 = True Then
+                        'Finish Exchange
+                        FinishExchange(exlist)
+                    Else
+
+                        'Hack Attempt
+                        Exit Sub
+                    End If
+
+                ElseIf ExchangeData(exlist).Player2Index = Index_ Then
+
+                    If ExchangeData(exlist).ApprovePlyr2 = False And ExchangeData(exlist).ApprovePlyr1 = False Then
+                        ExchangeData(exlist).ApprovePlyr2 = True
+
+                        writer.Create(ServerOpcodes.Exchange_Approve_Reply)
+                        writer.Byte(1)
+                        Server.Send(writer.GetBytes, Index_)
+
+                    ElseIf ExchangeData(exlist).ApprovePlyr2 = False And ExchangeData(exlist).ApprovePlyr1 = True Then
+                        'Finish Exchange
+                        FinishExchange(exlist)
+                    Else
+
+                        'Hack Attempt
+                        Exit Sub
+                    End If
+
+
+
+                End If
+            End If
+        End Sub
+        Public Sub FinishExchange(ByVal ExchangeSession As Integer)
+            Dim writer As New PacketWriter
+            Server.Send(writer.GetBytes, ExchangeData(ExchangeSession).Player1Index)
+            writer.Create(ServerOpcodes.Exchange_Finsih)
+            Server.Send(writer.GetBytes, ExchangeData(ExchangeSession).Player2Index)
+
+
+            Dim tmp_ex As cExchange = ExchangeData(ExchangeSession)
+            'Player 1 items --> Player 2
+            For i = 0 To 11
+                If tmp_ex.Items1(i) <> -1 Then
+
+                    Dim remove_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
+                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
+
+                    'Remove...
+                    DeleteItemFromDB(tmp_ex.Items1(i), tmp_ex.Player1Index)
+                    remove_item.Pk2Id = 0
+                    remove_item.Durability = 0
+                    remove_item.Plus = 0
+                    remove_item.Amount = 0
+
+                    Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i)) = remove_item
+
+                    'Add to new...
+                    add_item.OwnerCharID = PlayerData(tmp_ex.Player2Index).UniqueId
+                    add_item.Slot = GetFreeItemSlot(tmp_ex.Player2Index)
+                    Inventorys(tmp_ex.Player2Index).UserItems(add_item.Slot) = add_item
+                    UpdateItem(add_item)
+                End If
+            Next
+            PlayerData(tmp_ex.Player1Index).Gold += tmp_ex.Player2Gold
+
+
+
+            'Player 2 Items --> Player 1 
+            For i = 0 To 11
+                If tmp_ex.Items2(i) <> -1 Then
+
+                    Dim remove_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
+                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
+
+                    'Remove...
+                    DeleteItemFromDB(tmp_ex.Items2(i), tmp_ex.Player2Index)
+                    remove_item.Pk2Id = 0
+                    remove_item.Durability = 0
+                    remove_item.Plus = 0
+                    remove_item.Amount = 0
+
+                    Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i)) = remove_item
+
+                    'Add to new...
+                    add_item.OwnerCharID = PlayerData(tmp_ex.Player1Index).UniqueId
+                    add_item.Slot = GetFreeItemSlot(tmp_ex.Player1Index)
+                    Inventorys(tmp_ex.Player1Index).UserItems(add_item.Slot) = add_item
+                    UpdateItem(add_item)
+                End If
+            Next
+            PlayerData(tmp_ex.Player2Index).Gold += tmp_ex.Player1Gold
+
+            'Clean up
+            ExchangeData.RemoveAt(ExchangeSession)
+            PlayerData(tmp_ex.Player1Index).ExchangeID = -1
+            PlayerData(tmp_ex.Player1Index).InExchangeWith = -1
+            PlayerData(tmp_ex.Player1Index).InExchange = False
+
+            PlayerData(tmp_ex.Player2Index).ExchangeID = -1
+            PlayerData(tmp_ex.Player2Index).InExchangeWith = -1
+            PlayerData(tmp_ex.Player2Index).InExchange = False
+
+            Inventorys(tmp_ex.Player1Index).ReOrderItems(tmp_ex.Player1Index)
+            Inventorys(tmp_ex.Player2Index).ReOrderItems(tmp_ex.Player2Index)
+
+        End Sub
+
+
+        Public Sub OnExchangeAbort(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+
+            If PlayerData(Index_).InExchange = True Then
+                If ExchangeData(PlayerData(Index_).ExchangeID).Aborted = False Then
+
+                    writer.Create(ServerOpcodes.Exchange_Error)
+                    writer.Byte(&H2C)
+                    Server.Send(writer.GetBytes, Index_)
+
+                    writer.Create(ServerOpcodes.Exchange_Error)
+                    writer.Byte(&H2C)
+                    Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
+
+                    ExchangeData(PlayerData(Index_).ExchangeID).Aborted = True
+                    ExchangeData(PlayerData(Index_).ExchangeID).AbortedFrom = Index_
+                Else
+                    If ExchangeData(PlayerData(Index_).ExchangeID).AbortedFrom = Index_ Then
+                        writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+                        writer.Byte(1)
+                        Server.Send(writer.GetBytes, Index_)
+
+                        writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+                        writer.Byte(2)
+                        writer.Byte(&H1B)
+                        Server.Send(writer.GetBytes, Index_)
+
+                        Dim tmp_ex As cExchange = ExchangeData(PlayerData(Index_).ExchangeID)
+                        ExchangeData.RemoveAt(PlayerData(Index_).ExchangeID)
+                        PlayerData(tmp_ex.Player1Index).ExchangeID = -1
+                        PlayerData(tmp_ex.Player1Index).InExchangeWith = -1
+                        PlayerData(tmp_ex.Player1Index).InExchange = False
+
+
+                    Else
+                        writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+                        writer.Byte(2)
+                        writer.Byte(&H1B)
+                        Server.Send(writer.GetBytes, Index_)
+
+                        PlayerData(Index_).ExchangeID = -1
+                        PlayerData(Index_).InExchangeWith = -1
+                        PlayerData(Index_).InExchange = False
+
+                    End If
+
+
+
+                End If
+
             End If
         End Sub
     End Module

@@ -65,10 +65,10 @@
     Public MAX_ATTACK_RATING As Single
     Public MIN_CRITICAL As Single
     Public MAX_CRITICAL As Single
-    Public USE_TIME As Integer  ' steht drin wieviel HP ein potion heilt           //*******************************
-    Public USE_TIME2 As Integer ' steht drin wieviel prozent HP ein grain heilt    //* Das hier muss wahrscheinlich
-    Public USE_TIME3 As Integer ' steht drin wieviel MP ein potion heilt           //* umbenannt werden, USE_TIME
-    Public USE_TIME4 As Integer ' steht drin wieviel prozent MP ein grain heilt    //* passt nicht ganz.
+    Public USE_TIME_HP As Integer  ' steht drin wieviel HP ein potion heilt           //*******************************
+    Public USE_TIME_HP_PER As Integer ' steht drin wieviel prozent HP ein grain heilt    //* Das hier muss wahrscheinlich
+    Public USE_TIME_MP As Integer ' steht drin wieviel MP ein potion heilt           //* umbenannt werden, USE_TIME
+    Public USE_TIME_MP_PER As Integer ' steht drin wieviel prozent MP ein grain heilt    //* passt nicht ganz.
 
 
 End Class

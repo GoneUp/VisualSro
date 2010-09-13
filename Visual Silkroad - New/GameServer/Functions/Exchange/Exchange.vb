@@ -118,24 +118,24 @@
 
             '=========Player 2
             itemcount = 0
-            temp_inv = Inventorys((ExchangeData(ExListInd).Player1Index))
+            temp_inv = Inventorys((ExchangeData(ExListInd).Player2Index))
 
             For own_decider = 0 To 1
                 itemcount = 0
                 writer.Create(ServerOpcodes.Exchange_UpdateItems)
-                writer.DWord(PlayerData(ExchangeData(ExListInd).Player1Index).UniqueId)
+                writer.DWord(PlayerData(ExchangeData(ExListInd).Player2Index).UniqueId)
 
                 For i = 0 To 11 'Count items
-                    If ExchangeData(ExListInd).Items1(i) <> -1 Then
+                    If ExchangeData(ExListInd).Items2(i) <> -1 Then
                         itemcount += 1
                     End If
                 Next
                 writer.Byte(itemcount)
 
                 For i = 0 To 11 'Send Item Data
-                    If ExchangeData(ExListInd).Items1(i) <> -1 Then
+                    If ExchangeData(ExListInd).Items2(i) <> -1 Then
 
-                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExListInd).Items1(i))
+                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExListInd).Items2(i))
                         Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                         If own_decider = 0 Then
@@ -157,11 +157,10 @@
                         End Select
                     End If
                 Next
-
                 If own_decider = 0 Then
-                    Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player1Index)
-                Else
                     Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player2Index)
+                Else
+                    Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player1Index)
                 End If
             Next
         End Sub
@@ -244,6 +243,7 @@
         End Sub
         Public Sub FinishExchange(ByVal ExchangeSession As Integer)
             Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Exchange_Finsih)
             Server.Send(writer.GetBytes, ExchangeData(ExchangeSession).Player1Index)
             writer.Create(ServerOpcodes.Exchange_Finsih)
             Server.Send(writer.GetBytes, ExchangeData(ExchangeSession).Player2Index)

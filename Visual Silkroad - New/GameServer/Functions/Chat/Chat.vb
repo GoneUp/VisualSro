@@ -165,7 +165,7 @@
         End Sub
 
         ''' <summary>
-        ''' Only to Player Index
+        ''' Only to Specific Player Index
         ''' </summary>
         ''' <param name="message"></param>
         ''' <param name="index"></param>

@@ -8,7 +8,7 @@ GameServer
 <members>
 <member name="M:GameServer.GameServer.Functions.Chat.SendNotice(System.String,System.Int32)">
 	<summary>
- Only to Player Index
+ Only to Specific Player Index
  </summary>
 	<param name="message"></param>
 	<param name="index"></param>

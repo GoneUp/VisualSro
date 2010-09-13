@@ -53,6 +53,9 @@ Namespace GameServer
                 Case ClientOpcodes.ItemMove
                     GameServer.Functions.OnInventory(packet, rp.index)
 
+                Case ClientOpcodes.ItemUse
+                    GameServer.Functions.OnUseItem(packet, rp.index)
+
                 Case ClientOpcodes.Action
                     GameServer.Functions.OnPlayerAction(packet, rp.index)
 

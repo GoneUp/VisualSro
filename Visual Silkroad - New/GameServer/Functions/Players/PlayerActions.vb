@@ -36,10 +36,30 @@
         End Sub
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim action As Byte = packet.Byte
-            If PlayerData(Index_).ActionFlag = action Then
 
-            End If
-            UpdateState(1, action, Index_)
+            Select Case action
+                Case 2 'Run --> Walk
+                    UpdateState(1, action, Index_)
+
+                Case 3 'Walk --> Run
+                    UpdateState(1, action, Index_)
+
+                Case 4 'sit down
+                    If PlayerData(Index_).ActionFlag = action Then
+                        PlayerData(Index_).ActionFlag = 0
+                        UpdateState(1, 0, Index_)
+
+                    Else
+                        UpdateState(1, action, Index_)
+                    End If
+
+                Case Else
+                    WriteLog("UNKNOWN ACTION ID: " & action)
+
+
+            End Select
+
+
         End Sub
 
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer)
@@ -105,6 +125,37 @@
 			Server.SendToAllInRange(writer.GetBytes, index_)
 
 			DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(index_).HelperIcon, PlayerData(index_).UniqueId))
-		End Sub
+        End Sub
+
+        Public Sub UpdateHP(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.HP_MP_Update)
+            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.Word(&H10)
+            writer.Byte(1) 'type
+            writer.DWord(PlayerData(Index_).CHP)
+            Server.Send(writer.GetBytes, Index_)
+        End Sub
+
+        Public Sub UpdateMP(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.HP_MP_Update)
+            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.Word(&H10)
+            writer.Byte(2) 'type
+            writer.DWord(PlayerData(Index_).CMP)
+            Server.Send(writer.GetBytes, Index_)
+        End Sub
+
+        Public Sub UpdateHP_MP(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.HP_MP_Update)
+            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.Word(&H10)
+            writer.Byte(3) 'type
+            writer.DWord(PlayerData(Index_).CHP)
+            writer.DWord(PlayerData(Index_).CMP)
+            Server.Send(writer.GetBytes, Index_)
+        End Sub
 	End Module
 End Namespace

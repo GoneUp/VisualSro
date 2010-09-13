@@ -28,7 +28,8 @@
 		Alchemy = &H7150
 		Angle_Update = &H7024
 		Teleport_Reply = &H34B6
-		HelperIcon = &H7402
+        HelperIcon = &H7402
+        ItemUse = &H704C
 
         Exchange_Invite = &H7081
         Exchange_Invite_Accept = &H3080
@@ -71,7 +72,10 @@
 		Weather = &H3809
 		Teleport_Annonce = &H34B5
 		Emotion = &H3091
-		HelperIcon = &HB402
+        HelperIcon = &HB402
+        HP_MP_Update = &H3057
+        ItemUse = &HB04C
+        ItemUseOtherPlayer = &H305C
 
 		EquipItem = &H3038
 		UnEquipItem = &H3039

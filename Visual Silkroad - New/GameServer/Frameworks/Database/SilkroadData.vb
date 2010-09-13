@@ -94,10 +94,10 @@
             tmp.MAX_ATTACK_RATING = Convert.ToSingle(tmpString(115))
             tmp.MIN_CRITICAL = Convert.ToSingle(tmpString(116))
             tmp.MAX_CRITICAL = Convert.ToSingle(tmpString(117))
-            tmp.USE_TIME = Convert.ToInt32(tmpString(118))
-            tmp.USE_TIME2 = Convert.ToInt32(tmpString(120))
-            tmp.USE_TIME3 = Convert.ToInt32(tmpString(122))
-            tmp.USE_TIME4 = Convert.ToInt32(tmpString(124))
+            tmp.USE_TIME_HP = Convert.ToInt32(tmpString(118))
+            tmp.USE_TIME_HP_PER = Convert.ToInt32(tmpString(120))
+            tmp.USE_TIME_MP = Convert.ToInt32(tmpString(122))
+            tmp.USE_TIME_MP_PER = Convert.ToInt32(tmpString(124))
             RefItems.Add(tmp)
         Next
 

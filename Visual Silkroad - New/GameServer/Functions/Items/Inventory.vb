@@ -10,11 +10,11 @@
                     OnExchangeAddItem(packet, index_)
                 Case 5 'Exchange --> Inventory
                     OnExchangeRemoveItem(packet, index_)
+                Case 13
+                    OnExchangeAddGold(packet, index_)
                 Case 7 'drop
                     OnDropItem(packet, index_)
             End Select
-
-
         End Sub
         Public Sub OnNormalMove(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim oldslot As Byte = packet.Byte
@@ -225,6 +225,7 @@
 
                         writer.Create(ServerOpcodes.ItemMove)
                         writer.Byte(1)
+                        writer.Byte(&HD)
                         writer.DWord(add_gold)
                         Server.Send(writer.GetBytes, index_)
 
@@ -264,8 +265,6 @@
                     Return i
                 End If
             Next
-
-
         End Function
     End Module
 End Namespace

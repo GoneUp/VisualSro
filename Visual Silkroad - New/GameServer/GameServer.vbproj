@@ -78,6 +78,7 @@
     <Compile Include="Frameworks\Packets\ReadPacket.vb" />
     <Compile Include="Frameworks\Server\ClientList.vb" />
     <Compile Include="Frameworks\Server\Server.vb" />
+    <Compile Include="Frameworks\Server\Settings.vb" />
     <Compile Include="Functions\Alchemy\Alchemy.vb" />
     <Compile Include="Functions\Auth\LoginAuth.vb" />
     <Compile Include="Functions\Character\cCharListing.vb" />
@@ -91,6 +92,7 @@
     <Compile Include="Functions\Items\cInvItem.vb" />
     <Compile Include="Functions\Items\cItem.vb" />
     <Compile Include="Functions\Items\Inventory.vb" />
+    <Compile Include="Functions\Items\UseItem.vb" />
     <Compile Include="Functions\Monster\cMonster.vb" />
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Console\Main.vb" />

@@ -33,16 +33,21 @@
                 writer.Byte(to_pos.XSector)
                 writer.Byte(to_pos.YSector)
                 writer.Word(CUInt(to_pos.X))
-                writer.Word((to_pos.Z))
+                writer.Word(to_pos.Z)
                 writer.Word(CUInt(to_pos.Y))
                 writer.Byte(0) '1= source
+                'writer.Byte(PlayerData(Index_).Position.XSector)
+                'writer.Byte(PlayerData(Index_).Position.YSector)
+                'writer.Word(CUInt(PlayerData(Index_).Position.X))
+                'writer.DWord(PlayerData(Index_).Position.Z)
+                'writer.Word(CUInt(PlayerData(Index_).Position.Y))
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
-                SpawnMeAtMovement(Index_, to_pos)
-                PlayerData(Index_).Position = to_pos
+                SpawnMe(Index_)
                 SpawnOtherPlayer(Index_) 'Spawn before sending the Packet is to prevent chrashes
                 DespawnPlayerRange(Index_)
 
+                PlayerData(Index_).Position = to_pos
                 Server.SendToAllInRange(writer.GetBytes, Index_)
             Else
 

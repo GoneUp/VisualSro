@@ -33,13 +33,17 @@
     Public Intelligence As UShort
     Public GM As Boolean
     Public PVP As Byte
-    Public Position As New Position
     Public MaxSlots As Byte
     Public Angle As UInt16
     Public Deleted As Boolean
-	Public DeletionTime As DateTime
+    Public DeletionTime As DateTime
     Public HelperIcon As Byte
     Public ActionFlag As Byte
+
+    Public Position As New Position
+    Public Position_Recall As New Position
+    Public Position_Return As New Position
+    Public Position_Dead As New Position
 
     Public SpawnedPlayers As New List(Of Integer)
     Public SpawnedMonsters As New List(Of Integer)

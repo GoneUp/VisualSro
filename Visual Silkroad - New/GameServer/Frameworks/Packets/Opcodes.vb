@@ -76,6 +76,7 @@
         HP_MP_Update = &H3057
         ItemUse = &HB04C
         ItemUseOtherPlayer = &H305C
+        Gold_Update = &H304E
 
 		EquipItem = &H3038
 		UnEquipItem = &H3039

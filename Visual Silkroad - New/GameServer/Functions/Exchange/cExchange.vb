@@ -7,8 +7,8 @@
     Public Items1(11) As Integer
     Public Items2(11) As Integer
 
-    Public Player1Gold As UInt32
-    Public Player2Gold As UInt32
+    Public Player1Gold As UInt64
+    Public Player2Gold As UInt64
 
 
     'Security

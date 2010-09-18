@@ -10,10 +10,10 @@
                     OnExchangeAddItem(packet, index_)
                 Case 5 'Exchange --> Inventory
                     OnExchangeRemoveItem(packet, index_)
-                Case 13
-                    OnExchangeAddGold(packet, index_)
                 Case 7 'drop
                     OnDropItem(packet, index_)
+                Case 13  'Exchange Gold
+                    OnExchangeAddGold(packet, index_)
             End Select
         End Sub
         Public Sub OnNormalMove(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -212,12 +212,13 @@
                         ExchangeData(PlayerData(index_).ExchangeID).Player1Gold = add_gold
                         writer.Create(ServerOpcodes.ItemMove)
                         writer.Byte(1)
-                        writer.DWord(add_gold)
+                        writer.Byte(&HD)
+                        writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, index_)
 
                         writer.Create(ServerOpcodes.Exchange_Gold)
                         writer.Byte(2)
-                        writer.DWord(add_gold)
+                        writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, PlayerData(index_).InExchangeWith)
 
                     ElseIf ExchangeData(PlayerData(index_).ExchangeID).Player2Index = index_ Then
@@ -226,12 +227,12 @@
                         writer.Create(ServerOpcodes.ItemMove)
                         writer.Byte(1)
                         writer.Byte(&HD)
-                        writer.DWord(add_gold)
+                        writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, index_)
 
                         writer.Create(ServerOpcodes.Exchange_Gold)
                         writer.Byte(2)
-                        writer.DWord(add_gold)
+                        writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, PlayerData(index_).InExchangeWith)
                     End If
                 End If

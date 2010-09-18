@@ -57,9 +57,9 @@
                 Server.Send(writer.GetBytes, Index_)
 
                 PlayerData(PlayerData(Index_).InExchangeWith).InExchangeWith = -1
+                PlayerData(PlayerData(Index_).InExchangeWith).InExchange = False
                 PlayerData(Index_).InExchangeWith = -1
                 PlayerData(Index_).InExchange = False
-                PlayerData(PlayerData(Index_).InExchangeWith).InExchange = False
             End If
         End Sub
 
@@ -274,7 +274,7 @@
                 End If
             Next
             PlayerData(tmp_ex.Player1Index).Gold += tmp_ex.Player2Gold
-
+            UpdateGold(tmp_ex.Player1Index)
 
 
             'Player 2 Items --> Player 1 
@@ -301,6 +301,7 @@
                 End If
             Next
             PlayerData(tmp_ex.Player2Index).Gold += tmp_ex.Player1Gold
+            UpdateGold(tmp_ex.Player2Index)
 
             'Clean up
             ExchangeData.RemoveAt(ExchangeSession)

@@ -39,13 +39,29 @@
             Dim split1 As String() = endpoint.ToString.Split(":")
             Dim split2 As String() = split1(0).Split(".")
             Dim realkey As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
+            Dim loggedin As Boolean = False
 
+            For i = 0 To 1500
+                If ClientList.OnCharListing(i) IsNot Nothing Then
+                    If ClientList.OnCharListing(i).LoginInformation.Id = GameServer.DatabaseCore.Users(UserIndex).Id Then
+                        loggedin = True
+                    End If
+                End If
+            Next
+
+            For i = 0 To 1500
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).AccountID = GameServer.DatabaseCore.Users(UserIndex).Id Then
+                        loggedin = True
+                    End If
+                End If
+            Next
 
       
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
 
-            If GameServer.DatabaseCore.Users(UserIndex).LoggedIn = True Or GameServer.DatabaseCore.Users(UserIndex).Banned = True Then
+            If loggedin = True Or GameServer.DatabaseCore.Users(UserIndex).Banned = True Then
                 writer.Byte(2)
                 writer.Byte(2) 'Server Full aka User is already logged in
                 GameServer.Server.Send(writer.GetBytes, index_)

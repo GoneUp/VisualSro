@@ -157,5 +157,14 @@
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
         End Sub
-	End Module
+
+        Public Sub UpdateGold(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Gold_Update)
+            writer.Byte(1)
+            writer.QWord(PlayerData(Index_).Gold)
+            writer.Byte(0)
+            Server.Send(writer.GetBytes, Index_)
+        End Sub
+    End Module
 End Namespace

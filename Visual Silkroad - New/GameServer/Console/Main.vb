@@ -36,7 +36,7 @@ Namespace GameServer
             Console.Title = "GAMESERVER ALPHA"
             Commands.WriteLog("Starting Agent Server")
             DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
-            Server.ip = "127.0.0.1"
+            Server.ip = "192.168.178.23"
             Server.port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
@@ -112,6 +112,7 @@ read:
                 GameServer.ClientList.OnCharListing(index) = Nothing
                 Functions.PlayerData(index) = Nothing
             Catch ex As Exception
+                Functions.PlayerData(index) = Nothing
             End Try
         End Sub
     End Class

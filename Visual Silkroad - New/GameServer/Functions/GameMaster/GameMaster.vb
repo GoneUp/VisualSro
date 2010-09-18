@@ -128,22 +128,24 @@
 			Dim NameLength As Byte = packet.Word
 			Dim Name As String = packet.String(NameLength)
 
-			For i As Integer = 0 To Server.OnlineClient
-				If PlayerData(i).CharacterName = Name Then
+            For i As Integer = 0 To Server.OnlineClient
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).CharacterName = Name Then
 
-                    PlayerData(index_).Position = PlayerData(i).Position
-					
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector, Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z), Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).UniqueId))
+                        PlayerData(index_).Position = PlayerData(i).Position
 
-					Dim writer As New PacketWriter
-					writer.Create(ServerOpcodes.Teleport_Annonce)
-                    writer.Byte(PlayerData(index_).Position.XSector)
-                    writer.Byte(PlayerData(index_).Position.YSector)
-					Server.Send(writer.GetBytes, index_)
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector, Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z), Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).UniqueId))
 
-					Exit For
-				End If
-			Next
+                        Dim writer As New PacketWriter
+                        writer.Create(ServerOpcodes.Teleport_Annonce)
+                        writer.Byte(PlayerData(index_).Position.XSector)
+                        writer.Byte(PlayerData(index_).Position.YSector)
+                        Server.Send(writer.GetBytes, index_)
+
+                        Exit For
+                    End If
+                End If
+            Next
 
 		End Sub
 
@@ -151,22 +153,24 @@
             Dim NameLength As UInt16 = packet.Word
 			Dim Name As String = packet.String(NameLength)
 
-			For i As Integer = 0 To Server.OnlineClient
-                If PlayerData(i).CharacterName = Name Then
+            For i As Integer = 0 To Server.OnlineClient
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).CharacterName = Name Then
 
-                    PlayerData(i).Position = PlayerData(index_).Position
+                        PlayerData(i).Position = PlayerData(index_).Position
 
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(i).Position.XSector, PlayerData(i).Position.YSector, Math.Round(PlayerData(i).Position.X), Math.Round(PlayerData(i).Position.Z), Math.Round(PlayerData(i).Position.Y), PlayerData(i).UniqueId))
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(i).Position.XSector, PlayerData(i).Position.YSector, Math.Round(PlayerData(i).Position.X), Math.Round(PlayerData(i).Position.Z), Math.Round(PlayerData(i).Position.Y), PlayerData(i).UniqueId))
 
-                    Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Teleport_Annonce)
-                    writer.Byte(PlayerData(i).Position.XSector)
-                    writer.Byte(PlayerData(i).Position.YSector)
-                    Server.Send(writer.GetBytes, i)
+                        Dim writer As New PacketWriter
+                        writer.Create(ServerOpcodes.Teleport_Annonce)
+                        writer.Byte(PlayerData(i).Position.XSector)
+                        writer.Byte(PlayerData(i).Position.YSector)
+                        Server.Send(writer.GetBytes, i)
 
-                    Exit For
+                        Exit For
+                    End If
                 End If
-			Next
+            Next
         End Sub
 
         Public Sub OnBanUser(ByVal Packet As PacketReader, ByVal index_ As Integer)
@@ -189,8 +193,10 @@
             Next
 
             For i As Integer = 0 To Server.OnlineClient
-                If PlayerData(i).CharacterName = Name Then
-                    Server.Dissconnect(i)
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).CharacterName = Name Then
+                        Server.Dissconnect(i)
+                    End If
                 End If
             Next i
 

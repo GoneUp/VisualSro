@@ -7,14 +7,14 @@ Imports GameServer.GameServer.Functions
 Namespace GameServer
 
     Public Class Server
-        Private Shared buffer(&H1000 - 1) As Byte
+        Private Shared buffer(&H10000 - 1) As Byte
         Private Shared IP_Renamed As IPAddress
         Private Shared maxClients_Renamed As Integer
         Private Shared onlineClient_Renamed As Integer
         Private Shared onlineMob_Renamed As Integer
         Private Shared PORT_Renamed As Integer
-        Private Shared s(199) As Socket
         Private Shared serverSocket As Socket
+
 
         Public Shared Event OnClientConnect As dConnection
         Public Shared Event OnClientDisconnect As dDisconnected
@@ -49,7 +49,16 @@ Namespace GameServer
                 ClientList.Delete(index)
                 socket.Shutdown(SocketShutdown.Both)
                 OnlineClient -= 1
-                GameServer.ClientList.OnCharListing(index).LoginInformation.LoggedIn = False
+
+                Try
+                    If Functions.PlayerData(index) IsNot Nothing Then
+                        Functions.DespawnPlayer(index)
+                    End If
+                    GameServer.ClientList.OnCharListing(index) = Nothing
+                    Functions.PlayerData(index) = Nothing
+                Catch ex As Exception
+                    Functions.PlayerData(index) = Nothing
+                End Try
             Catch
             End Try
         End Sub
@@ -172,6 +181,8 @@ Namespace GameServer
                 serverSocket.Bind(localEP)
                 serverSocket.Listen(5)
                 serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+
+                ClientList.StartPingCheck()
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -2)
             Finally
@@ -226,13 +237,9 @@ Namespace GameServer
         End Property
 
         Public Delegate Sub dConnection(ByVal ip As String, ByVal index As Integer)
-
         Public Delegate Sub dDisconnected(ByVal ip As String, ByVal index As Integer)
-
         Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
-
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
-
         Public Delegate Sub dServerStarted(ByVal time As String)
     End Class
 End Namespace

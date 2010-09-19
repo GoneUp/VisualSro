@@ -274,6 +274,7 @@
                 End If
             Next
             PlayerData(tmp_ex.Player1Index).Gold += tmp_ex.Player2Gold
+            PlayerData(tmp_ex.Player1Index).Gold -= tmp_ex.Player1Gold
             UpdateGold(tmp_ex.Player1Index)
 
 
@@ -301,6 +302,7 @@
                 End If
             Next
             PlayerData(tmp_ex.Player2Index).Gold += tmp_ex.Player1Gold
+            PlayerData(tmp_ex.Player2Index).Gold -= tmp_ex.Player2Gold
             UpdateGold(tmp_ex.Player2Index)
 
             'Clean up

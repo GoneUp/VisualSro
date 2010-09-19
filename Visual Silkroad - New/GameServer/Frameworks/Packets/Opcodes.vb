@@ -37,6 +37,8 @@
         Exchange_Approve = &H7083
         Exchange_Abort = &H7084
 
+        Str_Up = &H7050
+        Int_Up = &H7051
 
 	End Enum
 
@@ -87,6 +89,9 @@
 		GroupSpawnData = &H3019
 		GroupSpawnEnd = &H3018
         Target = &HB045
+
+        Str_Up = &HB050
+        Int_Up = &HB051
 
         'Exchange
         Exchange_Invite = &H3080

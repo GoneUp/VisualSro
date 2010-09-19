@@ -14,6 +14,9 @@
                     OnDropItem(packet, index_)
                 Case 13  'Exchange Gold
                     OnExchangeAddGold(packet, index_)
+
+                Case Else
+                    Debug.Print("[INVENTORY][TAG: " & type & "]")
             End Select
         End Sub
         Public Sub OnNormalMove(ByVal packet As PacketReader, ByVal index_ As Integer)

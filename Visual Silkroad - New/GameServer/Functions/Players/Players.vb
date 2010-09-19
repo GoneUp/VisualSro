@@ -282,7 +282,6 @@
                         If PlayerData(Index).SpawnedPlayers.Contains(refindex) = False Then
                             If player.UniqueId <> PlayerData(Index).UniqueId Then
                                 Server.Send(CreateSpawnPacket(refindex), Index)
-                                Server.Send(CreateHelperIconPacket(refindex), Index)    'TODO: Is there a proper way to do this?
                                 PlayerData(Index).SpawnedPlayers.Add(refindex)
                             End If
                         End If

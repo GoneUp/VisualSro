@@ -106,7 +106,7 @@
 				Chars(i).MP = CUInt(tmp.Tables(0).Rows(i).ItemArray(11))
 				Chars(i).Deleted = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
 				Chars(i).DeletionTime = (tmp.Tables(0).Rows(i).ItemArray(13))
-				Chars(i).Gold = CUInt(tmp.Tables(0).Rows(i).ItemArray(14))
+                Chars(i).Gold = CULng(tmp.Tables(0).Rows(i).ItemArray(14))
 				Chars(i).SkillPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(15))
 				Chars(i).GM = CBool(tmp.Tables(0).Rows(i).ItemArray(16))
                 Chars(i).Position.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(17))

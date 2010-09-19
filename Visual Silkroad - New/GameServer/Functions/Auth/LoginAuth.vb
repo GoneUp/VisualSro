@@ -66,16 +66,14 @@
                 writer.Byte(2) 'Server Full aka User is already logged in
                 GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.Server.Dissconnect(index_)
-            End If
-
-            If GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password And key = realkey Then
+            ElseIf GameServer.DatabaseCore.Users(UserIndex).Name = name And GameServer.DatabaseCore.Users(UserIndex).Pw = password And key = realkey Then
                 writer.Byte(1)
                 GameServer.Server.Send(writer.GetBytes, index_)
                 GameServer.ClientList.OnCharListing(index_) = New cCharListing
                 GameServer.ClientList.OnCharListing(index_).LoginInformation = New cCharListing.UserArray
                 GameServer.ClientList.OnCharListing(index_).LoginInformation = GameServer.DatabaseCore.Users(UserIndex)
                 GameServer.ClientList.OnCharListing(index_).LoginInformation.LoggedIn = True
-            Else
+            ElseIf GameServer.DatabaseCore.Users(UserIndex).Name <> name Or GameServer.DatabaseCore.Users(UserIndex).Pw <> password Or key <> realkey Then
                 writer.Byte(2)
                 writer.Byte(2)
                 GameServer.Server.Send(writer.GetBytes, index_)

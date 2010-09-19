@@ -1,16 +1,20 @@
 ﻿Module SilkroadData
 
     Public RefItems As New List(Of cItem)
+    Public RefGoldData As New List(Of cGoldData)
+    Public RefLevelData As New List(Of cLevelData)
 
-    Public Sub DumpItemFiles()
+    Public Sub DumpDataFiles()
 
         Try
-            Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\itemdata.txt")
-            For i As Integer = 0 To paths.Length - 1
-                DumpItemFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
-            Next
+            DumpItemFiles()
             Commands.WriteLog("Loaded " & RefItems.Count & " Ref-Items.")
 
+            DumpGoldData(System.AppDomain.CurrentDomain.BaseDirectory & "data\levelgold.txt")
+            Commands.WriteLog("Loaded " & RefGoldData.Count & " Ref-Goldlevels.")
+
+            DumpLevelData(System.AppDomain.CurrentDomain.BaseDirectory & "data\leveldata.txt")
+            Commands.WriteLog("Loaded " & RefLevelData.Count & " Ref-Levels.")
 
         Catch ex As Exception
             Commands.WriteLog("Error at Loading Data! Message: " & ex.Message)
@@ -18,6 +22,13 @@
 
 
 
+    End Sub
+
+    Public Sub DumpItemFiles()
+        Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\itemdata.txt")
+        For i As Integer = 0 To paths.Length - 1
+            DumpItemFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+        Next
     End Sub
 
     Public Sub DumpItemFile(ByVal path As String)
@@ -111,4 +122,66 @@
 		Throw New Exception("Item couldn't be found!")
     End Function
 
+
+    Structure cGoldData
+        Public Level As Byte
+        Public MinGold As ULong
+        Public MaxGold As ULong
+    End Structure
+
+
+    Public Sub DumpGoldData(ByVal path As String)
+
+        Dim lines As String() = IO.File.ReadAllLines(path)
+        For i As Integer = 0 To lines.Length - 1
+            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+            Dim gold As New cGoldData
+            gold.Level = CByte(tmpString(0))
+            gold.MinGold = CULng(tmpString(1))
+            gold.MaxGold = CULng(tmpString(2))
+            RefGoldData.Add(gold)
+        Next
+    End Sub
+
+    Public Function GetGoldDataByLevel(ByVal level As Byte)
+        For i = 0 To RefGoldData.Count - 1
+            If RefGoldData(i).Level = level Then
+                Return RefGoldData(i)
+            End If
+        Next
+    End Function
+
+    Structure cLevelData
+        Public Level As Byte
+        Public Experience As ULong
+        Public SkillPoints As ULong
+    End Structure
+
+
+    Public Sub DumpLevelData(ByVal path As String)
+
+        Dim lines As String() = IO.File.ReadAllLines(path)
+        For i As Integer = 0 To lines.Length - 1
+
+            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+            Dim level As New cLevelData
+            level.Level = CByte(tmpString(0))
+            level.Experience = CULng(tmpString(1))
+            If level.Level = 1 Then
+                level.SkillPoints = 0
+            Else
+                level.SkillPoints = CULng(tmpString(2))
+            End If
+
+            RefLevelData.Add(level)
+        Next
+    End Sub
+
+    Public Function GetLevelDataByLevel(ByVal level As Byte)
+        For i = 0 To RefLevelData.Count - 1
+            If RefLevelData(i).Level = level Then
+                Return RefLevelData(i)
+            End If
+        Next
+    End Function
 End Module

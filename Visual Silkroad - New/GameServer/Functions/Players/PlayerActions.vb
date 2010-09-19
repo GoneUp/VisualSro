@@ -135,6 +135,8 @@
             writer.Byte(1) 'type
             writer.DWord(PlayerData(Index_).CHP)
             Server.Send(writer.GetBytes, Index_)
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).UniqueId))
         End Sub
 
         Public Sub UpdateMP(ByVal Index_ As Integer)
@@ -145,6 +147,8 @@
             writer.Byte(2) 'type
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'", PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).UniqueId))
         End Sub
 
         Public Sub UpdateHP_MP(ByVal Index_ As Integer)
@@ -156,6 +160,8 @@
             writer.DWord(PlayerData(Index_).CHP)
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).UniqueId))
         End Sub
 
         Public Sub UpdateGold(ByVal Index_ As Integer)
@@ -165,6 +171,41 @@
             writer.QWord(PlayerData(Index_).Gold)
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(Index_).HelperIcon, PlayerData(Index_).UniqueId))
+        End Sub
+
+        Public Sub UpStrength(ByVal Index_ As Integer)
+            If PlayerData(Index_).Attributes > 0 Then
+                PlayerData(Index_).Attributes -= 1
+                If PlayerData(Index_).Strength < UShort.MaxValue Then 'Prevent Errors
+                    PlayerData(Index_).Strength += 1
+                End If
+
+                OnStatsPacket(Index_)
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.Str_Up)
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, Index_)
+            End If
+        End Sub
+
+
+        Public Sub UpIntelligence(ByVal Index_ As Integer)
+            If PlayerData(Index_).Attributes > 0 Then
+                PlayerData(Index_).Attributes -= 1
+                If PlayerData(Index_).Intelligence < UShort.MaxValue Then 'Prevent Errors
+                    PlayerData(Index_).Intelligence += 1
+                End If
+
+                OnStatsPacket(Index_)
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.Int_Up)
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, Index_)
+            End If
         End Sub
     End Module
 End Namespace

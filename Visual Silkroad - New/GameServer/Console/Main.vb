@@ -44,7 +44,8 @@ Namespace GameServer
             Commands.WriteLog("Started Server. Loading Data now.")
 
             GameServer.DatabaseCore.UpdateData()
-            SilkroadData.DumpItemFiles()
+            SilkroadData.DumpDataFiles()
+            LoadSettings()
 
             Commands.WriteLog("Inital Loding complete!")
 

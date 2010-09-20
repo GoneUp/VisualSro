@@ -46,6 +46,7 @@ Namespace GameServer
             GameServer.DatabaseCore.UpdateData()
             SilkroadData.DumpDataFiles()
             LoadSettings()
+            LoadTimers()
 
             Commands.WriteLog("Inital Loding complete!")
 

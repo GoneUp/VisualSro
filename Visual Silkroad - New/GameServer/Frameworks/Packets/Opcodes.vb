@@ -40,6 +40,10 @@
         Str_Up = &H7050
         Int_Up = &H7051
 
+        'Skills
+        Mastery_Up = &H70A2
+        Skill_Up = &H70A1
+
 	End Enum
 
 	'S --> C
@@ -75,14 +79,20 @@
 		Teleport_Annonce = &H34B5
 		Emotion = &H3091
         HelperIcon = &HB402
+
+        'Updates
         HP_MP_Update = &H3057
+        Gold_Update = &H304E
+        Exp_Update = &H3056
+        LevelUp_Animation = &H3054
+
+        'Items
         ItemUse = &HB04C
         ItemUseOtherPlayer = &H305C
-        Gold_Update = &H304E
-
 		EquipItem = &H3038
 		UnEquipItem = &H3039
 
+        'Spawns
 		SingleSpawn = &H3015
 		SingleDespawn = &H3016
 		GroupSpawnStart = &H3017
@@ -92,6 +102,10 @@
 
         Str_Up = &HB050
         Int_Up = &HB051
+
+        'Skills
+        Mastery_Up = &HB0A2
+        Skill_Up = &HB0A1
 
         'Exchange
         Exchange_Invite = &H3080
@@ -104,7 +118,7 @@
         Exchange_Finsih = &H3087
         Exchange_Error = &H3088
         Exchange_Gold = &H3089
-        Exchange_Abort_Reply = &HB034
+        Exchange_Abort_Reply = &HB084
 
 
 		[Exit] = &HB005

@@ -219,7 +219,9 @@
                 DatabaseCore.Chars(NewCharacterIndex).PVP = 0
                 DatabaseCore.Chars(NewCharacterIndex).MaxSlots = 45
                 DatabaseCore.Chars(NewCharacterIndex).Position = PlayerStartPos
-
+                DatabaseCore.Chars(NewCharacterIndex).Position_Dead = PlayerStartReturnPos
+                DatabaseCore.Chars(NewCharacterIndex).Position_Recall = PlayerStartReturnPos
+                DatabaseCore.Chars(NewCharacterIndex).Position_Return = PlayerStartReturnPos
 
 				Dim magdefmin As Double = 3.0
 				Dim phydefmin As Double = 6.0
@@ -240,8 +242,10 @@
                 DatabaseCore.Chars(NewCharacterIndex).Parry = parry
 
 
-                GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume, DatabaseCore.Chars(NewCharacterIndex).Level, DatabaseCore.Chars(NewCharacterIndex).Gold, DatabaseCore.Chars(NewCharacterIndex).SkillPoints, CByte(DatabaseCore.Chars(NewCharacterIndex).GM)))
+                GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume, DatabaseCore.Chars(NewCharacterIndex).Level, DatabaseCore.Chars(NewCharacterIndex).Gold, DatabaseCore.Chars(NewCharacterIndex).SkillPoints, CInt(DatabaseCore.Chars(NewCharacterIndex).GM)))
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", DatabaseCore.Chars(NewCharacterIndex).Position.XSector, DatabaseCore.Chars(NewCharacterIndex).Position.YSector, Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.X), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Z), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Y), DatabaseCore.Chars(NewCharacterIndex).UniqueId))
+                DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId))
+
 
 				' Masterys
 
@@ -454,10 +458,7 @@
 
             Dim NewIndex As UInteger = DatabaseCore.MasteryCount + 1
             DatabaseCore.MasteryCount = NewIndex
-            Dim i = DatabaseCore.Masterys.Length
             Array.Resize(DatabaseCore.Masterys, NewIndex)
-            Dim i2 = DatabaseCore.Masterys.Length
-
             DatabaseCore.Masterys(NewIndex - 1) = toadd
 
             DataBase.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}',{1},{2})", toadd.OwnerID, toadd.MasteryID, toadd.Level))
@@ -579,9 +580,14 @@
             writer.Byte(2) 'mastery end
             writer.Byte(0) 'mastery end
 
-            writer.Byte(1) 'skill start
-            writer.DWord(3) 'id
-            writer.Byte(1) 'skill finsih
+            For i = 0 To DatabaseCore.Skills.Length - 1
+                If DatabaseCore.Skills(i).OwnerID = chari.UniqueId Then
+                    writer.Byte(1) 'skill start
+                    writer.DWord(DatabaseCore.Skills(i).SkillID) 'skill id
+                    writer.Byte(1) ' skill end?
+                End If
+            Next
+
             writer.Byte(2) 'end
 
 
@@ -673,27 +679,6 @@
 
             OnStatsPacket(Index_)
 
-        End Sub
-        Public Sub OnStatsPacket(ByVal index_ As Integer)
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.CharacterStats)
-            writer.DWord(PlayerData(index_).MinPhy)
-            writer.DWord(PlayerData(index_).MaxPhy)
-            writer.DWord(PlayerData(index_).MinMag)
-            writer.DWord(PlayerData(index_).MaxMag)
-            writer.Word(PlayerData(index_).PhyDef)
-            writer.Word(PlayerData(index_).MagDef)
-            writer.Word(PlayerData(index_).Hit)
-            writer.Word(PlayerData(index_).Parry)
-            writer.DWord(PlayerData(index_).HP)
-            writer.DWord(PlayerData(index_).MP)
-            writer.Word(PlayerData(index_).Strength)
-            writer.Word(PlayerData(index_).Intelligence)
-            Server.Send(writer.GetBytes, index_)
-
-            'Save all Data to DB
-            DataBase.SaveQuery(String.Format("UPDATE characters SET min_phyatk='{0}', max_phyatk='{1}', min_magatk='{2}', max_magatk='{3}', phydef='{4}', magdef='{5}', hit='{6}', parry='{7}', hp='{8}', mp='{9}', strength='{10}', intelligence='{11}', attribute='{12}' where id='{13}'", _
-            PlayerData(index_).MinPhy, PlayerData(index_).MaxPhy, PlayerData(index_).MinMag, PlayerData(index_).MinMag, PlayerData(index_).PhyDef, PlayerData(index_).MagDef, PlayerData(index_).Hit, PlayerData(index_).Parry, PlayerData(index_).HP, PlayerData(index_).MP, PlayerData(index_).Strength, PlayerData(index_).Intelligence, PlayerData(index_).Attributes, PlayerData(index_).UniqueId))
         End Sub
 
         Public Sub OnJoinWorldRequest(ByVal Index_ As Integer)

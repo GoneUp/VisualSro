@@ -76,10 +76,6 @@
         Public Sub UseMPPot(ByVal Slot As Byte, ByVal Index_ As Integer)
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
 
-            PlayerData(Index_).MP = 5000
-            PlayerData(Index_).HP = 5000
-            OnStatsPacket(Index_)
-
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
@@ -170,6 +166,7 @@
                             writer.DWord(PlayerData(Index_).UniqueId)
                             writer.DWord(refitem.ITEM_TYPE)
                             Server.SendToAllInRange(writer.GetBytes, Index_)
+
 
                         End If
                     End If

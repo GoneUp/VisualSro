@@ -136,11 +136,7 @@
 
                         DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector, Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z), Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).UniqueId))
 
-                        Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.Teleport_Annonce)
-                        writer.Byte(PlayerData(index_).Position.XSector)
-                        writer.Byte(PlayerData(index_).Position.YSector)
-                        Server.Send(writer.GetBytes, index_)
+                        OnTeleportUser(index_, PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector)
 
                         Exit For
                     End If
@@ -161,12 +157,7 @@
 
                         DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(i).Position.XSector, PlayerData(i).Position.YSector, Math.Round(PlayerData(i).Position.X), Math.Round(PlayerData(i).Position.Z), Math.Round(PlayerData(i).Position.Y), PlayerData(i).UniqueId))
 
-                        Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.Teleport_Annonce)
-                        writer.Byte(PlayerData(i).Position.XSector)
-                        writer.Byte(PlayerData(i).Position.YSector)
-                        Server.Send(writer.GetBytes, i)
-
+                        OnTeleportUser(i, PlayerData(i).Position.XSector, PlayerData(i).Position.YSector)
                         Exit For
                     End If
                 End If

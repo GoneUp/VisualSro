@@ -43,11 +43,11 @@
                 'writer.Word(CUInt(PlayerData(Index_).Position.Y))
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
+                PlayerData(Index_).Position = to_pos
                 SpawnMe(Index_)
                 SpawnOtherPlayer(Index_) 'Spawn before sending the Packet is to prevent chrashes
                 DespawnPlayerRange(Index_)
 
-                PlayerData(Index_).Position = to_pos
                 Server.SendToAllInRange(writer.GetBytes, Index_)
             Else
 
@@ -241,7 +241,6 @@
                     If distance < range Then
                         If PlayerData(refindex).SpawnedPlayers.Contains(Index) = False Then
 							Server.Send(CreateSpawnPacket(Index), refindex)
-							Server.Send(CreateHelperIconPacket(Index), refindex) 'TODO: Is there a proper way to do this?
                             PlayerData(refindex).SpawnedPlayers.Add(Index)
                         End If
                     End If
@@ -261,7 +260,6 @@
                     If distance < range Then
                         If PlayerData(refindex).SpawnedPlayers.Contains(Index) = False Then
                             Server.Send(CreateSpawnPacket(Index, ToPos), refindex)
-                            Server.Send(CreateHelperIconPacket(Index), refindex) 'TODO: Is there a proper way to do this?
                             PlayerData(refindex).SpawnedPlayers.Add(Index)
                         End If
                     End If
@@ -280,12 +278,10 @@
                     Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         If PlayerData(Index).SpawnedPlayers.Contains(refindex) = False Then
-                            If player.UniqueId <> PlayerData(Index).UniqueId Then
-                                Server.Send(CreateSpawnPacket(refindex), Index)
-                                PlayerData(Index).SpawnedPlayers.Add(refindex)
-                            End If
+                            Server.Send(CreateSpawnPacket(refindex), Index)
+                            PlayerData(Index).SpawnedPlayers.Add(refindex)
                         End If
-					End If
+                    End If
                 End If
             Next refindex
         End Sub
@@ -326,9 +322,6 @@
                         If PlayerData(Index).SpawnedPlayers.Contains(Other_Index) Then
                             Server.Send(CreateDespawnPacket(PlayerData(Index).UniqueId), Other_Index)
                             PlayerData(Other_Index).SpawnedPlayers.Remove(Index)
-                        End If
-
-                        If PlayerData(Other_Index).SpawnedPlayers.Contains(Index) Then
                             Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index)
                             PlayerData(Index).SpawnedPlayers.Remove(Other_Index)
                         End If
@@ -337,13 +330,5 @@
             Next
 		End Sub
 
-		Public Function CreateHelperIconPacket(ByVal index_ As Integer) As Byte()
-			Dim writer As New PacketWriter
-			writer.Create(ServerOpcodes.HelperIcon)
-			writer.DWord(PlayerData(index_).UniqueId)
-			writer.Byte(PlayerData(index_).HelperIcon)
-			Return writer.GetBytes()
-		End Function
-
-	End Module
+    End Module
 End Namespace

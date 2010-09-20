@@ -4,7 +4,7 @@ Source Host: localhost
 Source Database: visualsro
 Target Host: localhost
 Target Database: visualsro
-Date: 19.09.2010 14:12:41
+Date: 20.09.2010 19:39:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,8 +27,8 @@ CREATE TABLE `characters` (
   `mp` int(10) unsigned NOT NULL DEFAULT '300',
   `deletion_mark` tinyint(1) NOT NULL DEFAULT '0',
   `deletion_time` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'Datum',
-  `gold` varchar(50) NOT NULL DEFAULT '0' COMMENT 'Since there is no ULong in MySQL, I used varchar',
-  `sp` int(10) unsigned NOT NULL DEFAULT '0',
+  `gold` bigint(50) unsigned NOT NULL DEFAULT '0',
+  `sp` bigint(10) unsigned NOT NULL DEFAULT '0',
   `gm` tinyint(1) NOT NULL DEFAULT '0',
   `xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'Default loc Jangan',
   `ysect` int(10) unsigned NOT NULL DEFAULT '98',
@@ -69,7 +69,7 @@ CREATE TABLE `items` (
   `durability` int(10) unsigned NOT NULL DEFAULT '30',
   `itemnumber` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=619 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=709 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for masteries
@@ -81,7 +81,7 @@ CREATE TABLE `masteries` (
   `mastery` int(10) unsigned NOT NULL,
   `level` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=191 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=203 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for news
@@ -103,20 +103,20 @@ DROP TABLE IF EXISTS `positions`;
 CREATE TABLE `positions` (
   `OwnerCharID` int(10) NOT NULL,
   `return_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point for Return Scroll, Respawn when dead',
-  `return_ysect` int(10) unsigned NOT NULL DEFAULT '98',
-  `return_xpos` int(10) unsigned NOT NULL DEFAULT '978',
-  `return_ypos` int(10) unsigned NOT NULL DEFAULT '1097',
-  `return_zpos` int(10) unsigned NOT NULL DEFAULT '40',
+  `return_ysect` int(10) unsigned NOT NULL DEFAULT '97',
+  `return_xpos` int(10) unsigned NOT NULL DEFAULT '980',
+  `return_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
+  `return_zpos` int(10) unsigned NOT NULL DEFAULT '65504',
   `recall_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point of Last Return Scroll usage',
-  `recall_ysect` int(10) unsigned NOT NULL DEFAULT '98',
-  `recall_xpos` int(10) unsigned NOT NULL DEFAULT '978',
-  `recall_ypos` int(10) unsigned NOT NULL DEFAULT '1097',
-  `recall_zpos` int(10) unsigned NOT NULL DEFAULT '40',
+  `recall_ysect` int(10) unsigned NOT NULL DEFAULT '97',
+  `recall_xpos` int(10) unsigned NOT NULL DEFAULT '980',
+  `recall_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
+  `recall_zpos` int(10) unsigned NOT NULL DEFAULT '65504',
   `dead_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point of Last Dead',
-  `dead_ysect` int(10) unsigned NOT NULL DEFAULT '98',
-  `deadl_xpos` int(10) unsigned NOT NULL DEFAULT '978',
-  `dead_ypos` int(10) unsigned NOT NULL DEFAULT '1097',
-  `dead_zpos` int(10) unsigned NOT NULL DEFAULT '40',
+  `dead_ysect` int(10) unsigned NOT NULL DEFAULT '97',
+  `deadl_xpos` int(10) unsigned NOT NULL DEFAULT '980',
+  `dead_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
+  `dead_zpos` int(10) unsigned NOT NULL DEFAULT '65504',
   PRIMARY KEY (`OwnerCharID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -147,6 +147,17 @@ CREATE TABLE `servers` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Table structure for skills
+-- ----------------------------
+DROP TABLE IF EXISTS `skills`;
+CREATE TABLE `skills` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `Owner` int(10) NOT NULL,
+  `SkillID` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
@@ -165,12 +176,13 @@ CREATE TABLE `users` (
 -- Records 
 -- ----------------------------
 INSERT INTO `characters` VALUES ('0', '0', 'hhh', '1907', '34', '10', '1', '20', '30', '0', '200', '300', '0', '1000-01-01 00:00:00', '2222222', '0', '0', '168', '98', '978', '1097', '40', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('2', '2', 'manneke', '14726', '0', '10', '2', '20', '30', '0', '200', '300', '0', '1000-01-01 00:00:00', '2222222', '0', '1', '81', '108', '181', '1265', '766', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('2', '2', 'manneke', '14726', '0', '10', '2', '20', '30', '0', '239', '359', '0', '1000-01-01 00:00:00', '2222222', '0', '1', '81', '108', '181', '1265', '766', '200', '300', '5', '10', '5', '5', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45', '1');
 INSERT INTO `characters` VALUES ('3', '3', 'GoneUp2', '1907', '34', '10', '3', '20', '30', '0', '200', '300', '0', '1000-01-01 00:00:00', '111111111', '0', '1', '188', '94', '648', '447', '65522', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45', '1');
 INSERT INTO `characters` VALUES ('4', '3', 'GoneUp', '1907', '34', '10', '4', '20', '30', '0', '200', '300', '0', '1000-01-01 00:00:00', '11545', '0', '1', '188', '94', '687', '567', '65521', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45', '3');
 INSERT INTO `characters` VALUES ('5', '2', 'm4nn3k3', '1907', '0', '10', '5', '20', '30', '0', '200', '300', '0', '1000-01-01 00:00:00', '45768687', '0', '1', '127', '104', '152', '1748', '588', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45', '1');
 INSERT INTO `characters` VALUES ('6', '3', 'EU_1', '14717', '34', '1', '0', '20', '30', '0', '200', '300', '0', '1000-01-01 00:00:00', '57646456', '0', '1', '80', '108', '1427', '1440', '722', '200', '300', '5', '10', '5', '10', '9', '7', '3', '5', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('7', '3', 'Over', '1907', '34', '100', '0', '20', '20', '0', '200', '200', '0', '1000-01-01 00:00:00', '9223372036854775807', '1000000', '1', '168', '97', '1425', '1324', '0', '200', '300', '6', '9', '6', '6', '6', '3', '11', '11', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('7', '3', 'Over', '1907', '34', '100', '0', '50', '90', '100', '3551', '6392', '0', '1000-01-01 00:00:00', '92233720368', '1003058', '1', '168', '97', '980', '1330', '65504', '3551', '6392', '6', '9', '6', '6', '6', '3', '11', '11', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('8', '2', 'Happy11', '14735', '1', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '9223372036854775807', '1000000', '1', '168', '97', '1017', '1748', '65531', '200', '300', '6', '9', '6', '6', '6', '3', '11', '11', '16', '50', '100', '0', '255', '45', '3');
 INSERT INTO `items` VALUES ('214', '0', '1', '0', '0', '0', '30', 'item0');
 INSERT INTO `items` VALUES ('215', '0', '1', '0', '1', '0', '0', 'item1');
 INSERT INTO `items` VALUES ('216', '0', '1', '0', '2', '0', '30', 'item2');
@@ -576,6 +588,96 @@ INSERT INTO `items` VALUES ('615', '0', '7', '0', '41', '0', '30', 'item41');
 INSERT INTO `items` VALUES ('616', '0', '7', '0', '42', '0', '30', 'item42');
 INSERT INTO `items` VALUES ('617', '0', '7', '0', '43', '0', '30', 'item43');
 INSERT INTO `items` VALUES ('618', '0', '7', '0', '44', '0', '30', 'item44');
+INSERT INTO `items` VALUES ('619', '0', '8', '0', '0', '0', '30', 'item0');
+INSERT INTO `items` VALUES ('620', '11474', '8', '2', '1', '0', '30', 'item1');
+INSERT INTO `items` VALUES ('621', '0', '8', '0', '2', '0', '30', 'item2');
+INSERT INTO `items` VALUES ('622', '0', '8', '0', '3', '0', '30', 'item3');
+INSERT INTO `items` VALUES ('623', '11475', '8', '2', '4', '0', '30', 'item4');
+INSERT INTO `items` VALUES ('624', '11476', '8', '2', '5', '0', '30', 'item5');
+INSERT INTO `items` VALUES ('625', '10735', '8', '1', '6', '0', '30', 'item6');
+INSERT INTO `items` VALUES ('626', '0', '8', '0', '7', '0', '30', 'item7');
+INSERT INTO `items` VALUES ('627', '0', '8', '0', '8', '0', '30', 'item8');
+INSERT INTO `items` VALUES ('628', '0', '8', '0', '9', '0', '30', 'item9');
+INSERT INTO `items` VALUES ('629', '0', '8', '0', '10', '0', '30', 'item10');
+INSERT INTO `items` VALUES ('630', '0', '8', '0', '11', '0', '30', 'item11');
+INSERT INTO `items` VALUES ('631', '0', '8', '0', '12', '0', '30', 'item12');
+INSERT INTO `items` VALUES ('632', '0', '8', '0', '13', '0', '0', 'item13');
+INSERT INTO `items` VALUES ('633', '0', '8', '0', '14', '0', '30', 'item14');
+INSERT INTO `items` VALUES ('634', '0', '8', '0', '15', '0', '30', 'item15');
+INSERT INTO `items` VALUES ('635', '0', '8', '0', '16', '0', '30', 'item16');
+INSERT INTO `items` VALUES ('636', '0', '8', '0', '17', '0', '30', 'item17');
+INSERT INTO `items` VALUES ('637', '0', '8', '0', '18', '0', '30', 'item18');
+INSERT INTO `items` VALUES ('638', '0', '8', '0', '19', '0', '30', 'item19');
+INSERT INTO `items` VALUES ('639', '0', '8', '0', '20', '0', '30', 'item20');
+INSERT INTO `items` VALUES ('640', '0', '8', '0', '21', '0', '30', 'item21');
+INSERT INTO `items` VALUES ('641', '0', '8', '0', '22', '0', '30', 'item22');
+INSERT INTO `items` VALUES ('642', '0', '8', '0', '23', '0', '30', 'item23');
+INSERT INTO `items` VALUES ('643', '0', '8', '0', '24', '0', '30', 'item24');
+INSERT INTO `items` VALUES ('644', '0', '8', '0', '25', '0', '30', 'item25');
+INSERT INTO `items` VALUES ('645', '0', '8', '0', '26', '0', '30', 'item26');
+INSERT INTO `items` VALUES ('646', '0', '8', '0', '27', '0', '30', 'item27');
+INSERT INTO `items` VALUES ('647', '0', '8', '0', '28', '0', '30', 'item28');
+INSERT INTO `items` VALUES ('648', '0', '8', '0', '29', '0', '30', 'item29');
+INSERT INTO `items` VALUES ('649', '0', '8', '0', '30', '0', '30', 'item30');
+INSERT INTO `items` VALUES ('650', '0', '8', '0', '31', '0', '30', 'item31');
+INSERT INTO `items` VALUES ('651', '0', '8', '0', '32', '0', '30', 'item32');
+INSERT INTO `items` VALUES ('652', '0', '8', '0', '33', '0', '30', 'item33');
+INSERT INTO `items` VALUES ('653', '0', '8', '0', '34', '0', '30', 'item34');
+INSERT INTO `items` VALUES ('654', '0', '8', '0', '35', '0', '30', 'item35');
+INSERT INTO `items` VALUES ('655', '0', '8', '0', '36', '0', '30', 'item36');
+INSERT INTO `items` VALUES ('656', '0', '8', '0', '37', '0', '30', 'item37');
+INSERT INTO `items` VALUES ('657', '0', '8', '0', '38', '0', '30', 'item38');
+INSERT INTO `items` VALUES ('658', '0', '8', '0', '39', '0', '30', 'item39');
+INSERT INTO `items` VALUES ('659', '0', '8', '0', '40', '0', '30', 'item40');
+INSERT INTO `items` VALUES ('660', '0', '8', '0', '41', '0', '30', 'item41');
+INSERT INTO `items` VALUES ('661', '0', '8', '0', '42', '0', '30', 'item42');
+INSERT INTO `items` VALUES ('662', '0', '8', '0', '43', '0', '30', 'item43');
+INSERT INTO `items` VALUES ('663', '0', '8', '0', '44', '0', '30', 'item44');
+INSERT INTO `items` VALUES ('664', '0', '8', '0', '0', '0', '30', 'item0');
+INSERT INTO `items` VALUES ('665', '11474', '8', '2', '1', '0', '30', 'item1');
+INSERT INTO `items` VALUES ('666', '0', '8', '0', '2', '0', '30', 'item2');
+INSERT INTO `items` VALUES ('667', '0', '8', '0', '3', '0', '30', 'item3');
+INSERT INTO `items` VALUES ('668', '11475', '8', '2', '4', '0', '30', 'item4');
+INSERT INTO `items` VALUES ('669', '11476', '8', '2', '5', '0', '30', 'item5');
+INSERT INTO `items` VALUES ('670', '10735', '8', '1', '6', '0', '30', 'item6');
+INSERT INTO `items` VALUES ('671', '0', '8', '0', '7', '0', '30', 'item7');
+INSERT INTO `items` VALUES ('672', '0', '8', '0', '8', '0', '30', 'item8');
+INSERT INTO `items` VALUES ('673', '0', '8', '0', '9', '0', '30', 'item9');
+INSERT INTO `items` VALUES ('674', '0', '8', '0', '10', '0', '30', 'item10');
+INSERT INTO `items` VALUES ('675', '0', '8', '0', '11', '0', '30', 'item11');
+INSERT INTO `items` VALUES ('676', '0', '8', '0', '12', '0', '30', 'item12');
+INSERT INTO `items` VALUES ('677', '0', '8', '0', '13', '0', '0', 'item13');
+INSERT INTO `items` VALUES ('678', '0', '8', '0', '14', '0', '30', 'item14');
+INSERT INTO `items` VALUES ('679', '0', '8', '0', '15', '0', '30', 'item15');
+INSERT INTO `items` VALUES ('680', '0', '8', '0', '16', '0', '30', 'item16');
+INSERT INTO `items` VALUES ('681', '0', '8', '0', '17', '0', '30', 'item17');
+INSERT INTO `items` VALUES ('682', '0', '8', '0', '18', '0', '30', 'item18');
+INSERT INTO `items` VALUES ('683', '0', '8', '0', '19', '0', '30', 'item19');
+INSERT INTO `items` VALUES ('684', '0', '8', '0', '20', '0', '30', 'item20');
+INSERT INTO `items` VALUES ('685', '0', '8', '0', '21', '0', '30', 'item21');
+INSERT INTO `items` VALUES ('686', '0', '8', '0', '22', '0', '30', 'item22');
+INSERT INTO `items` VALUES ('687', '0', '8', '0', '23', '0', '30', 'item23');
+INSERT INTO `items` VALUES ('688', '0', '8', '0', '24', '0', '30', 'item24');
+INSERT INTO `items` VALUES ('689', '0', '8', '0', '25', '0', '30', 'item25');
+INSERT INTO `items` VALUES ('690', '0', '8', '0', '26', '0', '30', 'item26');
+INSERT INTO `items` VALUES ('691', '0', '8', '0', '27', '0', '30', 'item27');
+INSERT INTO `items` VALUES ('692', '0', '8', '0', '28', '0', '30', 'item28');
+INSERT INTO `items` VALUES ('693', '0', '8', '0', '29', '0', '30', 'item29');
+INSERT INTO `items` VALUES ('694', '0', '8', '0', '30', '0', '30', 'item30');
+INSERT INTO `items` VALUES ('695', '0', '8', '0', '31', '0', '30', 'item31');
+INSERT INTO `items` VALUES ('696', '0', '8', '0', '32', '0', '30', 'item32');
+INSERT INTO `items` VALUES ('697', '0', '8', '0', '33', '0', '30', 'item33');
+INSERT INTO `items` VALUES ('698', '0', '8', '0', '34', '0', '30', 'item34');
+INSERT INTO `items` VALUES ('699', '0', '8', '0', '35', '0', '30', 'item35');
+INSERT INTO `items` VALUES ('700', '0', '8', '0', '36', '0', '30', 'item36');
+INSERT INTO `items` VALUES ('701', '0', '8', '0', '37', '0', '30', 'item37');
+INSERT INTO `items` VALUES ('702', '0', '8', '0', '38', '0', '30', 'item38');
+INSERT INTO `items` VALUES ('703', '0', '8', '0', '39', '0', '30', 'item39');
+INSERT INTO `items` VALUES ('704', '0', '8', '0', '40', '0', '30', 'item40');
+INSERT INTO `items` VALUES ('705', '0', '8', '0', '41', '0', '30', 'item41');
+INSERT INTO `items` VALUES ('706', '0', '8', '0', '42', '0', '30', 'item42');
+INSERT INTO `items` VALUES ('707', '0', '8', '0', '43', '0', '30', 'item43');
+INSERT INTO `items` VALUES ('708', '0', '8', '0', '44', '0', '30', 'item44');
 INSERT INTO `masteries` VALUES ('130', '1', '257', '1');
 INSERT INTO `masteries` VALUES ('131', '1', '258', '1');
 INSERT INTO `masteries` VALUES ('132', '1', '259', '1');
@@ -623,22 +725,43 @@ INSERT INTO `masteries` VALUES ('173', '6', '515', '1');
 INSERT INTO `masteries` VALUES ('174', '6', '516', '1');
 INSERT INTO `masteries` VALUES ('175', '6', '517', '1');
 INSERT INTO `masteries` VALUES ('176', '6', '518', '1');
-INSERT INTO `masteries` VALUES ('177', '7', '257', '100');
-INSERT INTO `masteries` VALUES ('178', '7', '258', '100');
+INSERT INTO `masteries` VALUES ('177', '7', '257', '59');
+INSERT INTO `masteries` VALUES ('178', '7', '258', '50');
 INSERT INTO `masteries` VALUES ('179', '7', '259', '100');
 INSERT INTO `masteries` VALUES ('180', '7', '273', '100');
 INSERT INTO `masteries` VALUES ('181', '7', '274', '100');
 INSERT INTO `masteries` VALUES ('182', '7', '275', '100');
 INSERT INTO `masteries` VALUES ('183', '7', '276', '100');
-INSERT INTO `masteries` VALUES ('184', '7', '257', '100');
-INSERT INTO `masteries` VALUES ('185', '7', '258', '100');
-INSERT INTO `masteries` VALUES ('186', '7', '259', '100');
-INSERT INTO `masteries` VALUES ('187', '7', '273', '100');
-INSERT INTO `masteries` VALUES ('188', '7', '274', '100');
-INSERT INTO `masteries` VALUES ('189', '7', '275', '100');
-INSERT INTO `masteries` VALUES ('190', '7', '276', '100');
+INSERT INTO `masteries` VALUES ('191', '8', '513', '100');
+INSERT INTO `masteries` VALUES ('192', '8', '514', '100');
+INSERT INTO `masteries` VALUES ('193', '8', '515', '100');
+INSERT INTO `masteries` VALUES ('194', '8', '516', '100');
+INSERT INTO `masteries` VALUES ('195', '8', '517', '100');
+INSERT INTO `masteries` VALUES ('196', '8', '518', '100');
+INSERT INTO `masteries` VALUES ('197', '8', '513', '100');
+INSERT INTO `masteries` VALUES ('198', '8', '514', '100');
+INSERT INTO `masteries` VALUES ('199', '8', '515', '100');
+INSERT INTO `masteries` VALUES ('200', '8', '516', '100');
+INSERT INTO `masteries` VALUES ('201', '8', '517', '100');
+INSERT INTO `masteries` VALUES ('202', '8', '518', '100');
 INSERT INTO `news` VALUES ('1', 'Opening', '<center><font color=red><b>Welcome to the Visual Silkroad Project</b></font></center>', '25', '4');
 INSERT INTO `servers` VALUES ('3', 'Local', '0', '500', '1', '127.0.0.1', '15780');
-INSERT INTO `servers` VALUES ('4', 'Remote', '0', '500', '1', '84.157.128.84', '15780');
+INSERT INTO `servers` VALUES ('4', 'Remote', '0', '500', '1', '84.157.140.54', '15780');
+INSERT INTO `skills` VALUES ('1', '0', '0');
+INSERT INTO `skills` VALUES ('2', '7', '3');
+INSERT INTO `skills` VALUES ('3', '7', '291');
+INSERT INTO `skills` VALUES ('4', '7', '292');
+INSERT INTO `skills` VALUES ('5', '7', '293');
+INSERT INTO `skills` VALUES ('6', '7', '294');
+INSERT INTO `skills` VALUES ('7', '7', '295');
+INSERT INTO `skills` VALUES ('8', '7', '296');
+INSERT INTO `skills` VALUES ('9', '7', '297');
+INSERT INTO `skills` VALUES ('10', '7', '298');
+INSERT INTO `skills` VALUES ('11', '7', '4');
+INSERT INTO `skills` VALUES ('12', '7', '299');
+INSERT INTO `skills` VALUES ('13', '7', '300');
+INSERT INTO `skills` VALUES ('14', '7', '301');
+INSERT INTO `skills` VALUES ('15', '7', '30');
+INSERT INTO `skills` VALUES ('16', '7', '39');
 INSERT INTO `users` VALUES ('2', 'test', 'test', '1', '0', '...', '3000-01-02');
-INSERT INTO `users` VALUES ('3', 'i', 'i', '2', '0', '...', '3000-01-02');
+INSERT INTO `users` VALUES ('3', 'i', 'i', '0', '0', '...', '3000-01-02');

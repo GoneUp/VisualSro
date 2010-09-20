@@ -4,6 +4,9 @@
     Public RefGoldData As New List(Of cGoldData)
     Public RefLevelData As New List(Of cLevelData)
 
+    Public RefTmpSkills As New List(Of tmpSkill_)
+    Public RefSkills As New List(Of Skill_)
+
     Public Sub DumpDataFiles()
 
         Try
@@ -15,6 +18,9 @@
 
             DumpLevelData(System.AppDomain.CurrentDomain.BaseDirectory & "data\leveldata.txt")
             Commands.WriteLog("Loaded " & RefLevelData.Count & " Ref-Levels.")
+
+            DumpSkillFiles()
+            Commands.WriteLog("Loaded " & RefSkills.Count & " Ref-Skills.")
 
         Catch ex As Exception
             Commands.WriteLog("Error at Loading Data! Message: " & ex.Message)
@@ -118,8 +124,8 @@
             If e.ITEM_TYPE = id Then
                 Return e
             End If
-		Next
-		Throw New Exception("Item couldn't be found!")
+        Next
+        Throw New Exception("Item couldn't be found!")
     End Function
 
 
@@ -184,4 +190,137 @@
             End If
         Next
     End Function
+
+
+    Public Structure Skill_
+        Public Name As String
+        Public Id As UInteger
+        Public NextId As UInteger
+        Public RequiredSp As ULong
+        Public RequiredMp As UShort
+        Public CastTime As Byte
+        Public PwrPercent As Integer
+        Public PwrMin As Integer
+        Public PwrMax As Integer
+        Public Distance As Integer
+        Public NumberOfAttacks As Byte
+        Public Type As Byte
+        Public Type2 As Byte
+    End Structure
+    Public Structure tmpSkill_
+        Public Id As UInteger
+        Public NextId As UInteger
+    End Structure
+
+
+    Public Sub DumpSkillFiles()
+        Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\skilldata.txt")
+        For i As Integer = 0 To paths.Length - 1
+            DumpTmpSkillFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+            DumpSkillFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+        Next
+    End Sub
+
+    Public Sub DumpTmpSkillFile(ByVal path As String)
+
+        Dim lines As String() = IO.File.ReadAllLines(path)
+        For i As Integer = 0 To lines.Length - 1
+            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+            Dim tmp As New tmpSkill_()
+            tmp.Id = Convert.ToUInt32(tmpString(1))
+            tmp.NextId = Convert.ToUInt32(tmpString(9))
+            RefTmpSkills.Add(tmp)
+        Next
+    End Sub
+
+    Private Sub DumpSkillFile(ByVal path As String)
+        Dim lines As String() = IO.File.ReadAllLines(path)
+
+        For i As Integer = 0 To lines.Length - 1
+            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+            Dim tmp As New Skill_()
+            tmp.Id = Convert.ToUInt32(tmpString(1))
+            tmp.Name = tmpString(3)
+            tmp.NextId = Convert.ToUInt32(tmpString(9))
+            tmp.RequiredSp = Convert.ToUInt64(tmpString(46))
+            tmp.RequiredMp = Convert.ToUInt16(tmpString(53))
+            tmp.CastTime = Convert.ToByte(tmpString(68))
+            tmp.PwrPercent = Convert.ToInt32(tmpString(71))
+            tmp.PwrMin = Convert.ToInt32(tmpString(72))
+            tmp.PwrMax = Convert.ToInt32(tmpString(73))
+            tmp.Distance = Convert.ToInt32(tmpString(78))
+            If tmp.Distance = 0 Then
+                tmp.Distance = 21
+            End If
+
+            tmp.NumberOfAttacks = GetNumberOfAttacks(GetTmpSkillById(tmp.Id))
+            If tmpString(3).Contains("SWORD") Then
+                tmp.Type = TypeTable.Phy
+                tmp.Type2 = TypeTable.Bicheon
+            End If
+            If tmpString(3).Contains("SPEAR") Then
+                tmp.Type = TypeTable.Phy
+                tmp.Type2 = TypeTable.Heuksal
+            End If
+            If tmpString(3).Contains("BOW") Then
+                tmp.Type = TypeTable.Phy
+                tmp.Type2 = TypeTable.Bow
+            End If
+            If tmpString(3).Contains("FIRE") OrElse tmpString(3).Contains("LIGHTNING") OrElse tmpString(3).Contains("COLD") OrElse tmpString(3).Contains("WATER") Then
+                tmp.Type = TypeTable.Mag
+                tmp.Type2 = TypeTable.All
+            End If
+            If tmpString(3).Contains("PUNCH") Then
+                tmp.Type = TypeTable.Phy
+                tmp.Type2 = TypeTable.All
+            End If
+            If tmpString(3).Contains("ROG") OrElse tmpString(3).Contains("WARRIOR") Then
+                tmp.Type = TypeTable.Phy
+                tmp.Type2 = TypeTable.All
+            End If
+
+            If tmpString(3).Contains("WIZARD") OrElse tmpString(3).Contains("STAFF") OrElse tmpString(3).Contains("WARLOCK") OrElse tmpString(3).Contains("BARD") OrElse tmpString(3).Contains("HARP") OrElse tmpString(3).Contains("CLERIC") Then
+                tmp.Type = TypeTable.Mag
+                tmp.Type2 = TypeTable.All
+            End If
+
+            RefSkills.Add(tmp)
+        Next
+    End Sub
+
+    Public Class TypeTable
+        Public Const Phy As Byte = &H1, Mag As Byte = &H2, Bicheon As Byte = &H3, Heuksal As Byte = &H4, Bow As Byte = &H5, All As Byte = &H6
+    End Class
+
+    Private Function GetNumberOfAttacks(ByVal tmp As tmpSkill_) As Byte
+        For i As Byte = 0 To 9
+            If tmp.NextId <> 0 Then
+                tmp = GetTmpSkillById(tmp.NextId)
+            Else
+                Return CByte(i + 1)
+            End If
+        Next
+        Return 1
+    End Function
+
+    Public Function GetSkillById(ByVal ItemId As UInteger) As Skill_
+        For i As Integer = 0 To RefSkills.Count - 1
+            If RefSkills(i).Id = ItemId Then
+                Return RefSkills(i)
+            End If
+        Next
+        Return New Skill_()
+    End Function
+
+    Private Function GetTmpSkillById(ByVal NextId As UInteger) As tmpSkill_
+        For i As Integer = 0 To RefTmpSkills.Count - 1
+            If RefTmpSkills(i).Id = NextId Then
+                Return RefTmpSkills(i)
+            End If
+        Next
+        Return New tmpSkill_()
+    End Function
+
+
+
 End Module

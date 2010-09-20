@@ -140,6 +140,8 @@
                 writer.Word(messagelength)
                 writer.UString(message)
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
+
+                Custom.CheckForCoustum(message, Index_)
             End If
 
 

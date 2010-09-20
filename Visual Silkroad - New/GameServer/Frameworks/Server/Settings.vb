@@ -1,6 +1,7 @@
 ﻿Module Settings
     'Here is Place for Settings like Xp Rates, etc...
     Public PlayerStartPos As New Position
+    Public PlayerStartReturnPos As New Position
     Public PlayerStartLevel As Byte
     Public PlayerStartGold As ULong
     Public PlayerStartMasteryLevel As Byte
@@ -11,6 +12,8 @@
     Public ServerSPRate As Long = 1
     Public ServerGoldRate As Long = 1
     Public ServerDropRate As Long = 1
+    Public ServerLevelCap As Byte = 100
+    Public ServerMasteryCap As UInteger = 300
 
     Public Sub LoadSettings()
         'TODO: Load these Settings from a Config File
@@ -20,9 +23,15 @@
         PlayerStartPos.Z = 1097
         PlayerStartPos.Y = 40
 
-        PlayerStartGold = Long.MaxValue
+        PlayerStartReturnPos.XSector = 168
+        PlayerStartReturnPos.YSector = 97
+        PlayerStartReturnPos.X = 980
+        PlayerStartReturnPos.Z = 65504
+        PlayerStartReturnPos.Y = 1330
+
+        PlayerStartGold = 1000000 '1m
         PlayerStartLevel = 100
-        PlayerStartMasteryLevel = 100
+        PlayerStartMasteryLevel = 0
         PlayerStartSkillPoints = 1000000 '1m
         PlayerStartGM = True
 
@@ -30,6 +39,8 @@
         ServerSPRate = 50
         ServerGoldRate = 50
         ServerDropRate = 50
+        ServerLevelCap = 100
+        ServerMasteryCap = 300
     End Sub
 
 End Module

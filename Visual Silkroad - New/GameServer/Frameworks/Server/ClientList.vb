@@ -1,13 +1,12 @@
 ﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.Net.Sockets
+Imports System, System.Net.Sockets, System.Timers
 Namespace GameServer
 
     Public Module ClientList
         Public List(1500) As Socket
         Public LastPingTime(1500) As DateTime
         Public OnCharListing(1500) As cCharListing
-        Public WithEvents PingTimer As New Timers.Timer
+        Public WithEvents PingTimer As New Timer
 
         Public Sub Add(ByVal sock As Socket)
             For i As Integer = 0 To List.Length - 1

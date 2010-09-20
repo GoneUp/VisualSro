@@ -70,7 +70,7 @@
     <Compile Include="Frameworks\Converter\Utils.vb" />
     <Compile Include="Frameworks\Database\DataBase.vb" />
     <Compile Include="Frameworks\Database\GameDb.vb" />
-    <Compile Include="Frameworks\Database\SilkroadData.vb" />
+    <Compile Include="Frameworks\Silkroad\SilkroadData.vb" />
     <Compile Include="Frameworks\Packets\Opcodes.vb" />
     <Compile Include="Frameworks\Packets\PacketLog.vb" />
     <Compile Include="Frameworks\Packets\PacketReader.vb" />
@@ -79,18 +79,18 @@
     <Compile Include="Frameworks\Server\ClientList.vb" />
     <Compile Include="Frameworks\Server\Server.vb" />
     <Compile Include="Frameworks\Server\Settings.vb" />
-    <Compile Include="Functions\Alchemy\Alchemy.vb" />
-    <Compile Include="Functions\Auth\LoginAuth.vb" />
+    <Compile Include="Frameworks\Silkroad\Timers.vb" />
+    <Compile Include="Functions\Items\Alchemy.vb" />
+    <Compile Include="Functions\LoginAuth.vb" />
     <Compile Include="Functions\Character\cCharListing.vb" />
     <Compile Include="Functions\Character\cChar.vb" />
     <Compile Include="Functions\Character\Character.vb" />
     <Compile Include="Functions\Character\cMastery.vb" />
+    <Compile Include="Functions\Chat\Custom_Commands.vb" />
     <Compile Include="Functions\Exchange\cExchange.vb" />
     <Compile Include="Functions\Exchange\Exchange.vb" />
     <Compile Include="Functions\GameMaster\GameMaster.vb" />
     <Compile Include="Functions\Items\cInventory.vb" />
-    <Compile Include="Functions\Items\cInvItem.vb" />
-    <Compile Include="Functions\Items\cItem.vb" />
     <Compile Include="Functions\Items\Inventory.vb" />
     <Compile Include="Functions\Items\UseItem.vb" />
     <Compile Include="Functions\Monster\cMonster.vb" />
@@ -99,6 +99,9 @@
     <Compile Include="Functions\Chat\Chat.vb" />
     <Compile Include="Functions\Players\PlayerActions.vb" />
     <Compile Include="Functions\Players\Players.vb" />
+    <Compile Include="Functions\Players\Stats.vb" />
+    <Compile Include="Functions\Skills\cSkill.vb" />
+    <Compile Include="Functions\Skills\Mastery.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -137,9 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Functions\Skills\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

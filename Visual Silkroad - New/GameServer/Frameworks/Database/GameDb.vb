@@ -2,7 +2,7 @@
 	Module GameDb
 
 		'Timer
-		Public WithEvents GameDbUpdate As New Timers.Timer
+        Public WithEvents GameDbUpdate As New System.Timers.Timer
 
 		'User
 		Public UserCount As Integer
@@ -15,11 +15,13 @@
 		'Itemcount
 		Public ItemCount As Integer
 		Public AllItems() As cInvItem
-		Public LastDatabaseID As Integer
 
 		'Masterys
 		Public MasteryCount As Integer
-		Public Masterys() As cMastery
+        Public Masterys() As cMastery
+
+        'Skills
+        Public Skills() As cSkill
 
 		Private First As Boolean = False
 
@@ -40,7 +42,8 @@
 
 					GetCharData() 'Only Update for the First Time! 
 					GetItemData()
-					GetMasteryData()
+                    GetMasteryData()
+                    GetSkillData()
 					First = True
 				End If
 
@@ -173,12 +176,31 @@
 				Masterys(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
 				Masterys(i).MasteryID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
 				Masterys(i).Level = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
+            Next
 
-			Next
+        End Sub
+
+        Public Sub GetSkillData()
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From skills")
+            Dim Count As Integer = tmp.Tables(0).Rows.Count
+
+            If Count >= 1 Then
+                ReDim Skills(Count - 1)
+
+
+                For i = 0 To Count - 1
+                    Skills(i) = New cSkill
+                    Skills(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                    Skills(i).SkillID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                Next
+
+            Else
+                ReDim Skills(0)
+            End If
 
 
 
-		End Sub
+        End Sub
 
 
 #End Region

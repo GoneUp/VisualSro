@@ -34,6 +34,8 @@
         Public Sub OnGmCreateItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim pk2id As UInteger = packet.DWord
             Dim plus As Byte = packet.Byte  'Or Count
+          
+
 
             For i = 13 To PlayerData(index_).MaxSlots - 1
                 If Inventorys(index_).UserItems(i).Pk2Id = 0 Then

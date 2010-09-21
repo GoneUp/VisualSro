@@ -39,6 +39,8 @@
     Public DeletionTime As DateTime
     Public HelperIcon As Byte
     Public ActionFlag As Byte
+    Public Busy As Boolean
+    Public UsedItem As UseItemTypes
 
     Public Position As New Position
     Public Position_Recall As New Position
@@ -71,3 +73,9 @@ Public Structure Position
     Public Z As Single
     Public Y As Single
 End Structure
+
+Public Enum UseItemTypes
+    Pot = 1
+    Return_Scroll = 2
+    Reverse_Scroll = 3
+End Enum

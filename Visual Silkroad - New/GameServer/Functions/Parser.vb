@@ -59,6 +59,7 @@ Namespace GameServer
 
                 Case ClientOpcodes.ItemUse
                     GameServer.Functions.OnUseItem(packet, rp.index)
+                    Debug.Print(rp.data)
 
                 Case ClientOpcodes.Action
                     GameServer.Functions.OnPlayerAction(packet, rp.index)

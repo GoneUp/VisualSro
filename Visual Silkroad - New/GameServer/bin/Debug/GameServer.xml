@@ -6,15 +6,7 @@ GameServer
 </name>
 </assembly>
 <members>
-<member name="M:GameServer.GameServer.Functions.Alchemy.CheckForSuccess(System.Byte,System.Int32)">
-	<summary>
- Radom...
- </summary>
-	<param name="Old_Plus"></param> Plus
- <param name="Lucky"></param> Modifier
- <returns></returns>
-	<remarks></remarks>
-</member><member name="M:GameServer.GameServer.Functions.Chat.SendNotice(System.String,System.Int32)">
+<member name="M:GameServer.GameServer.Functions.Chat.SendNotice(System.String,System.Int32)">
 	<summary>
  Only to Specific Player Index
  </summary>
@@ -40,6 +32,14 @@ GameServer
  </summary>
 	<param name="Index"></param>
 	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:GameServer.GameServer.Functions.Alchemy.CheckForSuccess(System.Byte,System.Int32)">
+	<summary>
+ Radom...
+ </summary>
+	<param name="Old_Plus"></param> Plus
+ <param name="Lucky"></param> Modifier
+ <returns></returns>
 	<remarks></remarks>
 </member>
 </members>

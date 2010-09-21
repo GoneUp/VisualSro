@@ -7,7 +7,7 @@
 
             For i = 0 To DatabaseCore.Masterys.Length - 1
                 If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).UniqueId Then
-                    'masterycount += DatabaseCore.Masterys(i).Level
+                    masterycount += DatabaseCore.Masterys(i).Level
                 End If
             Next
             If PlayerData(index_).Model >= 1907 And PlayerData(index_).Model <= 1932 Then

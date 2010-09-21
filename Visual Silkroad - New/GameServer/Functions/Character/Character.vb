@@ -570,7 +570,7 @@
             writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
 
             For i = 0 To DatabaseCore.Masterys.Length - 1
-                If DatabaseCore.Masterys(i).OwnerID = chari.UniqueId Then
+                If (DatabaseCore.Masterys(i) IsNot Nothing) AndAlso DatabaseCore.Masterys(i).OwnerID = chari.UniqueId Then
                     writer.Byte(1) 'mastery start
                     writer.DWord(DatabaseCore.Masterys(i).MasteryID) ' Mastery
                     writer.Byte(DatabaseCore.Masterys(i).Level) ' Mastery Level
@@ -581,7 +581,7 @@
             writer.Byte(0) 'mastery end
 
             For i = 0 To DatabaseCore.Skills.Length - 1
-                If DatabaseCore.Skills(i).OwnerID = chari.UniqueId Then
+                If (DatabaseCore.Skills(i) IsNot Nothing) AndAlso DatabaseCore.Skills(i).OwnerID = chari.UniqueId Then
                     writer.Byte(1) 'skill start
                     writer.DWord(DatabaseCore.Skills(i).SkillID) 'skill id
                     writer.Byte(1) ' skill end?

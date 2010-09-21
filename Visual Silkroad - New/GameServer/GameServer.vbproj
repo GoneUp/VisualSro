@@ -90,7 +90,7 @@
     <Compile Include="Functions\Exchange\cExchange.vb" />
     <Compile Include="Functions\Exchange\Exchange.vb" />
     <Compile Include="Functions\GameMaster\GameMaster.vb" />
-    <Compile Include="Functions\Items\cInventory.vb" />
+    <Compile Include="Functions\Items\cItem.vb" />
     <Compile Include="Functions\Items\Inventory.vb" />
     <Compile Include="Functions\Items\UseItem.vb" />
     <Compile Include="Functions\Monster\cMonster.vb" />

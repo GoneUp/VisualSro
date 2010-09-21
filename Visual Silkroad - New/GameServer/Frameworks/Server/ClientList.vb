@@ -53,7 +53,7 @@ Namespace GameServer
                     Dim socket As Socket = GetSocket(i)
                     If socket IsNot Nothing Then
                         If socket.Connected = True Then
-                            Server.Dissconnect(i)
+                            'Server.Dissconnect(i)
                         End If
                     End If
                 End If

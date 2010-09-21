@@ -13,6 +13,10 @@
 
         Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
 
+            If PlayerData(Index_).Busy = True Then
+                Exit Sub
+            End If
+
             Dim tag As Byte = packet.Byte
             If tag = 1 Then
                 '01 A8 60 61 02 FE FF 70 04
@@ -41,6 +45,8 @@
                 'writer.Word(CUInt(PlayerData(Index_).Position.X))
                 'writer.DWord(PlayerData(Index_).Position.Z)
                 'writer.Word(CUInt(PlayerData(Index_).Position.Y))
+
+
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
                 PlayerData(Index_).Position = to_pos

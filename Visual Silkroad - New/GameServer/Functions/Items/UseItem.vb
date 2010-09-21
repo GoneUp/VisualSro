@@ -17,6 +17,14 @@
                         UseMPPot(slot, Index_)
                     Case &HE 'Speed Drug
 
+                    Case &H19 'Reverse
+
+                        '[USE_ITEM][ID1:236][2:25]
+                        '1:                      CEC1902() 'recall
+                        '[USE_ITEM][ID1:236][2:25]
+                        '1:                      CEC1903() 'return to dead point
+
+
                 End Select
             End If
         End Sub
@@ -38,21 +46,24 @@
 
                             If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
                                 'Despawn Item
-                                DeleteItemFromDB(Slot, Index_)
+
                                 _item.Pk2Id = 0
                                 _item.Durability = 0
                                 _item.Plus = 0
                                 _item.Amount = 0
 
                                 Inventorys(Index_).UserItems(Slot) = _item
+                                DeleteItemFromDB(Slot, Index_)
 
                             ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
                                 _item.Amount -= 1
                                 Inventorys(Index_).UserItems(Slot) = _item
-
+                                UpdateItem(_item)
                             End If
 
+
                             UpdateHP(Index_)
+
                             Dim writer As New PacketWriter
                             writer.Create(ServerOpcodes.ItemUse)
                             writer.Byte(1)
@@ -90,19 +101,21 @@
 
                             If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
                                 'Despawn Item
-                                DeleteItemFromDB(Slot, Index_)
+
                                 _item.Pk2Id = 0
                                 _item.Durability = 0
                                 _item.Plus = 0
                                 _item.Amount = 0
 
                                 Inventorys(Index_).UserItems(Slot) = _item
+                                DeleteItemFromDB(Slot, Index_)
 
                             ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
                                 _item.Amount -= 1
                                 Inventorys(Index_).UserItems(Slot) = _item
-
+                                UpdateItem(_item)
                             End If
+
 
                             UpdateMP(Index_)
 
@@ -137,21 +150,22 @@
                         If refitem.CLASS_C = 1 Then
                             If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
                                 'Despawn Item
-                                DeleteItemFromDB(Slot, Index_)
+
                                 _item.Pk2Id = 0
                                 _item.Durability = 0
                                 _item.Plus = 0
                                 _item.Amount = 0
 
                                 Inventorys(Index_).UserItems(Slot) = _item
-
+                                DeleteItemFromDB(Slot, Index_)
                             ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
                                 _item.Amount -= 1
                                 Inventorys(Index_).UserItems(Slot) = _item
-
+                                UpdateItem(_item)
                             End If
 
                             UpdateState(&HB, 1, Index_)
+
 
                             Dim writer As New PacketWriter
                             writer.Create(ServerOpcodes.ItemUse)
@@ -167,7 +181,10 @@
                             writer.DWord(refitem.ITEM_TYPE)
                             Server.SendToAllInRange(writer.GetBytes, Index_)
 
-
+                            Timers.UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
+                            Timers.UsingItemTimer(Index_).Start()
+                            PlayerData(Index_).UsedItem = UseItemTypes.Return_Scroll
+                            PlayerData(Index_).Busy = True
                         End If
                     End If
                 End If

@@ -75,7 +75,10 @@ Public Structure Position
 End Structure
 
 Public Enum UseItemTypes
+    None = 0
     Pot = 1
     Return_Scroll = 2
-    Reverse_Scroll = 3
+    Reverse_Scroll_Dead = 3
+    Reverse_Scroll_Recall = 4
+    Reverse_Scroll_Point = 5
 End Enum

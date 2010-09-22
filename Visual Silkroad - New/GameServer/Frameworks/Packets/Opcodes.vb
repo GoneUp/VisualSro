@@ -30,7 +30,7 @@
 		Teleport_Reply = &H34B6
         HelperIcon = &H7402
         ItemUse = &H704C
-        Scroll_Cancel = &H1
+        Scroll_Cancel = &H705B
 
         Exchange_Invite = &H7081
         Exchange_Invite_Accept = &H3080

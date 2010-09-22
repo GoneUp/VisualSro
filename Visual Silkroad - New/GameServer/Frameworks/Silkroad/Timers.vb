@@ -66,6 +66,24 @@ Namespace GameServer
 
                         OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                         PlayerData(Index_).Busy = False
+                        PlayerData(Index_).UsedItem = UseItemTypes.None
+
+
+                    Case UseItemTypes.Reverse_Scroll_Recall
+                        PlayerData(Index_).Position = PlayerData(Index_).Position_Recall
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
+
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                        PlayerData(Index_).Busy = False
+                        PlayerData(Index_).UsedItem = UseItemTypes.None
+
+                    Case UseItemTypes.Reverse_Scroll_Dead
+                        PlayerData(Index_).Position = PlayerData(Index_).Position_Dead
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
+
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                        PlayerData(Index_).Busy = False
+                        PlayerData(Index_).UsedItem = UseItemTypes.None
                 End Select
             End If
         End Sub

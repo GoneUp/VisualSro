@@ -44,6 +44,10 @@
                     UpdateState(1, action, Index_)
 
                 Case 4 'sit down
+                    If SitUpTimer(Index_).Enabled = True Then
+                        Exit Sub
+                    End If
+
                     If PlayerData(Index_).ActionFlag = action Then
                         PlayerData(Index_).ActionFlag = 0
                         UpdateState(1, 0, Index_)

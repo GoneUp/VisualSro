@@ -51,16 +51,6 @@ Namespace GameServer
                 Case ClientOpcodes.GameMaster
                     GameServer.Functions.OnGM(packet, rp.index)
 
-                Case ClientOpcodes.Alchemy
-                    GameServer.Functions.OnAlchemyRequest(packet, rp.index)
-
-                Case ClientOpcodes.ItemMove
-                    GameServer.Functions.OnInventory(packet, rp.index)
-
-                Case ClientOpcodes.ItemUse
-                    GameServer.Functions.OnUseItem(packet, rp.index)
-                    Debug.Print(rp.data)
-
                 Case ClientOpcodes.Action
                     GameServer.Functions.OnPlayerAction(packet, rp.index)
 
@@ -78,6 +68,20 @@ Namespace GameServer
 
                 Case ClientOpcodes.HelperIcon
                     GameServer.Functions.OnHelperIcon(packet, rp.index)
+
+                    '=======ITEMS======
+                Case ClientOpcodes.Alchemy
+                    GameServer.Functions.OnAlchemyRequest(packet, rp.index)
+
+                Case ClientOpcodes.ItemMove
+                    GameServer.Functions.OnInventory(packet, rp.index)
+
+                Case ClientOpcodes.ItemUse
+                    GameServer.Functions.OnUseItem(packet, rp.index)
+                    Debug.Print(rp.data)
+
+                Case ClientOpcodes.Scroll_Cancel
+                    GameServer.Functions.OnReturnScroll_Cancel(rp.index)
 
                     '========STR+INT UP=====
 

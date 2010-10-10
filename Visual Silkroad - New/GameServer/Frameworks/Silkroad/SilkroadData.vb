@@ -22,6 +22,8 @@
             DumpSkillFiles()
             Commands.WriteLog("Loaded " & RefSkills.Count & " Ref-Skills.")
 
+            DumpObjectFiles()
+            Commands.WriteLog("Loaded " & Objects.Count & " Ref-Objects.")
         Catch ex As Exception
             Commands.WriteLog("Error at Loading Data! Message: " & ex.Message)
         End Try
@@ -321,6 +323,82 @@
         Return New tmpSkill_()
     End Function
 
+    Public Structure Object_
+        Public Id As UInteger
+        Public Name As String
+        Public OtherName As String
+        Public Type As Byte
+        Public Type1 As Byte
+        Public Speed As Single
+        Public Level As Byte
+        Public Hp As UInteger
+        Public InvSize As Byte
+        Public PhyDef As UShort
+        Public MagDef As UShort
+        Public HitRatio As Byte
+        Public ParryRatio As Byte
+        Public Exp As ULong
+        Public Skill1 As UInteger
+        Public Skill2 As UInteger
+        Public Skill3 As UInteger
+        Public Skill4 As UInteger
+        Public Skill5 As UInteger
+        Public Skill6 As UInteger
+        Public Skill7 As UInteger
+        Public Skill8 As UInteger
+        Public Skill9 As UInteger
+    End Structure
+
+    Public Objects As New List(Of Object_)
+
+
+    Public Sub DumpObjectFiles()
+        Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\characterdata.txt")
+        For i As Integer = 0 To paths.Length - 1
+            DumpObjectFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+        Next
+    End Sub
+
+    Private Sub DumpObjectFile(ByVal path As String)
+        Dim lines As String() = IO.File.ReadAllLines(path)
+        For i As Integer = 0 To lines.Length - 1
+            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+            Dim tmp As New Object_()
+            tmp.Id = Convert.ToUInt32(tmpString(1))
+            tmp.Name = tmpString(2)
+            tmp.OtherName = tmpString(3)
+            tmp.Type = 1
+            tmp.Type1 = 1
+            tmp.Speed = Convert.ToSingle(tmpString(50))
+            tmp.Level = Convert.ToByte(tmpString(57))
+            tmp.Hp = Convert.ToUInt32(tmpString(59))
+            tmp.InvSize = 0
+            tmp.PhyDef = Convert.ToUInt16(tmpString(71))
+            tmp.MagDef = Convert.ToUInt16(tmpString(72))
+            tmp.HitRatio = Convert.ToByte(tmpString(75))
+            tmp.ParryRatio = Convert.ToByte(tmpString(77))
+            tmp.Exp = Convert.ToUInt64(tmpString(79))
+            tmp.Skill1 = Convert.ToUInt32(tmpString(83))
+            tmp.Skill2 = Convert.ToUInt32(tmpString(85))
+            tmp.Skill3 = Convert.ToUInt32(tmpString(86))
+            tmp.Skill4 = Convert.ToUInt32(tmpString(87))
+            tmp.Skill5 = Convert.ToUInt32(tmpString(88))
+            tmp.Skill6 = Convert.ToUInt32(tmpString(89))
+            tmp.Skill7 = Convert.ToUInt32(tmpString(90))
+            tmp.Skill8 = Convert.ToUInt32(tmpString(91))
+            tmp.Skill9 = Convert.ToUInt32(tmpString(92))
+            Objects.Add(tmp)
+        Next
+    End Sub
+
+    Public Function GetObjectById(ByVal ItemId As UInteger) As Object_
+        For i As Integer = 0 To Objects.Count - 1
+            If Objects(i).Id = ItemId Then
+                Return Objects(i)
+            End If
+        Next
+        Return New Object_()
+    End Function
 
 
 End Module

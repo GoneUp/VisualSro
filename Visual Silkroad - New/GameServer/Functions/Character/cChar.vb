@@ -50,6 +50,7 @@
     Public SpawnedPlayers As New List(Of Integer)
     Public SpawnedMonsters As New List(Of Integer)
     Public SpawnedItems As New List(Of Integer)
+    Public SpawnedNPCs As New List(Of Integer)
 
     Public Ingame As Boolean = False
     Public InExchange As Boolean = False
@@ -57,12 +58,26 @@
     Public ExchangeID As Integer = -1
 
 
-    Sub SetCharStats()
+    Sub SetCharGroundStats()
 
         ' Player.Stats[Index_].HP = (uint)((double)Math.Pow(1.02, (Player.Stats[Index_].Level - 1)) * Player.Stats[Index_].Strength * 10); 
         HP = (Math.Pow(1.02, Me.Level - 1) * Me.Strength * 10)
         MP = (Math.Pow(1.02, Me.Level - 1) * Me.Intelligence * 10)
 
+        Hit = Math.Round(Me.Level + 10)
+        Parry = Math.Round(Me.Level + 10)
+    End Sub
+
+    Sub AddItemsToStats(ByVal Index_ As Integer)
+
+        For i = 0 To 12
+
+
+
+
+        Next
+
+    
     End Sub
 End Class
 

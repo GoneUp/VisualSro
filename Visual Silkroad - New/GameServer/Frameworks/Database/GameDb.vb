@@ -25,7 +25,7 @@
 
 		Private First As Boolean = False
 
-		Public UniqueIdCounter As Integer = 1
+        Public UniqueIdCounter As UInteger = 1
 
 
 
@@ -136,10 +136,9 @@
                     Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
                     Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
                     Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))
-                    Chars(i).SetCharStats()
+                    Chars(i).SetCharGroundStats()
 
-                    Chars(i).UniqueId = UniqueIdCounter
-                    UniqueIdCounter += 1
+                    Chars(i).UniqueId = GetUnqiueID()
                 Next
 
             Else
@@ -325,6 +324,12 @@
 			Next
 			Return free
 		End Function
+
+        Public Function GetUnqiueID() As UInteger
+            Dim toreturn As UInteger = UniqueIdCounter
+            UniqueIdCounter += 1
+            Return toreturn
+        End Function
 
 #End Region
 	End Module

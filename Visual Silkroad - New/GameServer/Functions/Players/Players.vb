@@ -24,8 +24,11 @@
                 to_pos.XSector = packet.Byte
                 to_pos.YSector = packet.Byte
                 to_pos.X = CInt(packet.Word)
-                to_pos.Z = packet.Word
+                Dim zByte As Byte() = packet.ByteArray(2) 'real z converting
+                to_pos.Z = BitConverter.ToInt16(zByte, 0)
                 to_pos.Y = CInt(packet.Word)
+
+
                 Debug.Print(to_pos.XSector & " -- " & to_pos.YSector & " -- " & to_pos.X & " -- " & to_pos.Z & " -- " & to_pos.Y)
                 Debug.Print("X:" & ((to_pos.XSector - 135) * 192) + (to_pos.X / 10) & " Y:" & ((to_pos.YSector - 92) * 192) + (to_pos.Y / 10))
 
@@ -37,7 +40,7 @@
                 writer.Byte(to_pos.XSector)
                 writer.Byte(to_pos.YSector)
                 writer.Word(CUInt(to_pos.X))
-                writer.Word(to_pos.Z)
+                writer.Byte(zByte)
                 writer.Word(CUInt(to_pos.Y))
                 writer.Byte(0) '1= source
                 'writer.Byte(PlayerData(Index_).Position.XSector)
@@ -53,6 +56,9 @@
                 SpawnMe(Index_)
                 SpawnOtherPlayer(Index_) 'Spawn before sending the Packet is to prevent chrashes
                 DespawnPlayerRange(Index_)
+
+                SpawnNPCRange(Index_)
+                DeSpawnNPCRange(Index_)
 
                 Server.SendToAllInRange(writer.GetBytes, Index_)
             Else
@@ -237,16 +243,16 @@
 
 
         Public Sub SpawnMe(ByVal Index As Integer)
-            Dim range As Integer = 750
+            Dim range As Integer = ServerRange
 
-            For refindex As Integer = 0 To Server.OnlineClient - 1
+            For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
                     Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
                     If distance < range Then
                         If PlayerData(refindex).SpawnedPlayers.Contains(Index) = False Then
-							Server.Send(CreateSpawnPacket(Index), refindex)
+                            Server.Send(CreateSpawnPacket(Index), refindex)
                             PlayerData(refindex).SpawnedPlayers.Add(Index)
                         End If
                     End If
@@ -256,9 +262,9 @@
         End Sub
 
         Public Sub SpawnMeAtMovement(ByVal Index As Integer, ByVal ToPos As Position)
-            Dim range As Integer = 750
+            Dim range As Integer = ServerRange
 
-            For refindex As Integer = 0 To Server.OnlineClient - 1
+            For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
@@ -275,9 +281,9 @@
         End Sub
 
         Public Sub SpawnOtherPlayer(ByVal Index As Integer)
-            Dim range As Integer = 750
+            Dim range As Integer = ServerRange
 
-            For refindex As Integer = 0 To Server.OnlineClient
+            For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
@@ -304,6 +310,11 @@
                     PlayerData(Index).SpawnedPlayers.Remove(Other_Index)
                 End If
             Next
+
+            For i = 0 To PlayerData(Index).SpawnedNPCs.Count - 1
+                Server.Send(CreateDespawnPacket(NpcList(PlayerData(Index).SpawnedNPCs(i)).UniqueID), Index)
+                PlayerData(Index).SpawnedNPCs.Remove(PlayerData(Index).SpawnedNPCs(i))
+            Next
         End Sub
 
         Public Sub DespawnPlayer(ByVal Index As Integer)
@@ -314,10 +325,12 @@
                     PlayerData(Other_Index).SpawnedPlayers.Remove(Index)
                 End If
             Next
+
+            PlayerData(Index).SpawnedNPCs.Clear()
         End Sub
 
         Public Sub DespawnPlayerRange(ByVal Index As Integer)
-            Dim range As Integer = 750
+            Dim range As Integer = ServerRange
 
             For i = 0 To PlayerData(Index).SpawnedPlayers.Count - 1
                 Dim Other_Index As Integer = PlayerData(Index).SpawnedPlayers(i)

@@ -255,7 +255,16 @@
                 If tmp_ex.Items1(i) <> -1 Then
 
                     Dim remove_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
-                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
+                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items1(i))
+
+                    'Add to new...
+                    add_item.Pk2Id = remove_item.Pk2Id
+                    add_item.Durability = remove_item.Durability
+                    add_item.Plus = remove_item.Plus
+                    add_item.Amount = remove_item.Amount
+
+                    Inventorys(tmp_ex.Player2Index).UserItems(add_item.Slot) = add_item
+                    UpdateItem(add_item)
 
                     'Remove...
                     DeleteItemFromDB(tmp_ex.Items1(i), tmp_ex.Player1Index)
@@ -265,12 +274,6 @@
                     remove_item.Amount = 0
 
                     Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i)) = remove_item
-
-                    'Add to new...
-                    add_item.OwnerCharID = PlayerData(tmp_ex.Player2Index).UniqueId
-                    add_item.Slot = GetFreeItemSlot(tmp_ex.Player2Index)
-                    Inventorys(tmp_ex.Player2Index).UserItems(add_item.Slot) = add_item
-                    UpdateItem(add_item)
                 End If
             Next
             PlayerData(tmp_ex.Player1Index).Gold += tmp_ex.Player2Gold
@@ -283,7 +286,16 @@
                 If tmp_ex.Items2(i) <> -1 Then
 
                     Dim remove_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
-                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
+                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items2(i))
+
+                    'Add to new...
+                    add_item.Pk2Id = remove_item.Pk2Id
+                    add_item.Durability = remove_item.Durability
+                    add_item.Plus = remove_item.Plus
+                    add_item.Amount = remove_item.Amount
+
+                    Inventorys(tmp_ex.Player1Index).UserItems(add_item.Slot) = add_item
+                    UpdateItem(add_item)
 
                     'Remove...
                     DeleteItemFromDB(tmp_ex.Items2(i), tmp_ex.Player2Index)
@@ -294,11 +306,6 @@
 
                     Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i)) = remove_item
 
-                    'Add to new...
-                    add_item.OwnerCharID = PlayerData(tmp_ex.Player1Index).UniqueId
-                    add_item.Slot = GetFreeItemSlot(tmp_ex.Player1Index)
-                    Inventorys(tmp_ex.Player1Index).UserItems(add_item.Slot) = add_item
-                    UpdateItem(add_item)
                 End If
             Next
             PlayerData(tmp_ex.Player2Index).Gold += tmp_ex.Player1Gold

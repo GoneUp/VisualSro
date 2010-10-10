@@ -20,7 +20,6 @@
 
                 Case ChatModes.Guild
 
-                Case ChatModes.Globals
 
                 Case ChatModes.Notice
                     OnNoticeChat(Packet, Index_)
@@ -163,6 +162,17 @@
             writer.Byte(ChatModes.Notice)
             writer.Word(message.Length)
             writer.UString(message)
+            Server.SendToAllIngame(writer.GetBytes)
+        End Sub
+
+        Public Sub OnGlobalChat(ByVal Message As String, ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Chat)
+            writer.Byte(ChatModes.Globals)
+            writer.Word(PlayerData(Index_).CharacterName.Length)
+            writer.String(PlayerData(Index_).CharacterName)
+            writer.Word(Message.Length)
+            writer.UString(Message)
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
 

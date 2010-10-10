@@ -23,6 +23,11 @@
                     Case GmTypes.Ban
                         OnBanUser(Packet, Index)
 
+                    Case GmTypes.GoTown
+                        OnGoTown(Index)
+
+                    Case GmTypes.ToTown
+                        OnMoveUserToTown(Index, Packet)
 
                 End Select
             Else
@@ -130,7 +135,7 @@
 			Dim NameLength As Byte = packet.Word
 			Dim Name As String = packet.String(NameLength)
 
-            For i As Integer = 0 To Server.OnlineClient
+            For i As Integer = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
 
@@ -151,7 +156,7 @@
             Dim NameLength As UInt16 = packet.Word
 			Dim Name As String = packet.String(NameLength)
 
-            For i As Integer = 0 To Server.OnlineClient
+            For i As Integer = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
 
@@ -195,9 +200,35 @@
 
         End Sub
 
+        Public Sub OnGoTown(ByVal Index_ As Integer)
+
+            'Teleport the GM to Town
+            PlayerData(Index_).Position = Functions.PlayerData(Index_).Position_Return 'Set new Pos
+            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
+            OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+
+        End Sub
+
+        Public Sub OnMoveUserToTown(ByVal Index_ As Integer, ByVal packet As PacketReader)
+
+            Dim NameLength As UInt16 = packet.Word
+            Dim Name As String = packet.String(NameLength)
+
+            For i As Integer = 0 To Server.MaxClients
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).CharacterName = Name Then
+                        OnGoTown(i)
+                    End If
+                End If
+            Next
+
+        End Sub
+
+
         Enum GmTypes
             FindUser = &H1
             GoTown = &H2
+            ToTown = &H3
             MakeMonster = &H6
             MakeItem = &H7
             MoveToUser = &H8

@@ -88,7 +88,7 @@
                     PlayerData(Index_).Strength += 1
                 End If
 
-                PlayerData(Index_).SetCharStats()
+                PlayerData(Index_).SetCharGroundStats()
                 OnStatsPacket(Index_)
 
                 Dim writer As New PacketWriter
@@ -106,7 +106,7 @@
                     PlayerData(Index_).Intelligence += 1
                 End If
 
-                PlayerData(Index_).SetCharStats()
+                PlayerData(Index_).SetCharGroundStats()
                 OnStatsPacket(Index_)
 
                 Dim writer As New PacketWriter

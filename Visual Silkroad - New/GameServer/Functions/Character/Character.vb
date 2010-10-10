@@ -240,7 +240,7 @@
                 DatabaseCore.Chars(NewCharacterIndex).MagDef = magdefmin
                 DatabaseCore.Chars(NewCharacterIndex).Hit = hit
                 DatabaseCore.Chars(NewCharacterIndex).Parry = parry
-
+                DatabaseCore.Chars(NewCharacterIndex).SetCharGroundStats()
 
                 GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume, DatabaseCore.Chars(NewCharacterIndex).Level, DatabaseCore.Chars(NewCharacterIndex).Gold, DatabaseCore.Chars(NewCharacterIndex).SkillPoints, CInt(DatabaseCore.Chars(NewCharacterIndex).GM)))
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", DatabaseCore.Chars(NewCharacterIndex).Position.XSector, DatabaseCore.Chars(NewCharacterIndex).Position.YSector, Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.X), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Z), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Y), DatabaseCore.Chars(NewCharacterIndex).UniqueId))
@@ -685,6 +685,7 @@
             PlayerData(Index_).Ingame = True
             SpawnMe(Index_)
             SpawnOtherPlayer(Index_)
+            SpawnNPCRange(Index_)
         End Sub
     End Module
 End Namespace

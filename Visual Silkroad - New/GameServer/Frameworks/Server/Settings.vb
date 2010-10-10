@@ -14,6 +14,7 @@
     Public ServerDropRate As Long = 1
     Public ServerLevelCap As Byte = 100
     Public ServerMasteryCap As UInteger = 300
+    Public ServerRange As UInteger = 750
 
     Public Sub LoadSettings()
         'TODO: Load these Settings from a Config File

@@ -42,7 +42,21 @@
                 End If
 
 
+            ElseIf Msg.StartsWith("\\kick") Then
+                Dim tmp As String() = Msg.Split(" ")
+                For i As Integer = 0 To Server.MaxClients
+                    If Functions.PlayerData(i) IsNot Nothing Then
+                        If Functions.PlayerData(i).CharacterName = tmp(1) Then
+                            Server.Dissconnect(i)
+                        End If
+                    End If
+                Next
 
+            ElseIf Msg.StartsWith("\\npc") Then
+                Dim tmp As String() = Msg.Split(" ")
+                If IsNumeric(tmp(1)) Then
+                    Functions.SpawnNPC(tmp(1), Functions.PlayerData(Index_).Position)
+                End If
             End If
         End Sub
 

@@ -13,7 +13,7 @@ Namespace GameServer
             ClientList.LastPingTime(rp.index) = DateTime.Now
 
 
-                Select Case rp.opcode
+            Select Case rp.opcode
 
                 Case ClientOpcodes.Ping
 
@@ -120,10 +120,6 @@ Namespace GameServer
             End Select
         End Sub
 
-        <StructLayout(LayoutKind.Sequential)> _
-        Private Structure Packet
-            Public test As String
-        End Structure
     End Class
 End Namespace
 

@@ -11,3 +11,4 @@ C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\obj\
 Z:\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\bin\Debug\LoginServer.exe.config
 Z:\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.xml
 Z:\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\obj\Debug\LoginServer.pdb
+C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\bin\Debug\MySql.Data.dll

@@ -41,6 +41,7 @@
     Public ActionFlag As Byte
     Public Busy As Boolean
     Public UsedItem As UseItemTypes
+    Public UsedItemParameter As Integer
 
     Public Position As New Position
     Public Position_Recall As New Position
@@ -69,15 +70,8 @@
     End Sub
 
     Sub AddItemsToStats(ByVal Index_ As Integer)
-
         For i = 0 To 12
-
-
-
-
         Next
-
-    
     End Sub
 End Class
 

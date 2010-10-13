@@ -24,6 +24,9 @@
 
             DumpObjectFiles()
             Commands.WriteLog("Loaded " & Objects.Count & " Ref-Objects.")
+
+            DumpReversePoints(System.AppDomain.CurrentDomain.BaseDirectory & "data\reverse_points.txt")
+            Commands.WriteLog("Loaded " & RefReversePoints.Count & " Reverse-Points.")
         Catch ex As Exception
             Commands.WriteLog("Error at Loading Data! Message: " & ex.Message)
         End Try
@@ -398,6 +401,36 @@
             End If
         Next
         Return New Object_()
+    End Function
+
+    Structure ReversePoint_
+        Public TeleportID As UInteger
+        Public Position As Position
+    End Structure
+
+    Public RefReversePoints As New List(Of ReversePoint_)
+
+    Public Sub DumpReversePoints(ByVal path As String)
+        Dim lines As String() = IO.File.ReadAllLines(path)
+        For i As Integer = 0 To lines.Length - 1
+            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+            Dim tmp As New ReversePoint_
+            tmp.TeleportID = tmpString(0)
+            tmp.Position.XSector = tmpString(1)
+            tmp.Position.YSector = tmpString(2)
+            tmp.Position.X = tmpString(3)
+            tmp.Position.Z = tmpString(4)
+            tmp.Position.Y = tmpString(5)
+            RefReversePoints.Add(tmp)
+        Next
+    End Sub
+
+    Public Function GetReversePointByID(ByVal id As UInteger)
+        For i = 0 To RefReversePoints.Count - 1
+            If RefReversePoints(i).TeleportID = id Then
+                Return RefReversePoints(i)
+            End If
+        Next
     End Function
 
 

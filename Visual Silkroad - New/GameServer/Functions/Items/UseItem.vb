@@ -131,11 +131,7 @@
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
             Dim writer As New PacketWriter
             Dim tag As Byte = packet.Byte '2 = recall 3= dead point
-
-            If tag = 7 Then
-                SendPm(Index_, "Teleport to specific Points via Reverse Scroll is not supported yet.", "[SERVER]")
-                Exit Sub
-            End If
+            Dim id As UInteger = 0
 
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
                 writer.Create(ServerOpcodes.ItemUse)
@@ -186,6 +182,10 @@
                             PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Recall
                         Case 3
                             PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Dead
+                        Case 7
+                            id = packet.DWord
+                            PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Point
+                            PlayerData(Index_).UsedItemParameter = id
                     End Select
 
                     PlayerData(Index_).Busy = True
@@ -305,5 +305,6 @@
             writer.DWord(ItemID)
             Server.SendToAllInRange(writer.GetBytes, Index_)
         End Sub
+
     End Module
 End Namespace

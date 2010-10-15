@@ -1,6 +1,9 @@
 ﻿Namespace GameServer.Functions
     Module Stats
         Public Sub OnStatsPacket(ByVal index_ As Integer)
+            PlayerData(index_).SetCharGroundStats()
+            PlayerData(index_).AddItemsToStats(index_)
+
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.CharacterStats)
             writer.DWord(PlayerData(index_).MinPhy)
@@ -116,6 +119,53 @@
             End If
         End Sub
 
+        Public Function GetMinPhy(ByVal stat As Byte) As Integer
+            Return Convert.ToInt32(6 + ((stat - 20) \ 3))
+        End Function
+        Public Function GetMaxPhy(ByVal stat As Byte, ByVal level As Byte) As Integer
+            Return Convert.ToInt32(9 + ((stat - 20) \ 3) + level)
+        End Function
+        Public Function GetMinMag(ByVal stat As Byte, ByVal level As Byte) As Integer
+            If level = 1 Then
+                Return Convert.ToInt32(6 + ((stat - 20) \ 3))
+            Else
+                Return Convert.ToInt32(7 + ((stat - 20) \ 3))
+            End If
+        End Function
+        Public Function GetMaxMag(ByVal stat As Byte, ByVal level As Byte) As Integer
+            If level = 1 Then
+                Return Convert.ToInt32(10 + ((stat - 20) \ 2))
+            Else
+                Return Convert.ToInt32(11 + ((stat - 20) \ 2))
+            End If
+        End Function
+        Public Function GetMagDef(ByVal stat As Integer) As Integer
+            Return Convert.ToInt32(6 + ((stat - 20) \ 3))
+        End Function
+        Public Function GetPhyDef(ByVal stat As Integer, ByVal level As Integer) As Integer
+            Return Convert.ToInt32(3 + ((stat - 20) \ 3))
+        End Function
+
+        Public Function GetWeaponMasteryLevel(ByVal Index_) As Byte
+            Dim _item As cInvItem = GameServer.Functions.Inventorys(Index_).UserItems(4)
+            Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
+            '8-11
+            If _refitem.CLASS_A = 1 Then
+                Dim selector As String = _refitem.ITEM_TYPE_NAME.Substring(8, 3)
+                Select Case selector
+                    Case "SWO" 'Sword
+                        Return GameServer.Functions.GetMasteryByID(257, Index_).Level
+                    Case "BLA" 'Blade
+                        Return GameServer.Functions.GetMasteryByID(257, Index_).Level
+                    Case "SPE" 'Spear
+                        Return GameServer.Functions.GetMasteryByID(258, Index_).Level
+                    Case "TBL" 'Glavie
+                        Return GameServer.Functions.GetMasteryByID(258, Index_).Level
+                    Case "BOW" 'Bow
+                        Return GameServer.Functions.GetMasteryByID(259, Index_).Level
+                End Select
+            End If
+        End Function
 
     End Module
 End Namespace

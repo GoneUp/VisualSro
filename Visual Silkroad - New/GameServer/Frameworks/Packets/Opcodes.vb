@@ -14,7 +14,8 @@
 		Login = &H6103
 		Character = &H7007
 		IngameReq = &H7001
-		JoinWorldReq = &H3012
+        JoinWorldReq = &H3012
+        JoinWorldReq2 = &H34C5
 
 		'Ingame
 		Movement = &H7021

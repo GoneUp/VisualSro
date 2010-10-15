@@ -228,7 +228,7 @@
                 Dim phyatkmin As UShort = 6
                 Dim phyatkmax As UShort = 9
                 Dim magatkmin As UShort = 6
-                Dim magatkmax As UShort = 10
+                Dim magatkmax As UShort = 9
                 Dim hit As UShort = 11
                 Dim parry As UShort = 11
 
@@ -508,6 +508,8 @@
 
         End Sub
         Public Sub OnCharacterInfo(ByVal Index_ As Integer)
+            PlayerData(Index_).SetCharGroundStats()
+            PlayerData(Index_).AddItemsToStats(Index_)
 
             Dim writer As New PacketWriter
             Dim chari As [cChar] = PlayerData(Index_)
@@ -550,7 +552,6 @@
 
                     Select Case refitem.CLASS_A
                         Case 1 'Equipment
-
                             writer.Byte(_item.Plus)
                             writer.QWord(0)
                             writer.DWord(_item.Durability)

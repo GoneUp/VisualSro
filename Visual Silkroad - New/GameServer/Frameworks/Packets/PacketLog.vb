@@ -1,15 +1,20 @@
 ﻿Module PacketLog
 
-    Public Sub LogPacket(ByVal Packet As GameServer.ReadPacket, ByVal FromServer As Boolean, ByVal data As Byte())
+    Public Sub LogPacket(ByVal buffer As Byte(), ByVal FromServer As Boolean)
         Try
+            Dim length As UInteger = BitConverter.ToUInt16(buffer, 0)
+            Dim op As UInteger = BitConverter.ToUInt16(buffer, 2)
+
+
             If FromServer = False Then
-                Commands.WriteLog("C --> S (" & (Packet.opcode) & ")" & BitConverter.ToString(data, 0, data.Length))
+                Commands.WriteLog("C --> S (" & (op) & ")" & BitConverter.ToString(buffer, 6, length))
             ElseIf FromServer = True Then
-                Commands.WriteLog("S --> C (" & (Packet.opcode) & ")" & BitConverter.ToString(data, 0, data.Length))
+                Commands.WriteLog("S --> C (" & (op) & ")" & BitConverter.ToString(buffer, 6, length))
             End If
         Catch ex As Exception
 
         End Try
+
 
 
     End Sub

@@ -139,5 +139,15 @@
             DataBase.SaveQuery(String.Format("INSERT INTO skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID, toadd.SkillID))
         End Sub
 
+
+
+        Public Function GetMasteryByID(ByVal MasteryID As UInteger, ByVal Index_ As Integer) As cMastery
+            For i = 0 To DatabaseCore.Masterys.Length - 1
+                If DatabaseCore.Masterys(i).OwnerID = PlayerData(Index_).UniqueId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
+                    Return DatabaseCore.Masterys(i)
+                End If
+            Next
+        End Function
+
     End Module
 End Namespace

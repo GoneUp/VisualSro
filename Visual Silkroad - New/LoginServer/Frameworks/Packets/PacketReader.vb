@@ -4,7 +4,7 @@
 	Imports System.Text
 Namespace LoginServer
 
-    Friend Class PacketReader
+    Public Class PacketReader
         Private br As BinaryReader
         Private ms As MemoryStream
 

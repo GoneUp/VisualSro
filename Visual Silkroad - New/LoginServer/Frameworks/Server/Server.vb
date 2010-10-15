@@ -69,8 +69,8 @@ Namespace LoginServer
             ClientList.GetSocket(index).Send(buff)
 
             If LoginServer.Program.Logpackets = True Then
-                Dim rp As New ReadPacket(buffer, index)
-                PacketLog.LogPacket(rp, True)
+
+                PacketLog.LogPacket(buff, True)
             End If
         End Sub
 

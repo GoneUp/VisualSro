@@ -7,14 +7,13 @@ Imports GameServer.GameServer.Functions
 Namespace GameServer
 
     Public Class Server
-        Private Shared buffer(&H10000 - 1) As Byte
+        Private Shared Buffer(&H10000 - 1) As Byte
         Private Shared IP_Renamed As IPAddress
         Private Shared maxClients_Renamed As Integer
         Private Shared onlineClient_Renamed As Integer
         Private Shared onlineMob_Renamed As Integer
-        Private Shared PORT_Renamed As Integer
-        Private Shared serverSocket As Socket
-
+        Private Shared ServerPort As Integer
+        Private Shared ServerSocket As Socket
 
         Public Shared Event OnClientConnect As dConnection
         Public Shared Event OnClientDisconnect As dDisconnected
@@ -25,13 +24,13 @@ Namespace GameServer
 
         Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
             Try
-                Dim sock As Socket = serverSocket.EndAccept(ar)
+                Dim sock As Socket = ServerSocket.EndAccept(ar)
                 If OnlineClient + 1 <= 1500 Then
                     ClientList.Add(sock)
                     Dim index As Integer = ClientList.FindIndex(sock)
                     RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
-                    sock.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), sock)
-                    serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+                    sock.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), sock)
+                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
                 Else
                     'More then 1500 Sockets
                     sock.Disconnect(False)
@@ -69,10 +68,10 @@ Namespace GameServer
             If asyncState.Connected Then
                 Try
                     If asyncState.EndReceive(ar) > 0 Then
-                        RaiseEvent OnReceiveData(buffer, index)
-                        Array.Clear(buffer, 0, buffer.Length)
+                        RaiseEvent OnReceiveData(Buffer, index)
+                        Array.Clear(Buffer, 0, Buffer.Length)
                     End If
-                    asyncState.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
+                    asyncState.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
                 Catch exception As SocketException
                     If exception.ErrorCode = &H2746 Then
                         ClientList.Delete(index)
@@ -80,13 +79,13 @@ Namespace GameServer
                     End If
                 Catch exception2 As Exception
                     RaiseEvent OnServerError(exception2, index)
-                    Array.Clear(buffer, 0, buffer.Length)
+                    Array.Clear(Buffer, 0, Buffer.Length)
                     If asyncState.Connected = True Then
-                        asyncState.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
+                        asyncState.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
                     End If
                 End Try
             Else
-                Commands.WriteLog(buffer.ToString)
+                Commands.WriteLog(Buffer.ToString)
             End If
         End Sub
 
@@ -95,8 +94,7 @@ Namespace GameServer
             ClientList.GetSocket(index).Send(buff)
 
             If GameServer.Program.Logpackets = True Then
-                Dim rp As New ReadPacket(buff, index)
-                PacketLog.LogPacket(rp, True, buff)
+                PacketLog.LogPacket(buff, True)
             End If
         End Sub
 
@@ -144,27 +142,25 @@ Namespace GameServer
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
-                    If distance < range Then
+                    Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position) 'Calculate Distance
+                    If distance < ServerRange Then
                         'In Rage 
                         If player.Ingame = True Then
                             socket.Send(buff)
                         End If
                     End If
-
                 End If
             Next i
         End Sub
 
         Public Shared Sub SendToAllInRangeExpectMe(ByVal buff() As Byte, ByVal Index As Integer)
-            Dim range As Integer = 750
 
             For i As Integer = 0 To OnlineClient
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
-                    If distance < range Then
+                    Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position) 'Calculate Distance
+                    If distance < ServerRange Then
                         'In Rage 
                         If player.Ingame = True Then
                             socket.Send(buff)
@@ -175,12 +171,12 @@ Namespace GameServer
             Next i
         End Sub
         Public Shared Sub Start()
-            Dim localEP As New IPEndPoint(IPAddress.Any, PORT_Renamed)
-            serverSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            Dim localEP As New IPEndPoint(IPAddress.Any, ServerPort)
+            ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             Try
-                serverSocket.Bind(localEP)
-                serverSocket.Listen(5)
-                serverSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+                ServerSocket.Bind(localEP)
+                ServerSocket.Listen(5)
+                ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
 
                 ClientList.StartPingCheck()
             Catch exception As Exception
@@ -229,10 +225,10 @@ Namespace GameServer
 
         Public Shared Property port() As Integer
             Get
-                Return PORT_Renamed
+                Return ServerPort
             End Get
             Set(ByVal value As Integer)
-                PORT_Renamed = value
+                ServerPort = value
             End Set
         End Property
 

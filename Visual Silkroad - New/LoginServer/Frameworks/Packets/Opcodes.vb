@@ -5,14 +5,14 @@
     'C --> S
 
     Enum ClientOpcodes
-        Handshake = 9000
-        PatchReq = 6100
-        InfoReq = 2001 'cleint whoami
-        LauncherReq = 6104
-        Ping = 2002
+        Handshake = &H9000
+        PatchReq = &H6100
+        InfoReq = &H2001 'cleint whoami
+        LauncherReq = &H6104
+        Ping = &H2002
 
-        ServerListReq = 6101
-        Login = 6102
+        ServerListReq = &H6101
+        Login = &H6102
 
       End Enum
 

@@ -8,3 +8,6 @@ C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\obj\
 C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\obj\Release\LoginServer.exe
 C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\obj\Release\LoginServer.xml
 C:\Users\Henry\Desktop\Emulator\VisualSro\Visual Silkroad - New\LoginServer\obj\Release\LoginServer.pdb
+C:\Documents and Settings\Administrator.VPS-4099\Desktop\Server Files\VisualSRO\Visual Silkroad - New\LoginServer\bin\Release\LoginServer.exe.config
+C:\Documents and Settings\Administrator.VPS-4099\Desktop\Server Files\VisualSRO\Visual Silkroad - New\LoginServer\obj\Release\LoginServer.xml
+C:\Documents and Settings\Administrator.VPS-4099\Desktop\Server Files\VisualSRO\Visual Silkroad - New\LoginServer\obj\Release\LoginServer.pdb

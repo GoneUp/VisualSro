@@ -1,47 +1,40 @@
 ﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.Runtime.InteropServices
+Imports System
+Imports System.Runtime.InteropServices
 Namespace LoginServer
 
     Public Class Parser
 
-        Public Shared Sub Parse(ByVal rp As ReadPacket)
+        Public Shared Sub Parse(ByVal packet As LoginServer.PacketReader, ByVal index As Integer)
+            Dim length As UInteger = packet.Word
+            Dim opcode As UInteger = packet.Word
+            Dim security As UInteger = packet.Word
 
-            Dim buff As Byte() = rp.buffer
-            Dim pack As New PacketReader(buff)
-
-            Select Case rp.opcode
-
+            Select Case opcode
                 Case ClientOpcodes.Ping
-
 
                 Case ClientOpcodes.Handshake  'Client accepts
 
                 Case ClientOpcodes.InfoReq  'GateWay
-                    GateWay(rp.index)
+                    Functions.GateWay(index)
 
                 Case ClientOpcodes.PatchReq  'Client sends Patch Info
-                    ClientInfo(pack)
-                    SendPatchInfo(rp.index)
+                    Functions.ClientInfo(packet)
+                    Functions.SendPatchInfo(index)
 
                 Case ClientOpcodes.LauncherReq
-                    SendLauncherInfo(rp.index)
+                    Functions.SendLauncherInfo(index)
 
                 Case ClientOpcodes.ServerListReq
-                    SendServerList(rp.index)
+                    Functions.SendServerList(index)
 
                 Case ClientOpcodes.Login
-                    HandleLogin(pack, rp.index)
+                    Functions.HandleLogin(packet, index)
 
                 Case Else
-                    Commands.WriteLog("opCode: " & rp.opcode & " Packet : " & rp.data)
+                    Commands.WriteLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
             End Select
         End Sub
-
-        <StructLayout(LayoutKind.Sequential)> _
-        Private Structure Packet
-            Public test As String
-        End Structure
     End Class
 End Namespace
 

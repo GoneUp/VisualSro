@@ -36,7 +36,7 @@ Namespace GameServer
             Console.Title = "GAMESERVER ALPHA"
             Commands.WriteLog("Starting Agent Server")
             DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
-            Server.ip = "192.168.178.23"
+            Server.ip = "78.111.78.27"
             Server.port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
@@ -69,7 +69,7 @@ read:
 
         End Sub
 
-        Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index As Integer)
+        Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
 
             Dim read As Integer = 0
 
@@ -85,12 +85,12 @@ read:
                 Array.ConstrainedCopy(buffer, read, newbuff, 0, length + 6)
                 read = read + length + 6
 
-                Dim rp As New ReadPacket(newbuff, index)
+                Dim packet As New PacketReader(newbuff)
                 If Logpackets = True Then
-                    PacketLog.LogPacket(rp, False, newbuff)
+                    PacketLog.LogPacket(newbuff, False)
                 End If
 
-                Parser.Parse(rp)
+                Parser.Parse(packet, index_)
             Loop
 
 

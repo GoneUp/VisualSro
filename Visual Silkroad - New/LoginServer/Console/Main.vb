@@ -22,8 +22,8 @@ Namespace LoginServer
             AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
             AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
             AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
-            AddHandler db.OnDatabaseError, AddressOf Program.db_OnDatabaseError
-            AddHandler db.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
+            AddHandler Database.OnDatabaseError, AddressOf Program.db_OnDatabaseError
+            AddHandler Database.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
 
 
             Console.WindowHeight = 10
@@ -35,13 +35,15 @@ Namespace LoginServer
             Console.Clear()
             Console.Title = "LOGINSERVER ALPHA"
             Commands.WriteLog("Starting Server")
-            db.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
-            Server.ip = "127.0.0.1"
+            Database.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
+            Server.ip = "78.111.78.27"
             Server.port = 15779 'Loginserver
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
+
             LoginDb.UpdateData()
+            Settings.LoadSettings()
 
 read:
             Dim msg As String = Console.ReadLine()
@@ -62,7 +64,7 @@ read:
 
         End Sub
 
-        Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index As Integer)
+        Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
 
             Dim read As Integer = 0
 
@@ -78,11 +80,12 @@ read:
                 Array.ConstrainedCopy(buffer, read, newbuff, 0, length + 6)
                 read = read + length + 6
 
-                Dim rp As New ReadPacket(newbuff, index)
+                Dim packet As New PacketReader(newbuff)
                 If Logpackets = True Then
-                    PacketLog.LogPacket(rp, False)
+                    PacketLog.LogPacket(newbuff, False)
                 End If
-                Parser.Parse(rp)
+
+                Parser.Parse(packet, index_)
             Loop
 
 

@@ -133,7 +133,7 @@ Public Class cInvItem
         End Get
         Set(ByVal value As Byte)
             Me.ibluestatCount = value
-            Dim statArray As sBlueStat() = DirectCast(Utils.Utils.CopyArray(DirectCast(Me.bluestats, Array), New sBlueStat(((value - 1) + 1) - 1) {}), sBlueStat())
+            Dim statArray As sBlueStat()
             Me.bluestats = statArray
         End Set
     End Property

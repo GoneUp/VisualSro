@@ -5,7 +5,7 @@ Imports MySql.Data.MySqlClient
 	Imports System.Runtime.CompilerServices
 Namespace LoginServer
 
-    Public Class db
+    Public Class Database
         Private Shared connection As MySqlConnection
         Private Shared ConnectionString As String
         Private Shared da As MySqlDataAdapter
@@ -14,9 +14,7 @@ Namespace LoginServer
         Private Shared getsInt As Integer
 
         Public Shared Event OnConnectedToDatabase As dConnected
-
         Public Shared Event OnDatabaseError As dError
-
 
 
         Public Shared Sub Connect(ByVal ip As String, ByVal port As Integer, ByVal database As String, ByVal username As String, ByVal password As String)

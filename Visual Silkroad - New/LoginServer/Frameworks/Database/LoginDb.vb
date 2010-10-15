@@ -68,7 +68,7 @@
 
     Public Sub GetServerData()
 
-        Dim tmp As DataSet = LoginServer.db.GetDataSet("SELECT * From Servers")
+        Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From Servers")
         ServerNumber = tmp.Tables(0).Rows.Count
 
         ReDim ServerID(ServerNumber)
@@ -97,7 +97,7 @@
 
     Public Sub GetNewsData()
 
-        Dim tmp As DataSet = LoginServer.db.GetDataSet("SELECT * From News")
+        Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From News")
         NewsNumber = tmp.Tables(0).Rows.Count
 
         ReDim NewsTitle(NewsNumber)
@@ -119,7 +119,7 @@
 
     Public Sub GetUserData()
 
-        Dim tmp As DataSet = LoginServer.db.GetDataSet("SELECT * From Users")
+        Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From Users")
         UserCount = tmp.Tables(0).Rows.Count
 
         ReDim Users(UserCount)
@@ -155,13 +155,10 @@
     End Function
 
     Public Function GetServerIndexById(ByVal id As Integer)
-
         For i = 0 To ServerID.Length
             If ServerID(i) = id Then
                 Return i
             End If
         Next
-
-
     End Function
 End Module

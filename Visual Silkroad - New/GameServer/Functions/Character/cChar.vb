@@ -60,19 +60,50 @@
 
 
     Sub SetCharGroundStats()
-
-        ' Player.Stats[Index_].HP = (uint)((double)Math.Pow(1.02, (Player.Stats[Index_].Level - 1)) * Player.Stats[Index_].Strength * 10); 
         HP = (Math.Pow(1.02, Me.Level - 1) * Me.Strength * 10)
         MP = (Math.Pow(1.02, Me.Level - 1) * Me.Intelligence * 10)
 
         Hit = Math.Round(Me.Level + 10)
         Parry = Math.Round(Me.Level + 10)
+
+        '=================Really unsure of these Formulas=============
+        Me.WalkSpeed = Me.Level + 15
+        Me.RunSpeed = Me.Level + 49
+        Me.BerserkSpeed = Me.Level + 99
+
+
+        MinPhy = GameServer.Functions.GetMinPhy(Me.Strength)
+        MaxPhy = GameServer.Functions.GetMaxPhy(Me.Strength, Level)
+        MinMag = GameServer.Functions.GetMinMag(Me.Intelligence, Level)
+        MaxMag = GameServer.Functions.GetMaxMag(Me.Intelligence, Level)
+        PhyDef = GameServer.Functions.GetPhyDef(Me.Strength, Level)
+        MagDef = GameServer.Functions.GetMagDef(Me.Intelligence)
     End Sub
 
+    'http://the-pain.net/2008/10/pain-erklart-silkroad-phy-und-mag-reinforce.html
     Sub AddItemsToStats(ByVal Index_ As Integer)
         For i = 0 To 12
+            Dim _item As cInvItem = GameServer.Functions.Inventorys(Index_).UserItems(i)
+            Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
+
+            If _refitem.CLASS_A = 1 Then
+                'Is a Equip
+                If _item.Slot = 4 Then 'Weapon
+                    '=============Unsure
+                    MinPhy += _refitem.MIN_HPHYATK * (Me.Strength * _refitem.MIN_HPHYS_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                    MaxPhy += _refitem.MAX_HPHYATK * (Me.Strength * _refitem.MAX_HPHYS_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+
+                    MinMag += _refitem.MAGDEF_MIN * (Me.Intelligence * _refitem.MIN_HMAG_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                    MaxMag += _refitem.MAGDEF_MAX * (Me.Intelligence * _refitem.MAX_HMAG_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+
+                Else
+                    PhyDef += _refitem.MIN_PHYSDEF
+                    MagDef += _refitem.MAGDEF_MIN
+                End If
+            End If
         Next
     End Sub
+
 End Class
 
 Public Structure Position

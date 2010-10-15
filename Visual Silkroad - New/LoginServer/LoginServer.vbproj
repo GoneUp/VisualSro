@@ -53,7 +53,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data, Version=6.2.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -81,16 +82,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
-    <Compile Include="Frameworks\Converter\convert.vb" />
     <Compile Include="Frameworks\Database\LoginDb.vb" />
     <Compile Include="Frameworks\Packets\PacketLog.vb" />
     <Compile Include="Frameworks\Server\ClientList.vb" />
-    <Compile Include="Frameworks\Converter\Converter.vb" />
     <Compile Include="Frameworks\Database\Database.vb" />
     <Compile Include="Frameworks\Packets\PacketReader.vb" />
     <Compile Include="Frameworks\Packets\PacketWriter.vb" />
+    <Compile Include="Frameworks\Server\Settings.vb" />
     <Compile Include="Functions\Parser.vb" />
-    <Compile Include="Frameworks\Packets\ReadPacket.vb" />
     <Compile Include="Frameworks\Server\Server.vb" />
     <Compile Include="Functions\LoginServer.vb" />
     <Compile Include="Console\Main.vb" />

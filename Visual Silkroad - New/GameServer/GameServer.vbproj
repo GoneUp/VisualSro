@@ -82,9 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
-    <Compile Include="Frameworks\Converter\convert.vb" />
-    <Compile Include="Frameworks\Converter\Converter.vb" />
-    <Compile Include="Frameworks\Converter\Utils.vb" />
     <Compile Include="Frameworks\Database\DataBase.vb" />
     <Compile Include="Frameworks\Database\GameDb.vb" />
     <Compile Include="Frameworks\Silkroad\Formula.vb" />
@@ -93,7 +90,6 @@
     <Compile Include="Frameworks\Packets\PacketLog.vb" />
     <Compile Include="Frameworks\Packets\PacketReader.vb" />
     <Compile Include="Frameworks\Packets\PacketWriter.vb" />
-    <Compile Include="Frameworks\Packets\ReadPacket.vb" />
     <Compile Include="Frameworks\Server\ClientList.vb" />
     <Compile Include="Frameworks\Server\Server.vb" />
     <Compile Include="Frameworks\Server\Settings.vb" />
@@ -103,7 +99,7 @@
     <Compile Include="Functions\Character\cCharListing.vb" />
     <Compile Include="Functions\Character\cChar.vb" />
     <Compile Include="Functions\Character\Character.vb" />
-    <Compile Include="Functions\Character\cMastery.vb" />
+    <Compile Include="Functions\Skills\cMastery.vb" />
     <Compile Include="Functions\Chat\Custom_Commands.vb" />
     <Compile Include="Functions\Exchange\cExchange.vb" />
     <Compile Include="Functions\Exchange\Exchange.vb" />

@@ -4,6 +4,7 @@
             'This Function is for additional Commands from a GM
             Dim writer As New PacketWriter
 
+
             If Msg.StartsWith("\\gold") Then
                 Dim tmp As String() = Msg.Split(" ")
                 If IsNumeric(tmp(1)) Then
@@ -11,6 +12,13 @@
                     Functions.UpdateGold(Index_)
                 End If
 
+            ElseIf Msg.StartsWith("\\level") Then
+                Dim tmp As String() = Msg.Split(" ")
+                If IsNumeric(tmp(1)) Then
+                    Functions.PlayerData(Index_).Level = tmp(1)
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}' where id='{1}'", Functions.PlayerData(Index_).Level, Functions.PlayerData(Index_).UniqueId))
+                    Functions.OnTeleportUser(Index_, Functions.PlayerData(Index_).Position.XSector, Functions.PlayerData(Index_).Position.YSector)
+                End If
             ElseIf Msg.StartsWith("\\sp") Then
                 Dim tmp As String() = Msg.Split(" ")
                 If IsNumeric(tmp(1)) Then
@@ -22,7 +30,7 @@
                 Dim tmp As String() = Msg.Split(" ")
                 If IsNumeric(tmp(1)) Then
                     Functions.PlayerData(Index_).Attributes += CULng(tmp(1))
-                    Functions.OnStatsPacket(Index_)
+                    Functions.OnTeleportUser(Index_, Functions.PlayerData(Index_).Position.XSector, Functions.PlayerData(Index_).Position.YSector)
                 End If
 
             ElseIf Msg.StartsWith("\\mastery") Then
@@ -58,6 +66,10 @@
                     Functions.SpawnNPC(tmp(1), Functions.PlayerData(Index_).Position)
                 End If
             End If
+
+
+
+            Functions.OnStatsPacket(Index_)
         End Sub
 
 

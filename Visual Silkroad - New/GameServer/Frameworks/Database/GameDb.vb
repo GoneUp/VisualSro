@@ -10,87 +10,88 @@
 
 		'Chars
 		Public CharCount As Integer
-		Public Chars() As [cChar]
+        Public Chars() As [cChar]
+        Public Hotkeys As List(Of cHotKey)
 
-		'Itemcount
-		Public ItemCount As Integer
-		Public AllItems() As cInvItem
+        'Itemcount
+        Public ItemCount As Integer
+        Public AllItems() As cInvItem
 
-		'Masterys
-		Public MasteryCount As Integer
+        'Masterys
+        Public MasteryCount As Integer
         Public Masterys() As cMastery
 
         'Skills
         Public Skills() As cSkill
 
-		Private First As Boolean = False
 
+        Private First As Boolean = False
         Public UniqueIdCounter As UInteger = 1
 
 
 
-		Public Sub UpdateData() Handles GameDbUpdate.Elapsed
-			Try
+        Public Sub UpdateData() Handles GameDbUpdate.Elapsed
+            Try
 
-				GameDbUpdate.Stop()
-				GameDbUpdate.Interval = 20000 '20 secs
+                GameDbUpdate.Stop()
+                GameDbUpdate.Interval = 20000 '20 secs
 
-				If First = False Then
-					Commands.WriteLog("Execute all saved Querys. This can take some Time.")
-					ExecuteSavedQuerys()
+                If First = False Then
+                    Commands.WriteLog("Execute all saved Querys. This can take some Time.")
+                    ExecuteSavedQuerys()
                     Commands.WriteLog("Query saving done. Loading Playerdata from DB now.")
 
-					GetCharData() 'Only Update for the First Time! 
-					GetItemData()
+                    GetCharData() 'Only Update for the First Time! 
+                    GetItemData()
                     GetMasteryData()
                     GetSkillData()
                     GetPositionData()
-					First = True
-				End If
+                    First = True
+                End If
 
-				GetUserData()
-				GameDbUpdate.Start()
+                GetUserData()
+                GameDbUpdate.Start()
 
-			Catch ex As Exception
-				Commands.WriteLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
-			End Try
-		End Sub
+            Catch ex As Exception
+                Commands.WriteLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+            End Try
+        End Sub
 
 #Region "Get from DB"
-		Public Sub ExecuteSavedQuerys()
-			Try
-				Dim lines() As String = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
-				For Each commando In lines
-					DataBase.InsertData(commando)
-				Next
-				IO.File.Delete(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
-			Catch ex As Exception
-				'Commands .WriteLog ("Database Error: " & ex.Message)
-			End Try
+        Public Sub ExecuteSavedQuerys()
+            Try
+                Dim lines() As String = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
+                For Each commando In lines
+                    DataBase.InsertData(commando)
+                Next
+                IO.File.Delete(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
+            Catch ex As Exception
+                'Commands .WriteLog ("Database Error: " & ex.Message)
+            End Try
 
-		End Sub
+        End Sub
 
-		Public Sub GetUserData()
+        Public Sub GetUserData()
 
-			Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From Users")
-			UserCount = tmp.Tables(0).Rows.Count
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From Users")
+            UserCount = tmp.Tables(0).Rows.Count
 
-			ReDim Users(UserCount - 1) '-1 machen
+            ReDim Users(UserCount - 1) '-1 machen
 
-			For i = 0 To UserCount - 1
-				Users(i).Id = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
-				Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-				Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-				Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
-				Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
-			Next
+            For i = 0 To UserCount - 1
+                Users(i).Id = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+                Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
+                Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
+            Next
 
-		End Sub
+        End Sub
 
-		Public Sub GetCharData()
+        Public Sub GetCharData()
 
-			Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From characters")
-			CharCount = tmp.Tables(0).Rows.Count
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From characters")
+            CharCount = tmp.Tables(0).Rows.Count
 
             If CharCount >= 1 Then
                 ReDim Chars(CharCount - 1)
@@ -146,9 +147,9 @@
             End If
         End Sub
 
-		Public Sub GetItemData()
-			Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From items")
-			ItemCount = tmp.Tables(0).Rows.Count
+        Public Sub GetItemData()
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From items")
+            ItemCount = tmp.Tables(0).Rows.Count
 
             If ItemCount >= 1 Then
                 ReDim AllItems(ItemCount - 1)
@@ -169,10 +170,10 @@
 
         End Sub
 
-		Public Sub GetMasteryData()
+        Public Sub GetMasteryData()
 
-			Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From masteries")
-			MasteryCount = tmp.Tables(0).Rows.Count
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From masteries")
+            MasteryCount = tmp.Tables(0).Rows.Count
 
             If MasteryCount >= 1 Then
 
@@ -187,7 +188,6 @@
             Else
                 ReDim Masterys(0)
             End If
-
         End Sub
 
         Public Sub GetSkillData()
@@ -206,12 +206,8 @@
             Else
                 ReDim Skills(0)
             End If
-
-
-
         End Sub
         Public Sub GetPositionData()
-
             Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From positions")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
@@ -238,92 +234,103 @@
                         Chars(c).Position_Dead.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(15))
                     End If
                 Next
-
-
             Next
+        End Sub
 
+        Public Sub GetHotkeyData()
+            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From hotkeys")
+            Dim Count As Integer = tmp.Tables(0).Rows.Count
 
+            For i = 0 To Count - 1
+                Dim tmp_ As New cHotKey
+                tmp_.OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmp_.Slot = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_.Type = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_.IconID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+
+                Hotkeys.Add(tmp_)
+            Next
         End Sub
 
 #End Region
 
 #Region "Get Things from Array"
-		Public Function GetUserWithID(ByVal id As String) As Integer
+        Public Function GetUserWithID(ByVal id As String) As Integer
 
-			Dim i As Integer = 0
+            Dim i As Integer = 0
 
-			For i = 0 To Users.Length
-				If Users(i).Name = id Then
-					Exit For
-				End If
-			Next
+            For i = 0 To Users.Length
+                If Users(i).Name = id Then
+                    Exit For
+                End If
+            Next
 
-			If Users.Length = i Then
-				Return -1
-			End If
+            If Users.Length = i Then
+                Return -1
+            End If
 
-			Return i
+            Return i
 
 
 
-		End Function
+        End Function
 
-		Public Function FillCharList(ByVal chararray As cCharListing) As cCharListing
+        Public Function FillCharList(ByVal chararray As cCharListing) As cCharListing
 
-			Dim playerCharCount As Integer = 0
+            Dim playerCharCount As Integer = 0
 
-			chararray.Chars(0) = New [cChar]
-			chararray.Chars(1) = New [cChar]
-			chararray.Chars(2) = New [cChar]
-			chararray.Chars(3) = New [cChar]
+            chararray.Chars(0) = New [cChar]
+            chararray.Chars(1) = New [cChar]
+            chararray.Chars(2) = New [cChar]
+            chararray.Chars(3) = New [cChar]
 
-			For i = 0 To (CharCount - 1)
-				If chararray.LoginInformation.Id = Chars(i).AccountID Then
-					If chararray.Chars(0).CharacterId = 0 Then
-						chararray.Chars(0) = New [cChar]
-						chararray.Chars(0) = Chars(i)
-						playerCharCount = 1
+            For i = 0 To (CharCount - 1)
+                If chararray.LoginInformation.Id = Chars(i).AccountID Then
+                    If chararray.Chars(0).CharacterId = 0 Then
+                        chararray.Chars(0) = New [cChar]
+                        chararray.Chars(0) = Chars(i)
+                        playerCharCount = 1
 
-					ElseIf chararray.Chars(1).CharacterId = 0 Then
-						chararray.Chars(1) = New [cChar]
-						chararray.Chars(1) = Chars(i)
-						playerCharCount = 2
+                    ElseIf chararray.Chars(1).CharacterId = 0 Then
+                        chararray.Chars(1) = New [cChar]
+                        chararray.Chars(1) = Chars(i)
+                        playerCharCount = 2
 
-					ElseIf chararray.Chars(2).CharacterId = 0 Then
-						chararray.Chars(2) = New [cChar]
-						chararray.Chars(2) = Chars(i)
-						playerCharCount = 3
+                    ElseIf chararray.Chars(2).CharacterId = 0 Then
+                        chararray.Chars(2) = New [cChar]
+                        chararray.Chars(2) = Chars(i)
+                        playerCharCount = 3
 
-					ElseIf chararray.Chars(3).CharacterId = 0 Then
-						chararray.Chars(3) = New [cChar]
-						chararray.Chars(3) = Chars(i)
-						playerCharCount = 4
-					End If
-				End If
-			Next
-			chararray.NumberOfChars = playerCharCount
-			Return chararray
-		End Function
+                    ElseIf chararray.Chars(3).CharacterId = 0 Then
+                        chararray.Chars(3) = New [cChar]
+                        chararray.Chars(3) = Chars(i)
+                        playerCharCount = 4
+                    End If
+                End If
+            Next
+            chararray.NumberOfChars = playerCharCount
+            Return chararray
+        End Function
 
-		Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
-			Dim inventory As New cInventory([char].MaxSlots)
-			For i = 0 To (AllItems.Length - 1)
-				If AllItems(i).OwnerCharID = [char].UniqueId Then
-					inventory.UserItems(AllItems(i).Slot) = AllItems(i)
-				End If
-			Next
-			Return inventory
-		End Function
+        Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
+            Dim inventory As New cInventory([char].MaxSlots)
+            For i = 0 To (AllItems.Length - 1)
+                If AllItems(i).OwnerCharID = [char].UniqueId Then
+                    inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                End If
+            Next
+            Return inventory
+        End Function
 
-		Public Function CheckNick(ByVal nick As String) As Boolean
-			Dim free As Boolean = True
-			For i = 0 To Chars.Length - 1
+        Public Function CheckNick(ByVal nick As String) As Boolean
+            Dim free As Boolean = True
+            For i = 0 To Chars.Length - 1
                 If (Chars(i) IsNot Nothing) AndAlso (Chars(i).CharacterName = nick) Then
                     free = False
                 End If
-			Next
-			Return free
-		End Function
+            Next
+            Return free
+        End Function
 
         Public Function GetUnqiueID() As UInteger
             Dim toreturn As UInteger = UniqueIdCounter
@@ -332,7 +339,7 @@
         End Function
 
 #End Region
-	End Module
+    End Module
 
 
 End Namespace

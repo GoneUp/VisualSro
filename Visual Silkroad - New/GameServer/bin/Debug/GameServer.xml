@@ -26,6 +26,13 @@ GameServer
 	<summary>
   A strongly-typed resource class, for looking up localized strings, etc.
 </summary>
+</member><member name="M:GameServer.GameServer.Functions.Players.CreateSpawnPacket(System.Int32)">
+	<summary>
+ For Players
+ </summary>
+	<param name="Index"></param>
+	<returns></returns>
+	<remarks></remarks>
 </member><member name="M:GameServer.GameServer.Functions.Alchemy.CheckForSuccess(System.Byte,System.Int32)">
 	<summary>
  Radom...
@@ -33,13 +40,6 @@ GameServer
 	<param name="Old_Plus"></param> Plus
  <param name="Lucky"></param> Modifier
  <returns></returns>
-	<remarks></remarks>
-</member><member name="M:GameServer.GameServer.Functions.Players.CreateSpawnPacket(System.Int32)">
-	<summary>
- For Players
- </summary>
-	<param name="Index"></param>
-	<returns></returns>
 	<remarks></remarks>
 </member>
 </members>

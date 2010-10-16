@@ -4,4 +4,5 @@
     Public Mob_Type As Byte
     Public HP_Cur As UInt32
     Public Position As Position
+    Public Death As Boolean = False
 End Class

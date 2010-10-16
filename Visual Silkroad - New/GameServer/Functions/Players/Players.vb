@@ -298,56 +298,60 @@
             Next refindex
         End Sub
 
-        Public Sub DespawnPlayerTeleport(ByVal Index As Integer)
+        Public Sub DespawnPlayerTeleport(ByVal Index_ As Integer)
 
-            For i = 0 To PlayerData(Index).SpawnedPlayers.Count - 1
-                Dim Other_Index As Integer = PlayerData(Index).SpawnedPlayers(i)
-                If PlayerData(Other_Index).SpawnedPlayers.Contains(Index) = True Then
-                    Server.Send(CreateDespawnPacket(PlayerData(Index).UniqueId), Other_Index)
-                    PlayerData(Other_Index).SpawnedPlayers.Remove(Index)
+            For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
+                Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
+                If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
+                    Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                    PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
 
-                    Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index)
-                    PlayerData(Index).SpawnedPlayers.Remove(Other_Index)
+                    Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
+                    PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
                 End If
             Next
 
-            For i = 0 To PlayerData(Index).SpawnedNPCs.Count - 1
-                Server.Send(CreateDespawnPacket(NpcList(PlayerData(Index).SpawnedNPCs(i)).UniqueID), Index)
-                PlayerData(Index).SpawnedNPCs.Remove(PlayerData(Index).SpawnedNPCs(i))
+
+            For i = 0 To NpcList.Count - 1
+                If PlayerData(Index_).SpawnedNPCs.Contains(i) = True Then
+                    Dim _npc As cNPC = NpcList(i)
+                    Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
+                    PlayerData(Index_).SpawnedNPCs.Remove(i)
+                End If
             Next
         End Sub
 
-        Public Sub DespawnPlayer(ByVal Index As Integer)
-            For i = 0 To PlayerData(Index).SpawnedPlayers.Count - 1
-                Dim Other_Index As Integer = PlayerData(Index).SpawnedPlayers(i)
-                If PlayerData(Other_Index).SpawnedPlayers.Contains(Index) = True Then
-                    Server.Send(CreateDespawnPacket(PlayerData(Index).UniqueId), Other_Index)
-                    PlayerData(Other_Index).SpawnedPlayers.Remove(Index)
+        Public Sub DespawnPlayer(ByVal Index_ As Integer)
+            For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
+                Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
+                If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
+                    Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                    PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
                 End If
             Next
 
-            PlayerData(Index).SpawnedNPCs.Clear()
+            PlayerData(Index_).SpawnedNPCs.Clear()
         End Sub
 
-        Public Sub DespawnPlayerRange(ByVal Index As Integer)
+        Public Sub DespawnPlayerRange(ByVal Index_ As Integer)
             Dim range As Integer = ServerRange
 
-            For i = 0 To PlayerData(Index).SpawnedPlayers.Count - 1
-                Dim Other_Index As Integer = PlayerData(Index).SpawnedPlayers(i)
+            For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
+                Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
                 If PlayerData(i) IsNot Nothing Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - PlayerData(Other_Index).Position.X) ^ 2 + (PlayerData(Index).Position.Y - PlayerData(Other_Index).Position.Y) ^ 2)) 'Calculate Distance
+                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index_).Position.X - PlayerData(Other_Index).Position.X) ^ 2 + (PlayerData(Index_).Position.Y - PlayerData(Other_Index).Position.Y) ^ 2)) 'Calculate Distance
                     If distance > range Then
                         'Despawn for both
-                        If PlayerData(Index).SpawnedPlayers.Contains(Other_Index) Then
-                            Server.Send(CreateDespawnPacket(PlayerData(Index).UniqueId), Other_Index)
-                            PlayerData(Other_Index).SpawnedPlayers.Remove(Index)
-                            Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index)
-                            PlayerData(Index).SpawnedPlayers.Remove(Other_Index)
+                        If PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) Then
+                            Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                            PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
+                            Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
+                            PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
                         End If
                     End If
                 End If
             Next
-		End Sub
+        End Sub
 
     End Module
 End Namespace

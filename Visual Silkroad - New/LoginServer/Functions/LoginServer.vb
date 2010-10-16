@@ -159,6 +159,7 @@
 
                 Server.Send(writer.GetBytes, index)
             Else
+                CheckBannTime(UserIndex)
 
                 If Users(UserIndex).Banned = True Then
 
@@ -178,8 +179,11 @@
 
                 ElseIf Users(UserIndex).Pw <> Pw Then
                     'pw falsch
-                    Users(UserIndex).FailedLogins += 1
-                    LoginServer.Database.UpdateData("UPDATE users SET failed_logins = '" & Users(UserIndex).FailedLogins & "' WHERE id = '" & Users(UserIndex).Id & "'")
+                    Dim user As UserArray = Users(UserIndex)
+                    user.FailedLogins += 1
+
+
+                    Database.UpdateData("UPDATE users SET failed_logins = '" & Users(UserIndex).FailedLogins & "' WHERE id = '" & Users(UserIndex).Id & "'")
 
                     writer.Byte(2) 'login failed
                     writer.Byte(1)
@@ -193,13 +197,12 @@
                     LoginServer.Server.Send(writer.GetBytes, index)
 
                     If Users(UserIndex).FailedLogins = 3 Then
-
-                        Users(UserIndex).FailedLogins = 0
-                        LoginServer.Database.UpdateData("UPDATE users SET failed_logins = '0' WHERE id = '" & Users(UserIndex).Id & "'")
-
-                        LoginServer.Server.Dissconnect(index)
+                        user.FailedLogins = 0
+                        Database.UpdateData("UPDATE users SET failed_logins = '0' WHERE id = '" & Users(UserIndex).Id & "'")
+                        Server.Dissconnect(index)
                     End If
 
+                    Users(UserIndex) = user
 
                 ElseIf Users(UserIndex).Name = ID And Users(UserIndex).Pw = Pw Then
                     Dim ServerIndex As Integer = GetServerIndexById(serverid)
@@ -231,7 +234,41 @@
 
         Private Sub RegisterUser(ByVal Name As String, ByVal Password As String)
             Database.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
+
+            Dim tmpUser As New UserArray
+
+            UserIdCounter += 1
+            tmpUser.Id = UserIdCounter
+            tmpUser.Name = Name
+            tmpUser.Pw = Password
+            tmpUser.FailedLogins = 0
+            tmpUser.Banned = True
+            tmpUser.BannReason = "Please wait for Activation"
+            tmpUser.BannTime = Date.Now.AddMinutes(2)
+
+            Users.Add(tmpUser)
         End Sub
 
+
+        Public Sub CheckBannTime(ByVal UserIndex As Integer)
+            Dim user As UserArray = Users(UserIndex)
+            Try
+
+
+                If user.Banned = True Then
+                    Dim wert As Integer = Date.Compare(user.BannTime, Date.Now)
+                    If wert = -1 Then
+                        'Zeit abgelaufen
+                        user.Banned = False
+                        Database.UpdateData(String.Format("UPDATE users SET banned = '0' WHERE id = '{0}'", user.Id))
+
+                        Users(UserIndex) = user
+                    End If
+                End If
+
+            Catch ex As Exception
+                WriteLog("[BAN_CHECK][ID:" & user.Id & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
+            End Try
+        End Sub
     End Module
 End Namespace

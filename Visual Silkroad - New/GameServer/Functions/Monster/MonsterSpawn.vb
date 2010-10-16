@@ -14,13 +14,11 @@
             writer.Float(MobList(mob_index).Position.Z)
             writer.Float(MobList(mob_index).Position.Y)
             writer.Word(0) 'angle
-            writer.Byte(1) 'no dest
-            writer.Byte(0) 'run
-            writer.Byte(MobList(mob_index).Position.XSector)
-            writer.Byte(MobList(mob_index).Position.YSector)
-            writer.Word(CShort(MobList(mob_index).Position.X))
-            writer.Word(CShort(MobList(mob_index).Position.Z))
-            writer.Word(CShort(MobList(mob_index).Position.Y))
+            writer.Byte(0) 'dest
+            writer.Byte(1) 'walk run flag
+            writer.Byte(0) 'dest
+            writer.Word(0) 'angle
+            writer.Byte(MobList(mob_index).Death) ' death flag
 
             writer.Float(20) 'walkspeed
             writer.Float(50) 'runspeed

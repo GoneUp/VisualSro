@@ -22,8 +22,8 @@
     Public NewsDay(50) As Byte
 
     'User
-    Public UserCount As Integer
-    Public Users(50000) As UserArray
+    Public Users As New List(Of UserArray)
+    Public UserIdCounter As Integer
 
 
     Public Structure UserArray
@@ -120,18 +120,19 @@
     Public Sub GetUserData()
 
         Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From Users")
-        UserCount = tmp.Tables(0).Rows.Count
+        Users.Clear()
 
-        ReDim Users(UserCount)
+        For i = 0 To tmp.Tables(0).Rows.Count - 1
+            Dim tmpUser As New UserArray
+            tmpUser.Id = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
+            tmpUser.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+            tmpUser.Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
+            tmpUser.FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
+            tmpUser.Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
+            tmpUser.BannReason = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
+            tmpUser.BannTime = CDate(tmp.Tables(0).Rows(i).ItemArray(6))
 
-        For i = 0 To UserCount - 1
-            Users(i).Id = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
-            Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-            Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-            Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
-            Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
-            Users(i).BannReason = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
-            Users(i).BannTime = CDate(tmp.Tables(0).Rows(i).ItemArray(6))
+            Users.Add(tmpUser)
         Next
 
     End Sub
@@ -140,19 +141,21 @@
 
         Dim i As Integer = 0
 
-        For i = 0 To (Users.Length - 1)
+        For i = 0 To (Users.Count - 1)
             If Users(i).Name = id Then
                 Exit For
             End If
         Next
 
-        If Users.Length = i Then
+ 
+        If Users.Count = i Then
             Return -1
         End If
 
         Return i
-
     End Function
+
+
 
     Public Function GetServerIndexById(ByVal id As Integer)
         For i = 0 To ServerID.Length

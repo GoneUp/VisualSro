@@ -90,13 +90,14 @@
 
         Public Sub DeSpawnNPCRange(ByVal Index_ As Integer)
             Try
-                Dim range As Integer = ServerRange
-                For i = 0 To PlayerData(Index_).SpawnedNPCs.Count - 1
-                    Console.WriteLine("NPC:" & i)
-                    Dim _npc As cNPC = NpcList(PlayerData(Index_).SpawnedNPCs(i))
-                    If CalculateDistance(PlayerData(Index_).Position, _npc.Position) > ServerRange Then
-                        Server.Send(CreateDespawnPacket(NpcList(PlayerData(Index_).SpawnedNPCs(i)).UniqueID), Index_)
-                        PlayerData(Index_).SpawnedNPCs.RemoveAt(i)
+                Console.WriteLine("Count: " & PlayerData(Index_).SpawnedNPCs.Count)
+                For i = 0 To NpcList.Count - 1
+                    If PlayerData(Index_).SpawnedNPCs.Contains(i) = True Then
+                        Dim _npc As cNPC = NpcList(i)
+                        If CalculateDistance(PlayerData(Index_).Position, _npc.Position) > ServerRange Then
+                            Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
+                            PlayerData(Index_).SpawnedNPCs.Remove(i)
+                        End If
                     End If
                 Next
             Catch ex As Exception

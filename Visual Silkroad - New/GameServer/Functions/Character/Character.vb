@@ -423,6 +423,15 @@
 					UpdateItem(item)
 				End If
 
+                'Hotkeys
+                For i = 0 To 50
+                    Dim toadd As New cHotKey
+                    toadd.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+                    toadd.Slot = i
+                    AddHotKeyToDB(toadd)
+                Next
+
+
 				'Finish
 
 				writer.Byte(1) 'success
@@ -438,8 +447,6 @@
                 End If
             Next
         End Sub
-
-
 
         Public Sub AddItemToDB(ByVal item As cInvItem)
 
@@ -461,7 +468,12 @@
             Array.Resize(DatabaseCore.Masterys, NewIndex)
             DatabaseCore.Masterys(NewIndex - 1) = toadd
 
-            DataBase.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}',{1},{2})", toadd.OwnerID, toadd.MasteryID, toadd.Level))
+            DataBase.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}','{1}','{2}')", toadd.OwnerID, toadd.MasteryID, toadd.Level))
+        End Sub
+
+        Public Sub AddHotKeyToDB(ByVal toadd As cHotKey)
+            DatabaseCore.Hotkeys.Add(toadd)
+            DataBase.SaveQuery(String.Format("INSERT INTO hotkeys(OwnerID, slot) VALUE ('{0}','{1}')", toadd.OwnerID, toadd.Slot))
         End Sub
         Public Sub CharLoading(ByVal Index_ As Integer, ByVal pack As PacketReader)
 
@@ -653,7 +665,14 @@
             '''''''''''''''''''''/
 
 
-            writer.Byte(0)  ' Number of Hotkeys
+            writer.Byte(50)  ' Number of Hotkeys
+            For i = 0 To DatabaseCore.Hotkeys.Count - 1
+                If DatabaseCore.Hotkeys(i).OwnerID = chari.UniqueId Then
+                    writer.Byte(DatabaseCore.Hotkeys(i).Slot)
+                    writer.Byte(DatabaseCore.Hotkeys(i).Type)
+                    writer.DWord(DatabaseCore.Hotkeys(i).IconID)
+                End If
+            Next
 
 
             ' Autopotion

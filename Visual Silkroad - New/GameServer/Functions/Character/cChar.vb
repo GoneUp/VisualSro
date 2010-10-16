@@ -80,27 +80,31 @@
         MagDef = GameServer.Functions.GetMagDef(Me.Intelligence)
     End Sub
 
-    'http://the-pain.net/2008/10/pain-erklart-silkroad-phy-und-mag-reinforce.html
     Sub AddItemsToStats(ByVal Index_ As Integer)
         For i = 0 To 12
             Dim _item As cInvItem = GameServer.Functions.Inventorys(Index_).UserItems(i)
-            Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
 
-            If _refitem.CLASS_A = 1 Then
-                'Is a Equip
-                If _item.Slot = 4 Then 'Weapon
-                    '=============Unsure
-                    MinPhy += _refitem.MIN_HPHYATK * (Me.Strength * _refitem.MIN_HPHYS_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
-                    MaxPhy += _refitem.MAX_HPHYATK * (Me.Strength * _refitem.MAX_HPHYS_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+            If _item.Pk2Id <> 0 Then
+                Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
 
-                    MinMag += _refitem.MAGDEF_MIN * (Me.Intelligence * _refitem.MIN_HMAG_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
-                    MaxMag += _refitem.MAGDEF_MAX * (Me.Intelligence * _refitem.MAX_HMAG_REINFORCE) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                If _refitem.CLASS_A = 1 Then
+                    'Is a Equip
+                    If _item.Slot = 6 Then 'Weapon
+                        '=============Unsure
+                        MinPhy += _refitem.MIN_HPHYATK + ((Me.Strength * _refitem.MIN_HPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                        MaxPhy += _refitem.MAX_HPHYATK + ((Me.Strength * _refitem.MAX_HPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
 
-                Else
-                    PhyDef += _refitem.MIN_PHYSDEF
-                    MagDef += _refitem.MAGDEF_MIN
+                        MinMag += _refitem.MIN_LMAGATK + ((Me.Intelligence * _refitem.MAX_HMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                        MaxMag += _refitem.MAX_LMAGATK + ((Me.Intelligence * _refitem.MAX_HMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+
+
+                    Else
+                        PhyDef += _refitem.MIN_PHYSDEF
+                        MagDef += _refitem.MAGDEF_MIN
+                    End If
                 End If
             End If
+
         Next
     End Sub
 
@@ -122,3 +126,10 @@ Public Enum UseItemTypes
     Reverse_Scroll_Recall = 4
     Reverse_Scroll_Point = 5
 End Enum
+
+Public Structure cHotKey
+    Public OwnerID As UInteger
+    Public Type As UInteger
+    Public Slot As UInteger
+    Public IconID As UInteger
+End Structure

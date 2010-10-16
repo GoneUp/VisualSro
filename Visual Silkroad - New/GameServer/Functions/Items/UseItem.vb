@@ -16,15 +16,16 @@
                     Case &H10 'MP-Pot 
                         OnUseMPPot(slot, Index_)
                     Case &HE 'Speed Drug
-
-
                 End Select
 
             ElseIf ID1 = &HED Then
                 Select Case ID2
+                    Case &H8
+                        OnUseHPPot(slot, Index_)
+                    Case &H10 'MP-Pot 
+                        OnUseMPPot(slot, Index_)
                     Case &H19 'Reverse
                         OnUseReverseScroll(slot, Index_, packet)
-
                     Case &H29 'Globals
                         OnUseGlobal(slot, Index_, packet)
                 End Select

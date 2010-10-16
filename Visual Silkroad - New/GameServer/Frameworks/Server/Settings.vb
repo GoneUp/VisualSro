@@ -42,6 +42,7 @@
         ServerDropRate = 50
         ServerLevelCap = 100
         ServerMasteryCap = 300
+        ServerRange = 1000
     End Sub
 
 End Module

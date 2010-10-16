@@ -32,6 +32,7 @@
         HelperIcon = &H7402
         ItemUse = &H704C
         Scroll_Cancel = &H705B
+        Hotkey_Update = &H7158
 
         Exchange_Invite = &H7081
         Exchange_Invite_Accept = &H3080
@@ -92,7 +93,7 @@
         ItemUse = &HB04C
         ItemUseOtherPlayer = &H305C
 		EquipItem = &H3038
-		UnEquipItem = &H3039
+        UnEquipItem = &H3039
 
         'Spawns
 		SingleSpawn = &H3015

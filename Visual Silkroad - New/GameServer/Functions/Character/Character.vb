@@ -664,13 +664,24 @@
             writer.Byte(7)  ' @@@@@@@@@@@@@
             '''''''''''''''''''''/
 
-
-            writer.Byte(50)  ' Number of Hotkeys
+            Dim hotkeycount As UInteger = 0
             For i = 0 To DatabaseCore.Hotkeys.Count - 1
                 If DatabaseCore.Hotkeys(i).OwnerID = chari.UniqueId Then
-                    writer.Byte(DatabaseCore.Hotkeys(i).Slot)
-                    writer.Byte(DatabaseCore.Hotkeys(i).Type)
-                    writer.DWord(DatabaseCore.Hotkeys(i).IconID)
+                    If DatabaseCore.Hotkeys(i).Type <> 0 And DatabaseCore.Hotkeys(i).IconID <> 0 Then
+                        hotkeycount += 1
+                    End If
+                End If
+            Next
+
+            writer.Byte(hotkeycount)  ' Number of Hotkeys
+
+            For i = 0 To DatabaseCore.Hotkeys.Count - 1
+                If DatabaseCore.Hotkeys(i).OwnerID = chari.UniqueId Then
+                    If DatabaseCore.Hotkeys(i).Type <> 0 And DatabaseCore.Hotkeys(i).IconID <> 0 Then
+                        writer.Byte(DatabaseCore.Hotkeys(i).Slot)
+                        writer.Byte(DatabaseCore.Hotkeys(i).Type)
+                        writer.DWord(DatabaseCore.Hotkeys(i).IconID)
+                    End If
                 End If
             Next
 

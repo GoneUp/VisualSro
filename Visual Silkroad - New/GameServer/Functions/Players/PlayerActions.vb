@@ -14,9 +14,6 @@
                     writer = New PacketWriter
                     writer.Create(ServerOpcodes.Exit2)
                     Server.Send(writer.GetBytes, Index)
-
-
-
                 Case 2 'Restart
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Exit)
@@ -28,9 +25,6 @@
                     writer = New PacketWriter
                     writer.Create(ServerOpcodes.Exit2)
                     Server.Send(writer.GetBytes, Index)
-
-
-
             End Select
         End Sub
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -137,6 +131,35 @@
             DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(index_).HelperIcon, PlayerData(index_).UniqueId))
         End Sub
 
+        Public Sub OnHotkeyUpdate(ByVal packet As PacketReader, ByVal index_ As Integer)
+            Dim tag As Byte = packet.Byte
 
+            If tag = 1 Then
+                Dim slot As Byte = packet.Byte
+                Dim type As Byte = packet.Byte
+                Dim IconID As UInteger = packet.DWord
+
+
+                If slot >= 0 And slot <= 50 Then 'Check Slots
+                    Dim tmp_ As New cHotKey
+                    tmp_.OwnerID = PlayerData(index_).UniqueId
+                    tmp_.Slot = slot
+                    tmp_.Type = type
+                    tmp_.IconID = IconID
+                    UpdateHotkey(tmp_)
+                End If
+            End If
+        End Sub
+
+        Private Sub UpdateHotkey(ByVal hotkey As cHotKey)
+            For i = 0 To DatabaseCore.Hotkeys.Count - 1
+                If DatabaseCore.Hotkeys(i).OwnerID = hotkey.OwnerID And DatabaseCore.Hotkeys(i).Slot = hotkey.Slot Then
+                    DatabaseCore.Hotkeys(i) = hotkey
+                    Exit For
+                End If
+            Next
+
+            DataBase.SaveQuery(String.Format("UPDATE hotkeys SET Type='{0}', IconID='{1}' WHERE OwnerID='{2}' AND Slot='{3}' ", hotkey.Type, hotkey.IconID, hotkey.OwnerID, hotkey.Slot))
+        End Sub
     End Module
 End Namespace

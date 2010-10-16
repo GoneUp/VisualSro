@@ -11,7 +11,7 @@
 		'Chars
 		Public CharCount As Integer
         Public Chars() As [cChar]
-        Public Hotkeys As List(Of cHotKey)
+        Public Hotkeys As New List(Of cHotKey)
 
         'Itemcount
         Public ItemCount As Integer
@@ -46,6 +46,7 @@
                     GetMasteryData()
                     GetSkillData()
                     GetPositionData()
+                    GetHotkeyData()
                     First = True
                 End If
 
@@ -245,8 +246,8 @@
                 Dim tmp_ As New cHotKey
                 tmp_.OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                 tmp_.Slot = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_.Type = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_.IconID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_.Type = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                tmp_.IconID = CUInt(tmp.Tables(0).Rows(i).ItemArray(4))
 
                 Hotkeys.Add(tmp_)
             Next

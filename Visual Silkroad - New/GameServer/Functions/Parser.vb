@@ -72,6 +72,9 @@ Namespace GameServer
                 Case ClientOpcodes.HelperIcon
                     GameServer.Functions.OnHelperIcon(packet, index)
 
+                Case ClientOpcodes.Hotkey_Update
+                    GameServer.Functions.OnHotkeyUpdate(packet, index)
+
                     '=======ITEMS======
                 Case ClientOpcodes.Alchemy
                     GameServer.Functions.OnAlchemyRequest(packet, index)

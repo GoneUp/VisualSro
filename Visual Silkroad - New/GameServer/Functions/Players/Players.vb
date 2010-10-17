@@ -319,6 +319,16 @@
                     PlayerData(Index_).SpawnedNPCs.Remove(i)
                 End If
             Next
+
+
+            For i = 0 To MobList.Count - 1
+                If PlayerData(Index_).SpawnedMonsters.Contains(i) = True Then
+                    Dim _mob As cMonster = MobList(i)
+                    Server.Send(CreateDespawnPacket(_mob.UniqueID), Index_)
+                    PlayerData(Index_).SpawnedMonsters.Remove(i)
+                End If
+            Next
+
         End Sub
 
         Public Sub DespawnPlayer(ByVal Index_ As Integer)
@@ -331,6 +341,7 @@
             Next
 
             PlayerData(Index_).SpawnedNPCs.Clear()
+            PlayerData(Index_).SpawnedMonsters.Clear()
         End Sub
 
         Public Sub DespawnPlayerRange(ByVal Index_ As Integer)

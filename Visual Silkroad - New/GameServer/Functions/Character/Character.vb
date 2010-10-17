@@ -716,7 +716,9 @@
             PlayerData(Index_).Ingame = True
             SpawnMe(Index_)
             SpawnOtherPlayer(Index_)
+
             SpawnNPCRange(Index_)
+            SpawnMobRange(Index_)
         End Sub
     End Module
 End Namespace

@@ -7,6 +7,8 @@
 
             If PlayerData(Index).GM = True Then
                 Select Case tag
+                    Case GmTypes.MakeMonster
+                        OnCreateObject(Packet, Index)
 
                     Case GmTypes.MakeItem  ' Create Item
                         OnGmCreateItem(Packet, Index)
@@ -221,7 +223,21 @@
                     End If
                 End If
             Next
+        End Sub
 
+        Public Sub OnCreateObject(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+            Dim objectid As UInteger = Packet.DWord
+            Dim type As Byte = Packet.Byte
+            Dim refobject As Object_ = GetObjectById(objectid)
+
+            Dim selector As String = refobject.Name.Substring(0, 3)
+
+            Select Case selector
+                Case "MOB"
+                    SpawnMob(objectid, type, PlayerData(Index_).Position)
+                Case "NPC"
+                    SpawnNPC(objectid, PlayerData(Index_).Position)
+            End Select
         End Sub
 
 

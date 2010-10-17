@@ -33,31 +33,60 @@
                     'Normal Move
                     Dim old_item As cInvItem = Inventorys(index_).UserItems(oldslot)
                     Dim new_item As cInvItem = Inventorys(index_).UserItems(newslot)
-                    Dim replace_item As New cInvItem
 
-                    old_item.Slot = newslot
+                    If amout = 0 Then
+                        old_item.Slot = newslot
 
-                    'Update then new Item Slot
-                    DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", old_item.Pk2Id, old_item.Plus, old_item.Durability, old_item.Amount, old_item.OwnerCharID, newslot))
-                    'Clean the Old Slot
-                    DeleteItemFromDB(oldslot, index_)
+                        'Update then new Item Slot
+                        DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", old_item.Pk2Id, old_item.Plus, old_item.Durability, old_item.Amount, old_item.OwnerCharID, newslot))
+                        'Clean the Old Slot
+                        DeleteItemFromDB(oldslot, index_)
 
-                    If Inventorys(index_).UserItems(newslot).Pk2Id <> 0 Then
-                        'Auf dem neuen Slot ist ein Item
-                        new_item.Slot = oldslot
-                        Inventorys(index_).UserItems(oldslot) = new_item
-                        DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", new_item.Pk2Id, new_item.Plus, new_item.Durability, new_item.Amount, new_item.OwnerCharID, oldslot))
+                        If Inventorys(index_).UserItems(newslot).Pk2Id <> 0 Then
+                            'Auf dem neuen Slot ist ein Item
+                            new_item.Slot = oldslot
+                            Inventorys(index_).UserItems(oldslot) = new_item
+                            DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", new_item.Pk2Id, new_item.Plus, new_item.Durability, new_item.Amount, new_item.OwnerCharID, oldslot))
+                        Else
+                            new_item.Slot = oldslot
+                            Inventorys(index_).UserItems(oldslot) = new_item
+                        End If
+
+                        Inventorys(index_).UserItems(newslot) = old_item
+
                     Else
-                        new_item.Slot = oldslot
-                        Inventorys(index_).UserItems(oldslot) = new_item
-                    End If
+                        If Inventorys(index_).UserItems(newslot).Pk2Id <> 0 Then
+                            Dim _refitem As cItem = GetItemByID(new_item.Pk2Id)
+                            If new_item.Amount + amout <= _refitem.MAX_STACK Then
+                                '========stacking==========
+                                new_item.Amount += amout
+                                Inventorys(index_).UserItems(newslot) = new_item
+                            End If
+                        Else
+                            '=========Reducing
+                            Dim _refitem As cItem = GetItemByID(old_item.Pk2Id)
+                            If amout <= _refitem.MAX_STACK Then
+                                old_item.Amount -= amout
+                                If old_item.Amount = 0 Then
+                                    DeleteItemFromDB(oldslot, index_)
+                                End If
+                                Inventorys(index_).UserItems(oldslot) = old_item
 
-                    Inventorys(index_).UserItems(newslot) = old_item
+                                new_item.Pk2Id = new_item.Pk2Id
+                                new_item.Amount = amout
+                                Inventorys(index_).UserItems(newslot) = new_item
+                            End If
+                        End If
+
+
+                        DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", old_item.Pk2Id, old_item.Plus, old_item.Durability, old_item.Amount, old_item.OwnerCharID, oldslot))
+                        DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", new_item.Pk2Id, new_item.Plus, new_item.Durability, new_item.Amount, new_item.OwnerCharID, newslot))
+                    End If
 
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.ItemMove)
-					writer.Byte(1) 'success
+                    writer.Byte(1) 'success
                     writer.Byte(0) 'type
                     writer.Byte(oldslot)
                     writer.Byte(newslot)

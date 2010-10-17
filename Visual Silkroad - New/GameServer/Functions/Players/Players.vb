@@ -59,10 +59,10 @@
 
                 SpawnNPCRange(Index_)
                 DeSpawnNPCRange(Index_)
+                SpawnMobRange(Index_)
+                DeSpawnMobRange(Index_)
 
                 Server.SendToAllInRange(writer.GetBytes, Index_)
-            Else
-
             End If
         End Sub
         ''' <summary>

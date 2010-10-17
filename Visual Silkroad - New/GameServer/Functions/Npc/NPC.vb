@@ -90,7 +90,6 @@
 
         Public Sub DeSpawnNPCRange(ByVal Index_ As Integer)
             Try
-                Console.WriteLine("Count: " & PlayerData(Index_).SpawnedNPCs.Count)
                 For i = 0 To NpcList.Count - 1
                     If PlayerData(Index_).SpawnedNPCs.Contains(i) = True Then
                         Dim _npc As cNPC = NpcList(i)

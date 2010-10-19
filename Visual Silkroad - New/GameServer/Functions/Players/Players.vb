@@ -307,10 +307,8 @@
                     PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
 
                     Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
-                    PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
                 End If
             Next
-
 
             For i = 0 To NpcList.Count - 1
                 If PlayerData(Index_).SpawnedNPCs.Contains(i) = True Then
@@ -329,6 +327,8 @@
                 End If
             Next
 
+
+            CleanUpPlayer(Index_)
         End Sub
 
         Public Sub DespawnPlayer(ByVal Index_ As Integer)
@@ -362,6 +362,7 @@
             PlayerData(Index_).SpawnedPlayers.Clear()
             PlayerData(Index_).SpawnedNPCs.Clear()
             PlayerData(Index_).SpawnedMonsters.Clear()
+            PlayerData(Index_).SpawnedItems.Clear()
         End Sub
     End Module
 End Namespace

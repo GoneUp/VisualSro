@@ -37,11 +37,9 @@ Namespace GameServer
 
                 Case ClientOpcodes.JoinWorldReq
                     GameServer.Functions.OnJoinWorldRequest(index)
-                    Commands.WriteLog("[Join_World][1][Index: " & index & "]")
 
-                Case &H34C5
+                Case ClientOpcodes.JoinWorldReq2
                     GameServer.Functions.OnJoinWorldRequest(index)
-                    Commands.WriteLog("[Join_World][2][Index: " & index & "]")
 
                     '============Ingame===========
 

@@ -498,6 +498,7 @@
 				End If
 			Next
 
+            CleanUpPlayer(Index_)
 
             writer = New PacketWriter
             writer.Create(ServerOpcodes.LoadingStart)

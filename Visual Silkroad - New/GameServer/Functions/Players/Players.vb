@@ -336,33 +336,32 @@
                 Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
                 If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
                     Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
-                    PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
                 End If
             Next
 
-            PlayerData(Index_).SpawnedNPCs.Clear()
-            PlayerData(Index_).SpawnedMonsters.Clear()
+            PlayerData(Index_).SpawnedPlayers.Clear()
         End Sub
 
         Public Sub DespawnPlayerRange(ByVal Index_ As Integer)
-            Dim range As Integer = ServerRange
-
-            For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
-                Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
-                If PlayerData(i) IsNot Nothing Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index_).Position.X - PlayerData(Other_Index).Position.X) ^ 2 + (PlayerData(Index_).Position.Y - PlayerData(Other_Index).Position.Y) ^ 2)) 'Calculate Distance
-                    If distance > range Then
+            For Other_Index = 0 To Server.MaxClients
+                If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) Then
+                    If CalculateDistance(PlayerData(Index_).Position, PlayerData(Other_Index).Position) > ServerRange Then
                         'Despawn for both
-                        If PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) Then
-                            Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
-                            PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
-                            Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
-                            PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
-                        End If
+                        Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                        PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
+                        Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
+                        PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
                     End If
                 End If
             Next
         End Sub
 
+
+        Public Sub CleanUpPlayer(ByVal Index_ As Integer)
+            'Cleanup
+            PlayerData(Index_).SpawnedPlayers.Clear()
+            PlayerData(Index_).SpawnedNPCs.Clear()
+            PlayerData(Index_).SpawnedMonsters.Clear()
+        End Sub
     End Module
 End Namespace

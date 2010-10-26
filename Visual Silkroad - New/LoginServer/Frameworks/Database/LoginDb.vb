@@ -26,7 +26,7 @@
     Public UserIdCounter As Integer
 
 
-    Public Structure UserArray
+    Structure UserArray
         Public Id As Integer
         Public Name As String
         Public Pw As String

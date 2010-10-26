@@ -5,8 +5,6 @@
         Public PlayerData(5000) As [cChar]
         'items
         Public Inventorys(5000) As cInventory
-        'Mobs
-        'Skills
         'Exchange
         Public ExchangeData As New List(Of cExchange)
 
@@ -43,12 +41,6 @@
                 writer.Byte(zByte)
                 writer.Word(CUInt(to_pos.Y))
                 writer.Byte(0) '1= source
-                'writer.Byte(PlayerData(Index_).Position.XSector)
-                'writer.Byte(PlayerData(Index_).Position.YSector)
-                'writer.Word(CUInt(PlayerData(Index_).Position.X))
-                'writer.DWord(PlayerData(Index_).Position.Z)
-                'writer.Word(CUInt(PlayerData(Index_).Position.Y))
-
 
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))

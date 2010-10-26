@@ -190,13 +190,13 @@
                     writer.Byte(3)
                     writer.Word(0)
                     writer.Byte(0)
-                    writer.Byte(CByte(Users(UserIndex).FailedLogins)) 'number of falied logins
+                    writer.Byte(user.FailedLogins) 'number of falied logins
                     writer.Word(0)
                     writer.Byte(0)
 
                     LoginServer.Server.Send(writer.GetBytes, index)
 
-                    If Users(UserIndex).FailedLogins = 3 Then
+                    If user.FailedLogins = 3 Then
                         user.FailedLogins = 0
                         Database.UpdateData("UPDATE users SET failed_logins = '0' WHERE id = '" & Users(UserIndex).Id & "'")
                         Server.Dissconnect(index)

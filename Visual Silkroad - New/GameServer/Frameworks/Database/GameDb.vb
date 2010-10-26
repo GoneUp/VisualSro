@@ -257,60 +257,34 @@
 
 #Region "Get Things from Array"
         Public Function GetUserWithID(ByVal id As String) As Integer
-
             Dim i As Integer = 0
-
             For i = 0 To Users.Length
                 If Users(i).Name = id Then
                     Exit For
                 End If
             Next
-
             If Users.Length = i Then
                 Return -1
             End If
-
             Return i
-
-
-
         End Function
 
-        Public Function FillCharList(ByVal chararray As cCharListing) As cCharListing
+        Public Function FillCharList(ByVal CharArray As cCharListing) As cCharListing
 
-            Dim playerCharCount As Integer = 0
+            Dim CharCount As Integer = 0
+            ReDim CharArray.Chars(0)
 
-            chararray.Chars(0) = New [cChar]
-            chararray.Chars(1) = New [cChar]
-            chararray.Chars(2) = New [cChar]
-            chararray.Chars(3) = New [cChar]
-
-            For i = 0 To (CharCount - 1)
-                If chararray.LoginInformation.Id = Chars(i).AccountID Then
-                    If chararray.Chars(0).CharacterId = 0 Then
-                        chararray.Chars(0) = New [cChar]
-                        chararray.Chars(0) = Chars(i)
-                        playerCharCount = 1
-
-                    ElseIf chararray.Chars(1).CharacterId = 0 Then
-                        chararray.Chars(1) = New [cChar]
-                        chararray.Chars(1) = Chars(i)
-                        playerCharCount = 2
-
-                    ElseIf chararray.Chars(2).CharacterId = 0 Then
-                        chararray.Chars(2) = New [cChar]
-                        chararray.Chars(2) = Chars(i)
-                        playerCharCount = 3
-
-                    ElseIf chararray.Chars(3).CharacterId = 0 Then
-                        chararray.Chars(3) = New [cChar]
-                        chararray.Chars(3) = Chars(i)
-                        playerCharCount = 4
-                    End If
+            For i = 0 To Chars.Length - 1
+                If CharArray.LoginInformation.Id = Chars(i).AccountID Then
+                    Dim NewIndex As Integer = CharArray.Chars.Length
+                    Array.Resize(CharArray.Chars, NewIndex + 1)
+                    CharArray.Chars(NewIndex) = Chars(i)
+                    CharCount += 1
                 End If
             Next
-            chararray.NumberOfChars = playerCharCount
-            Return chararray
+
+            CharArray.NumberOfChars = CharCount
+            Return CharArray
         End Function
 
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
@@ -335,7 +309,12 @@
 
         Public Function GetUnqiueID() As UInteger
             Dim toreturn As UInteger = UniqueIdCounter
-            UniqueIdCounter += 1
+            If UniqueIdCounter < UInteger.MaxValue Then
+                UniqueIdCounter += 1
+            ElseIf UniqueIdCounter = UInteger.MaxValue Then
+                UniqueIdCounter = 0
+            End If
+
             Return toreturn
         End Function
 

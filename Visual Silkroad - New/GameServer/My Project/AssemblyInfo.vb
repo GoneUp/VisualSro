@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("Visual Silkroad Emulator")> 
 <Assembly: AssemblyCompany("GoneUp & Windrius & manneke")> 
 <Assembly: AssemblyProduct("GameServer")> 
-<Assembly: AssemblyCopyright("Copyright © Windrius 2010")> 
+<Assembly: AssemblyCopyright("Copyright © GoneUp 2010")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>

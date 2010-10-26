@@ -300,8 +300,7 @@
 				ElseIf model >= 14717 And model <= 14743 Then
 
 					'Europe Char
-					'513 - 518
-
+                    '513 - 518
 					Dim mastery As New cMastery
 					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
@@ -401,7 +400,7 @@
 					item = New cInvItem
 					item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
 					item.Pk2Id = 62
-					item.Amount = 123
+                    item.Amount = 100
 					item.Slot = 7
 					UpdateItem(item)
 

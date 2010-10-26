@@ -93,10 +93,7 @@ read:
         End Sub
 
         Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
-
             Commands.WriteLog("Server Error: " & ex.Message & " Index: " & index) '-1 = on client connect + -2 = on server start
-
-
         End Sub
 
         Private Shared Sub Server_OnServerStarted(ByVal time As String)

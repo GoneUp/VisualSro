@@ -21,10 +21,10 @@
     Public WalkSpeed As Single
     Public RunSpeed As Single
     Public BerserkSpeed As Single
-    Public MinPhy As UShort
-    Public MaxPhy As UShort
-    Public MinMag As UShort
-    Public MaxMag As UShort
+    Public MinPhy As UInteger
+    Public MaxPhy As UInteger
+    Public MinMag As UInteger
+    Public MaxMag As UInteger
     Public PhyDef As UShort
     Public MagDef As UShort
     Public Hit As UShort
@@ -94,17 +94,19 @@
                         MinPhy += _refitem.MIN_HPHYATK + ((Me.Strength * _refitem.MIN_HPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
                         MaxPhy += _refitem.MAX_HPHYATK + ((Me.Strength * _refitem.MAX_HPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
 
-                        MinMag += _refitem.MIN_LMAGATK + (Me.Intelligence * (_refitem.MIN_HMAG_REINFORCE / _refitem.MIN_HMAGATK)) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
-                        MaxMag += _refitem.MAX_LMAGATK + (Me.Intelligence * (_refitem.MAX_HMAG_REINFORCE / _refitem.MAX_HMAGATK)) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
-
-
+                        MinMag += _refitem.MIN_LMAGATK + ((Me.Intelligence * _refitem.MIN_HMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                        MaxMag += _refitem.MAX_LMAGATK + ((Me.Intelligence * _refitem.MAX_HMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
                     Else
-                        PhyDef += _refitem.MIN_PHYSDEF
-                        MagDef += _refitem.MAGDEF_MIN
+                        'Prevent Errors
+                        If PhyDef + _refitem.MIN_PHYSDEF < UShort.MaxValue Then
+                            PhyDef += _refitem.MIN_PHYSDEF
+                        End If
+                        If MagDef + _refitem.MAGDEF_MIN < UShort.MaxValue Then
+                            MagDef += _refitem.MAGDEF_MIN
+                        End If
                     End If
                 End If
             End If
-
         Next
     End Sub
 

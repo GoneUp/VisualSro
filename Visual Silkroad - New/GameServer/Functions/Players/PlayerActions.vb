@@ -8,7 +8,7 @@
                     writer.Create(ServerOpcodes.Exit)
                     writer.Byte(1) 'sucees
                     writer.Byte(1) '1 sekunde
-                    writer.Byte(tag) 'mode
+                    writer.Byte(tag) 'modew
                     Server.Send(writer.GetBytes, Index)
 
                     writer = New PacketWriter
@@ -160,6 +160,47 @@
             Next
 
             DataBase.SaveQuery(String.Format("UPDATE hotkeys SET Type='{0}', IconID='{1}' WHERE OwnerID='{2}' AND Slot='{3}' ", hotkey.Type, hotkey.IconID, hotkey.OwnerID, hotkey.Slot))
+        End Sub
+
+
+        Public Sub OnSelectObject(ByVal Index_ As Integer, ByVal packet As PacketReader)
+            Dim ObjectID As UInteger = packet.DWord
+            Dim writer As New PacketWriter
+
+            For i = 0 To Server.MaxClients
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).UniqueId = ObjectID Then
+                        writer.Create(ServerOpcodes.Target)
+                        writer.Byte(1) 'Sucess
+                        writer.DWord(PlayerData(i).UniqueId)
+                        writer.Byte(10) 'unknown
+                        writer.DWord(&H4000000) '0x04 00 00 00
+                        Server.Send(writer.GetBytes, Index_)
+                        Exit Sub
+                    End If
+                End If
+            Next
+
+            For i = 0 To MobList.Count - 1
+                If MobList(i).UniqueID Then
+                    writer.Create(ServerOpcodes.Target)
+                    writer.Byte(1) 'Sucess
+                    writer.DWord(MobList(i).UniqueID)
+                    writer.Byte(1) 'unknown
+                    writer.DWord(MobList(i).HP_Cur)
+                    writer.DWord(10) 'unknown
+                    Server.Send(writer.GetBytes, Index_)
+                    Exit Sub
+                End If
+            Next
+
+            For i = 0 To NpcList.Count - 1
+                If NpcList(i).UniqueID Then
+                    writer.Create(ServerOpcodes.Target)
+                    writer.Byte(2) 'Fail = Npc Select Not Supported
+                    Exit Sub
+                End If
+            Next
         End Sub
     End Module
 End Namespace

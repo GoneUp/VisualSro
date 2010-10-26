@@ -41,7 +41,7 @@
             Dim realkey As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
             Dim loggedin As Boolean = False
 
-            For i = 0 To 1500
+            For i = 0 To Server.MaxClients
                 If ClientList.OnCharListing(i) IsNot Nothing Then
                     If ClientList.OnCharListing(i).LoginInformation.Id = GameServer.DatabaseCore.Users(UserIndex).Id Then
                         loggedin = True
@@ -49,7 +49,7 @@
                 End If
             Next
 
-            For i = 0 To 1500
+            For i = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).AccountID = GameServer.DatabaseCore.Users(UserIndex).Id Then
                         loggedin = True

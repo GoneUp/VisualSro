@@ -4,10 +4,7 @@
 
 
         Public Sub LoadSettings()
-
-
             AutoRegister = True
-
         End Sub
 
 

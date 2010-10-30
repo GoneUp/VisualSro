@@ -182,20 +182,20 @@
             Next
 
             For i = 0 To MobList.Count - 1
-                If MobList(i).UniqueID Then
+                If MobList(i).UniqueID = ObjectID Then
                     writer.Create(ServerOpcodes.Target)
                     writer.Byte(1) 'Sucess
                     writer.DWord(MobList(i).UniqueID)
                     writer.Byte(1) 'unknown
                     writer.DWord(MobList(i).HP_Cur)
-                    writer.DWord(10) 'unknown
+                    writer.DWord(16) 'unknown
                     Server.Send(writer.GetBytes, Index_)
                     Exit Sub
                 End If
             Next
 
             For i = 0 To NpcList.Count - 1
-                If NpcList(i).UniqueID Then
+                If NpcList(i).UniqueID = ObjectID Then
                     writer.Create(ServerOpcodes.Target)
                     writer.Byte(2) 'Fail = Npc Select Not Supported
                     Exit Sub

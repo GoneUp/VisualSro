@@ -3,15 +3,14 @@
 
     Module LoginAuth
 
-        Public Sub GateWay(ByVal index As Integer)
+        Public Sub GateWay(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             Dim name As String = "AgentServer"
             writer.Create(ServerOpcodes.ServerInfo)
             writer.Word(name.Length)
             writer.HexString(name)
             writer.Byte(0)
-            GameServer.Server.Send(writer.GetBytes, index)
-
+            GameServer.Server.Send(writer.GetBytes, Index_)
         End Sub
 
         Public Sub SendPatchInfo(ByVal index_ As Integer)

@@ -10,19 +10,19 @@ Namespace GameServer
         Public UsingItemTimer As Timer() = New Timer(14999) {}
         Public SitUpTimer As Timer() = New Timer(14999) {}
 
-        Public Sub LoadTimers()
+        Public Sub LoadTimers(ByVal TimerCount As Integer)
             WriteLog("Loading Timers...")
 
             Try
-                For i As Integer = 0 To 14999
+                ReDim PlayerAttack(TimerCount), MonsterMovement(TimerCount), MonsterDeath(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+
+                For i As Integer = 0 To TimerCount - 1
                     PlayerAttack(i) = New Timer()
                     AddHandler PlayerAttack(i).Elapsed, AddressOf AttackTimer_Elapsed
                     UsingItemTimer(i) = New Timer()
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
                     AddHandler SitUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
-
-
                 Next
 
             Catch ex As Exception

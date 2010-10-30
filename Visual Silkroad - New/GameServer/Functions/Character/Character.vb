@@ -489,13 +489,13 @@
             Server.Send(writer.GetBytes, Index_)
 
 			'Main
-			For i = 0 To 3
-				If ClientList.OnCharListing(Index_).Chars(i).CharacterName = SelectedNick Then
-					PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(i)
-					Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(i).MaxSlots)
-					Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(i))
-				End If
-			Next
+            For i = 0 To ClientList.OnCharListing(Index_).Chars.Count - 1
+                If ClientList.OnCharListing(Index_).Chars(i).CharacterName = SelectedNick Then
+                    PlayerData(Index_) = ClientList.OnCharListing(Index_).Chars(i)
+                    Dim inventory As New cInventory(ClientList.OnCharListing(Index_).Chars(i).MaxSlots)
+                    Inventorys(Index_) = GameServer.DatabaseCore.FillInventory(ClientList.OnCharListing(Index_).Chars(i))
+                End If
+            Next
 
             CleanUpPlayer(Index_)
 

@@ -179,7 +179,7 @@
 
             For i As Integer = 0 To DatabaseCore.CharCount
                 If DatabaseCore.Chars(i).CharacterName = Name Then
-                    DataBase.InsertData(String.Format("UPDATE users SET banned='1', bantime = '3000-01-01', banreason = 'You got banned by: {0}' where id='{1}'", PlayerData(index_).CharacterName, DatabaseCore.Chars(i).AccountID))
+                    DataBase.InsertData(String.Format("UPDATE users SET banned='1', bantime = '3000-01-01 00:00:00', banreason = 'You got banned by: {0}' where id='{1}'", PlayerData(index_).CharacterName, DatabaseCore.Chars(i).AccountID))
 
                     For U = 0 To DatabaseCore.UserCount
                         If DatabaseCore.Users(U).Id = DatabaseCore.Chars(i).AccountID Then

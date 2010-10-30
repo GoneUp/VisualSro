@@ -4,30 +4,34 @@
     Public WithEvents LoginDbUpdate As New Timers.Timer
 
     'Server
-    Public ServerNumber As Integer
-    Public ServerID(50) As UInteger
-    Public ServerName(50) As String
-    Public ServerAcUs(50) As UInt16
-    Public ServerMaxUs(50) As UInt16
-    Public ServerState(50) As Byte
-    Public ServerIP(50) As String
-    Public ServerPort(50) As UInt16
+    Public Servers As New List(Of Server_)
+    Structure Server_
+        Public ServerId As UInteger
+        Public ServerName As String
+        Public ServerAcUs As UInt16
+        Public ServerMaxUs As UInt16
+        Public ServerState As Byte
+        Public ServerIP As String
+        Public ServerPort As UInt16
+    End Structure
 
 
     'News
-    Public NewsNumber As Integer
-    Public NewsTitle(50) As String
-    Public NewsText(50) As String
-    Public NewsMonth(50) As Byte
-    Public NewsDay(50) As Byte
+    Public News As New List(Of News_)
+    Structure News_
+        Public NewsNumber As Integer
+        Public NewsTitle As String
+        Public NewsText As String
+        Public NewsMonth As Byte
+        Public NewsDay As Byte
+    End Structure
 
     'User
     Public Users As New List(Of UserArray)
     Public UserIdCounter As Integer
 
-
     Structure UserArray
-        Public Id As Integer
+        Public AccountId As Integer
         Public Name As String
         Public Pw As String
         Public FailedLogins As Integer
@@ -69,28 +73,19 @@
     Public Sub GetServerData()
 
         Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From Servers")
-        ServerNumber = tmp.Tables(0).Rows.Count
 
-        ReDim ServerID(ServerNumber)
-        ReDim ServerName(ServerNumber)
-        ReDim ServerAcUs(ServerNumber)
-        ReDim ServerMaxUs(ServerNumber)
-        ReDim ServerState(ServerNumber)
-        ReDim ServerIP(ServerNumber)
-        ReDim ServerPort(ServerNumber)
+        For i = 0 To tmp.Tables(0).Rows.Count - 1
+            Dim tmp_server As New Server_
+            tmp_server.ServerId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+            tmp_server.ServerName = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+            tmp_server.ServerAcUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+            tmp_server.ServerMaxUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+            tmp_server.ServerState = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
+            tmp_server.ServerIP = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
+            tmp_server.ServerPort = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
 
-        For i = 0 To ServerNumber - 1
-            ServerID(i) = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
-            ServerName(i) = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-            ServerAcUs(i) = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-            ServerMaxUs(i) = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
-            ServerState(i) = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
-            ServerIP(i) = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
-            ServerPort(i) = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
+            Servers.Add(tmp_server)
         Next
-
-
-
 
 
     End Sub
@@ -98,19 +93,15 @@
     Public Sub GetNewsData()
 
         Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From News")
-        NewsNumber = tmp.Tables(0).Rows.Count
 
-        ReDim NewsTitle(NewsNumber)
-        ReDim NewsText(NewsNumber)
-        ReDim NewsDay(NewsNumber)
-        ReDim NewsMonth(NewsNumber)
+        For i = 0 To tmp.Tables(0).Rows.Count - 1
+            Dim tmp_news As New News_
+            tmp_news.NewsTitle = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+            tmp_news.NewsText = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
+            tmp_news.NewsDay = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
+            tmp_news.NewsMonth = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
 
-
-        For i = 0 To NewsNumber - 1
-            NewsTitle(i) = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-            NewsText(i) = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-            NewsDay(i) = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
-            NewsMonth(i) = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
+            News.Add(tmp_news)
         Next
 
 
@@ -124,7 +115,7 @@
 
         For i = 0 To tmp.Tables(0).Rows.Count - 1
             Dim tmpUser As New UserArray
-            tmpUser.Id = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
+            tmpUser.AccountId = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
             tmpUser.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
             tmpUser.Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
             tmpUser.FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
@@ -147,7 +138,7 @@
             End If
         Next
 
- 
+
         If Users.Count = i Then
             Return -1
         End If
@@ -158,8 +149,8 @@
 
 
     Public Function GetServerIndexById(ByVal id As Integer)
-        For i = 0 To ServerID.Length
-            If ServerID(i) = id Then
+        For i = 0 To Servers.Count - 1
+            If Servers(i).ServerId = id Then
                 Return i
             End If
         Next

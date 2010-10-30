@@ -163,7 +163,7 @@
         End Sub
 
 
-        Public Sub OnSelectObject(ByVal Index_ As Integer, ByVal packet As PacketReader)
+        Public Sub OnSelectObject(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ObjectID As UInteger = packet.DWord
             Dim writer As New PacketWriter
 

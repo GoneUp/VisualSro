@@ -89,9 +89,10 @@
     <Compile Include="Frameworks\Packets\PacketReader.vb" />
     <Compile Include="Frameworks\Packets\PacketWriter.vb" />
     <Compile Include="Frameworks\Server\Settings.vb" />
+    <Compile Include="Functions\Login\Ban.vb" />
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Frameworks\Server\Server.vb" />
-    <Compile Include="Functions\LoginServer.vb" />
+    <Compile Include="Functions\Login\LoginServer.vb" />
     <Compile Include="Console\Main.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

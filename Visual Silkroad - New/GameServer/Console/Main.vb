@@ -46,7 +46,7 @@ Namespace GameServer
             GameServer.DatabaseCore.UpdateData()
             SilkroadData.DumpDataFiles()
             LoadSettings()
-            LoadTimers()
+            LoadTimers(Server.MaxClients)
 
             Commands.WriteLog("Inital Loding complete!")
 
@@ -62,28 +62,27 @@ read:
             Commands.WriteLog("Client Connected : " & ip)
             Server.OnlineClient += 1
 
-            Dim pack As New PacketWriter
-            pack.Create(ServerOpcodes.Handshake)
-            pack.Byte(1)
-            GameServer.Server.Send(pack.GetBytes, index)
-
+            Dim packet As New PacketWriter
+            packet.Create(ServerOpcodes.Handshake)
+            packet.Byte(1)
+            GameServer.Server.Send(packet.GetBytes, index)
         End Sub
 
         Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
 
-            Dim read As Integer = 0
+            Dim Position As Integer = 0
 
             Do While True
-                Dim length As Integer = BitConverter.ToUInt16(buffer, read)
-                Dim opc As Integer = BitConverter.ToUInt16(buffer, read + 2)
+                Dim length As Integer = BitConverter.ToUInt16(buffer, Position)
+                Dim opc As Integer = BitConverter.ToUInt16(buffer, Position + 2)
 
                 If length = 0 And opc = 0 Then 'endless prevention
                     Exit Do
                 End If
 
                 Dim newbuff(length + 5) As Byte
-                Array.ConstrainedCopy(buffer, read, newbuff, 0, length + 6)
-                read = read + length + 6
+                Array.ConstrainedCopy(buffer, Position, newbuff, 0, length + 6)
+                Position = Position + length + 6
 
                 Dim packet As New PacketReader(newbuff)
                 If Logpackets = True Then

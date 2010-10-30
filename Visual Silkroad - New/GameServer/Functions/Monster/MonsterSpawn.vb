@@ -13,21 +13,24 @@
             writer.Float(MobList(mob_index).Position.X)
             writer.Float(MobList(mob_index).Position.Z)
             writer.Float(MobList(mob_index).Position.Y)
-            writer.Word(0) 'angle
+
+            writer.Word(MobList(mob_index).Angle)
             writer.Byte(0) 'dest
             writer.Byte(1) 'walk run flag
             writer.Byte(0) 'dest
-            writer.Word(0) 'angle
-            writer.Word(1) 'unknown
-            writer.Byte(0) 'unknwon
+            writer.Word(MobList(mob_index).Angle)
+            writer.Byte(0) 'unknown
+            writer.Byte(0) 'death flag
+            writer.Byte(0) 'berserker
 
             writer.Float(20) 'walkspeed
             writer.Float(50) 'runspeed
             writer.Float(100) 'berserkerspeed
 
-            writer.Byte(0) 'unknwown
-            writer.Word(0) 'unknwown
+            writer.Word(0) 'unknwown  
             writer.Byte(MobList(mob_index).Mob_Type)
+            writer.Byte(0) 'mhm
+
             Return writer.GetBytes
         End Function
 

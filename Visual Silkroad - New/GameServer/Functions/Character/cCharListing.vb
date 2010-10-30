@@ -10,6 +10,6 @@
     End Structure
 
     Public LoginInformation As UserArray
-    Public Chars(4) As [cChar]
+    Public Chars As New List(Of [cChar])
     Public NumberOfChars As Byte
 End Class

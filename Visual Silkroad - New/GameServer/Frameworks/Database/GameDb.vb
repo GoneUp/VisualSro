@@ -272,13 +272,11 @@
         Public Function FillCharList(ByVal CharArray As cCharListing) As cCharListing
 
             Dim CharCount As Integer = 0
-            ReDim CharArray.Chars(0)
+            CharArray.Chars.Clear()
 
             For i = 0 To Chars.Length - 1
                 If CharArray.LoginInformation.Id = Chars(i).AccountID Then
-                    Dim NewIndex As Integer = CharArray.Chars.Length
-                    Array.Resize(CharArray.Chars, NewIndex + 1)
-                    CharArray.Chars(NewIndex) = Chars(i)
+                    CharArray.Chars.Add(Chars(i))
                     CharCount += 1
                 End If
             Next

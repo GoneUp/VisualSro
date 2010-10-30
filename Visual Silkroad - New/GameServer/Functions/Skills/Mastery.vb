@@ -142,11 +142,13 @@
 
 
         Public Function GetMasteryByID(ByVal MasteryID As UInteger, ByVal Index_ As Integer) As cMastery
+            Dim ToReturn As New cMastery
             For i = 0 To DatabaseCore.Masterys.Length - 1
                 If DatabaseCore.Masterys(i).OwnerID = PlayerData(Index_).UniqueId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
-                    Return DatabaseCore.Masterys(i)
+                    ToReturn = DatabaseCore.Masterys(i)
                 End If
             Next
+            Return ToReturn
         End Function
 
     End Module

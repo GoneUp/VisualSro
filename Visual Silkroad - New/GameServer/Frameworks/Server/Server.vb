@@ -111,18 +111,6 @@ Namespace GameServer
             Next i
         End Sub
 
-        Public Shared Sub SendToAllIngame(ByVal buff() As Byte, ByVal index As Integer)
-            For i As Integer = 0 To MaxClients
-                Dim socket As Socket = ClientList.GetSocket(i)
-                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
-                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then 'AndAlso (i <> index) Then
-                    If player.Ingame = True Then
-                        socket.Send(buff)
-                    End If
-                End If
-            Next i
-        End Sub
-
         Public Shared Sub SendToAllIngameExpectMe(ByVal buff() As Byte, ByVal index As Integer)
             For i As Integer = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)

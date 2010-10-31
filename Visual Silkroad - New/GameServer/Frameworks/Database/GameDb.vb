@@ -85,6 +85,7 @@
                 Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
                 Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
                 Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
+                Users(i).Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
             Next
 
         End Sub
@@ -256,7 +257,7 @@
 #End Region
 
 #Region "Get Things from Array"
-        Public Function GetUserWithID(ByVal id As String) As Integer
+        Public Function GetUserWithAccName(ByVal id As String) As Integer
             Dim i As Integer = 0
             For i = 0 To Users.Length
                 If Users(i).Name = id Then
@@ -269,6 +270,18 @@
             Return i
         End Function
 
+        Public Function GetUserWithAccID(ByVal id As String) As Integer
+            Dim i As Integer = 0
+            For i = 0 To Users.Length
+                If Users(i).Id = id Then
+                    Exit For
+                End If
+            Next
+            If Users.Length = i Then
+                Return -1
+            End If
+            Return i
+        End Function
         Public Function FillCharList(ByVal CharArray As cCharListing) As cCharListing
 
             Dim CharCount As Integer = 0

@@ -88,11 +88,11 @@
             For i = 0 To Servers.Count - 1
                 writer.Byte(1) 'New Gameserver
                 writer.Word(Servers(i).ServerId)
-                writer.Word(Servers(i).ServerName.Length)
-                writer.String(Servers(i).ServerName)
-                writer.Word(Servers(i).ServerAcUs)
-                writer.Word(Servers(i).ServerMaxUs)
-                writer.Byte(Servers(i).ServerState)
+                writer.Word(Servers(i).Name.Length)
+                writer.String(Servers(i).Name)
+                writer.Word(Servers(i).AcUs)
+                writer.Word(Servers(i).MaxUs)
+                writer.Byte(Servers(i).State)
             Next
 
             writer.Byte(0)
@@ -191,7 +191,7 @@
                 ElseIf Users(UserIndex).Name = ID And Users(UserIndex).Pw = Pw Then
                     Dim ServerIndex As Integer = GetServerIndexById(ServerID)
 
-                    If (Servers(ServerIndex).ServerAcUs + 1) >= Servers(ServerIndex).ServerMaxUs Then
+                    If (Servers(ServerIndex).AcUs + 1) >= Servers(ServerIndex).MaxUs Then
                         writer.Byte(4)
                         writer.Byte(2) 'Server traffic... 
                         Server.Send(writer.GetBytes, index)
@@ -200,9 +200,9 @@
                         'Sucess!
                         writer.Byte(1)
                         writer.DWord(GetKey(index))
-                        writer.Word(Servers(ServerIndex).ServerIP.Length)
-                        writer.String(Servers(ServerIndex).ServerIP)
-                        writer.Word(Servers(ServerIndex).ServerPort)
+                        writer.Word(Servers(ServerIndex).IP.Length)
+                        writer.String(Servers(ServerIndex).IP)
+                        writer.Word(Servers(ServerIndex).Port)
                         Server.Send(writer.GetBytes, index)
                     End If
                 End If
@@ -213,14 +213,14 @@
             Database.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmpUser As New UserArray
+            Dim r As New Random
 
-            UserIdCounter += 1
-            tmpUser.AccountId = UserIdCounter
+            tmpUser.AccountId = r.Next(500000, 1000000)
             tmpUser.Name = Name
             tmpUser.Pw = Password
             tmpUser.FailedLogins = 0
             tmpUser.Banned = True
-            tmpUser.BannReason = "Please wait for Activation"
+            tmpUser.BannReason = "Please wait for Activation."
             tmpUser.BannTime = Date.Now.AddMinutes(2)
 
             Users.Add(tmpUser)

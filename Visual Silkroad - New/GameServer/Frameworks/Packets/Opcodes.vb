@@ -82,6 +82,7 @@
 		Teleport_Annonce = &H34B5
 		Emotion = &H3091
         HelperIcon = &HB402
+        Silk = &H3153
 
         'Updates
         HP_MP_Update = &H3057

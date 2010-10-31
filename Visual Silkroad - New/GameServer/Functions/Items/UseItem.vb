@@ -47,7 +47,7 @@
                         PlayerData(Index_).CHP += refitem.USE_TIME_HP
                     End If
 
-                    If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
+                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
                         'Despawn Item
 
                         _item.Pk2Id = 0
@@ -58,7 +58,7 @@
                         Inventorys(Index_).UserItems(Slot) = _item
                         DeleteItemFromDB(Slot, Index_)
 
-                    ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
+                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
                         _item.Amount -= 1
                         Inventorys(Index_).UserItems(Slot) = _item
                         UpdateItem(_item)
@@ -94,7 +94,7 @@
                         PlayerData(Index_).CMP += refitem.USE_TIME_MP
                     End If
 
-                    If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
+                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
                         'Despawn Item
 
                         _item.Pk2Id = 0
@@ -105,7 +105,7 @@
                         Inventorys(Index_).UserItems(Slot) = _item
                         DeleteItemFromDB(Slot, Index_)
 
-                    ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
+                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
                         _item.Amount -= 1
                         Inventorys(Index_).UserItems(Slot) = _item
                         UpdateItem(_item)
@@ -145,7 +145,7 @@
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 3 Then 'Check for right Item
-                    If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
+                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
                         'Despawn Item
 
                         _item.Pk2Id = 0
@@ -155,7 +155,7 @@
 
                         Inventorys(Index_).UserItems(Slot) = _item
                         DeleteItemFromDB(Slot, Index_)
-                    ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
+                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
                         _item.Amount -= 1
                         Inventorys(Index_).UserItems(Slot) = _item
                         UpdateItem(_item)
@@ -210,7 +210,7 @@
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 1 Then
-                    If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
+                    If Inventorys(Index_).UserItems(Slot).Amount - 1 <= 0 Then
                         'Despawn Item
 
                         _item.Pk2Id = 0
@@ -220,7 +220,7 @@
 
                         Inventorys(Index_).UserItems(Slot) = _item
                         DeleteItemFromDB(Slot, Index_)
-                    ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
+                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
                         _item.Amount -= 1
                         Inventorys(Index_).UserItems(Slot) = _item
                         UpdateItem(_item)
@@ -259,7 +259,7 @@
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
-                    If Inventorys(Index_).UserItems(Slot).Slot - 1 <= 0 Then
+                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
                         'Despawn Item
 
                         _item.Pk2Id = 0
@@ -269,7 +269,7 @@
 
                         Inventorys(Index_).UserItems(Slot) = _item
                         DeleteItemFromDB(Slot, Index_)
-                    ElseIf Inventorys(Index_).UserItems(Slot).Slot - 1 > 0 Then
+                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
                         _item.Amount -= 1
                         Inventorys(Index_).UserItems(Slot) = _item
                         UpdateItem(_item)

@@ -7,6 +7,10 @@
         Public FailedLogins As String
         Public Banned As Boolean
         Public LoggedIn As Boolean
+
+        Public Silk As UInteger
+        Public Silk_Bonus As UInteger
+        Public Silk_Points As UInteger
     End Structure
 
     Public LoginInformation As UserArray

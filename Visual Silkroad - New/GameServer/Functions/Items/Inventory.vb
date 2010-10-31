@@ -14,7 +14,8 @@
                     OnDropItem(packet, index_)
                 Case 13  'Exchange Gold
                     OnExchangeAddGold(packet, index_)
-
+                Case 24 'Buy From Item Mall
+                    OnBuyItemFromMall(packet, index_)
                 Case Else
                     Debug.Print("[INVENTORY][TAG: " & type & "]")
             End Select
@@ -353,6 +354,8 @@
                 End If
             End If
         End Sub
+
+
         Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.EquipItem)

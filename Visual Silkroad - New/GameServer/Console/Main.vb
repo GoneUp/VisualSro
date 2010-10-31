@@ -12,8 +12,8 @@ Namespace GameServer
 
         End Sub
 
-        Private Shared Sub db_OnDatabaseError(ByVal ex As Exception)
-            Commands.WriteLog("Database error: " & ex.Message)
+        Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
+            Commands.WriteLog("Database error: " & ex.Message & " Command: " & command)
         End Sub
 
         Shared Sub Main()
@@ -43,7 +43,9 @@ Namespace GameServer
             Server.Start()
             Commands.WriteLog("Started Server. Loading Data now.")
 
-            GameServer.DatabaseCore.UpdateData()
+            Dim theard As New Threading.Thread(AddressOf GameServer.DatabaseCore.UpdateData)
+            theard.Start()
+
             SilkroadData.DumpDataFiles()
             LoadSettings()
             LoadTimers(Server.MaxClients)

@@ -27,6 +27,11 @@
 
             DumpReversePoints(System.AppDomain.CurrentDomain.BaseDirectory & "data\reverse_points.txt")
             Commands.WriteLog("Loaded " & RefReversePoints.Count & " Reverse-Points.")
+
+            DumpItemMall(System.AppDomain.CurrentDomain.BaseDirectory & "data\refscrapofpackageitem.txt", System.AppDomain.CurrentDomain.BaseDirectory & "data\refpricepolicyofitem.txt")
+            Commands.WriteLog("Loaded " & RefMallItems.Count & " ItemMall-Items.")
+
+
         Catch ex As Exception
             Commands.WriteLog("Error at Loading Data! Message: " & ex.Message)
         End Try
@@ -133,6 +138,14 @@
         Throw New Exception("Item couldn't be found!")
     End Function
 
+    Public Function GetItemByName(ByVal Name As String) As cItem
+        For Each e As cItem In RefItems
+            If e.ITEM_TYPE_NAME = Name Then
+                Return e
+            End If
+        Next
+        Throw New Exception("Item couldn't be found!")
+    End Function
 
     Structure cGoldData
         Public Level As Byte
@@ -431,7 +444,46 @@
                 Return RefReversePoints(i)
             End If
         Next
+        Return New ReversePoint_
     End Function
 
+    Structure MallPackage_
+        Public Name_Normal As String
+        Public Name_Package As String
+        Public Amout As UInt16
+        Public Price As UInteger
+    End Structure
 
+    Public RefMallItems As New List(Of MallPackage_)
+
+    Public Sub DumpItemMall(ByVal FileAmoutPath As String, ByVal FilePricePath As String)
+        Dim lines As String() = IO.File.ReadAllLines(FileAmoutPath)
+        For i As Integer = 0 To lines.Length - 1
+            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+            Dim tmp As New MallPackage_
+            tmp.Name_Package = tmpString(2)
+            tmp.Name_Normal = tmpString(3)
+            tmp.Amout = tmpString(6)
+
+            Dim priceFile As String() = IO.File.ReadAllLines(FilePricePath)
+            For d As Integer = 0 To priceFile.Length - 1
+                Dim tmpString2 As String() = priceFile(d).Split(ControlChars.Tab)
+                If tmpString2(2) = tmp.Name_Package And tmpString2(3) = 2 Then
+                    tmp.Price = tmpString2(5)
+                    Exit For
+                End If
+            Next
+
+            RefMallItems.Add(tmp)
+        Next
+    End Sub
+
+    Public Function GetItemMallItemByName(ByVal Name As String) As MallPackage_
+        For i = 0 To RefMallItems.Count - 1
+            If RefMallItems(i).Name_Package = Name Then
+                Return RefMallItems(i)
+            End If
+        Next
+        Return New MallPackage_
+    End Function
 End Module

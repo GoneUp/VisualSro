@@ -29,7 +29,7 @@ Namespace GameServer
                 connection.Open()
                 RaiseEvent OnConnectedToDatabase()
             Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, ConnectionString)
             End Try
         End Sub
 
@@ -46,7 +46,7 @@ Namespace GameServer
                     gets = reader.GetString(index)
                 Loop
             Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command)
             Finally
                 If reader IsNot Nothing Then
                     reader.Close()
@@ -65,7 +65,7 @@ Namespace GameServer
                     str = reader.GetString(column)
                 Loop
             Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command)
             Finally
                 If reader IsNot Nothing Then
                     reader.Dispose()
@@ -92,7 +92,7 @@ Namespace GameServer
                     getsDb = reader.GetDouble(column)
                 Loop
             Catch exception As MySqlException
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command)
             Finally
                 If reader IsNot Nothing Then
                     reader.Close()
@@ -108,7 +108,7 @@ Namespace GameServer
             Try
                 reader.Fill(tmpset)
             Catch ex As MySqlException
-                RaiseEvent OnDatabaseError(ex)
+                RaiseEvent OnDatabaseError(ex, command)
             End Try
 
 
@@ -128,7 +128,7 @@ Namespace GameServer
                     num = System.Convert.ToInt32(reader.GetString(column))
                 Loop
             Catch exception As MySqlException
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command)
             Finally
                 If reader IsNot Nothing Then
                     reader.Dispose()
@@ -156,7 +156,7 @@ Namespace GameServer
                     gets = gets & reader.GetString("name") & " "
                 Loop
             Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, Command)
             Finally
                 If reader IsNot Nothing Then
                     reader.Close()
@@ -173,20 +173,18 @@ Namespace GameServer
                 da.Fill(dataSet)
                 count = dataSet.Tables(0).Rows.Count
             Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command)
             End Try
             Return count
         End Function
 
         Public Shared Sub SaveQuery(ByVal command As String)
-            'Dim command2 As New MySqlCommand(command, connection)
-            'command2.ExecuteNonQuery()
             Try
                 Dim writer As New IO.StreamWriter(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt", True)
                 writer.WriteLine(command)
                 writer.Close()
             Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command)
             End Try
         End Sub
 
@@ -196,7 +194,7 @@ Namespace GameServer
                 command2.ExecuteNonQuery()
             Catch exception As Exception
                 'command2.Cancel()
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command)
             End Try
         End Sub
 
@@ -212,7 +210,7 @@ Namespace GameServer
                 Loop
                 Commands.WriteLog("********************")
             Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception)
+                RaiseEvent OnDatabaseError(exception, command.CommandText)
             Finally
                 If reader IsNot Nothing Then
                     reader.Close()
@@ -226,7 +224,7 @@ Namespace GameServer
 
         Public Delegate Sub dConnected()
 
-        Public Delegate Sub dError(ByVal ex As Exception)
+        Public Delegate Sub dError(ByVal ex As Exception, ByVal command As String)
     End Class
 End Namespace
 

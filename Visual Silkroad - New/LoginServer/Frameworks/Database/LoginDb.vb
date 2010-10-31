@@ -7,12 +7,12 @@
     Public Servers As New List(Of Server_)
     Structure Server_
         Public ServerId As UInteger
-        Public ServerName As String
-        Public ServerAcUs As UInt16
-        Public ServerMaxUs As UInt16
-        Public ServerState As Byte
-        Public ServerIP As String
-        Public ServerPort As UInt16
+        Public Name As String
+        Public AcUs As UInt16
+        Public MaxUs As UInt16
+        Public State As Byte
+        Public IP As String
+        Public Port As UInt16
     End Structure
 
 
@@ -71,18 +71,18 @@
 
 
     Public Sub GetServerData()
-
         Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From Servers")
+        Servers.Clear()
 
         For i = 0 To tmp.Tables(0).Rows.Count - 1
             Dim tmp_server As New Server_
             tmp_server.ServerId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
-            tmp_server.ServerName = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-            tmp_server.ServerAcUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-            tmp_server.ServerMaxUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
-            tmp_server.ServerState = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
-            tmp_server.ServerIP = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
-            tmp_server.ServerPort = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
+            tmp_server.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+            tmp_server.AcUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+            tmp_server.MaxUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+            tmp_server.State = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
+            tmp_server.IP = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
+            tmp_server.Port = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
 
             Servers.Add(tmp_server)
         Next
@@ -93,6 +93,7 @@
     Public Sub GetNewsData()
 
         Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From News")
+        News.Clear()
 
         For i = 0 To tmp.Tables(0).Rows.Count - 1
             Dim tmp_news As New News_

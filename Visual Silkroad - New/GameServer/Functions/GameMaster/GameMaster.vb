@@ -128,7 +128,7 @@
             writer.Create(ServerOpcodes.Weather)
             writer.Byte(Type)
             writer.Byte(Strength)
-            Server.SendToAllIngame(writer.GetBytes, index_)
+            Server.SendToAllIngame(writer.GetBytes)
 
 
 		End Sub

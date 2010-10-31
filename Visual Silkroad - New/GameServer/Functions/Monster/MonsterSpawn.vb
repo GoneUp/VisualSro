@@ -43,8 +43,12 @@
             toadd.Mob_Type = Type
             toadd.HP_Cur = mob_.Hp
             MobList.Add(toadd)
-            Dim MyIndex As UInteger = MobList.IndexOf(toadd)
 
+            If Type = 3 Then
+                SendUniqueSpawn(MobID)
+            End If
+
+            Dim MyIndex As UInteger = MobList.IndexOf(toadd)
             Dim range As Integer = ServerRange
 
             For refindex As Integer = 0 To Server.MaxClients
@@ -90,5 +94,18 @@
 
             End Try
         End Sub
+
+
+        Public Sub SendUniqueSpawn(ByVal PK2ID As UInteger)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.UniqueAnnonce)
+            writer.Byte(5) 'Spawn
+            writer.DWord(PK2ID)
+            Server.SendToAllIngame(writer.GetBytes)
+        End Sub
+
+
+
+
     End Module
 End Namespace

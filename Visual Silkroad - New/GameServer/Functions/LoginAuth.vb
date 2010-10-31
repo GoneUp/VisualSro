@@ -32,7 +32,7 @@
             Dim password As String = packet.String(packet.Word)
 
             'Checking
-            Dim UserIndex As Integer = GameServer.DatabaseCore.GetUserWithID(name)
+            Dim UserIndex As Integer = DatabaseCore.GetUserWithAccName(name)
             Dim sock As Net.Sockets.Socket = GameServer.ClientList.GetSocket(index_)
             Dim endpoint = sock.RemoteEndPoint
             Dim split1 As String() = endpoint.ToString.Split(":")

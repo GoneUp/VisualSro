@@ -709,6 +709,7 @@
             Server.Send(writer.GetBytes, Index_)
 
             OnStatsPacket(Index_)
+            OnSendSilks(Index_)
 
         End Sub
 

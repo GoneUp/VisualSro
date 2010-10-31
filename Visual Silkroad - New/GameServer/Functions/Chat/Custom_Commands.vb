@@ -65,6 +65,19 @@
                 If IsNumeric(tmp(1)) Then
                     Functions.SpawnNPC(tmp(1), Functions.PlayerData(Index_).Position)
                 End If
+
+
+            ElseIf Msg.StartsWith("\\silk") Then
+                Dim tmp As String() = Msg.Split(" ")
+                If IsNumeric(tmp(1)) Then
+                    Dim UserIndex As Integer = DatabaseCore.GetUserWithAccID(Functions.PlayerData(Index_).AccountID)
+                    Dim user = DatabaseCore.Users(UserIndex)
+                    user.Silk += tmp(1)
+                    DatabaseCore.Users(UserIndex) = user
+                    DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", DatabaseCore.Users(UserIndex).Silk, Functions.PlayerData(Index_).AccountID))
+                    Functions.OnSendSilks(Index_)
+                End If
+
             End If
 
 

@@ -8,12 +8,12 @@ Namespace GameServer
         Public Shared Logpackets As Boolean = False
 
         Private Shared Sub db_OnConnectedToDatabase()
-            Commands.WriteLog("Connected to database at: " & DateTime.Now.ToString())
+            GameServer.Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
 
         End Sub
 
         Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
-            Commands.WriteLog("Database error: " & ex.Message & " Command: " & command)
+            GameServer.Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
         End Sub
 
         Shared Sub Main()
@@ -34,14 +34,14 @@ Namespace GameServer
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
             Console.Title = "GAMESERVER ALPHA"
-            Commands.WriteLog("Starting Agent Server")
+            GameServer.Log.WriteSystemLog("Starting Agent Server")
             DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
             Server.ip = "78.111.78.27"
             Server.port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
-            Commands.WriteLog("Started Server. Loading Data now.")
+            GameServer.Log.WriteSystemLog("Started Server. Loading Data now.")
 
             Dim theard As New Threading.Thread(AddressOf GameServer.DatabaseCore.UpdateData)
             theard.Start()
@@ -50,7 +50,7 @@ Namespace GameServer
             LoadSettings()
             LoadTimers(Server.MaxClients)
 
-            Commands.WriteLog("Inital Loding complete!")
+            GameServer.Log.WriteSystemLog("Inital Loding complete!")
 
 read:
             Dim msg As String = Console.ReadLine()
@@ -61,7 +61,7 @@ read:
         End Sub
 
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-            Commands.WriteLog("Client Connected : " & ip)
+            GameServer.Log.WriteSystemLog("Client Connected : " & ip)
             Server.OnlineClient += 1
 
             Dim packet As New PacketWriter
@@ -88,7 +88,7 @@ read:
 
                 Dim packet As New PacketReader(newbuff)
                 If Logpackets = True Then
-                    PacketLog.LogPacket(newbuff, False)
+                    Log.LogPacket(newbuff, False)
                 End If
 
                 Parser.Parse(packet, index_)
@@ -99,11 +99,11 @@ read:
         End Sub
 
         Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
-            Commands.WriteLog("Server Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index) '-1 = on client connect + -2 = on server start
+            GameServer.Log.WriteSystemLog("Server Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index) '-1 = on client connect + -2 = on server start
         End Sub
 
         Private Shared Sub Server_OnServerStarted(ByVal time As String)
-            Commands.WriteLog("Server Started: " & time)
+            GameServer.Log.WriteSystemLog("Server Started: " & time)
         End Sub
 
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)

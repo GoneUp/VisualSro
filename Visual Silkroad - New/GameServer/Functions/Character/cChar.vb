@@ -83,9 +83,8 @@
     Sub AddItemsToStats(ByVal Index_ As Integer)
         For i = 0 To 12
             Dim _item As cInvItem = GameServer.Functions.Inventorys(Index_).UserItems(i)
-
             If _item.Pk2Id <> 0 Then
-                Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim _refitem As cItem = GameServer.GetItemByID(_item.Pk2Id)
 
                 If _refitem.CLASS_A = 1 Then
                     'Is a Equip

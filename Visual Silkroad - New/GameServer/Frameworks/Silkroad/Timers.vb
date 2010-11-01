@@ -11,7 +11,7 @@ Namespace GameServer
         Public SitUpTimer As Timer() = New Timer(14999) {}
 
         Public Sub LoadTimers(ByVal TimerCount As Integer)
-            WriteLog("Loading Timers...")
+            Log.WriteSystemLog("Loading Timers...")
 
             Try
                 ReDim PlayerAttack(TimerCount), MonsterMovement(TimerCount), MonsterDeath(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
@@ -28,7 +28,7 @@ Namespace GameServer
             Catch ex As Exception
 
             End Try
-            WriteLog("Timers loaded!")
+            Log.WriteSystemLog("Timers loaded!")
         End Sub
 
         Public Sub AttackTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)

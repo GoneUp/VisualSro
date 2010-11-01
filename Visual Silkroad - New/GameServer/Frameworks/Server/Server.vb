@@ -34,7 +34,7 @@ Namespace GameServer
                 Else
                     'More then 1500 Sockets
                     sock.Disconnect(False)
-                    WriteLog("Socket Stack Full!")
+                    Log.WriteSystemLog("Socket Stack Full!")
                 End If
 
             Catch exception As Exception
@@ -85,7 +85,7 @@ Namespace GameServer
                     End If
                 End Try
             Else
-                Commands.WriteLog(Buffer.ToString)
+                Log.WriteSystemLog(Buffer.ToString)
             End If
         End Sub
 
@@ -94,7 +94,7 @@ Namespace GameServer
             ClientList.GetSocket(index).Send(buff)
 
             If GameServer.Program.Logpackets = True Then
-                PacketLog.LogPacket(buff, True)
+                Log.LogPacket(buff, True)
             End If
         End Sub
 

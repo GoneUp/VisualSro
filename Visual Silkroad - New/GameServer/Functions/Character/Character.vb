@@ -158,22 +158,22 @@
 			If model >= 1907 And model <= 1932 = False And model >= 14717 And model <= 14743 = False Then
 				'Wrong Model Code! 
 				GameServer.Server.Dissconnect(Index_)
-				Commands.WriteLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
-			End If
+                Log.WriteSystemLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
+            End If
 
-			Dim _refitems(4) As cItem
-			_refitems(1) = GetItemByID(_items(1))
-			_refitems(2) = GetItemByID(_items(2))
-			_refitems(3) = GetItemByID(_items(3))
-			_refitems(4) = GetItemByID(_items(4))
+            Dim _refitems(4) As cItem
+            _refitems(1) = GetItemByID(_items(1))
+            _refitems(2) = GetItemByID(_items(2))
+            _refitems(3) = GetItemByID(_items(3))
+            _refitems(4) = GetItemByID(_items(4))
 
-			For i = 1 To 4
-				If _refitems(i).ITEM_TYPE_NAME.EndsWith("_DEF") = False Then
-					GameServer.Server.Dissconnect(Index_)
-					Commands.WriteLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
-				End If
-				Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
-			Next
+            For i = 1 To 4
+                If _refitems(i).ITEM_TYPE_NAME.EndsWith("_DEF") = False Then
+                    GameServer.Server.Dissconnect(Index_)
+                    Log.WriteSystemLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
+                End If
+                Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
+            Next
 
 			'Creation
 			Dim writer As New PacketWriter

@@ -5,26 +5,26 @@
         Select Case msg
 
             Case "/info"
-                Commands.WriteLog("This Emulator is from GoneUp. ")
-                Commands.WriteLog("Specical Thanks to:")
-                Commands.WriteLog("Drew Benton")
-                Commands.WriteLog("manneke for the great help")
-                Commands.WriteLog("Windrius for the Framework.")
-                Commands.WriteLog("SREmu Team")
-                Commands.WriteLog("Dickernoob for CSREmu")
-                Commands.WriteLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
+                LoginServer.Log.WriteSystemLog("This Emulator is from GoneUp. ")
+                LoginServer.Log.WriteSystemLog("Specical Thanks to:")
+                LoginServer.Log.WriteSystemLog("Drew Benton")
+                LoginServer.Log.WriteSystemLog("manneke for the great help")
+                LoginServer.Log.WriteSystemLog("Windrius for the Framework.")
+                LoginServer.Log.WriteSystemLog("SREmu Team")
+                LoginServer.Log.WriteSystemLog("Dickernoob for CSREmu")
+                LoginServer.Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
             Case "/help"
-                Commands.WriteLog("Commands: ")
-                Commands.WriteLog("/info for the credits")
-                Commands.WriteLog("/packets to enable packetlog")
-                Commands.WriteLog("/clear")
+                LoginServer.Log.WriteSystemLog("Commands: ")
+                LoginServer.Log.WriteSystemLog("/info for the credits")
+                LoginServer.Log.WriteSystemLog("/packets to enable packetLoginServer.Log")
+                LoginServer.Log.WriteSystemLog("/clear")
 
             Case "/packets"
 
                 LoginServer.Program.Logpackets = True
-                Commands.WriteLog("Log Packets started!")
+                LoginServer.Log.WriteSystemLog("LoginServer.Log Packets started!")
 
 
             Case "/clear"
@@ -35,16 +35,4 @@
 
 
     End Sub
-
-    Public Sub WriteLog(ByVal Message As String)
-        Dim i = Date.Now
-        Dim writer As New IO.StreamWriter(System.AppDomain.CurrentDomain.BaseDirectory & (String.Format("{0}-{1}-{2}_Log.txt", i.Day, i.Month, i.Year)), True)
-        writer.WriteLine(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
-        writer.Close()
-
-        Console.WriteLine(Message)
-    End Sub
-
-
-
 End Module

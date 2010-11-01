@@ -16,7 +16,7 @@
                 End If
 
             Catch ex As Exception
-                WriteLog("[BAN_CHECK][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
+                Log.WriteSystemLog("[BAN_CHECK][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
             End Try
         End Sub
 
@@ -31,7 +31,7 @@
                 Database.UpdateData(String.Format("UPDATE users SET banned='1', bantime = '{0}', banreason = 'You got banned for 10 Minutes because of 5 failed Logins.' where id='{1}'", time, user.AccountId))
                 Users(UserIndex) = user
             Catch ex As Exception
-                WriteLog("[BAN_USER][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
+                Log.WriteSystemLog("[BAN_USER][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
             End Try
         End Sub
 

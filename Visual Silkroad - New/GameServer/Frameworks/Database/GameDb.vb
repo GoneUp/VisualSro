@@ -37,9 +37,9 @@
                 GameDbUpdate.Interval = 20000 '20 secs
 
                 If First = False Then
-                    Commands.WriteLog("Execute all saved Querys. This can take some Time.")
+                    Log.WriteSystemLog("Execute all saved Querys. This can take some Time.")
                     ExecuteSavedQuerys()
-                    Commands.WriteLog("Query saving done. Loading Playerdata from DB now.")
+                    Log.WriteSystemLog("Query saving done. Loading Playerdata from DB now.")
 
                     GetCharData() 'Only Update for the First Time! 
                     GetItemData()
@@ -54,7 +54,7 @@
                 GameDbUpdate.Start()
 
             Catch ex As Exception
-                Commands.WriteLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+                Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
             End Try
         End Sub
 
@@ -67,7 +67,7 @@
                 Next
                 IO.File.Delete(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
             Catch ex As Exception
-                'Commands .WriteLog ("Database Error: " & ex.Message)
+                'Log .WriteLog ("Database Error: " & ex.Message)
             End Try
 
         End Sub

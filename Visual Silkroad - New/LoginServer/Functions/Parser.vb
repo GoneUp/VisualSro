@@ -5,7 +5,7 @@ Namespace LoginServer
 
     Public Class Parser
 
-        Public Shared Sub Parse(ByVal packet As LoginServer.PacketReader, ByVal index As Integer)
+        Public Shared Sub Parse(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
             Dim length As UInteger = packet.Word
             Dim opcode As UInteger = packet.Word
             Dim security As UInteger = packet.Word
@@ -16,23 +16,23 @@ Namespace LoginServer
                 Case ClientOpcodes.Handshake  'Client accepts
 
                 Case ClientOpcodes.InfoReq  'GateWay
-                    Functions.GateWay(index)
+                    Functions.GateWay(Index_)
 
                 Case ClientOpcodes.PatchReq  'Client sends Patch Info
-                    Functions.ClientInfo(packet)
-                    Functions.SendPatchInfo(index)
+                    Functions.ClientInfo(packet, Index_)
+                    Functions.SendPatchInfo(Index_)
 
                 Case ClientOpcodes.LauncherReq
-                    Functions.SendLauncherInfo(index)
+                    Functions.SendLauncherInfo(Index_)
 
                 Case ClientOpcodes.ServerListReq
-                    Functions.SendServerList(index)
+                    Functions.SendServerList(Index_)
 
                 Case ClientOpcodes.Login
-                    Functions.HandleLogin(packet, index)
+                    Functions.HandleLogin(packet, Index_)
 
                 Case Else
-                    Commands.WriteLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
+                    Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
             End Select
         End Sub
     End Class

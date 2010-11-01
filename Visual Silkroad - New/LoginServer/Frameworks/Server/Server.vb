@@ -60,7 +60,7 @@ Namespace LoginServer
                     RaiseEvent OnServerError(exception2, index)
                 End Try
             Else
-                Commands.WriteLog(buffer.ToString)
+                Log.WriteSystemLog(buffer.ToString)
             End If
         End Sub
 
@@ -70,7 +70,7 @@ Namespace LoginServer
 
             If LoginServer.Program.Logpackets = True Then
 
-                PacketLog.LogPacket(buff, True)
+                Log.LogPacket(buff, True)
             End If
         End Sub
 

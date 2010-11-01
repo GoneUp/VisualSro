@@ -16,6 +16,10 @@
     Public ServerMasteryCap As UInteger = 300
     Public ServerRange As UInteger = 750
 
+    Public LogGM As Boolean = False
+    Public LogMall As Boolean = False
+    Public LogChat As Boolean = False
+
     Public Sub LoadSettings()
         'TODO: Load these Settings from a Config File
         PlayerStartPos.XSector = 168
@@ -43,6 +47,10 @@
         ServerLevelCap = 100
         ServerMasteryCap = 300
         ServerRange = 3000
+
+        LogChat = True
+        LogGM = True
+        LogMall = True
     End Sub
 
 End Module

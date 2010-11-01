@@ -203,12 +203,12 @@ Namespace GameServer
             Dim reader As MySqlDataReader = Nothing
             Dim command As New MySqlCommand("SHOW TABLES", connection)
             Try
-                Commands.WriteLog("****** Tables ******")
+                Log.WriteSystemLog("****** Tables ******")
                 reader = command.ExecuteReader()
                 Do While reader.Read()
-                    Commands.WriteLog(reader.GetString(0))
+                    Log.WriteSystemLog(reader.GetString(0))
                 Loop
-                Commands.WriteLog("********************")
+                Log.WriteSystemLog("********************")
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception, command.CommandText)
             Finally

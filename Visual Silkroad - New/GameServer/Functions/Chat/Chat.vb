@@ -47,6 +47,10 @@
                 writer.Word(messagelength)
                 writer.UString(message)
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
+
+                If LogChat Then
+                    Log.WriteGameLog(Index_, "Chat", "Public", "Message: " & message)
+                End If
             End If
         End Sub
 
@@ -89,6 +93,9 @@
 
                 Server.Send(writer.GetBytes, senderindex)
 
+                If LogChat Then
+                    Log.WriteGameLog(Index_, "Chat", "Whisper", String.Format("Sender: {0} Message: {1}", sender, message))
+                End If
             Else
                 'Opposite not online
                 writer.Create(ServerOpcodes.Chat_Accept)
@@ -137,8 +144,11 @@
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
 
                 Custom.CheckForCoustum(message, Index_)
-            End If
 
+                If LogChat Then
+                    Log.WriteGameLog(Index_, "Chat", "GM", "Message: " & message)
+                End If
+            End If
 
         End Sub
 
@@ -150,6 +160,11 @@
                 Dim message As String = System.Text.Encoding.Unicode.GetString(bmessage)
 
                 SendNotice(message)
+
+                If LogChat Then
+                    Log.WriteGameLog(Index_, "Chat", "Notice", "Message: " & message)
+                End If
+
             End If
         End Sub
         Public Sub SendNotice(ByVal message As String)
@@ -170,6 +185,10 @@
             writer.Word(Message.Length)
             writer.UString(Message)
             Server.SendToAllIngame(writer.GetBytes)
+
+            If LogChat Then
+                Log.WriteGameLog(Index_, "Chat", "Global", "Message: " & Message)
+            End If
         End Sub
 
         ''' <summary>

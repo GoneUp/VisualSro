@@ -2,13 +2,12 @@
     Module Login
 
 
-        Public Sub ClientInfo(ByVal packet As LoginServer.PacketReader)
+        Public Sub ClientInfo(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
             Dim locale As Byte = packet.Byte
             Dim clientname As String = packet.String(packet.Word)
             Dim version As UInt32 = packet.DWord
 
-            Debug.Print(String.Format("[Client Info][Locale: {0}][Name: {1}][Version: {2}]", locale, clientname, version))
-
+            Log.WriteGameLog(Index_, "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", locale, clientname, version))
         End Sub
 
         Public Sub GateWay(ByVal index As Integer)
@@ -102,7 +101,7 @@
 
         End Sub
 
-        Public Sub HandleLogin(ByVal packet As LoginServer.PacketReader, ByVal index As Integer)
+        Public Sub HandleLogin(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
 
             Dim LoginMethod As Byte = packet.Byte()
             Dim ID As String = packet.String(packet.Word)
@@ -117,7 +116,7 @@
                 'User exestiert nicht == We register a User
 
                 If Settings.AutoRegister = True Then
-                    RegisterUser(ID, Pw)
+                    RegisterUser(Index_, ID, Pw)
                     Dim reason As String = String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw)
                     writer.Byte(2) 'failed
                     writer.Byte(2) 'gebannt
@@ -143,7 +142,7 @@
                     writer.Byte(0)
                 End If
 
-                Server.Send(writer.GetBytes, index)
+                Server.Send(writer.GetBytes, Index_)
             Else
                 CheckBannTime(UserIndex)
 
@@ -161,7 +160,7 @@
                     writer.Word(Users(UserIndex).BannTime.Minute) 'tag
                     writer.DWord(Users(UserIndex).BannTime.Millisecond) 'tag
 
-                    Server.Send(writer.GetBytes, index)
+                    Server.Send(writer.GetBytes, Index_)
 
 
                 ElseIf Users(UserIndex).Pw <> Pw Then
@@ -176,7 +175,7 @@
                     writer.Byte(1)
                     writer.DWord(MaxFailedLogins) 'Max Failed Logins
                     writer.DWord(user.FailedLogins) 'number of falied logins
-                    Server.Send(writer.GetBytes, index)
+                    Server.Send(writer.GetBytes, Index_)
 
                     If user.FailedLogins >= MaxFailedLogins Then
                         user.FailedLogins = 0
@@ -194,22 +193,24 @@
                     If (Servers(ServerIndex).AcUs + 1) >= Servers(ServerIndex).MaxUs Then
                         writer.Byte(4)
                         writer.Byte(2) 'Server traffic... 
-                        Server.Send(writer.GetBytes, index)
+                        Server.Send(writer.GetBytes, Index_)
 
                     Else
                         'Sucess!
                         writer.Byte(1)
-                        writer.DWord(GetKey(index))
+                        writer.DWord(GetKey(Index_))
                         writer.Word(Servers(ServerIndex).IP.Length)
                         writer.String(Servers(ServerIndex).IP)
                         writer.Word(Servers(ServerIndex).Port)
-                        Server.Send(writer.GetBytes, index)
+                        Server.Send(writer.GetBytes, Index_)
+
+                        Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", ID, Servers(ServerIndex).Name))
                     End If
                 End If
             End If
         End Sub
 
-        Private Sub RegisterUser(ByVal Name As String, ByVal Password As String)
+        Private Sub RegisterUser(ByVal Name As String, ByVal Password As String, ByVal Index_ As Integer)
             Database.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmpUser As New UserArray
@@ -224,6 +225,8 @@
             tmpUser.BannTime = Date.Now.AddMinutes(2)
 
             Users.Add(tmpUser)
+
+            Log.WriteGameLog(Index_, "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
         End Sub
 
         Private Function GetKey(ByVal Index_ As Integer) As UInt32

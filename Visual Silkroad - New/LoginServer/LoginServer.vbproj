@@ -83,6 +83,8 @@
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Frameworks\Database\LoginDb.vb" />
+    <Compile Include="Frameworks\Log\GameLog.vb" />
+    <Compile Include="Frameworks\Log\SystemLog.vb" />
     <Compile Include="Frameworks\Packets\PacketLog.vb" />
     <Compile Include="Frameworks\Server\ClientList.vb" />
     <Compile Include="Frameworks\Database\Database.vb" />

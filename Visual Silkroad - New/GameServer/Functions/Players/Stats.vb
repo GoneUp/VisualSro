@@ -89,15 +89,15 @@
                 PlayerData(Index_).Attributes -= 1
                 If PlayerData(Index_).Strength < UShort.MaxValue Then 'Prevent Errors
                     PlayerData(Index_).Strength += 1
+
+                    PlayerData(Index_).SetCharGroundStats()
+                    OnStatsPacket(Index_)
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Str_Up)
+                    writer.Byte(1)
+                    Server.Send(writer.GetBytes, Index_)
                 End If
-
-                PlayerData(Index_).SetCharGroundStats()
-                OnStatsPacket(Index_)
-
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Str_Up)
-                writer.Byte(1)
-                Server.Send(writer.GetBytes, Index_)
             End If
         End Sub
 
@@ -107,15 +107,15 @@
                 PlayerData(Index_).Attributes -= 1
                 If PlayerData(Index_).Intelligence < UShort.MaxValue Then 'Prevent Errors
                     PlayerData(Index_).Intelligence += 1
+
+                    PlayerData(Index_).SetCharGroundStats()
+                    OnStatsPacket(Index_)
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Int_Up)
+                    writer.Byte(1)
+                    Server.Send(writer.GetBytes, Index_)
                 End If
-
-                PlayerData(Index_).SetCharGroundStats()
-                OnStatsPacket(Index_)
-
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Int_Up)
-                writer.Byte(1)
-                Server.Send(writer.GetBytes, Index_)
             End If
         End Sub
 

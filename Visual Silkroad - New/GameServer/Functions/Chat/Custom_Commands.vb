@@ -1,7 +1,7 @@
 ﻿Namespace GameServer.Custom
-    Module Costum_Commands
+    Module Costum_Log
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
-            'This Function is for additional Commands from a GM
+            'This Function is for additional Log from a GM
             Dim writer As New PacketWriter
 
 
@@ -80,8 +80,9 @@
 
             End If
 
-
-
+            If LogGM Then
+                Log.WriteGameLog(Index_, "GM", "Custom_Command", String.Format("Command: " & Msg))
+            End If
             Functions.OnStatsPacket(Index_)
         End Sub
 

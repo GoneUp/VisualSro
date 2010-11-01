@@ -8,12 +8,12 @@ Namespace LoginServer
 
 
         Private Shared Sub db_OnConnectedToDatabase()
-            Commands.WriteLog("Connected to database at: " & DateTime.Now.ToString())
+            Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
 
         End Sub
 
         Private Shared Sub db_OnDatabaseError(ByVal ex As Exception)
-            Commands.WriteLog("Database error: " & ex.Message)
+            Log.WriteSystemLog("Database error: " & ex.Message)
         End Sub
 
         Shared Sub Main()
@@ -34,7 +34,7 @@ Namespace LoginServer
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
             Console.Title = "LOGINSERVER ALPHA"
-            Commands.WriteLog("Starting Server")
+            Log.WriteSystemLog("Starting Server")
             Database.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
             Server.ip = "78.111.78.27"
             Server.port = 15779 'Loginserver
@@ -54,7 +54,7 @@ read:
         End Sub
 
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-            Commands.WriteLog("Client Connected : " & ip)
+            Log.WriteSystemLog("Client Connected : " & ip)
             Server.OnlineClient += 1
 
             Dim pack As New LoginServer.PacketWriter
@@ -82,7 +82,7 @@ read:
 
                 Dim packet As New PacketReader(newbuff)
                 If Logpackets = True Then
-                    PacketLog.LogPacket(newbuff, False)
+                    Log.LogPacket(newbuff, False)
                 End If
 
                 Parser.Parse(packet, index_)
@@ -93,11 +93,11 @@ read:
         End Sub
 
         Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
-            Commands.WriteLog("Server Error: " & ex.Message & " Index: " & index) '-1 = on client connect + -2 = on server start
+            Log.WriteSystemLog("Server Error: " & ex.Message & " Index: " & index) '-1 = on client connect + -2 = on server start
         End Sub
 
         Private Shared Sub Server_OnServerStarted(ByVal time As String)
-            Commands.WriteLog("Server Started: " & time)
+            Log.WriteSystemLog("Server Started: " & time)
         End Sub
 
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)

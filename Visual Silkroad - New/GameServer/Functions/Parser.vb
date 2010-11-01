@@ -123,7 +123,7 @@ Namespace GameServer
                     GameServer.Functions.OnExchangeAbort(packet, index)
 
                 Case Else
-                    Commands.WriteLog("opCode: " & opcode & " Packet : " & BitConverter.ToString(packet.ByteArray(length), 0, length))
+                    Log.WriteSystemLog("opCode: " & opcode & " Packet : " & BitConverter.ToString(packet.ByteArray(length), 0, length))
             End Select
         End Sub
 

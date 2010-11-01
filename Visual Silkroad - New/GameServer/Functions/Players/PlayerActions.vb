@@ -54,7 +54,7 @@
                     End If
 
                 Case Else
-                    WriteLog("UNKNOWN ACTION ID: " & action)
+                    Log.WriteSystemLog("UNKNOWN ACTION ID: " & action)
             End Select
         End Sub
 

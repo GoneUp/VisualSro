@@ -1,0 +1,23 @@
+Litte Documentation about the Log system.
+
+The log system from Visual Silkroad is for a detailed documenation of game processes. With this system it will be more 
+easy to find people who use and abuse bugs. Also it is to detect for ex. spammers or scammers with the chat log. 
+And when it produces to much data for the db you can disable it easy.
+
+
+Fields:
+id - Autofilled
+time - Autofilled
+ip_adress - To ident the User 
+charname - useful for ingame things
+action - Main Action Identifier:
+Types: Client_Connect, Register, Login, GM, Chat, Item_Mall, Exchange
+
+action2 - SubTypes:
+Client_Connect (None);
+Register (None); 
+Login (None); 
+GM (Item_Create, Custom_Command, Ban, Monster_Spawn, Unautorized); 
+Chat (Public, GM, Party, Guild, Whisper, Notice)
+Item_Mall: (Buy)
+Exchange: (Traded Items)

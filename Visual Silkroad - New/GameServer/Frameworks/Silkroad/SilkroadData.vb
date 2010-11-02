@@ -7,31 +7,43 @@
 
         Public RefTmpSkills As New List(Of tmpSkill_)
         Public RefSkills As New List(Of Skill_)
+        Public RefObjects As New List(Of Object_)
+        Public RefMallItems As New List(Of MallPackage_)
+        Public RefReversePoints As New List(Of ReversePoint_)
+        Public RefTeleportPoints As New List(Of TeleportPoint_)
 
         Public Sub DumpDataFiles()
 
             Try
+                Dim base_path As String = System.AppDomain.CurrentDomain.BaseDirectory
+                Dim time As Date = Date.Now
+
                 DumpItemFiles()
                 Log.WriteSystemLog("Loaded " & RefItems.Count & " Ref-Items.")
 
-                DumpGoldData(System.AppDomain.CurrentDomain.BaseDirectory & "data\levelgold.txt")
+                DumpGoldData(base_path & "data\levelgold.txt")
                 Log.WriteSystemLog("Loaded " & RefGoldData.Count & " Ref-Goldlevels.")
 
-                DumpLevelData(System.AppDomain.CurrentDomain.BaseDirectory & "data\leveldata.txt")
+                DumpLevelData(base_path & "data\leveldata.txt")
                 Log.WriteSystemLog("Loaded " & RefLevelData.Count & " Ref-Levels.")
 
                 DumpSkillFiles()
                 Log.WriteSystemLog("Loaded " & RefSkills.Count & " Ref-Skills.")
 
                 DumpObjectFiles()
-                Log.WriteSystemLog("Loaded " & Objects.Count & " Ref-Objects.")
+                Log.WriteSystemLog("Loaded " & RefObjects.Count & " Ref-Objects.")
 
-                DumpReversePoints(System.AppDomain.CurrentDomain.BaseDirectory & "data\reverse_points.txt")
+                DumpReversePoints(base_path & "data\reverse_points.txt")
                 Log.WriteSystemLog("Loaded " & RefReversePoints.Count & " Reverse-Points.")
 
-                DumpItemMall(System.AppDomain.CurrentDomain.BaseDirectory & "data\refscrapofpackageitem.txt", System.AppDomain.CurrentDomain.BaseDirectory & "data\refpricepolicyofitem.txt")
+                DumpItemMall(base_path & "data\refscrapofpackageitem.txt", base_path & "data\refpricepolicyofitem.txt")
                 Log.WriteSystemLog("Loaded " & RefMallItems.Count & " ItemMall-Items.")
 
+                DumpTeleportBuildings(base_path & "data\teleportbuilding.txt")
+                DumpTeleportData(base_path & "data\teleportdata.txt", base_path & "data\teleportlink.txt")
+                Log.WriteSystemLog("Loaded " & RefTeleportPoints.Count & " Teleport-Points.")
+
+                Log.WriteSystemLog("Loading took " & DateDiff(DateInterval.Second, time, Date.Now) & " Seconds.")
 
             Catch ex As Exception
                 Log.WriteSystemLog("Error at Loading Data! Message: " & ex.Message)
@@ -344,8 +356,7 @@
             Public Id As UInteger
             Public Name As String
             Public OtherName As String
-            Public Type As Byte
-            Public Type1 As Byte
+            Public Type As Type_
             Public Speed As Single
             Public Level As Byte
             Public Hp As UInteger
@@ -364,9 +375,18 @@
             Public Skill7 As UInteger
             Public Skill8 As UInteger
             Public Skill9 As UInteger
+
+            'These Fileds are for Teleports
+            Public T_Position As Position
+
+
+            Enum Type_
+                Normal = 0
+                Teleport = 1
+            End Enum
         End Structure
 
-        Public Objects As New List(Of Object_)
+
 
 
         Public Sub DumpObjectFiles()
@@ -384,8 +404,7 @@
                 tmp.Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(2)
                 tmp.OtherName = tmpString(3)
-                tmp.Type = 1
-                tmp.Type1 = 1
+                tmp.Type = Object_.Type_.Normal
                 tmp.Speed = Convert.ToSingle(tmpString(50))
                 tmp.Level = Convert.ToByte(tmpString(57))
                 tmp.Hp = Convert.ToUInt32(tmpString(59))
@@ -404,14 +423,14 @@
                 tmp.Skill7 = Convert.ToUInt32(tmpString(90))
                 tmp.Skill8 = Convert.ToUInt32(tmpString(91))
                 tmp.Skill9 = Convert.ToUInt32(tmpString(92))
-                Objects.Add(tmp)
+                RefObjects.Add(tmp)
             Next
         End Sub
 
         Public Function GetObjectById(ByVal ItemId As UInteger) As Object_
-            For i As Integer = 0 To Objects.Count - 1
-                If Objects(i).Id = ItemId Then
-                    Return Objects(i)
+            For i As Integer = 0 To RefObjects.Count - 1
+                If RefObjects(i).Id = ItemId Then
+                    Return RefObjects(i)
                 End If
             Next
             Return New Object_()
@@ -421,8 +440,6 @@
             Public TeleportID As UInteger
             Public Position As Position
         End Structure
-
-        Public RefReversePoints As New List(Of ReversePoint_)
 
         Public Sub DumpReversePoints(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
@@ -455,8 +472,6 @@
             Public Price As UInteger
         End Structure
 
-        Public RefMallItems As New List(Of MallPackage_)
-
         Public Sub DumpItemMall(ByVal FileAmoutPath As String, ByVal FilePricePath As String)
             Dim lines As String() = IO.File.ReadAllLines(FileAmoutPath)
             For i As Integer = 0 To lines.Length - 1
@@ -487,5 +502,80 @@
             Next
             Return New MallPackage_
         End Function
+
+
+        Public Sub DumpTeleportBuildings(ByVal path As String)
+            Dim lines As String() = IO.File.ReadAllLines(path)
+            For i As Integer = 0 To lines.Length - 1
+                Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                Dim obj As New Object_
+
+                obj.Id = tmpString(1)
+                obj.Name = tmpString(2)
+
+                Dim area As Integer = tmpString(41)
+                obj.T_Position = New Position
+                obj.T_Position.XSector = Convert.ToByte((area).ToString("X4").Substring(2, 2), 16)
+                obj.T_Position.YSector = Convert.ToByte((area).ToString("X4").Substring(0, 2), 16)
+
+                obj.T_Position.X = tmpString(43)
+                obj.T_Position.Z = tmpString(44)
+                obj.T_Position.Y = tmpString(45)
+
+                RefObjects.Add(obj)
+            Next
+        End Sub
+
+        Structure TeleportPoint_
+            Public Number As Integer
+            Public Name As String
+            Public Pk2ID As UInteger
+            Public ToPos As Position
+            Public Cost As UInteger
+            Public MinLevel As UInteger
+            Public MaxLevel As UInteger
+        End Structure
+
+        Public Sub DumpTeleportData(ByVal Path_Data As String, ByVal Path_Link As String)
+            Dim lines As String() = IO.File.ReadAllLines(Path_Data)
+            For i As Integer = 0 To lines.Length - 1
+
+                Try
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                    Dim obj As New TeleportPoint_
+
+                    obj.Number = tmpString(1)
+                    obj.Name = tmpString(2)
+
+                    Dim area As Integer = tmpString(5)
+                    obj.ToPos = New Position
+                    obj.ToPos.XSector = Convert.ToByte((area).ToString("X4").Substring(2, 2), 16)
+                    obj.ToPos.YSector = Convert.ToByte((area).ToString("X4").Substring(0, 2), 16)
+
+                    obj.ToPos.X = tmpString(6)
+                    obj.ToPos.Z = tmpString(7)
+                    obj.ToPos.Y = tmpString(8)
+
+
+
+                    Dim link_lines As String() = IO.File.ReadAllLines(Path_Link)
+                    For b As Integer = 0 To link_lines.Length - 1
+                        Dim tmpString2 As String() = link_lines(b).Split(ControlChars.Tab)
+                        If tmpString2(1) = obj.Number Then
+                            obj.Cost = tmpString2(3)
+                            obj.MinLevel = tmpString2(7)
+                            obj.MaxLevel = tmpString2(8)
+                            Exit For
+                        End If
+                    Next
+
+
+                    RefTeleportPoints.Add(obj)
+                Catch ex As Exception
+
+                End Try
+            Next
+        End Sub
+
     End Module
 End Namespace

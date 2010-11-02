@@ -17,7 +17,7 @@
                 Case 24 'Buy From Item Mall
                     OnBuyItemFromMall(packet, index_)
                 Case Else
-                    Debug.Print("[INVENTORY][TAG: " & type & "]")
+                    Console.WriteLine("[INVENTORY][TAG: " & type & "]")
             End Select
         End Sub
         Public Sub OnNormalMove(ByVal packet As PacketReader, ByVal index_ As Integer)

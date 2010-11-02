@@ -75,7 +75,13 @@ Namespace GameServer
 
                 Case ClientOpcodes.Target
                     GameServer.Functions.OnSelectObject(packet, index)
+                    '=======NPC========
 
+                Case ClientOpcodes.Npc_Chat
+                    GameServer.Functions.OnNpcChatSelect(packet, index)
+
+                Case ClientOpcodes.Npc_Chat_Left
+                    GameServer.Functions.OnNpcChatLeft(packet, index)
 
                     '=======ITEMS======
                 Case ClientOpcodes.Alchemy

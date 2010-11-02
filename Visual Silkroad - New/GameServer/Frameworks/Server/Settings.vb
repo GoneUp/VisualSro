@@ -15,6 +15,7 @@
     Public ServerLevelCap As Byte = 100
     Public ServerMasteryCap As UInteger = 300
     Public ServerRange As UInteger = 750
+    Public ServerTaxRate As UInt16 = 0
 
     Public LogGM As Boolean = False
     Public LogMall As Boolean = False
@@ -47,6 +48,7 @@
         ServerLevelCap = 100
         ServerMasteryCap = 300
         ServerRange = 3000
+        ServerTaxRate = 1337
 
         LogChat = True
         LogGM = True

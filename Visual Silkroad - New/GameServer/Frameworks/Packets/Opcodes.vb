@@ -34,6 +34,9 @@
         Scroll_Cancel = &H705B
         Hotkey_Update = &H7158
 
+        Npc_Chat = &H7046
+        Npc_Chat_Left = &H704B
+
         Exchange_Invite = &H7081
         Exchange_Invite_Accept = &H3080
         Exchange_Confirm = &H7082
@@ -83,6 +86,9 @@
 		Emotion = &H3091
         HelperIcon = &HB402
         Silk = &H3153
+
+        Npc_Chat = &HB046
+        Npc_Chat_Left = &HB04B
 
         'Updates
         HP_MP_Update = &H3057

@@ -196,8 +196,7 @@
 
             For i = 0 To NpcList.Count - 1
                 If NpcList(i).UniqueID = ObjectID Then
-                    writer.Create(ServerOpcodes.Target)
-                    writer.Byte(2) 'Fail = Npc Select Not Supported
+                    OnNpcChat(i, Index_)
                     Exit Sub
                 End If
             Next

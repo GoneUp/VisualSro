@@ -83,6 +83,9 @@ Namespace GameServer
                 Case ClientOpcodes.Npc_Chat_Left
                     GameServer.Functions.OnNpcChatLeft(packet, index)
 
+                Case ClientOpcodes.Npc_Teleport
+                    GameServer.Functions.OnNpcTeleport(packet, index)
+
                     '=======ITEMS======
                 Case ClientOpcodes.Alchemy
                     GameServer.Functions.OnAlchemyRequest(packet, index)

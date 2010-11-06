@@ -36,7 +36,7 @@
             writer.Float(npc.Position.Y)
 
             Select Case obj.Type
-                Case Object_.Type_.Normal
+                Case Object_.Type_.Npc
                     writer.Word(npc.Angle)
                     writer.Byte(0)
                     writer.Byte(1)
@@ -65,7 +65,12 @@
             Dim toadd As New cNPC
             toadd.UniqueID = DatabaseCore.GetUnqiueID
             toadd.Pk2ID = npc_.Id
-            toadd.Position = Position
+            If npc_.Type = Object_.Type_.Npc Then
+                toadd.Position = Position
+            ElseIf npc_.Type = Object_.Type_.Teleport Then
+                toadd.Position = npc_.T_Position
+            End If
+
             NpcList.Add(toadd)
             Dim MyIndex As UInteger = NpcList.IndexOf(toadd)
 
@@ -89,7 +94,8 @@
         Public Sub SpawnNPCRange(ByVal Index_ As Integer)
             Dim range As Integer = ServerRange
             For i = 0 To NpcList.Count - 1
-                If CalculateDistance(PlayerData(Index_).Position, NpcList(i).Position) <= ServerRange Then
+                Dim dist = CalculateDistance(PlayerData(Index_).Position, NpcList(i).Position)
+                If dist <= ServerRange Then
                     If PlayerData(Index_).SpawnedNPCs.Contains(i) = False Then
                         Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
                         PlayerData(Index_).SpawnedNPCs.Add(i)
@@ -123,38 +129,48 @@
             writer.Create(ServerOpcodes.Target)
             writer.Byte(1) 'Sucess
             writer.DWord(NpcList(NpcIndex).UniqueID)
-            writer.Byte(0)
 
             Select Case name(2)
                 Case "SMITH"
+                    writer.Byte(0)
                     writer.Byte(&HB)
                     writer.Word(0)
                     writer.Byte(&H80)
                     writer.Byte(0)
                 Case "POTION"
+                    writer.Byte(0)
                     writer.DWord(3)
                     writer.Byte(0)
                 Case "ARMOR"
+                    writer.Byte(0)
                     writer.DWord(9)
                     writer.Byte(0)
                 Case "ACCESSORY"
+                    writer.Byte(0)
                     writer.DWord(1)
                     writer.Byte(0)
                 Case "HORSE"
+                    writer.Byte(0)
                     writer.DWord(1025)
                     writer.Byte(0)
                 Case "WAREHOUSE"
+                    writer.Byte(0)
                     writer.DWord(5)
                     writer.Byte(0)
                 Case "SPECIAL"
+                    writer.Byte(0)
                     writer.DWord(2049)
                     writer.Byte(0)
                 Case "FERRY"
+                    writer.Byte(0)
                     writer.Byte(1)
                     writer.Byte(0)
                     writer.Byte(8)
                     writer.Word(0)
+                Case "GATE"
+                    writer.DWord(192)
                 Case Else
+                    writer.Byte(0)
                     writer.DWord(0)
                     writer.Byte(0)
             End Select
@@ -190,6 +206,22 @@
         End Sub
 
 
+        Public Sub OnNpcTeleport(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim ObjectID As UInteger = packet.DWord
+            packet.Byte()
+            Dim TeleportNumber As Integer = packet.DWord
+            Dim Point_ As TeleportPoint_ = GetTeleportPoint(TeleportNumber)
+
+            PlayerData(Index_).Busy = True
+            PlayerData(Index_).Position = Point_.ToPos
+            PlayerData(Index_).TeleportType = TeleportType_.Npc
+
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
+            writer.Byte(1)
+            Server.Send(writer.GetBytes, Index_)
+        End Sub
+
         Private Function CheckForTax(ByVal Model_Name As String, ByVal writer As PacketWriter)
             Select Case Model_Name
                 Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY", "NPC_KT_SMITH", "NPC_KT_ARMOR", _
@@ -199,5 +231,7 @@
                     writer.Word(ServerTaxRate)
             End Select
         End Function
+
+
     End Module
 End Namespace

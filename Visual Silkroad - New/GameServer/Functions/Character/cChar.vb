@@ -40,6 +40,7 @@
     Public HelperIcon As Byte
     Public ActionFlag As Byte
     Public Busy As Boolean
+
     Public UsedItem As UseItemTypes
     Public UsedItemParameter As Integer
 
@@ -57,6 +58,8 @@
     Public InExchange As Boolean = False
     Public InExchangeWith As Integer = -1
     Public ExchangeID As Integer = -1
+
+    Public TeleportType As TeleportType_
 
 
     Sub SetCharGroundStats()
@@ -134,3 +137,8 @@ Public Structure cHotKey
     Public Slot As UInteger
     Public IconID As UInteger
 End Structure
+
+Public Enum TeleportType_
+    Npc = 0
+    GM = 1
+End Enum

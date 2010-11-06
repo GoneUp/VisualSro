@@ -74,21 +74,34 @@
             writer.Byte(XSec)
             writer.Byte(YSec)
             Server.Send(writer.GetBytes, Index_)
+
+            PlayerData(Index_).TeleportType = TeleportType_.GM
         End Sub
 
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)
             DespawnPlayerTeleport(Index_)
             PlayerData(Index_).Ingame = False
-
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.LoadingStart)
-            Server.Send(writer.GetBytes, Index_)
 
-            OnCharacterInfo(Index_)
 
-            writer = New PacketWriter
-            writer.Create(ServerOpcodes.LoadingEnd)
-            Server.Send(writer.GetBytes, Index_)
+            If PlayerData(Index_).TeleportType = TeleportType_.Npc Then
+                writer.Create(ServerOpcodes.LoadingStart2)
+                writer.Byte(PlayerData(Index_).Position.XSector)
+                writer.Byte(PlayerData(Index_).Position.YSector)
+                Server.Send(writer.GetBytes, Index_)
+
+                OnCharacterInfo(Index_)
+
+            Else
+                writer.Create(ServerOpcodes.LoadingStart)
+                Server.Send(writer.GetBytes, Index_)
+
+                OnCharacterInfo(Index_)
+
+                writer = New PacketWriter
+                writer.Create(ServerOpcodes.LoadingEnd)
+                Server.Send(writer.GetBytes, Index_)
+            End If
 
 
             writer = New PacketWriter
@@ -98,6 +111,8 @@
             writer.Byte(9) 'hours
             writer.Byte(28) 'minute
             Server.Send(writer.GetBytes, Index_)
+
+            PlayerData(Index_).Busy = False
         End Sub
 
         Public Sub OnAngleUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)

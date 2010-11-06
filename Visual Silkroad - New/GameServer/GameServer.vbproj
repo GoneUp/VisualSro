@@ -102,6 +102,7 @@
     <Compile Include="Functions\Character\cCharListing.vb" />
     <Compile Include="Functions\Character\cChar.vb" />
     <Compile Include="Functions\Character\Character.vb" />
+    <Compile Include="Functions\Monster\AutoSpawn.vb" />
     <Compile Include="Functions\Skills\cMastery.vb" />
     <Compile Include="Functions\Chat\Custom_Commands.vb" />
     <Compile Include="Functions\Exchange\cExchange.vb" />

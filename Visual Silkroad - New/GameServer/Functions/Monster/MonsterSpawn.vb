@@ -55,7 +55,7 @@
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((Position.X - player.Position.X) ^ 2 + (Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
+                    Dim distance As Long = CalculateDistance(Position, player.Position)
                     If distance < range Then
                         If PlayerData(refindex).SpawnedNPCs.Contains(MyIndex) = False Then
                             Server.Send(CreateMonsterSpawnPacket(MyIndex), refindex)
@@ -70,13 +70,18 @@
         Public Sub SpawnMobRange(ByVal Index_ As Integer)
             Dim range As Integer = ServerRange
             For i = 0 To MobList.Count - 1
-                If CalculateDistance(PlayerData(Index_).Position, MobList(i).Position) <= ServerRange Then
+                Dim dist As Long = CalculateDistance(PlayerData(Index_).Position, MobList(i).Position)
+                If dist <= ServerRange Then
                     If PlayerData(Index_).SpawnedMonsters.Contains(i) = False Then
                         Server.Send(CreateMonsterSpawnPacket(i), Index_)
                         PlayerData(Index_).SpawnedMonsters.Add(i)
+                        Dim mob_ As cMonster = MobList(i)
                     End If
                 End If
             Next
+
+            Console.WriteLine("MOB:" & PlayerData(Index_).SpawnedMonsters.Count)
+            Console.WriteLine("NPC:" & PlayerData(Index_).SpawnedNPCs.Count)
         End Sub
 
         Public Sub DeSpawnMobRange(ByVal Index_ As Integer)

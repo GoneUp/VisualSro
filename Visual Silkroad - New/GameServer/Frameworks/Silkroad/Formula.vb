@@ -11,10 +11,10 @@
                 x = distance_x
             End If
             If distance_y < 0 And distance_y <> 0 Then
-                Return ((distance_y * -1) + x)
+                Return Math.Sqrt((distance_y * -1) + x)
             End If
 
-            Return x + distance_y
+            Return Math.Sqrt(x + distance_y)
         End Function
 
         Public Function GetMinPhy(ByVal stat As UShort) As Integer

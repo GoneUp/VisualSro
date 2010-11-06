@@ -43,6 +43,10 @@
                 DumpTeleportData(base_path & "data\teleportdata.txt", base_path & "data\teleportlink.txt")
                 Log.WriteSystemLog("Loaded " & RefTeleportPoints.Count & " Teleport-Points.")
 
+                Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
+                Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
+                Log.WriteSystemLog("Loaded " & Functions.NpcList.Count & " Autospawn Npc's.")
+
                 Log.WriteSystemLog("Loading took " & DateDiff(DateInterval.Second, time, Date.Now) & " Seconds.")
 
             Catch ex As Exception
@@ -357,6 +361,7 @@
             Public Name As String
             Public OtherName As String
             Public Type As Type_
+
             Public Speed As Single
             Public Level As Byte
             Public Hp As UInteger
@@ -381,8 +386,10 @@
 
 
             Enum Type_
-                Normal = 0
-                Teleport = 1
+                Mob = 0
+                Npc = 1
+                Teleport = 2
+                Structure_ = 3
             End Enum
         End Structure
 
@@ -404,7 +411,6 @@
                 tmp.Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(2)
                 tmp.OtherName = tmpString(3)
-                tmp.Type = Object_.Type_.Normal
                 tmp.Speed = Convert.ToSingle(tmpString(50))
                 tmp.Level = Convert.ToByte(tmpString(57))
                 tmp.Hp = Convert.ToUInt32(tmpString(59))
@@ -423,6 +429,18 @@
                 tmp.Skill7 = Convert.ToUInt32(tmpString(90))
                 tmp.Skill8 = Convert.ToUInt32(tmpString(91))
                 tmp.Skill9 = Convert.ToUInt32(tmpString(92))
+
+                Dim selector As String() = tmp.Name.Split("_")
+                Select Case selector(0)
+                    Case "MOB"
+                        tmp.Type = Object_.Type_.Mob
+                    Case "NPC"
+                        tmp.Type = Object_.Type_.Npc
+                    Case "STORE"
+                        tmp.Type = Object_.Type_.Teleport
+                    Case "STRUCTURE"
+                        tmp.Type = Object_.Type_.Structure_
+                End Select
                 RefObjects.Add(tmp)
             Next
         End Sub
@@ -512,6 +530,7 @@
 
                 obj.Id = tmpString(1)
                 obj.Name = tmpString(2)
+                obj.Type = Object_.Type_.Teleport
 
                 Dim area As Integer = tmpString(41)
                 obj.T_Position = New Position
@@ -577,5 +596,12 @@
             Next
         End Sub
 
+        Public Function GetTeleportPoint(ByVal Number As UInteger)
+            For i = 0 To RefTeleportPoints.Count - 1
+                If RefTeleportPoints(i).Number = Number Then
+                    Return RefTeleportPoints(i)
+                End If
+            Next
+        End Function
     End Module
 End Namespace

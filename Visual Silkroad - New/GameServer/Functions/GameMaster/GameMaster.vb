@@ -115,7 +115,8 @@
             Dim Angle As UInt16 = packet.Word 'Not sure 
 
             PlayerData(index_).Position = to_pos
-        
+            PlayerData(index_).TeleportType = TeleportType_.GM
+
 
             DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector, Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z), Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).UniqueId))
 

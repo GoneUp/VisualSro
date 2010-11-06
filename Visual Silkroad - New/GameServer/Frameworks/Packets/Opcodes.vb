@@ -36,6 +36,8 @@
 
         Npc_Chat = &H7046
         Npc_Chat_Left = &H704B
+        Npc_Teleport = &H705A
+
 
         Exchange_Invite = &H7081
         Exchange_Invite_Accept = &H3080
@@ -65,10 +67,12 @@
 		Character = &HB007
 		IngameReqRepley = &HB001
 
-		LoadingStart = &H34A5
-		CharacterInfo = &H3013
-		LoadingEnd = &H34A6
-		CharacterID = &H3020
+        LoadingStart = &H34A5
+        LoadingEnd = &H34A6
+        LoadingStart2 = &H34B5
+        LoadingEnd2 = &H34B6
+        CharacterInfo = &H3013
+        CharacterID = &H3020
 		CharacterStats = &H303D
 		JoinWorldReply = &H3809
 
@@ -89,6 +93,7 @@
 
         Npc_Chat = &HB046
         Npc_Chat_Left = &HB04B
+        Npc_Teleport_Confirm = &HB05A
 
         'Updates
         HP_MP_Update = &H3057

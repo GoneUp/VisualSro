@@ -47,7 +47,7 @@
         ServerDropRate = 50
         ServerLevelCap = 100
         ServerMasteryCap = 300
-        ServerRange = 10
+        ServerRange = 23
         ServerTaxRate = 20
 
         LogChat = True

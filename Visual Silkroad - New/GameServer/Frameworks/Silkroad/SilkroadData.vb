@@ -119,25 +119,25 @@
                 tmp.MIN_LPHYATK = Convert.ToDouble(tmpString(95))
                 tmp.MAX_LPHYATK = Convert.ToDouble(tmpString(96))
                 tmp.MIN_HPHYATK = Convert.ToDouble(tmpString(97))
-                tmp.MAX_HPHYATK = Convert.ToDouble(tmpString(99))
-                tmp.PHYATK_INC = Convert.ToDouble(tmpString(100))
-                tmp.MIN_LMAGATK = Convert.ToDouble(tmpString(101))
-                tmp.MAX_LMAGATK = Convert.ToDouble(tmpString(102))
-                tmp.MIN_HMAGATK = Convert.ToDouble(tmpString(103))
-                tmp.MAX_HMAGATK = Convert.ToDouble(tmpString(104))
-                tmp.MAGATK_INC = Convert.ToDouble(tmpString(105))
-                tmp.MIN_LPHYS_REINFORCE = Convert.ToSingle(tmpString(106))
-                tmp.MAX_LPHYS_REINFORCE = Convert.ToSingle(tmpString(107))
-                tmp.MIN_HPHYS_REINFORCE = Convert.ToSingle(tmpString(108))
-                tmp.MAX_HPHYS_REINFORCE = Convert.ToSingle(tmpString(109))
-                tmp.MIN_LMAG_REINFORCE = Convert.ToSingle(tmpString(110))
-                tmp.MAX_LMAG_REINFORCE = Convert.ToSingle(tmpString(111))
-                tmp.MIN_HMAG_REINFORCE = Convert.ToSingle(tmpString(112))
-                tmp.MAX_HMAG_REINFORCE = Convert.ToSingle(tmpString(113))
-                tmp.MIN_ATTACK_RATING = Convert.ToSingle(tmpString(114))
-                tmp.MAX_ATTACK_RATING = Convert.ToSingle(tmpString(115))
-                tmp.MIN_CRITICAL = Convert.ToSingle(tmpString(116))
-                tmp.MAX_CRITICAL = Convert.ToSingle(tmpString(117))
+                tmp.MAX_HPHYATK = Convert.ToDouble(tmpString(98))
+                tmp.PHYATK_INC = Convert.ToDouble(tmpString(99))
+                tmp.MIN_LMAGATK = Convert.ToDouble(tmpString(100))
+                tmp.MAX_LMAGATK = Convert.ToDouble(tmpString(101))
+                tmp.MIN_HMAGATK = Convert.ToDouble(tmpString(102))
+                tmp.MAX_HMAGATK = Convert.ToDouble(tmpString(103))
+                tmp.MAGATK_INC = Convert.ToDouble(tmpString(104))
+                tmp.MIN_LPHYS_REINFORCE = Convert.ToSingle(tmpString(105))
+                tmp.MAX_LPHYS_REINFORCE = Convert.ToSingle(tmpString(106))
+                tmp.MIN_HPHYS_REINFORCE = Convert.ToSingle(tmpString(107))
+                tmp.MAX_HPHYS_REINFORCE = Convert.ToSingle(tmpString(108))
+                tmp.MIN_LMAG_REINFORCE = Convert.ToSingle(tmpString(109))
+                tmp.MAX_LMAG_REINFORCE = Convert.ToSingle(tmpString(110))
+                tmp.MIN_HMAG_REINFORCE = Convert.ToSingle(tmpString(111))
+                tmp.MAX_HMAG_REINFORCE = Convert.ToSingle(tmpString(112))
+                tmp.MIN_ATTACK_RATING = Convert.ToSingle(tmpString(113))
+                tmp.MAX_ATTACK_RATING = Convert.ToSingle(tmpString(114))
+                tmp.MIN_CRITICAL = Convert.ToSingle(tmpString(115))
+                tmp.MAX_CRITICAL = Convert.ToSingle(tmpString(116))
                 tmp.USE_TIME_HP = Convert.ToInt32(tmpString(118))
                 tmp.USE_TIME_HP_PER = Convert.ToInt32(tmpString(120))
                 tmp.USE_TIME_MP = Convert.ToInt32(tmpString(122))
@@ -386,10 +386,12 @@
 
 
             Enum Type_
-                Mob = 0
+                Mob_Normal = 0
                 Npc = 1
                 Teleport = 2
-                Structure_ = 3
+                [Structure] = 3
+                Mob_Cave = 4
+                COS = 5
             End Enum
         End Structure
 
@@ -433,13 +435,20 @@
                 Dim selector As String() = tmp.Name.Split("_")
                 Select Case selector(0)
                     Case "MOB"
-                        tmp.Type = Object_.Type_.Mob
+                        If selector(1) = "TQ" Or selector(1) = "DH" Then
+                            tmp.Type = Object_.Type_.Mob_Cave
+                        Else
+                            tmp.Type = Object_.Type_.Mob_Normal
+                        End If
+
                     Case "NPC"
                         tmp.Type = Object_.Type_.Npc
                     Case "STORE"
                         tmp.Type = Object_.Type_.Teleport
                     Case "STRUCTURE"
-                        tmp.Type = Object_.Type_.Structure_
+                        tmp.Type = Object_.Type_.Structure
+                    Case "COS"
+                        tmp.Type = Object_.Type_.COS
                 End Select
                 RefObjects.Add(tmp)
             Next

@@ -9,54 +9,6 @@
         Public ExchangeData As New List(Of cExchange)
 
 
-        Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
-
-            If PlayerData(Index_).Busy = True Then
-                Exit Sub
-            End If
-
-            Dim tag As Byte = packet.Byte
-            If tag = 1 Then
-                '01 A8 60 61 02 FE FF 70 04
-                Dim to_pos As New Position
-                to_pos.XSector = packet.Byte
-                to_pos.YSector = packet.Byte
-                to_pos.X = CInt(packet.Word)
-                Dim zByte As Byte() = packet.ByteArray(2) 'real z converting
-                to_pos.Z = BitConverter.ToInt16(zByte, 0)
-                to_pos.Y = CInt(packet.Word)
-
-
-                Debug.Print(to_pos.XSector & " -- " & to_pos.YSector & " -- " & to_pos.X & " -- " & to_pos.Z & " -- " & to_pos.Y)
-                Debug.Print("X:" & ((to_pos.XSector - 135) * 192) + (to_pos.X / 10) & " Y:" & ((to_pos.YSector - 92) * 192) + (to_pos.Y / 10))
-
-
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Movement)
-                writer.DWord(PlayerData(Index_).UniqueId)
-                writer.Byte(1) 'destination
-                writer.Byte(to_pos.XSector)
-                writer.Byte(to_pos.YSector)
-                writer.Word(CUInt(to_pos.X))
-                writer.Byte(zByte)
-                writer.Word(CUInt(to_pos.Y))
-                writer.Byte(0) '1= source
-
-
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
-                PlayerData(Index_).Position = to_pos
-                SpawnMe(Index_)
-                SpawnOtherPlayer(Index_) 'Spawn before sending the Packet is to prevent chrashes
-                DespawnPlayerRange(Index_)
-
-                SpawnNPCRange(Index_)
-                DeSpawnNPCRange(Index_)
-                SpawnMobRange(Index_)
-                DeSpawnMobRange(Index_)
-
-                Server.SendToAllInRange(writer.GetBytes, Index_)
-            End If
-        End Sub
         ''' <summary>
         ''' For Players
         ''' </summary>
@@ -233,26 +185,6 @@
             Return writer.GetBytes
         End Function
 
-
-        Public Sub SpawnMe(ByVal Index As Integer)
-            Dim range As Integer = ServerRange
-
-            For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
-                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
-                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
-                    If distance < range Then
-                        If PlayerData(refindex).SpawnedPlayers.Contains(Index) = False Then
-                            Server.Send(CreateSpawnPacket(Index), refindex)
-                            PlayerData(refindex).SpawnedPlayers.Add(Index)
-                        End If
-                    End If
-                End If
-            Next refindex
-
-        End Sub
-
         Public Sub SpawnMeAtMovement(ByVal Index As Integer, ByVal ToPos As Position)
             Dim range As Integer = ServerRange
 
@@ -270,24 +202,6 @@
                 End If
             Next refindex
 
-        End Sub
-
-        Public Sub SpawnOtherPlayer(ByVal Index As Integer)
-            Dim range As Integer = ServerRange
-
-            For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
-                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
-                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso Index <> refindex Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((PlayerData(Index).Position.X - player.Position.X) ^ 2 + (PlayerData(Index).Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
-                    If distance < range Then
-                        If PlayerData(Index).SpawnedPlayers.Contains(refindex) = False Then
-                            Server.Send(CreateSpawnPacket(refindex), Index)
-                            PlayerData(Index).SpawnedPlayers.Add(refindex)
-                        End If
-                    End If
-                End If
-            Next refindex
         End Sub
 
         Public Sub DespawnPlayerTeleport(ByVal Index_ As Integer)
@@ -333,21 +247,6 @@
 
             PlayerData(Index_).SpawnedPlayers.Clear()
         End Sub
-
-        Public Sub DespawnPlayerRange(ByVal Index_ As Integer)
-            For Other_Index = 0 To Server.MaxClients
-                If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) Then
-                    If CalculateDistance(PlayerData(Index_).Position, PlayerData(Other_Index).Position) > ServerRange Then
-                        'Despawn for both
-                        Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
-                        PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
-                        Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
-                        PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
-                    End If
-                End If
-            Next
-        End Sub
-
 
         Public Sub CleanUpPlayer(ByVal Index_ As Integer)
             'Cleanup

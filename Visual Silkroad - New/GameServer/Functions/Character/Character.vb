@@ -715,11 +715,8 @@
 
         Public Sub OnJoinWorldRequest(ByVal Index_ As Integer)
             PlayerData(Index_).Ingame = True
-            SpawnMe(Index_)
-            SpawnOtherPlayer(Index_)
 
-            SpawnNPCRange(Index_)
-            SpawnMobRange(Index_)
+            ObjectSpawnCheck(Index_)
         End Sub
     End Module
 End Namespace

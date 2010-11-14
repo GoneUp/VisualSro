@@ -198,6 +198,7 @@
 
             For i = 0 To MobList.Count - 1
                 If MobList(i).UniqueID = ObjectID Then
+                    Dim mob = MobList(i)
                     writer.Create(ServerOpcodes.Target)
                     writer.Byte(1) 'Sucess
                     writer.DWord(MobList(i).UniqueID)

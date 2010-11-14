@@ -73,53 +73,7 @@
 
             NpcList.Add(toadd)
             Dim MyIndex As UInteger = NpcList.IndexOf(toadd)
-
-            Dim range As Integer = ServerRange
-
-            For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
-                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
-                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    Dim distance As Long = Math.Round(Math.Sqrt((Position.X - player.Position.X) ^ 2 + (Position.Y - player.Position.Y) ^ 2)) 'Calculate Distance
-                    If distance < range Then
-                        If PlayerData(refindex).SpawnedNPCs.Contains(MyIndex) = False Then
-                            Server.Send(CreateNPCGroupSpawnPacket(MyIndex), refindex)
-                            PlayerData(refindex).SpawnedNPCs.Add(MyIndex)
-                        End If
-                    End If
-                End If
-            Next refindex
         End Sub
-
-        Public Sub SpawnNPCRange(ByVal Index_ As Integer)
-            Dim range As Integer = ServerRange
-            For i = 0 To NpcList.Count - 1
-                Dim dist = CalculateDistance(PlayerData(Index_).Position, NpcList(i).Position)
-                If dist <= ServerRange Then
-                    If PlayerData(Index_).SpawnedNPCs.Contains(i) = False Then
-                        Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
-                        PlayerData(Index_).SpawnedNPCs.Add(i)
-                    End If
-                End If
-            Next
-        End Sub
-
-        Public Sub DeSpawnNPCRange(ByVal Index_ As Integer)
-            Try
-                For i = 0 To NpcList.Count - 1
-                    If PlayerData(Index_).SpawnedNPCs.Contains(i) = True Then
-                        Dim _npc As cNPC = NpcList(i)
-                        If CalculateDistance(PlayerData(Index_).Position, _npc.Position) > ServerRange Then
-                            Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
-                            PlayerData(Index_).SpawnedNPCs.Remove(i)
-                        End If
-                    End If
-                Next
-            Catch ex As Exception
-
-            End Try
-        End Sub
-
 
         Public Sub OnNpcChat(ByVal NpcIndex As Integer, ByVal Index_ As Integer)
             Dim writer As New PacketWriter

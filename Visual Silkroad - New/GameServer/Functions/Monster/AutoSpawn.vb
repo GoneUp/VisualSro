@@ -15,12 +15,9 @@
                 pos.XSector = Byte.Parse(Convert.ToInt16(tmpString(1)).ToString("X").Substring(2, 2), System.Globalization.NumberStyles.HexNumber)
                 pos.YSector = Byte.Parse(Convert.ToInt16(tmpString(1)).ToString("X").Substring(0, 2), System.Globalization.NumberStyles.HexNumber)
 
-                If refobject.Name.StartsWith("STRUCTURE") Then
-                    GoTo nexti
-                End If
 
                 Select Case refobject.Type
-                    Case Object_.Type_.Mob
+                    Case Object_.Type_.Mob_Normal
                         SpawnMob(Pk2ID, 0, pos)
                     Case Object_.Type_.Npc
                         SpawnNPC(Pk2ID, pos)

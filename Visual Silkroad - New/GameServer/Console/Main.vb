@@ -54,6 +54,8 @@ Namespace GameServer
 
 read:
             Dim msg As String = Console.ReadLine()
+
+
             CheckCommand(msg)
             GoTo read
 

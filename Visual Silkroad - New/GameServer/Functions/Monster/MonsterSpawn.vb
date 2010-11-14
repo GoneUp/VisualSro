@@ -55,8 +55,7 @@
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    Dim distance As Long = CalculateDistance(Position, player.Position)
-                    If distance < range Then
+                    If CheckRange(player.Position, Position) < range Then
                         If PlayerData(refindex).SpawnedNPCs.Contains(MyIndex) = False Then
                             Server.Send(CreateMonsterSpawnPacket(MyIndex), refindex)
                             PlayerData(refindex).SpawnedMonsters.Add(MyIndex)
@@ -65,41 +64,6 @@
                 End If
             Next refindex
         End Sub
-
-
-        Public Sub SpawnMobRange(ByVal Index_ As Integer)
-            Dim range As Integer = ServerRange
-            For i = 0 To MobList.Count - 1
-                Dim dist As Long = CalculateDistance(PlayerData(Index_).Position, MobList(i).Position)
-                If dist <= ServerRange Then
-                    If PlayerData(Index_).SpawnedMonsters.Contains(i) = False Then
-                        Server.Send(CreateMonsterSpawnPacket(i), Index_)
-                        PlayerData(Index_).SpawnedMonsters.Add(i)
-                        Dim mob_ As cMonster = MobList(i)
-                    End If
-                End If
-            Next
-
-            Console.WriteLine("MOB:" & PlayerData(Index_).SpawnedMonsters.Count)
-            Console.WriteLine("NPC:" & PlayerData(Index_).SpawnedNPCs.Count)
-        End Sub
-
-        Public Sub DeSpawnMobRange(ByVal Index_ As Integer)
-            Try
-                For i = 0 To MobList.Count - 1
-                    If PlayerData(Index_).SpawnedMonsters.Contains(i) = True Then
-                        Dim _mob As cMonster = MobList(i)
-                        If CalculateDistance(PlayerData(Index_).Position, _mob.Position) > ServerRange Then
-                            Server.Send(CreateDespawnPacket(_mob.UniqueID), Index_)
-                            PlayerData(Index_).SpawnedMonsters.Remove(i)
-                        End If
-                    End If
-                Next
-            Catch ex As Exception
-
-            End Try
-        End Sub
-
 
         Public Sub SendUniqueSpawn(ByVal PK2ID As UInteger)
             Dim writer As New PacketWriter

@@ -59,6 +59,9 @@ Namespace GameServer
         Public Function Word() As UShort
             Return Me.br.ReadUInt16()
         End Function
+        Public Function WordInt() As Short
+            Return Me.br.ReadInt16()
+        End Function
 
         Public Function [Boolean]() As Boolean
             Return Me.br.ReadBoolean()

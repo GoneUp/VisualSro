@@ -44,7 +44,7 @@ Namespace GameServer
                     '============Ingame===========
 
                 Case ClientOpcodes.Movement
-                    GameServer.Functions.Players.OnPlayerMovement(index, packet)
+                    GameServer.Functions.OnPlayerMovement(index, packet)
 
                 Case ClientOpcodes.Chat
                     GameServer.Functions.OnChat(packet, index)

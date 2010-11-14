@@ -87,7 +87,7 @@
 
                 '===========NPCS===================
                 For i = 0 To NpcList.Count - 1
-                    If CheckRange(PlayerData(Index_).Position, NpcList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Position, NpcList(i).Position) And CheckSectors(PlayerData(Index_).Position, NpcList(i).Position) Then
                         If PlayerData(Index_).SpawnedNPCs.Contains(i) = False Then
                             Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
                             PlayerData(Index_).SpawnedNPCs.Add(i)
@@ -147,7 +147,7 @@
 
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            Dim range As Integer = 70
+            Dim range As Integer = 500
             If Pos_1.X >= (Pos_2.X - range) AndAlso Pos_1.X <= ((Pos_2.X - range) + range * 2) AndAlso Pos_1.Y >= (Pos_2.Y - range) AndAlso Pos_1.Y <= ((Pos_2.Y - range) + range * 2) Then
                 Return True
             Else
@@ -170,13 +170,13 @@
             '# 4 # 5 # 6#
             '# 7 # 8 # 9#
             '############
-            '############
             Dim PossibleSectors As New List(Of Position)
             For x = -1 To 1
                 For y = -1 To 1
                     Dim pos As New Position
                     pos.XSector = Pos_1.XSector + x
                     pos.YSector = Pos_1.YSector + y
+                    PossibleSectors.Add(pos)
                 Next
             Next
 

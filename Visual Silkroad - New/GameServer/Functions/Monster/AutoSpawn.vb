@@ -3,8 +3,8 @@
         Public Sub LoadAutoSpawn(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
-                Dim line2 As String = lines(i).Replace(".", ",")
-                Dim tmpString As String() = line2.Split(ControlChars.Tab)
+                'Dim line2 As String = lines(i).Replace(".", ",")
+                Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim Pk2ID As UInt32 = tmpString(0)
                 Dim refobject As Object_ = GetObjectById(Pk2ID)
                 Dim pos As New Position
@@ -18,7 +18,7 @@
 
                 Select Case refobject.Type
                     Case Object_.Type_.Mob_Normal
-                        SpawnMob(Pk2ID, 0, pos)
+                        SpawnMob(Pk2ID, GetRadomMobType, pos)
                     Case Object_.Type_.Npc
                         SpawnNPC(Pk2ID, pos)
                 End Select

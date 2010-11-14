@@ -64,7 +64,7 @@
                                 Server.Send(CreateSpawnPacket(Index_), refindex)
                                 PlayerData(refindex).SpawnedPlayers.Add(Index_)
                             End If
-                            If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False Then
+                            If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
                                 Server.Send(CreateSpawnPacket(refindex), Index_)
                                 PlayerData(Index_).SpawnedPlayers.Add(refindex)
                             End If

@@ -116,7 +116,7 @@
                 'User exestiert nicht == We register a User
 
                 If Settings.AutoRegister = True Then
-                    RegisterUser(Index_, ID, Pw)
+                    RegisterUser(ID, Pw, Index_)
                     Dim reason As String = String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw)
                     writer.Byte(2) 'failed
                     writer.Byte(2) 'gebannt

@@ -33,6 +33,8 @@
         ItemUse = &H704C
         Scroll_Cancel = &H705B
         Hotkey_Update = &H7158
+        Attack = &H7074
+
 
         Npc_Chat = &H7046
         Npc_Chat_Left = &H704B
@@ -112,8 +114,12 @@
 		SingleDespawn = &H3016
 		GroupSpawnStart = &H3017
 		GroupSpawnData = &H3019
-		GroupSpawnEnd = &H3018
+        GroupSpawnEnd = &H3018
+
+        'Monster Stuff
         Target = &HB045
+        Attack_Reply = &HB074
+        Attack_Main = &HB070
 
         Str_Up = &HB050
         Int_Up = &HB051

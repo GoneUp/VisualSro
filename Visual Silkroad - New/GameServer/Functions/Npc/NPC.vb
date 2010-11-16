@@ -123,6 +123,16 @@
                     writer.Word(0)
                 Case "GATE"
                     writer.DWord(192)
+                Case "SOLDIER" 'Only JG
+                    If name(3) = "EM1" Or name(3) = "WE1" Or name(3) = "EA2" Or name(3) = "SO1" Then
+                        writer.Byte(0)
+                        writer.DWord(128)
+                        writer.Byte(0)
+                    Else
+                        writer.Byte(0)
+                        writer.DWord(0)
+                        writer.Byte(0)
+                    End If
                 Case Else
                     writer.Byte(0)
                     writer.DWord(0)

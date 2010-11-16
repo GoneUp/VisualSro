@@ -65,6 +65,11 @@
             Next refindex
         End Sub
 
+        Public Sub RemoveMob(ByVal MobIndex As Integer)
+            Server.SendIfMobIsSpawned(CreateDespawnPacket(MobList(MobIndex).UniqueID), MobIndex)
+            MobList.RemoveAt(MobIndex)
+        End Sub
+
         Public Sub SendUniqueSpawn(ByVal PK2ID As UInteger)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.UniqueAnnonce)
@@ -73,8 +78,14 @@
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
 
-
-
-
+        Public Sub SendUniqueKill(ByVal PK2ID As UInteger, ByVal KillName As String)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.UniqueAnnonce)
+            writer.Byte(6) 'Spawn
+            writer.DWord(PK2ID)
+            writer.Word(KillName.Length)
+            writer.String(KillName)
+            Server.SendToAllIngame(writer.GetBytes)
+        End Sub
     End Module
 End Namespace

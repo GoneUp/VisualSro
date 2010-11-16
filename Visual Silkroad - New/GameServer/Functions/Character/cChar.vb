@@ -59,6 +59,8 @@
     Public InExchangeWith As Integer = -1
     Public ExchangeID As Integer = -1
 
+    Public AttackedMonsster
+
     Public TeleportType As TeleportType_
 
 

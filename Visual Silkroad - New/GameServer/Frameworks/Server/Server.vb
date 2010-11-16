@@ -21,6 +21,23 @@ Namespace GameServer
         Public Shared Event OnServerError As dError
         Public Shared Event OnServerStarted As dServerStarted
 
+        Public Shared Sub Start()
+            Dim localEP As New IPEndPoint(IPAddress.Any, ServerPort)
+            ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            Try
+                ServerSocket.Bind(localEP)
+                ServerSocket.Listen(5)
+                ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+
+                ClientList.StartPingCheck()
+            Catch exception As Exception
+                RaiseEvent OnServerError(exception, -2)
+            Finally
+                Dim time As String = DateTime.Now.ToString()
+                RaiseEvent OnServerStarted(time)
+            End Try
+        End Sub
+
 
         Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
             Try
@@ -154,27 +171,21 @@ Namespace GameServer
                             socket.Send(buff)
                         End If
                     End If
-
                 End If
             Next i
         End Sub
-        Public Shared Sub Start()
-            Dim localEP As New IPEndPoint(IPAddress.Any, ServerPort)
-            ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-            Try
-                ServerSocket.Bind(localEP)
-                ServerSocket.Listen(5)
-                ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
 
-                ClientList.StartPingCheck()
-            Catch exception As Exception
-                RaiseEvent OnServerError(exception, -2)
-            Finally
-                Dim time As String = DateTime.Now.ToString()
-                RaiseEvent OnServerStarted(time)
-            End Try
+        Public Shared Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobIndex As Integer)
+            For i = 0 To MaxClients
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).SpawnedMonsters.Contains(MobIndex) = True Then
+                        Server.Send(buff, i)
+                    End If
+                End If
+            Next
         End Sub
 
+#Region "Propertys"
         Public Shared Property ip() As String
             Get
                 Return IP_Renamed.ToString()
@@ -225,6 +236,7 @@ Namespace GameServer
         Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
         Public Delegate Sub dServerStarted(ByVal time As String)
+#End Region
     End Class
 End Namespace
 

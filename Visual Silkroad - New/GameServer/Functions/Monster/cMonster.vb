@@ -14,7 +14,7 @@ End Class
 ''' Is for the Damage done from a Player to a Monster.
 ''' </summary>
 ''' <remarks></remarks>
-Public Structure cDamageDone
+Public Class cDamageDone
     Public PlayerIndex As Integer
     Public Damage As ULong
-End Structure
+End Class

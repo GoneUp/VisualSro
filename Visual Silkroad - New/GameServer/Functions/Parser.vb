@@ -73,8 +73,14 @@ Namespace GameServer
                 Case ClientOpcodes.Hotkey_Update
                     GameServer.Functions.OnHotkeyUpdate(packet, index)
 
+                    '=======ATTACK======
+
                 Case ClientOpcodes.Target
                     GameServer.Functions.OnSelectObject(packet, index)
+
+
+                Case ClientOpcodes.Attack
+                    GameServer.Functions.OnPlayerAttack(packet, index)
                     '=======NPC========
 
                 Case ClientOpcodes.Npc_Chat

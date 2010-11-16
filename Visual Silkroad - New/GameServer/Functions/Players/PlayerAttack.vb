@@ -88,13 +88,12 @@
                 writer.Word(0)
             Next
 
+            Server.SendToAllInRange(writer.GetBytes, Index_)
 
             If afterstate = &H80 Then
 
-
             End If
 
-            Server.SendToAllInRange(writer.GetBytes, Index_)
         End Sub
 
         Public Sub PlayerAttackSkill(ByVal SkillID As UInt32)

@@ -23,6 +23,8 @@ Namespace GameServer
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
                     AddHandler SitUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
+                    MonsterDeath(i) = New Timer()
+                    AddHandler MonsterDeath(i).Elapsed, AddressOf MonsterDeath_Elapsed
                 Next
 
             Catch ex As Exception
@@ -122,7 +124,27 @@ Namespace GameServer
 
         End Sub
 
+        Public Sub MonsterDeath_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            Dim objB As Timer = DirectCast(sender, Timer)
+            Dim Index As Integer = -1
+            For i As Integer = Information.LBound(PlayerAttack, 1) To Information.UBound(PlayerAttack, 1)
+                If Object.ReferenceEquals(SitUpTimer(i), objB) Then
+                    Index = i
+                    Exit For
+                End If
+            Next
 
-       
+            If Index <> -1 Then
+                MonsterDeath(Index).Stop()
+
+                For i = 0 To MobList.Count - 1
+                    If MobList(i).UniqueID = PlayerData(Index).AttackedDeathMonsterID Then
+                        RemoveMob(i)
+                    End If
+                Next
+                PlayerData(Index).AttackedDeathMonsterID = 0
+            End If
+        End Sub
+
     End Module
 End Namespace

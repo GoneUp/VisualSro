@@ -126,6 +126,7 @@
     <Compile Include="Functions\Players\Stats.vb" />
     <Compile Include="Functions\Skills\cSkill.vb" />
     <Compile Include="Functions\Skills\Mastery.vb" />
+    <Compile Include="Mods\modDamage.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

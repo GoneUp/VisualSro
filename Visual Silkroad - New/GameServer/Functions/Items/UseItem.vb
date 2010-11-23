@@ -291,6 +291,55 @@
             End If
         End Sub
 
+        Public Sub OnUseSkinScroll(ByVal Slot As Byte, ByVal Index_ As Integer, ByVal packet As PacketReader)
+            Dim NewModel As UInteger = packet.DWord
+            Dim NewVolume As Byte = packet.Byte
+
+            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim writer As New PacketWriter
+
+
+            If _item.Pk2Id <> 0 Then
+                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
+
+
+                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
+                        'Despawn Item
+                        _item.Pk2Id = 0
+                        _item.Durability = 0
+                        _item.Plus = 0
+                        _item.Amount = 0
+
+                        Inventorys(Index_).UserItems(Slot) = _item
+                        DeleteItemFromDB(Slot, Index_)
+                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
+                        _item.Amount -= 1
+                        Inventorys(Index_).UserItems(Slot) = _item
+                        UpdateItem(_item)
+                    End If
+
+
+                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Byte(1)
+                    writer.Byte(Slot)
+                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Byte(&HED)
+                    writer.Byte(&H29)
+                    Server.Send(writer.GetBytes, Index_)
+
+                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+
+                End If
+            End If
+        End Sub
+
+        Public Sub UseItemError(ByVal Index_ As Integer, ByVal ErrorByte As Byte)
+
+        End Sub
+
+
+
         Public Sub OnReturnScroll_Cancel(ByVal Index_ As Integer)
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
                 PlayerData(Index_).UsedItem = UseItemTypes.None
@@ -307,5 +356,19 @@
             Server.SendToAllInRange(writer.GetBytes, Index_)
         End Sub
 
+        ''' <summary>
+        ''' Checks that the Equip Slots are empty
+        ''' </summary>
+        ''' <param name="Index_"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function EquipSlotsEmpty(ByVal Index_ As Integer)
+            For i = 0 To 13
+                If Inventorys(Index_).UserItems(i).Pk2Id <> 0 Then
+                    Return False
+                End If
+            Next
+            Return True
+        End Function
     End Module
 End Namespace

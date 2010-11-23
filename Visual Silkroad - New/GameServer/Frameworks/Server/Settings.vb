@@ -21,6 +21,10 @@
     Public LogMall As Boolean = False
     Public LogChat As Boolean = False
 
+    'Enable or disable Mods
+    Public ModGeneral As Boolean = True
+    Public ModDamage As Boolean = False
+
     Public Sub LoadSettings()
         'TODO: Load these Settings from a Config File
         PlayerStartPos.XSector = 168
@@ -53,6 +57,9 @@
         LogChat = True
         LogGM = True
         LogMall = True
+
+        ModGeneral = True
+        ModDamage = True
     End Sub
 
 End Module

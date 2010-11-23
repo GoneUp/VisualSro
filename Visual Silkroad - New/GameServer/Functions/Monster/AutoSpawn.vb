@@ -9,9 +9,9 @@
                 Dim refobject As Object_ = GetObjectById(Pk2ID)
                 Dim pos As New Position
 
-                pos.X = (tmpString(2))
-                pos.Z = (tmpString(3))
-                pos.Y = (tmpString(4))
+                pos.X = CSng(tmpString(2))
+                pos.Z = CSng(tmpString(3))
+                pos.Y = CSng(tmpString(4))
                 pos.XSector = Byte.Parse(Convert.ToInt16(tmpString(1)).ToString("X").Substring(2, 2), System.Globalization.NumberStyles.HexNumber)
                 pos.YSector = Byte.Parse(Convert.ToInt16(tmpString(1)).ToString("X").Substring(0, 2), System.Globalization.NumberStyles.HexNumber)
 

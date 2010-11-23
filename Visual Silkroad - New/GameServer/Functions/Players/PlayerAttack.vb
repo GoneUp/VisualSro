@@ -6,7 +6,7 @@
             Dim type2 As Byte = packet.Byte '1= punch -- 4 = skill
 
             If type1 = 1 And type2 = 1 Then
-                packet.Word()
+                packet.Byte()
                 Dim ObjectID As UInt32 = packet.DWord
 
                 For i = 0 To MobList.Count - 1
@@ -91,7 +91,7 @@
             Server.SendToAllInRange(writer.GetBytes, Index_)
 
             If afterstate = &H80 Then
-
+                KillMob(MobListIndex)
             End If
 
         End Sub

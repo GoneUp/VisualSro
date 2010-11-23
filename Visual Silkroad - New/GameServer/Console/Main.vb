@@ -25,6 +25,7 @@ Namespace GameServer
             AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
             AddHandler DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
 
+            Dim i As Single = CSng("659.123")
 
             Console.WindowHeight = 10
             Console.BufferHeight = 30

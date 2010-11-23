@@ -147,8 +147,14 @@
 
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            Dim range As Integer = 500
-            If Pos_1.X >= (Pos_2.X - range) AndAlso Pos_1.X <= ((Pos_2.X - range) + range * 2) AndAlso Pos_1.Y >= (Pos_2.Y - range) AndAlso Pos_1.Y <= ((Pos_2.Y - range) + range * 2) Then
+            Dim range As Integer = ServerRange
+            'Get Real Cords
+            Dim Pos1X As Double = (Pos_1.XSector - 135) * 192 + Pos_1.X / 10
+            Dim Pos1Y As Double = (Pos_1.YSector - 92) * 192 + Pos_1.Y / 10
+            Dim Pos2X As Double = (Pos_1.XSector - 135) * 192 + Pos_1.X / 10
+            Dim Pos2Y As Double = (Pos_1.YSector - 92) * 192 + Pos_1.Y / 10
+
+            If Pos1X >= (Pos2X - range) AndAlso Pos1X <= ((Pos2X - range) + range * 2) AndAlso Pos1Y >= (Pos2Y - range) AndAlso Pos1Y <= ((Pos1Y - range) + range * 2) Then
                 Return True
             Else
                 Return False

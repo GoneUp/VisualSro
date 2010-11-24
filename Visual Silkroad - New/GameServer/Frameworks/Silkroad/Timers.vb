@@ -3,7 +3,7 @@ Namespace GameServer
     Module Timers
         Public PlayerAttack As Timer() = New Timer(14999) {}
         Public MonsterMovement As Timer() = New Timer(14999) {}
-        Public MonsterDeath As Timer() = New Timer(14999) {}
+        Public MonsterDeath As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
         Public CastAttackTimer As Timer() = New Timer(14999) {}
         Public CastBuffTimer As Timer() = New Timer(14999) {}
@@ -14,7 +14,7 @@ Namespace GameServer
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttack(TimerCount), MonsterMovement(TimerCount), MonsterDeath(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+                ReDim PlayerAttack(TimerCount), MonsterMovement(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
 
                 For i As Integer = 0 To TimerCount - 1
                     PlayerAttack(i) = New Timer()
@@ -23,9 +23,14 @@ Namespace GameServer
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
                     AddHandler SitUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
-                    MonsterDeath(i) = New Timer()
-                    AddHandler MonsterDeath(i).Elapsed, AddressOf MonsterDeath_Elapsed
+                    AddHandler MonsterDeath.Elapsed, AddressOf MonsterDeath_Elapsed
                 Next
+
+                'Start Timers
+                MonsterDeath.Interval = 2000
+                MonsterDeath.Start()
+
+
 
             Catch ex As Exception
 
@@ -43,6 +48,16 @@ Namespace GameServer
                         Exit For
                     End If
                 Next
+
+
+                PlayerData(Index).Busy = False
+                PlayerData(Index).Attacking = False
+
+                If PlayerData(Index).AttackedMonsterID <> 0 Then
+                    Dim mob_ As cMonster = MobList(GetMobIndex(PlayerData(Index).AttackedMonsterID))
+                End If
+
+
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
             End Try
@@ -138,33 +153,16 @@ Namespace GameServer
         End Sub
 
         Public Sub MonsterDeath_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = -1
             Try
-                Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(MonsterDeath, 1) To Information.UBound(MonsterDeath, 1)
-                    If Object.ReferenceEquals(MonsterDeath(i), objB) Then
-                        Index = i
-                        Exit For
+                MonsterDeath.Stop()
+                For i = 0 To MobList.Count - 1
+                    If MobList(i).Death = True Then
+                        RemoveMob(i)
                     End If
                 Next
-
-                If Index <> -1 Then
-                    MonsterDeath(Index).Stop()
-
-                    For i = 0 To MobList.Count - 1
-                        If i >= MobList.Count Or PlayerData(Index).AttackedDeathMonsterID = 0 Then
-                            Exit Sub
-                        End If
-
-                        If MobList(i).UniqueID = PlayerData(Index).AttackedDeathMonsterID Then
-                            RemoveMob(i)
-                        End If
-                    Next
-                    PlayerData(Index).AttackedDeathMonsterID = 0
-                End If
-
+                MonsterDeath.Start()
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MD") '
             End Try
 
         End Sub

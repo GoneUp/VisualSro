@@ -59,7 +59,9 @@
     Public InExchangeWith As Integer = -1
     Public ExchangeID As Integer = -1
 
-    Public AttackedDeathMonsterID As UInt32 = 0
+    Public Attacking As Boolean = False
+    Public AttackedMonsterID As UInt32 = 0
+    Public AttackSkill As UInt32 = 0
 
     Public TeleportType As TeleportType_
 

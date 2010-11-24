@@ -114,10 +114,6 @@
 
             If afterstate = &H80 Then
                 KillMob(MobListIndex)
-                PlayerData(Index_).AttackedDeathMonsterID = ObjectID
-                MonsterDeath(Index_).Interval = 3000
-                MonsterDeath(Index_).Start()
-
                 UpdateState(0, 2, Index_, MobListIndex)
                 SendAttackEnd(Index_)
             End If

@@ -30,17 +30,17 @@
         PlayerStartPos.XSector = 168
         PlayerStartPos.YSector = 98
         PlayerStartPos.X = 978
-        PlayerStartPos.Z = 1097
+        PlayerStartPos.Z = 0
         PlayerStartPos.Y = 40
 
         PlayerStartReturnPos.XSector = 168
         PlayerStartReturnPos.YSector = 97
         PlayerStartReturnPos.X = 980
-        PlayerStartReturnPos.Z = 65504
+        PlayerStartReturnPos.Z = 0
         PlayerStartReturnPos.Y = 1330
 
         PlayerStartGold = 1000000 '1m
-        PlayerStartLevel = 100
+        PlayerStartLevel = 1
         PlayerStartMasteryLevel = 0
         PlayerStartSkillPoints = 1000000 '1m
         PlayerStartGM = True

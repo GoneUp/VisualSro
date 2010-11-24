@@ -27,5 +27,14 @@
             Next
             Return MostIndex
         End Function
+
+        Public Function GetMobIndex(ByVal UniqueID As UInt32) As Integer
+            For i = 0 To MobList.Count - 1
+                If MobList(i).UniqueID = UniqueID Then
+                    Return i
+                End If
+            Next
+            Return -1
+        End Function
     End Module
 End Namespace

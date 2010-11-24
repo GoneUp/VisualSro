@@ -5,7 +5,7 @@
             writer.WriteLine(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
             writer.Close()
 
-            Console.WriteLine(Message)
+            Console.WriteLine(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
         End Sub
 
     End Module

@@ -152,7 +152,7 @@
             writer.Byte(PlayerData(index_).HelperIcon)
             Server.SendToAllInRange(writer.GetBytes, PlayerData(index_).Position)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(index_).HelperIcon, PlayerData(index_).UniqueId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(index_).HelperIcon, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub OnHotkeyUpdate(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -166,7 +166,7 @@
 
                 If slot >= 0 And slot <= 50 Then 'Check Slots
                     Dim tmp_ As New cHotKey
-                    tmp_.OwnerID = PlayerData(index_).UniqueId
+                    tmp_.OwnerID = PlayerData(index_).CharacterId
                     tmp_.Slot = slot
                     tmp_.Type = type
                     tmp_.IconID = IconID

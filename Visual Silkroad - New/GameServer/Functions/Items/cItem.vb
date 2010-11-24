@@ -28,7 +28,7 @@ Public Class cInventory
 
 
         For I = 0 To (AllItems.Length - 1)
-            If AllItems(I).OwnerCharID = PlayerData(index_).UniqueId Then
+            If AllItems(I).OwnerCharID = PlayerData(index_).CharacterId Then
                 Me.UserItems(AllItems(I).Slot) = AllItems(I)
             End If
         Next

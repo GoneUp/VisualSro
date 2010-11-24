@@ -17,7 +17,7 @@
 
 
                 For i = 0 To MobList.Count - 1
-                    If MobList(i).UniqueID = ObjectID Then
+                    If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
                         writer.Byte(1)
                         writer.Byte(1)
                         Server.Send(writer.GetBytes, Index_)
@@ -51,12 +51,16 @@
 
             Select Case RefWeapon.CLASS_C
                 Case 0
+                    NumberAttack = 2
+                    AttackType = 2
                 Case 2
+                    NumberAttack = 2
+                    AttackType = 2
                 Case 3
                     NumberAttack = 2
                     AttackType = 2
-
                 Case 4
+                    AttackType = 40
                 Case 5
                     AttackType = 40
                 Case 6
@@ -131,23 +135,29 @@
             Dim RefWeapon As cItem = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
-            Dim Balance As Double = 1 + ((PlayerData(Index_).Level - Mob.Level) / 100)
+            Dim Balance As Double = 1 + ((PlayerData(Index_).Level - Mob.Level) / 1000)
+
+            Dim DamageMin As Double
+            Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                Dim DamageMin As Double = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
-                Dim DamageMax As Double = ((PlayerData(Index_).MaxPhy + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
-
-                Dim Radmon As Integer = Rnd() * 100
-                FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
-
+                DamageMin = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                DamageMax = ((PlayerData(Index_).MaxPhy + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
             ElseIf RefSkill.Type = TypeTable.Mag Then
-                Dim DamageMin As Double = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * RefSkill.PwrPercent
-                Dim DamageMax As Double = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * RefSkill.PwrPercent
-
-                Dim Radmon As Integer = Rnd() * 100
-                FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
+                DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                DamageMax = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
             End If
 
+
+            If DamageMin <= 0 Then
+                DamageMin = 1
+            End If
+            If DamageMax <= 0 Then
+                DamageMax = 2
+            End If
+
+            Dim Radmon As Integer = Rnd() * 100
+            FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
 
             'A = Basic Attack Power
             'B = Skill Attack Power

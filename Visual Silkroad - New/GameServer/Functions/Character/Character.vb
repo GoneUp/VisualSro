@@ -115,7 +115,7 @@
                     Dim dat As DateTime = DateTime.Now
                     Dim dat1 = dat.AddDays(7)
                     ClientList.OnCharListing(Index_).Chars(i).DeletionTime = dat1
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='1', deletion_time='{0}' where id='{1}'", dat1.ToString, ClientList.OnCharListing(Index_).Chars(i).UniqueId))
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='1', deletion_time='{0}' where id='{1}'", dat1.ToString, ClientList.OnCharListing(Index_).Chars(i).CharacterId))
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Character)
@@ -132,7 +132,7 @@
 			For i = 0 To ClientList.OnCharListing(Index_).NumberOfChars - 1
 				If ClientList.OnCharListing(Index_).Chars(i).CharacterName = nick Then
 					ClientList.OnCharListing(Index_).Chars(i).Deleted = False
-					DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'", ClientList.OnCharListing(Index_).Chars(i).UniqueId))
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'", ClientList.OnCharListing(Index_).Chars(i).CharacterId))
 
 					Dim writer As New PacketWriter
 					writer.Create(ServerOpcodes.Character)
@@ -197,10 +197,9 @@
 				DatabaseCore.Chars(NewCharacterIndex) = New [cChar]
 				DatabaseCore.Chars(NewCharacterIndex).AccountID = ClientList.OnCharListing(Index_).LoginInformation.Id
 				DatabaseCore.Chars(NewCharacterIndex).CharacterName = nick
-				DatabaseCore.Chars(NewCharacterIndex).CharacterId = DatabaseCore.UniqueIdCounter
-				DatabaseCore.Chars(NewCharacterIndex).UniqueId = DatabaseCore.UniqueIdCounter
-				DatabaseCore.UniqueIdCounter += 1
-				DatabaseCore.Chars(NewCharacterIndex).HP = 200
+                DatabaseCore.Chars(NewCharacterIndex).CharacterId = DatabaseCore.GetUnqiueID
+                DatabaseCore.Chars(NewCharacterIndex).UniqueId = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+                DatabaseCore.Chars(NewCharacterIndex).HP = 200
 				DatabaseCore.Chars(NewCharacterIndex).MP = 200
 				DatabaseCore.Chars(NewCharacterIndex).CHP = 200
 				DatabaseCore.Chars(NewCharacterIndex).CMP = 200
@@ -242,9 +241,9 @@
                 DatabaseCore.Chars(NewCharacterIndex).Parry = parry
                 DatabaseCore.Chars(NewCharacterIndex).SetCharGroundStats()
 
-                GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume, DatabaseCore.Chars(NewCharacterIndex).Level, DatabaseCore.Chars(NewCharacterIndex).Gold, DatabaseCore.Chars(NewCharacterIndex).SkillPoints, CInt(DatabaseCore.Chars(NewCharacterIndex).GM)))
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", DatabaseCore.Chars(NewCharacterIndex).Position.XSector, DatabaseCore.Chars(NewCharacterIndex).Position.YSector, Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.X), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Z), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Y), DatabaseCore.Chars(NewCharacterIndex).UniqueId))
-                DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')", DatabaseCore.Chars(NewCharacterIndex).UniqueId))
+                GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", DatabaseCore.Chars(NewCharacterIndex).CharacterId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume, DatabaseCore.Chars(NewCharacterIndex).Level, DatabaseCore.Chars(NewCharacterIndex).Gold, DatabaseCore.Chars(NewCharacterIndex).SkillPoints, CInt(DatabaseCore.Chars(NewCharacterIndex).GM)))
+                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", DatabaseCore.Chars(NewCharacterIndex).Position.XSector, DatabaseCore.Chars(NewCharacterIndex).Position.YSector, Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.X), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Z), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Y), DatabaseCore.Chars(NewCharacterIndex).CharacterId))
+                DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')", DatabaseCore.Chars(NewCharacterIndex).CharacterId))
 
 
 				' Masterys
@@ -254,44 +253,44 @@
 					'257 - 259
 
 					Dim mastery As New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 257
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 258
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 259
 					AddMasteryToDB(mastery)
 
 					'273 - 276
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 273
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 274
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 275
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 276
 					AddMasteryToDB(mastery)
@@ -302,37 +301,37 @@
 					'Europe Char
                     '513 - 518
 					Dim mastery As New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 513
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 514
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 515
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 516
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 517
 					AddMasteryToDB(mastery)
 
 					mastery = New cMastery
-					mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).UniqueId
+                    mastery.OwnerID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
                     mastery.Level = PlayerStartMasteryLevel
 					mastery.MasteryID = 518
 					AddMasteryToDB(mastery)
@@ -342,7 +341,7 @@
 				'ITEMS
 				For I = 0 To 44
 					Dim to_add As New cInvItem
-					to_add.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+                    to_add.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
 					to_add.Pk2Id = 0
 					to_add.Plus = 0
 					to_add.Amount = 0
@@ -355,7 +354,7 @@
 				'3 = foot
 				'4 = Waffe
 				Dim item As New cInvItem
-				item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
+                item.OwnerCharID = DatabaseCore.Chars(NewCharacterIndex).CharacterId
 				item.Pk2Id = _items(1)
 				item.Plus = Math.Round(Rnd() * 3, 0)
 				item.Amount = 0
@@ -583,7 +582,7 @@
             writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
 
             For i = 0 To DatabaseCore.Masterys.Length - 1
-                If (DatabaseCore.Masterys(i) IsNot Nothing) AndAlso DatabaseCore.Masterys(i).OwnerID = chari.UniqueId Then
+                If (DatabaseCore.Masterys(i) IsNot Nothing) AndAlso DatabaseCore.Masterys(i).OwnerID = chari.CharacterId Then
                     writer.Byte(1) 'mastery start
                     writer.DWord(DatabaseCore.Masterys(i).MasteryID) ' Mastery
                     writer.Byte(DatabaseCore.Masterys(i).Level) ' Mastery Level
@@ -594,7 +593,7 @@
             writer.Byte(0) 'mastery end
 
             For i = 0 To DatabaseCore.Skills.Length - 1
-                If (DatabaseCore.Skills(i) IsNot Nothing) AndAlso DatabaseCore.Skills(i).OwnerID = chari.UniqueId Then
+                If (DatabaseCore.Skills(i) IsNot Nothing) AndAlso DatabaseCore.Skills(i).OwnerID = chari.CharacterId Then
                     writer.Byte(1) 'skill start
                     writer.DWord(DatabaseCore.Skills(i).SkillID) 'skill id
                     writer.Byte(1) ' skill end?
@@ -666,7 +665,7 @@
 
             Dim hotkeycount As UInteger = 0
             For i = 0 To DatabaseCore.Hotkeys.Count - 1
-                If DatabaseCore.Hotkeys(i).OwnerID = chari.UniqueId Then
+                If DatabaseCore.Hotkeys(i).OwnerID = chari.CharacterId Then
                     If DatabaseCore.Hotkeys(i).Type <> 0 And DatabaseCore.Hotkeys(i).IconID <> 0 Then
                         hotkeycount += 1
                     End If
@@ -676,7 +675,7 @@
             writer.Byte(hotkeycount)  ' Number of Hotkeys
 
             For i = 0 To DatabaseCore.Hotkeys.Count - 1
-                If DatabaseCore.Hotkeys(i).OwnerID = chari.UniqueId Then
+                If DatabaseCore.Hotkeys(i).OwnerID = chari.CharacterId Then
                     If DatabaseCore.Hotkeys(i).Type <> 0 And DatabaseCore.Hotkeys(i).IconID <> 0 Then
                         writer.Byte(DatabaseCore.Hotkeys(i).Slot)
                         writer.Byte(DatabaseCore.Hotkeys(i).Type)

@@ -16,7 +16,7 @@
                 Dim tmp As String() = Msg.Split(" ")
                 If IsNumeric(tmp(1)) Then
                     Functions.PlayerData(Index_).Level = tmp(1)
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}' where id='{1}'", Functions.PlayerData(Index_).Level, Functions.PlayerData(Index_).UniqueId))
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}' where id='{1}'", Functions.PlayerData(Index_).Level, Functions.PlayerData(Index_).CharacterId))
                     Functions.OnTeleportUser(Index_, Functions.PlayerData(Index_).Position.XSector, Functions.PlayerData(Index_).Position.YSector)
                 End If
             ElseIf Msg.StartsWith("\\sp") Then
@@ -37,7 +37,7 @@
                 Dim tmp As String() = Msg.Split(" ")
                 If IsNumeric(tmp(1)) Then
                     For i = 0 To DatabaseCore.Masterys.Length - 1
-                        If DatabaseCore.Masterys(i).OwnerID = Functions.PlayerData(Index_).UniqueId Then
+                        If DatabaseCore.Masterys(i).OwnerID = Functions.PlayerData(Index_).CharacterId Then
                             DatabaseCore.Masterys(i).Level = tmp(1)
 
                             writer.Create(ServerOpcodes.Mastery_Up)

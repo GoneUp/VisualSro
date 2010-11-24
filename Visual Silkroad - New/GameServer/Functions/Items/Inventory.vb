@@ -375,7 +375,7 @@
             Return writer.GetBytes
         End Function
         Public Sub DeleteItemFromDB(ByVal slot As Byte, ByVal Index_ As Integer)
-            DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='0', plusvalue='0', durability='0', quantity='0' WHERE owner='{0}' AND itemnumber='item{1}'", PlayerData(Index_).UniqueId, slot))
+            DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='0', plusvalue='0', durability='0', quantity='0' WHERE owner='{0}' AND itemnumber='item{1}'", PlayerData(Index_).CharacterId, slot))
         End Sub
 
         Public Function GetFreeItemSlot(ByVal Index_ As Integer) As Byte

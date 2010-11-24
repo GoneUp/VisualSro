@@ -22,7 +22,7 @@
 
             'Save all Data to DB
             DataBase.SaveQuery(String.Format("UPDATE characters SET min_phyatk='{0}', max_phyatk='{1}', min_magatk='{2}', max_magatk='{3}', phydef='{4}', magdef='{5}', hit='{6}', parry='{7}', hp='{8}', mp='{9}', strength='{10}', intelligence='{11}', attribute='{12}' where id='{13}'", _
-            PlayerData(index_).MinPhy, PlayerData(index_).MaxPhy, PlayerData(index_).MinMag, PlayerData(index_).MinMag, PlayerData(index_).PhyDef, PlayerData(index_).MagDef, PlayerData(index_).Hit, PlayerData(index_).Parry, PlayerData(index_).HP, PlayerData(index_).MP, PlayerData(index_).Strength, PlayerData(index_).Intelligence, PlayerData(index_).Attributes, PlayerData(index_).UniqueId))
+            PlayerData(index_).MinPhy, PlayerData(index_).MaxPhy, PlayerData(index_).MinMag, PlayerData(index_).MinMag, PlayerData(index_).PhyDef, PlayerData(index_).MagDef, PlayerData(index_).Hit, PlayerData(index_).Parry, PlayerData(index_).HP, PlayerData(index_).MP, PlayerData(index_).Strength, PlayerData(index_).Intelligence, PlayerData(index_).Attributes, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub UpdateHP(ByVal Index_ As Integer)
@@ -34,7 +34,7 @@
             writer.DWord(PlayerData(Index_).CHP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).UniqueId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateMP(ByVal Index_ As Integer)
@@ -46,7 +46,7 @@
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'", PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).UniqueId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'", PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateHP_MP(ByVal Index_ As Integer)
@@ -59,7 +59,7 @@
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).UniqueId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateGold(ByVal Index_ As Integer)
@@ -70,7 +70,7 @@
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET gold='{0}' where id='{1}'", PlayerData(Index_).Gold, PlayerData(Index_).UniqueId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET gold='{0}' where id='{1}'", PlayerData(Index_).Gold, PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateSP(ByVal index_ As Integer)
@@ -81,7 +81,7 @@
             writer.Byte(0)
             Server.Send(writer.GetBytes, index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'", PlayerData(index_).SkillPoints, PlayerData(index_).UniqueId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'", PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub UpStrength(ByVal Index_ As Integer)

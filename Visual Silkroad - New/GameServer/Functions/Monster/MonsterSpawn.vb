@@ -65,7 +65,7 @@
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedNPCs.Contains(MyIndex) = False Then
                             Server.Send(CreateMonsterSpawnPacket(tmp), refindex)
-                            PlayerData(refindex).SpawnedMonsters.Add(MyIndex)
+                            PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
                         End If
                     End If
                 End If

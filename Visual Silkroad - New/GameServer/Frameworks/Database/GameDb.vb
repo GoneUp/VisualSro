@@ -214,9 +214,9 @@
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
-                Dim uniqueID As UInteger = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                Dim CharID As UInteger = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 For c = 0 To Chars.Count - 1
-                    If Chars(c).UniqueId = uniqueID Then
+                    If Chars(c).CharacterId = CharID Then
                         Chars(c).Position_Return.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(1))
                         Chars(c).Position_Return.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(2))
                         Chars(c).Position_Return.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(3))
@@ -301,7 +301,7 @@
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
             Dim inventory As New cInventory([char].MaxSlots)
             For i = 0 To (AllItems.Length - 1)
-                If AllItems(i).OwnerCharID = [char].UniqueId Then
+                If AllItems(i).OwnerCharID = [char].CharacterId Then
                     inventory.UserItems(AllItems(i).Slot) = AllItems(i)
                 End If
             Next

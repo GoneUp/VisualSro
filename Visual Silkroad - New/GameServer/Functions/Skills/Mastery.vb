@@ -6,7 +6,7 @@
             Dim writer As New PacketWriter
 
             For i = 0 To DatabaseCore.Masterys.Length - 1
-                If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).UniqueId Then
+                If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).CharacterId Then
                     masterycount += DatabaseCore.Masterys(i).Level
                 End If
             Next
@@ -16,7 +16,7 @@
                     'Free mastery
 
                     For i = 0 To DatabaseCore.Masterys.Length - 1
-                        If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).UniqueId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
+                        If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).CharacterId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
 
                             Dim _lvldata As cLevelData = GetLevelDataByLevel(DatabaseCore.Masterys(i).Level)
                             If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
@@ -62,7 +62,7 @@
                     'Free mastery
 
                     For i = 0 To DatabaseCore.Masterys.Length - 1
-                        If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).UniqueId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
+                        If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).CharacterId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
 
                             Dim _lvldata As cLevelData = GetLevelDataByLevel(DatabaseCore.Masterys(i).Level + 1)
                             If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
@@ -112,7 +112,7 @@
 
             If PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 Then
                 Dim skill As New cSkill
-                skill.OwnerID = PlayerData(Index_).UniqueId
+                skill.OwnerID = PlayerData(Index_).CharacterId
                 skill.SkillID = SkillID
                 AddSkillToDB(skill)
 
@@ -144,7 +144,7 @@
         Public Function GetMasteryByID(ByVal MasteryID As UInteger, ByVal Index_ As Integer) As cMastery
             Dim ToReturn As New cMastery
             For i = 0 To DatabaseCore.Masterys.Length - 1
-                If DatabaseCore.Masterys(i).OwnerID = PlayerData(Index_).UniqueId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
+                If DatabaseCore.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
                     ToReturn = DatabaseCore.Masterys(i)
                 End If
             Next

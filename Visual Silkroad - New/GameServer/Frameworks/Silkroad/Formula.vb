@@ -1,8 +1,14 @@
 ﻿Namespace GameServer.Functions
     Module Formula
-        Public Function CalculateDistance(ByVal Object_1 As Position, ByVal Object_2 As Position) As Double
-            Dim distance_x As Double = Object_1.X - Object_2.X
-            Dim distance_y As Double = Object_1.Y - Object_2.Y
+        Public Function CalculateDistance(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
+            'Get Real Cords
+            Dim Pos1X As Double = (Pos_1.XSector - 135) * 192 + Pos_1.X / 10
+            Dim Pos1Y As Double = (Pos_1.YSector - 92) * 192 + Pos_1.Y / 10
+            Dim Pos2X As Double = (Pos_2.XSector - 135) * 192 + Pos_2.X / 10
+            Dim Pos2Y As Double = (Pos_2.YSector - 92) * 192 + Pos_2.Y / 10
+
+            Dim distance_x As Double = Pos1X - Pos2X
+            Dim distance_y As Double = Pos1Y - Pos2Y
 
             Dim x As Double = 0
             If distance_x < 0 And distance_x <> 0 Then
@@ -11,10 +17,10 @@
                 x = distance_x
             End If
             If distance_y < 0 And distance_y <> 0 Then
-                Return Math.Sqrt((distance_y * -1) + x)
+                Return ((distance_y * -1) + x)
             End If
 
-            Return Math.Sqrt(x + distance_y)
+            Return x + distance_y
         End Function
 
         Public Function GetMinPhy(ByVal stat As UShort) As Integer

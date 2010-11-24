@@ -34,116 +34,139 @@ Namespace GameServer
         End Sub
 
         Public Sub AttackTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim objB As Timer = DirectCast(sender, Timer)
             Dim Index As Integer = -1
-            For i As Integer = Information.LBound(PlayerAttack, 1) To Information.UBound(PlayerAttack, 1)
-                If Object.ReferenceEquals(PlayerAttack(i), objB) Then
-                    Index = i
-                    Exit For
-                End If
-            Next
+            Try
+                Dim objB As Timer = DirectCast(sender, Timer)
+                For i As Integer = Information.LBound(PlayerAttack, 1) To Information.UBound(PlayerAttack, 1)
+                    If Object.ReferenceEquals(PlayerAttack(i), objB) Then
+                        Index = i
+                        Exit For
+                    End If
+                Next
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+            End Try
 
         End Sub
 
         Public Sub UseItemTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            Dim Index As Integer = -1
+            Try
+                Dim objB As Timer = DirectCast(sender, Timer)
+                For i As Integer = Information.LBound(UsingItemTimer, 1) To Information.UBound(UsingItemTimer, 1)
+                    If Object.ReferenceEquals(UsingItemTimer(i), objB) Then
+                        Index = i
+                        Exit For
+                    End If
+                Next
 
-            Dim objB As Timer = DirectCast(sender, Timer)
-            Dim Index_ As Integer = -1
-            For i As Integer = Information.LBound(PlayerAttack, 1) To Information.UBound(PlayerAttack, 1)
-                If Object.ReferenceEquals(UsingItemTimer(i), objB) Then
-                    Index_ = i
-                    Exit For
+                UsingItemTimer(Index).Stop()
+                If Index <> -1 Then
+                    Select Case Functions.PlayerData(Index).UsedItem
+                        Case UseItemTypes.Return_Scroll
+                            PlayerData(Index).Position_Recall = Functions.PlayerData(Index).Position 'Save Pos
+                            PlayerData(Index).Position = Functions.PlayerData(Index).Position_Return 'Set new Pos
+                            'Save to DB
+                            DataBase.SaveQuery(String.Format("UPDATE positions SET recall_xsect='{0}', recall_ysect='{1}', recall_xpos='{2}', recall_zpos='{3}', recall_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index).Position_Recall.XSector, PlayerData(Index).Position_Recall.YSector, Math.Round(PlayerData(Index).Position_Recall.X), Math.Round(PlayerData(Index).Position_Recall.Z), Math.Round(PlayerData(Index).Position_Recall.Y), PlayerData(Index).UniqueId))
+                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).UniqueId))
+
+                            OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
+                            PlayerData(Index).Busy = False
+                            PlayerData(Index).UsedItem = UseItemTypes.None
+
+
+                        Case UseItemTypes.Reverse_Scroll_Recall
+                            PlayerData(Index).Position = PlayerData(Index).Position_Recall
+                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).UniqueId))
+
+                            OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
+                            PlayerData(Index).Busy = False
+                            PlayerData(Index).UsedItem = UseItemTypes.None
+
+                        Case UseItemTypes.Reverse_Scroll_Dead
+                            PlayerData(Index).Position = PlayerData(Index).Position_Dead
+                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).UniqueId))
+
+                            OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
+                            PlayerData(Index).Busy = False
+                            PlayerData(Index).UsedItem = UseItemTypes.None
+
+                        Case UseItemTypes.Reverse_Scroll_Point
+                            Dim point As ReversePoint_ = GetReversePointByID(PlayerData(Index).UsedItemParameter)
+                            PlayerData(Index).Position = point.Position
+                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).UniqueId))
+
+                            OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
+                            PlayerData(Index).Busy = False
+                            PlayerData(Index).UsedItem = UseItemTypes.None
+                            PlayerData(Index).UsedItemParameter = 0
+
+                    End Select
                 End If
-            Next
-
-            UsingItemTimer(Index_).Stop()
-            If Index_ <> -1 Then
-                Select Case Functions.PlayerData(Index_).UsedItem
-                    Case UseItemTypes.Return_Scroll
-                        PlayerData(Index_).Position_Recall = Functions.PlayerData(Index_).Position 'Save Pos
-                        PlayerData(Index_).Position = Functions.PlayerData(Index_).Position_Return 'Set new Pos
-                        'Save to DB
-                        DataBase.SaveQuery(String.Format("UPDATE positions SET recall_xsect='{0}', recall_ysect='{1}', recall_xpos='{2}', recall_zpos='{3}', recall_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Recall.XSector, PlayerData(Index_).Position_Recall.YSector, Math.Round(PlayerData(Index_).Position_Recall.X), Math.Round(PlayerData(Index_).Position_Recall.Z), Math.Round(PlayerData(Index_).Position_Recall.Y), PlayerData(Index_).UniqueId))
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
-
-                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
-                        PlayerData(Index_).Busy = False
-                        PlayerData(Index_).UsedItem = UseItemTypes.None
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+            End Try
 
 
-                    Case UseItemTypes.Reverse_Scroll_Recall
-                        PlayerData(Index_).Position = PlayerData(Index_).Position_Recall
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
-
-                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
-                        PlayerData(Index_).Busy = False
-                        PlayerData(Index_).UsedItem = UseItemTypes.None
-
-                    Case UseItemTypes.Reverse_Scroll_Dead
-                        PlayerData(Index_).Position = PlayerData(Index_).Position_Dead
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
-
-                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
-                        PlayerData(Index_).Busy = False
-                        PlayerData(Index_).UsedItem = UseItemTypes.None
-
-                    Case UseItemTypes.Reverse_Scroll_Point
-                        Dim point As ReversePoint_ = GetReversePointByID(PlayerData(Index_).UsedItemParameter)
-                        PlayerData(Index_).Position = point.Position
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).UniqueId))
-
-                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
-                        PlayerData(Index_).Busy = False
-                        PlayerData(Index_).UsedItem = UseItemTypes.None
-                        PlayerData(Index_).UsedItemParameter = 0
-
-                End Select
-            End If
         End Sub
 
         Public Sub SitUpTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim objB As Timer = DirectCast(sender, Timer)
             Dim Index As Integer = -1
-            For i As Integer = Information.LBound(PlayerAttack, 1) To Information.UBound(PlayerAttack, 1)
-                If Object.ReferenceEquals(SitUpTimer(i), objB) Then
-                    Index = i
-                    Exit For
-                End If
-            Next
+            Try
+                Dim objB As Timer = DirectCast(sender, Timer)
+                For i As Integer = Information.LBound(SitUpTimer, 1) To Information.UBound(SitUpTimer, 1)
+                    If Object.ReferenceEquals(SitUpTimer(i), objB) Then
+                        Index = i
+                        Exit For
+                    End If
+                Next
 
-            If Index <> -1 Then
-                SitUpTimer(Index).Stop()
+                If Index <> -1 Then
+                    SitUpTimer(Index).Stop()
 
-                If PlayerData(Index).ActionFlag = 4 Then
-                    PlayerData(Index).Busy = True
-                ElseIf PlayerData(Index).ActionFlag = 0 Then
-                    PlayerData(Index).Busy = False
+                    If PlayerData(Index).ActionFlag = 4 Then
+                        PlayerData(Index).Busy = True
+                    ElseIf PlayerData(Index).ActionFlag = 0 Then
+                        PlayerData(Index).Busy = False
+                    End If
                 End If
-            End If
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+            End Try
 
 
         End Sub
 
         Public Sub MonsterDeath_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim objB As Timer = DirectCast(sender, Timer)
             Dim Index As Integer = -1
-            For i As Integer = Information.LBound(PlayerAttack, 1) To Information.UBound(PlayerAttack, 1)
-                If Object.ReferenceEquals(SitUpTimer(i), objB) Then
-                    Index = i
-                    Exit For
-                End If
-            Next
-
-            If Index <> -1 Then
-                MonsterDeath(Index).Stop()
-
-                For i = 0 To MobList.Count - 1
-                    If MobList(i).UniqueID = PlayerData(Index).AttackedDeathMonsterID Then
-                        RemoveMob(i)
+            Try
+                Dim objB As Timer = DirectCast(sender, Timer)
+                For i As Integer = Information.LBound(MonsterDeath, 1) To Information.UBound(MonsterDeath, 1)
+                    If Object.ReferenceEquals(MonsterDeath(i), objB) Then
+                        Index = i
+                        Exit For
                     End If
                 Next
-                PlayerData(Index).AttackedDeathMonsterID = 0
-            End If
+
+                If Index <> -1 Then
+                    MonsterDeath(Index).Stop()
+
+                    For i = 0 To MobList.Count - 1
+                        If i >= MobList.Count Or PlayerData(Index).AttackedDeathMonsterID = 0 Then
+                            Exit Sub
+                        End If
+
+                        If MobList(i).UniqueID = PlayerData(Index).AttackedDeathMonsterID Then
+                            RemoveMob(i)
+                        End If
+                    Next
+                    PlayerData(Index).AttackedDeathMonsterID = 0
+                End If
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+            End Try
+
         End Sub
 
     End Module

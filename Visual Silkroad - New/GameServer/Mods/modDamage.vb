@@ -10,9 +10,9 @@
             o1.Damage.CompareTo(o2.Damage)))
 
             'Build Info
-            Dim sDmg As String = String.Format("== Damage Stats for Mob: {0} ==", ref_.Name)
+            Dim sDmg As String = String.Format("== Damage Statistic for Mob: {0} ==   ", ref_.OtherName)
             For i = 0 To DmgList.Count - 1
-                sDmg += String.Format("\nRank: {0}, Name: {1}, Damage {2}", i, Functions.PlayerData(DmgList(i).PlayerIndex).CharacterName, DmgList(i).Damage)
+                sDmg += String.Format(ControlChars.NewLine & "Rank: {0}, Name: {1}, Damage {2}", i + 1, Functions.PlayerData(DmgList(i).PlayerIndex).CharacterName, DmgList(i).Damage)
             Next
 
             'Send it

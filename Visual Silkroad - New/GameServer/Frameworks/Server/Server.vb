@@ -140,14 +140,14 @@ Namespace GameServer
             Next i
         End Sub
 
-        Public Shared Sub SendToAllInRange(ByVal buff() As Byte, ByVal Index As Integer)
+        Public Shared Sub SendToAllInRange(ByVal buff() As Byte, ByVal Position As Position)
             Dim range As Integer = 750
 
             For i As Integer = 0 To OnlineClient
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position) 'Calculate Distance
+                    Dim distance As Long = CalculateDistance(Position, player.Position) 'Calculate Distance
                     If distance < ServerRange Then
                         'In Rage 
                         If player.Ingame = True Then
@@ -175,10 +175,10 @@ Namespace GameServer
             Next i
         End Sub
 
-        Public Shared Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobIndex As Integer)
+        Public Shared Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobUniqueID As Integer)
             For i = 0 To MaxClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).SpawnedMonsters.Contains(MobIndex) = True Then
+                    If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) = True Then
                         Server.Send(buff, i)
                     End If
                 End If

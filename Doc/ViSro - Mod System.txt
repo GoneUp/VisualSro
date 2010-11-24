@@ -1,0 +1,25 @@
+Litte Documentation about the Mod System
+
+What is a Mod?
+
+it's a litte extension to the game. It is server sided and it donse't exitst in a normal Game Version.  
+
+
+What is the use of such a system?
+
+To bring the Player more Fun ...
+
+
+Can you tell me an Example Mod?
+
+As Example i made a Damage Mod who shows the Player wich Damage he made to a Mob
+
+
+TODO:
+
+Made it as a Script system.
+
+
+
+
+

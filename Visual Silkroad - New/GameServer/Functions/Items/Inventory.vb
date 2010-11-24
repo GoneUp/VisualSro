@@ -178,13 +178,13 @@
 
             If oldslot <= 12 Then
                 'Unequip
-                Server.SendToAllInRange(CreateUnEquippacket(index_, oldslot, newslot), index_)
+                Server.SendToAllInRange(CreateUnEquippacket(index_, oldslot, newslot), PlayerData(index_).Position)
                 PlayerData(index_).SetCharGroundStats()
                 PlayerData(index_).AddItemsToStats(index_)
                 OnStatsPacket(index_)
             ElseIf newslot <= 12 Then
                 'Equip
-                Server.SendToAllInRange(CreateEquippacket(index_, oldslot, newslot), index_)
+                Server.SendToAllInRange(CreateEquippacket(index_, oldslot, newslot), PlayerData(index_).Position)
                 PlayerData(index_).SetCharGroundStats()
                 PlayerData(index_).AddItemsToStats(index_)
                 OnStatsPacket(index_)

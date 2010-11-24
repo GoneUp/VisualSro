@@ -4,6 +4,7 @@
     Module LoginAuth
 
         Public Sub GateWay(ByVal Index_ As Integer)
+
             Dim writer As New PacketWriter
             Dim name As String = "AgentServer"
             writer.Create(ServerOpcodes.ServerInfo)

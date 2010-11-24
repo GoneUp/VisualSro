@@ -22,6 +22,8 @@
                 Select Case ID2
                     Case &H8
                         OnUseHPPot(slot, Index_)
+                    Case &H9 'Return Scroll
+                        OnUseReturnScroll(slot, Index_)
                     Case &H10 'MP-Pot 
                         OnUseMPPot(slot, Index_)
                     Case &H19 'Reverse
@@ -353,7 +355,7 @@
             writer.Create(ServerOpcodes.ItemUseOtherPlayer)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.DWord(ItemID)
-            Server.SendToAllInRange(writer.GetBytes, Index_)
+            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
         End Sub
 
         ''' <summary>

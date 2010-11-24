@@ -5,7 +5,7 @@
             MobList(MobIndex).Death = True
 
             Dim tmp_ As Integer = GetPlayerWithMostDamage(MobIndex)
-            If tmp_ > 0 Then
+            If tmp_ >= 0 Then
                 If MobList(MobIndex).Mob_Type = 3 Then
                     SendUniqueKill(MobList(MobIndex).Pk2ID, PlayerData(tmp_).CharacterName)
                 End If

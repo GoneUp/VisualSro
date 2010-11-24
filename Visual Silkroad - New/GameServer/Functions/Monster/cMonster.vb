@@ -3,11 +3,11 @@
     Public UniqueID As UInt32
     Public Mob_Type As Byte
     Public Angle As UInt16 = 0
-    Public HP_Cur As UInt32
+    Public HP_Cur As Int64
     Public Position As Position
     Public Death As Boolean = False
 
-    Public DamageFromPlayer As List(Of cDamageDone)
+    Public DamageFromPlayer As New List(Of cDamageDone)
 End Class
 
 ''' <summary>

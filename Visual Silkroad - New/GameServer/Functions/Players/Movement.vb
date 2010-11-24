@@ -47,7 +47,7 @@
 
                 ObjectSpawnCheck(Index_)
 
-                Server.SendToAllInRange(writer.GetBytes, Index_)
+                Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
             End If
         End Sub
 
@@ -75,11 +75,11 @@
                 '===========MOBS===================
 
                 For i = 0 To MobList.Count - 1
-                    If CheckRange(PlayerData(Index_).Position, MobList(i).Position) And CheckSectors(PlayerData(Index_).Position, MobList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Position, MobList(i).Position) Then 'And CheckSectors(PlayerData(Index_).Position, MobList(i).Position) Then
                         Dim _mob As cMonster = MobList(i)
-                        If PlayerData(Index_).SpawnedMonsters.Contains(i) = False Then
-                            Server.Send(CreateMonsterSpawnPacket(i), Index_)
-                            PlayerData(Index_).SpawnedMonsters.Add(i)
+                        If PlayerData(Index_).SpawnedMonsters.Contains(_mob.UniqueID) = False Then
+                            Server.Send(CreateMonsterSpawnPacket(_mob), Index_)
+                            PlayerData(Index_).SpawnedMonsters.Add(_mob.UniqueID)
                             Debug.Print(GetObjectById(_mob.Pk2ID).Name)
                         End If
                     End If
@@ -87,10 +87,11 @@
 
                 '===========NPCS===================
                 For i = 0 To NpcList.Count - 1
+                    Dim _npc As cNPC = NpcList(i)
                     If CheckRange(PlayerData(Index_).Position, NpcList(i).Position) And CheckSectors(PlayerData(Index_).Position, NpcList(i).Position) Then
-                        If PlayerData(Index_).SpawnedNPCs.Contains(i) = False Then
+                        If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = False Then
                             Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
-                            PlayerData(Index_).SpawnedNPCs.Add(i)
+                            PlayerData(Index_).SpawnedNPCs.Add(_npc.UniqueID)
                         End If
                     End If
                 Next
@@ -121,21 +122,21 @@
                 Next
 
                 For i = 0 To MobList.Count - 1
-                    If PlayerData(Index_).SpawnedMonsters.Contains(i) = True Then
-                        Dim _mob As cMonster = MobList(i)
+                    Dim _mob As cMonster = MobList(i)
+                    If PlayerData(Index_).SpawnedMonsters.Contains(_mob.UniqueID) = True Then
                         If CheckRange(PlayerData(Index_).Position, _mob.Position) = False Then
                             Server.Send(CreateDespawnPacket(_mob.UniqueID), Index_)
-                            PlayerData(Index_).SpawnedMonsters.Remove(i)
+                            PlayerData(Index_).SpawnedMonsters.Remove(_mob.UniqueID)
                         End If
                     End If
                 Next
 
                 For i = 0 To NpcList.Count - 1
-                    If PlayerData(Index_).SpawnedNPCs.Contains(i) = True Then
-                        Dim _npc As cNPC = NpcList(i)
+                    Dim _npc As cNPC = NpcList(i)
+                    If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = True Then
                         If CheckRange(PlayerData(Index_).Position, _npc.Position) = False Then
                             Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
-                            PlayerData(Index_).SpawnedNPCs.Remove(i)
+                            PlayerData(Index_).SpawnedNPCs.Remove(_npc.UniqueID)
                         End If
                     End If
                 Next
@@ -147,19 +148,11 @@
 
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            Dim range As Integer = ServerRange
-            'Get Real Cords
-            Dim Pos1X As Double = (Pos_1.XSector - 135) * 192 + Pos_1.X / 10
-            Dim Pos1Y As Double = (Pos_1.YSector - 92) * 192 + Pos_1.Y / 10
-            Dim Pos2X As Double = (Pos_1.XSector - 135) * 192 + Pos_1.X / 10
-            Dim Pos2Y As Double = (Pos_1.YSector - 92) * 192 + Pos_1.Y / 10
-
-            If Pos1X >= (Pos2X - range) AndAlso Pos1X <= ((Pos2X - range) + range * 2) AndAlso Pos1Y >= (Pos2Y - range) AndAlso Pos1Y <= ((Pos1Y - range) + range * 2) Then
+            If CalculateDistance(Pos_1, Pos_2) <= ServerRange Then
                 Return True
             Else
                 Return False
             End If
-
         End Function
 
         ''' <summary>

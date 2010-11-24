@@ -64,8 +64,17 @@
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Byte(Type)
             writer.Byte(State)
-            Server.SendToAllInRange(writer.GetBytes, Index_)
+            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
             PlayerData(Index_).ActionFlag = State
+        End Sub
+
+        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer, ByVal MobListIndex As UInteger)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Action)
+            writer.DWord(MobList(MobListIndex).UniqueID)
+            writer.Byte(Type)
+            writer.Byte(State)
+            Server.SendIfMobIsSpawned(writer.GetBytes, MobList(MobListIndex).UniqueID)
         End Sub
 
         Public Sub OnTeleportUser(ByVal Index_ As Integer, ByVal XSec As Byte, ByVal YSec As Byte)
@@ -123,7 +132,7 @@
             writer.Create(ServerOpcodes.Angle_Update)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Word(PlayerData(Index_).Angle)
-            Server.SendToAllInRange(writer.GetBytes, Index_)
+            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
         End Sub
 
         Public Sub OnEmotion(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -131,7 +140,7 @@
             writer.Create(ServerOpcodes.Emotion)
             writer.DWord(PlayerData(index_).UniqueId)
             writer.Byte(packet.Byte)
-            Server.SendToAllInRange(writer.GetBytes, index_)
+            Server.SendToAllInRange(writer.GetBytes, PlayerData(index_).Position)
         End Sub
 
         Public Sub OnHelperIcon(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -141,7 +150,7 @@
             writer.Create(ServerOpcodes.HelperIcon)
             writer.DWord(PlayerData(index_).UniqueId)
             writer.Byte(PlayerData(index_).HelperIcon)
-            Server.SendToAllInRange(writer.GetBytes, index_)
+            Server.SendToAllInRange(writer.GetBytes, PlayerData(index_).Position)
 
             DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(index_).HelperIcon, PlayerData(index_).UniqueId))
         End Sub

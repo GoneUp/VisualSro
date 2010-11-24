@@ -19,8 +19,6 @@
         End Function
 
 
-
-
         Public Function CreateNPCSpawnPacket(ByVal NpcIndex As Integer) As Byte()
             Dim npc As cNPC = NpcList(NpcIndex)
             Dim obj As Object_ = GetObjectById(npc.Pk2ID)

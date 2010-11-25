@@ -50,7 +50,7 @@
                     tmp.HP_Cur = mob_.Hp * 2
                     SendUniqueSpawn(MobID)
                 Case 4
-                    tmp.HP_Cur = mob_.Hp * 4
+                    tmp.HP_Cur = mob_.Hp * 20
             End Select
 
             MobList.Add(tmp)

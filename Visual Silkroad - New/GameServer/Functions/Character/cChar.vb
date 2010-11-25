@@ -62,6 +62,7 @@
     Public Attacking As Boolean = False
     Public AttackedMonsterID As UInt32 = 0
     Public AttackSkill As UInt32 = 0
+    Public AttackType As AttackType_
 
     Public TeleportType As TeleportType_
 
@@ -145,4 +146,10 @@ End Structure
 Public Enum TeleportType_
     Npc = 0
     GM = 1
+End Enum
+
+
+Public Enum AttackType_
+    Normal = 0
+    Skill = 1
 End Enum

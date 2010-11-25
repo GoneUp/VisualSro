@@ -6,35 +6,53 @@
         Public Sub OnPlayerAttack(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim found As Boolean = False
             Dim type1 As Byte = packet.Byte
-            Dim type2 As Byte = packet.Byte '1= punch -- 4 = skill
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Reply)
 
-            If type1 = 1 And type2 = 1 Then
-                packet.Byte()
-                Dim ObjectID As UInt32 = packet.DWord
+            Select Case type1
+                Case 1
+                    'Attacking
+                    Dim type2 As Byte = packet.Byte '1= punch -- 4 = skill
 
 
-                For i = 0 To MobList.Count - 1
-                    If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
-                        writer.Byte(1)
-                        writer.Byte(1)
-                        Server.Send(writer.GetBytes, Index_)
+                    If type1 = 1 And type2 = 1 And PlayerData(Index_).Attacking = False Then
+                        packet.Byte()
+                        Dim ObjectID As UInt32 = packet.DWord
 
-                        PlayerAttackNormal(Index_, ObjectID)
-                        found = True
-                        Exit For
+
+                        For i = 0 To MobList.Count - 1
+                            If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
+                                writer.Byte(1)
+                                writer.Byte(1)
+                                Server.Send(writer.GetBytes, Index_)
+
+                                PlayerAttackNormal(Index_, ObjectID)
+                                found = True
+                                Exit For
+                            End If
+                        Next
                     End If
-                Next
-            End If
 
+                    If found = False Then
+                        writer.Byte(2)
+                        writer.Byte(0)
+                        Server.Send(writer.GetBytes, Index_)
+                    End If
+                Case 2
+                    'Attack Abort
+                    writer.Byte(2)
+                    writer.Byte(0)
+                    Server.Send(writer.GetBytes, Index_)
 
-            If found = False Then
-                writer.Byte(2)
-                writer.Byte(0)
-                Server.Send(writer.GetBytes, Index_)
-            End If
+                    PlayerData(Index_).Attacking = False
+                    PlayerData(Index_).Busy = False
+                    PlayerData(Index_).AttackedMonsterID = 0
+                    PlayerData(Index_).AttackSkill = 0
+                    PlayerData(Index_).AttackType = AttackType_.Normal
+                    PlayerAttackTimer(Index_).Stop()
+            End Select
+
         End Sub
 
         Public Sub PlayerAttackNormal(ByVal Index_ As Integer, ByVal ObjectID As UInteger)
@@ -48,6 +66,11 @@
                     MobListIndex = i
                 End If
             Next
+
+            If AttObject.Name Is Nothing Then
+                Exit Sub
+            End If
+
 
             Select Case RefWeapon.CLASS_C
                 Case 0
@@ -116,6 +139,14 @@
                 KillMob(MobListIndex)
                 UpdateState(0, 2, Index_, MobListIndex)
                 SendAttackEnd(Index_)
+            Else
+                PlayerData(Index_).Attacking = True
+                PlayerData(Index_).Busy = True
+                PlayerData(Index_).AttackedMonsterID = ObjectID
+                PlayerData(Index_).AttackSkill = AttackType
+                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerAttackTimer(Index_).Interval = 2500
+                PlayerAttackTimer(Index_).Start()
             End If
 
         End Sub
@@ -131,7 +162,7 @@
             Dim RefWeapon As cItem = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
-            Dim Balance As Double = 1 + ((PlayerData(Index_).Level - Mob.Level) / 1000)
+            Dim Balance As Double = 1 + ((PlayerData(Index_).Level - Mob.Level) / 100)
 
             Dim DamageMin As Double
             Dim DamageMax As Double

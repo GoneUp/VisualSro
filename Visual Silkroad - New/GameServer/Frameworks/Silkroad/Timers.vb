@@ -1,7 +1,7 @@
 ﻿Imports System.Timers, GameServer.GameServer.Functions
 Namespace GameServer
     Module Timers
-        Public PlayerAttack As Timer() = New Timer(14999) {}
+        Public PlayerAttackTimer As Timer() = New Timer(14999) {}
         Public MonsterMovement As Timer() = New Timer(14999) {}
         Public MonsterDeath As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
@@ -14,11 +14,11 @@ Namespace GameServer
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttack(TimerCount), MonsterMovement(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+                ReDim PlayerAttackTimer(TimerCount), MonsterMovement(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
 
                 For i As Integer = 0 To TimerCount - 1
-                    PlayerAttack(i) = New Timer()
-                    AddHandler PlayerAttack(i).Elapsed, AddressOf AttackTimer_Elapsed
+                    PlayerAttackTimer(i) = New Timer()
+                    AddHandler PlayerAttackTimer(i).Elapsed, AddressOf AttackTimer_Elapsed
                     UsingItemTimer(i) = New Timer()
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
@@ -27,7 +27,7 @@ Namespace GameServer
                 Next
 
                 'Start Timers
-                MonsterDeath.Interval = 2000
+                MonsterDeath.Interval = 4000
                 MonsterDeath.Start()
 
 
@@ -42,20 +42,28 @@ Namespace GameServer
             Dim Index As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(PlayerAttack, 1) To Information.UBound(PlayerAttack, 1)
-                    If Object.ReferenceEquals(PlayerAttack(i), objB) Then
+                For i As Integer = Information.LBound(PlayerAttackTimer, 1) To Information.UBound(PlayerAttackTimer, 1)
+                    If Object.ReferenceEquals(PlayerAttackTimer(i), objB) Then
                         Index = i
                         Exit For
                     End If
                 Next
 
-
+                PlayerAttackTimer(Index).Stop()
                 PlayerData(Index).Busy = False
                 PlayerData(Index).Attacking = False
 
                 If PlayerData(Index).AttackedMonsterID <> 0 Then
-                    Dim mob_ As cMonster = MobList(GetMobIndex(PlayerData(Index).AttackedMonsterID))
+                    If GetMobIndex(PlayerData(Index).AttackedMonsterID) <> -1 Then
+                        Dim mob_ As cMonster = MobList(GetMobIndex(PlayerData(Index).AttackedMonsterID))
+                        If mob_.Death = False Then
+                            If PlayerData(Index).AttackType = AttackType_.Normal Then
+                                PlayerAttackNormal(Index, mob_.UniqueID)
+                            End If
+                        End If
+                    End If
                 End If
+
 
 
             Catch ex As Exception

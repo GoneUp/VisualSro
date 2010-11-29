@@ -102,6 +102,7 @@
         Gold_Update = &H304E
         Exp_Update = &H3056
         LevelUp_Animation = &H3054
+        Guild_Update = &H3101
 
         'Items
         ItemUse = &HB04C

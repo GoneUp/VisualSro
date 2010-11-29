@@ -1,7 +1,7 @@
 ﻿Namespace GameServer.Functions
     Module ItemSpawn
 
-        Public ItemList As New List(Of cInvItem)
+        Public ItemList As New List(Of cItemDrop)
 
         Public Function CreateItemSpawnPacket(ByVal Item_ As cItemDrop) As Byte()
             Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
@@ -36,8 +36,20 @@
             tmp_.Position = Position
             tmp_.Item = Item
 
+            ItemList.Add(tmp_)
 
-
+            For refindex As Integer = 0 To Server.MaxClients
+                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
+                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
+                    If CheckRange(player.Position, Position) Then
+                        If PlayerData(refindex).SpawnedItems.Contains(tmp_.UniqueID) = False Then
+                            Server.Send(CreateItemSpawnPacket(tmp_), refindex)
+                            PlayerData(refindex).SpawnedMonsters.Add(tmp_.UniqueID)
+                        End If
+                    End If
+                End If
+            Next refindex
         End Sub
 
 

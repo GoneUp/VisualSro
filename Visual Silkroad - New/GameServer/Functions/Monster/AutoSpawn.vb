@@ -40,5 +40,41 @@ nexti:
             End If
 
         End Function
+
+
+        Public Sub SaveAutoSpawn(ByVal path As String)
+            Dim str As String = ""
+
+            For i = 0 To MobList.Count - 1
+                str += MobList(i).Pk2ID
+                str += Integer.Parse(ByteFromInteger(MobList(i).Position.YSector) & ByteFromInteger(MobList(i).Position.XSector), Globalization.NumberStyles.HexNumber)
+                str += MobList(i).Position.X
+                str += MobList(i).Position.Z
+                str += MobList(i).Position.Y
+                str += ControlChars.NewLine
+            Next
+
+
+            For i = 0 To NpcList.Count - 1
+                str += NpcList(i).Pk2ID
+                str += Integer.Parse(ByteFromInteger(NpcList(i).Position.YSector) & ByteFromInteger(NpcList(i).Position.XSector), Globalization.NumberStyles.HexNumber)
+                str += NpcList(i).Position.X
+                str += NpcList(i).Position.Z
+                str += NpcList(i).Position.Y
+                str += ControlChars.NewLine
+            Next
+
+
+            IO.File.WriteAllText(path, str)
+        End Sub
+
+        Public Function ByteFromInteger(ByVal data As Integer) As String
+            Dim str As String = Nothing
+            str = System.Convert.ToString(data, &H10).ToUpper()
+            If str.Length = 1 Then
+                str = "0" & str
+            End If
+            Return str
+        End Function
     End Module
 End Namespace

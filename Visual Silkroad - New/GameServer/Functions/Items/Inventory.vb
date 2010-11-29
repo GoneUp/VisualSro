@@ -205,7 +205,10 @@
             fake_item.Plus = 0
             fake_item.Amount = 0
 
+            DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
             Inventorys(index_).UserItems(slot) = fake_item
+
+
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.ItemMove)
@@ -214,15 +217,9 @@
             writer.Byte(slot)
             writer.Byte(4)
             Server.Send(writer.GetBytes, index_)
-
-            If ref_item IsNot Nothing Then
-                SendNotice("Destroyed Item: " & ref_item.ITEM_TYPE_NAME)
-            End If
-
-
-
         End Sub
 
+#Region "Exchange"
         Public Sub OnExchangeAddItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim slot As Byte = packet.Byte
             Dim ExListInd As Integer = PlayerData(index_).ExchangeID
@@ -356,7 +353,32 @@
                 End If
             End If
         End Sub
+#End Region
 
+        Private Function CheckItemGender(ByVal tmpItem As cItem, ByVal Index_ As Integer) As Boolean
+            Dim Gender As Integer = 0
+
+            If (PlayerData(Index_).Model >= 1907 And PlayerData(Index_).Model <= 1919) Or (PlayerData(Index_).Model >= 14717 And PlayerData(Index_).Model <= 14729) Then
+                Gender = 1
+            End If
+            If (PlayerData(Index_).Model >= 1920 And PlayerData(Index_).Model <= 1932) Or (PlayerData(Index_).Model >= 14730 And PlayerData(Index_).Model <= 14742) Then
+                Gender = 0
+            End If
+
+            If Gender = tmpItem.GENDER Or tmpItem.GENDER = 2 Then
+                Return True
+            Else
+                Return False
+            End If
+        End Function
+
+        Private Function CheckLevel(ByVal tmpItem As cInvItem, ByVal Index_ As Integer)
+            If GetItemByID(tmpItem.Pk2Id).LV_REQ >= PlayerData(Index_).Level Then
+                Return True
+            Else
+                Return False
+            End If
+        End Function
 
         Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte) As Byte()
             Dim writer As New PacketWriter

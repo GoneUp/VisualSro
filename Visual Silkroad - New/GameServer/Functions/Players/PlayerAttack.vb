@@ -85,7 +85,7 @@
                 Case 4
                     AttackType = 40
                 Case 5
-                    AttackType = 40
+                    AttackType = 53
                 Case 6
                     AttackType = 70
             End Select
@@ -145,6 +145,7 @@
                 PlayerData(Index_).AttackedMonsterID = ObjectID
                 PlayerData(Index_).AttackSkill = AttackType
                 PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerAttackTimer(Index_).Stop()
                 PlayerAttackTimer(Index_).Interval = 2500
                 PlayerAttackTimer(Index_).Start()
             End If
@@ -162,7 +163,7 @@
             Dim RefWeapon As cItem = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
-            Dim Balance As Double = 1 + ((PlayerData(Index_).Level - Mob.Level) / 100)
+            Dim Balance As Double = (1 + (PlayerData(Index_).Level - Mob.Level))
 
             Dim DamageMin As Double
             Dim DamageMax As Double

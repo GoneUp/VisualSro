@@ -19,6 +19,8 @@
                 Case Else
                     Console.WriteLine("[INVENTORY][TAG: " & type & "]")
             End Select
+
+            Inventorys(index_).ReOrderItems(index_)
         End Sub
         Public Sub OnNormalMove(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim oldslot As Byte = packet.Byte
@@ -32,8 +34,8 @@
 
 
             If Inventorys(index_).UserItems(oldslot).Pk2Id <> 0 Then
-                Dim SourceItem As cInvItem = Inventorys(index_).UserItems(oldslot)
-                Dim DestItem As cInvItem = Inventorys(index_).UserItems(newslot)
+                Dim SourceItem As cInvItem = FillItem(Inventorys(index_).UserItems(oldslot))
+                Dim DestItem As cInvItem = FillItem(Inventorys(index_).UserItems(newslot))
                 Dim _SourceRef As cItem = GetItemByID(SourceItem.Pk2Id)
 
 
@@ -218,7 +220,7 @@
             End If
 
 
-            Inventorys(index_).ReOrderItems(index_)
+
         End Sub
 
         Public Sub OnExchangeAddItem(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -384,6 +386,20 @@
                     Return i
                 End If
             Next
+        End Function
+
+
+        Private Function FillItem(ByVal From_item As cInvItem) As cInvItem
+            Dim tmp_ As New cInvItem
+            tmp_.DatabaseID = From_item.DatabaseID
+            tmp_.Pk2Id = From_item.Pk2Id
+            tmp_.OwnerCharID = From_item.OwnerCharID
+            tmp_.Plus = From_item.Plus
+            tmp_.Slot = From_item.Slot
+            tmp_.Amount = From_item.Amount
+            tmp_.Durability = From_item.Durability
+
+            Return tmp_
         End Function
     End Module
 End Namespace

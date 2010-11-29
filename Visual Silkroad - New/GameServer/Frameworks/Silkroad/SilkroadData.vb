@@ -70,7 +70,10 @@
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
 
-                lines(i) = lines(i).Replace(".", ",")
+
+                If My.Computer.Info.OSFullName.Contains("x64") = False Then
+                    lines(i) = lines(i).Replace(".", ",")
+                End If
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
                 Dim tmp As New cItem

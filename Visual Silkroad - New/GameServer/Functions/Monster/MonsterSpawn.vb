@@ -63,7 +63,7 @@
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
-                        If PlayerData(refindex).SpawnedNPCs.Contains(MyIndex) = False Then
+                        If PlayerData(refindex).SpawnedNPCs.Contains(tmp.UniqueID) = False Then
                             Server.Send(CreateMonsterSpawnPacket(tmp), refindex)
                             PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
                         End If

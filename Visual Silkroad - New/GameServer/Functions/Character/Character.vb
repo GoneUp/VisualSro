@@ -551,7 +551,7 @@
             'INVENTORY HERE
 
             Inventorys(Index_).CalculateItemCount()
-            writer.Byte(chari.MaxSlots)  ' Max Item Slot (0 Minimum + 13) (96 Maximum + 13)
+            writer.Byte(chari.MaxSlots)  ' Max Item Slot (0 Minimum + 13) (4 Seiten x 24 Slots = 96 Maximum + 13)
             writer.Byte(Inventorys(Index_).ItemCount)  ' Amount of Items  
 
             For Each _item As cInvItem In Inventorys(Index_).UserItems

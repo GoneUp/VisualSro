@@ -234,6 +234,14 @@
             Next
 
 
+            For i = 0 To ItemList.Count - 1
+                If PlayerData(Index_).SpawnedItems.Contains(i) = True Then
+                    Dim _item As cItemDrop = ItemList(i)
+                    Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
+                    PlayerData(Index_).SpawnedItems.Remove(i)
+                End If
+            Next
+
             CleanUpPlayer(Index_)
         End Sub
 

@@ -305,7 +305,25 @@
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
 
+                    '================Checks
+                    Dim Fail As Boolean = False
+                    For I = 0 To 13
+                        If Inventorys(Index_).UserItems(I).Pk2Id <> 0 Then
+                            Fail = True
+                        End If
+                    Next
 
+                    If NewModel >= 1907 And NewModel <= 1932 = False And NewModel >= 14717 And NewModel <= 14743 = False Then
+                        'Wrong Model Code! 
+                        Fail = True
+                    End If
+
+                    If Fail = True Then
+                        UseItemError(Index_, &H92)
+                        Exit Sub
+                    End If
+
+                    '==============Useing..
                     If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
                         'Despawn Item
                         _item.Pk2Id = 0
@@ -337,7 +355,11 @@
         End Sub
 
         Public Sub UseItemError(ByVal Index_ As Integer, ByVal ErrorByte As Byte)
-
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.ItemUse)
+            writer.Byte(2)
+            writer.Byte(ErrorByte)
+            Server.Send(writer.GetBytes, Index_)
         End Sub
 
 

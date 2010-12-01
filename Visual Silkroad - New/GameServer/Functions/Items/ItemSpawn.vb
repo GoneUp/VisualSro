@@ -52,8 +52,21 @@
             Next refindex
         End Sub
 
+        Public Sub RemoveItem(ByVal ItemIndex As Integer)
+            Dim _item As cItemDrop = ItemList(ItemIndex)
+            Server.SendIfMobIsSpawned(CreateDespawnPacket(_item.UniqueID), _item.UniqueID)
+            ItemList.RemoveAt(ItemIndex)
 
 
+            For i = 0 To Server.MaxClients
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).SpawnedItems.Contains(_item.UniqueID) = True Then
+                        PlayerData(i).SpawnedItems.Remove(_item.UniqueID)
+                    End If
+                End If
+            Next
+
+        End Sub
     End Module
 
     Class cItemDrop

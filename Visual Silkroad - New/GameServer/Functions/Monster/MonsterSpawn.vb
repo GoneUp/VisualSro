@@ -73,15 +73,15 @@
         End Sub
 
         Public Sub RemoveMob(ByVal MobIndex As Integer)
-            Dim mob_ As cMonster = MobList(MobIndex)
-            Server.SendIfMobIsSpawned(CreateDespawnPacket(mob_.UniqueID), mob_.UniqueID)
+            Dim _mob As cMonster = MobList(MobIndex)
+            Server.SendIfMobIsSpawned(CreateDespawnPacket(_mob.UniqueID), _mob.UniqueID)
             MobList.RemoveAt(MobIndex)
 
 
             For i = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).SpawnedMonsters.Contains(mob_.UniqueID) = True Then
-                        PlayerData(i).SpawnedMonsters.Remove(mob_.UniqueID)
+                    If PlayerData(i).SpawnedMonsters.Contains(_mob.UniqueID) = True Then
+                        PlayerData(i).SpawnedMonsters.Remove(_mob.UniqueID)
                     End If
                 End If
             Next

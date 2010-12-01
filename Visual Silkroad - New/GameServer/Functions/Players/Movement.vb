@@ -19,16 +19,11 @@
                 to_pos.Y = packet.WordInt
 
 
-                Dim x = PlayerData(Index_).Position.X - to_pos.X
-                Dim y = PlayerData(Index_).Position.Y - to_pos.Y
-                Dim Distance = Math.Sqrt(x * x + y * y)
-
-                Dim Traveltime = Distance / PlayerData(Index_).RunSpeed
-                Console.WriteLine(Distance & "    " & Traveltime)
-
-                Debug.Print(to_pos.XSector & " -- " & to_pos.YSector & " -- " & to_pos.X & " -- " & to_pos.Z & " -- " & to_pos.Y)
-                Debug.Print("X:" & ((to_pos.XSector - 135) * 192) + (to_pos.X / 10) & " Y:" & ((to_pos.YSector - 92) * 192) + (to_pos.Y / 10))
-
+                'Dim x = PlayerData(Index_).Position.X - to_pos.X
+                'Dim y = PlayerData(Index_).Position.Y - to_pos.Y
+                'Dim Distance = Math.Sqrt(x * x + y * y)
+                'Dim Traveltime = Distance / PlayerData(Index_).RunSpeed
+                'Console.WriteLine(Distance & "    " & Traveltime)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Movement)
@@ -51,6 +46,32 @@
             End If
         End Sub
 
+        Public Sub OnMoveUser(ByVal Index_ As Integer, ByVal To_Pos As Position)
+            Try
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.Movement)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.Byte(1) 'destination
+                writer.Byte(To_Pos.XSector)
+                writer.Byte(To_Pos.YSector)
+                writer.Word(CUInt(To_Pos.X))
+                writer.Byte(CUInt(To_Pos.Z))
+                writer.Word(CUInt(To_Pos.Y))
+                writer.Byte(0) '1= source
+
+
+                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                PlayerData(Index_).Position = To_Pos
+
+                ObjectSpawnCheck(Index_)
+
+                Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+            Catch ex As Exception
+                Console.WriteLine("OnMoveUser::error...")
+                Debug.Write(ex)
+            End Try
+
+        End Sub
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try
                 Dim range As Integer = ServerRange
@@ -60,7 +81,7 @@
                 For refindex As Integer = 0 To Server.MaxClients
                     If (ClientList.GetSocket(refindex) IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso ClientList.GetSocket(refindex).Connected AndAlso Index_ <> refindex Then
                         If CheckRange(PlayerData(Index_).Position, PlayerData(refindex).Position) Then
-                            If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False Then
+                            If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
                                 Server.Send(CreateSpawnPacket(Index_), refindex)
                                 PlayerData(refindex).SpawnedPlayers.Add(Index_)
                             End If
@@ -96,9 +117,17 @@
                     End If
                 Next
 
+                '===========ITEMS===================
+                For i = 0 To ItemList.Count - 1
+                    Dim _item As cItemDrop = ItemList(i)
+                    If CheckRange(PlayerData(Index_).Position, ItemList(i).Position) And CheckSectors(PlayerData(Index_).Position, ItemList(i).Position) Then
+                        If PlayerData(Index_).SpawnedNPCs.Contains(_item.UniqueID) = False Then
+                            Server.Send(CreateItemSpawnPacket(_item), Index_)
+                            PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)
+                        End If
+                    End If
+                Next
 
-                Console.WriteLine("MOB:" & PlayerData(Index_).SpawnedMonsters.Count)
-                Console.WriteLine("NPC:" & PlayerData(Index_).SpawnedNPCs.Count)
 
             Catch ex As Exception
                 Console.WriteLine("ObjectSpawnCheck()::error...")
@@ -141,6 +170,16 @@
                     End If
                 Next
 
+
+                For i = 0 To ItemList.Count - 1
+                    Dim _item As cItemDrop = ItemList(i)
+                    If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = True Then
+                        If CheckRange(PlayerData(Index_).Position, _item.Position) = False Then
+                            Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
+                            PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
+                        End If
+                    End If
+                Next
             Catch ex As Exception
 
             End Try

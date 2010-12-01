@@ -55,6 +55,9 @@
     Public SpawnedNPCs As New List(Of Integer)
 
     Public Ingame As Boolean = False
+    Public Invisible As Boolean = False 'For Gms
+    Public Invincible As Boolean = False
+
     Public InExchange As Boolean = False
     Public InExchangeWith As Integer = -1
     Public ExchangeID As Integer = -1

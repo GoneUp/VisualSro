@@ -197,17 +197,16 @@
             Dim slot As Byte = packet.Byte
             Dim ref_item As cItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
 
-            DeleteItemFromDB(slot, index_)
 
+            DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
+
+            DeleteItemFromDB(slot, index_)
             Dim fake_item As cInvItem = Inventorys(index_).UserItems(slot)
             fake_item.Pk2Id = 0
             fake_item.Durability = 0
             fake_item.Plus = 0
             fake_item.Amount = 0
-
-            DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
             Inventorys(index_).UserItems(slot) = fake_item
-
 
 
             Dim writer As New PacketWriter

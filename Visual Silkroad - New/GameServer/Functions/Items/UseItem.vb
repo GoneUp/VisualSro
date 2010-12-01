@@ -30,6 +30,8 @@
                         OnUseReverseScroll(slot, Index_, packet)
                     Case &H29 'Globals
                         OnUseGlobal(slot, Index_, packet)
+                    Case &H4E 'Skin CHange Scroll
+                        OnUseSkinScroll(slot, Index_, packet)
                 End Select
             End If
 
@@ -303,11 +305,11 @@
 
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
-                If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
+                If refitem.CLASS_A = 3 And refitem.CLASS_B = 13 And refitem.CLASS_C = 9 Then
 
                     '================Checks
                     Dim Fail As Boolean = False
-                    For I = 0 To 13
+                    For I = 0 To 12
                         If Inventorys(Index_).UserItems(I).Pk2Id <> 0 Then
                             Fail = True
                         End If
@@ -350,6 +352,12 @@
 
                     ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
 
+
+                    PlayerData(Index_).Model = NewModel
+                    PlayerData(Index_).Volume = NewVolume
+
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'", PlayerData(Index_).Model, PlayerData(Index_).Volume, PlayerData(Index_).CharacterId))
+                    OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                 End If
             End If
         End Sub

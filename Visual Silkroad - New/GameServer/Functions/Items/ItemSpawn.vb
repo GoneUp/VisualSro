@@ -12,7 +12,6 @@
                 Case 1 'Equipment
                     writer.Byte(Item_.Item.Plus)
             End Select
-            writer.DWord(Item_.Item.Pk2Id)
             writer.DWord(Item_.UniqueID)
             writer.Byte(Item_.Position.XSector)
             writer.Byte(Item_.Position.YSector)
@@ -20,8 +19,8 @@
             writer.Float(Item_.Position.Z)
             writer.Float(Item_.Position.Y)
 
-            writer.Word(&HAAA6)
-            writer.Byte(0)
+            writer.Byte(1)
+            writer.DWord(UInt32.MaxValue)
             writer.Byte(0)
             writer.Byte(6)
             writer.DWord(Item_.DroppedBy)
@@ -45,7 +44,7 @@
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedItems.Contains(tmp_.UniqueID) = False Then
                             Server.Send(CreateItemSpawnPacket(tmp_), refindex)
-                            PlayerData(refindex).SpawnedMonsters.Add(tmp_.UniqueID)
+                            PlayerData(refindex).SpawnedItems.Add(tmp_.UniqueID)
                         End If
                     End If
                 End If

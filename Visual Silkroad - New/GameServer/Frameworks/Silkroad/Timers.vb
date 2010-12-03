@@ -5,6 +5,7 @@ Namespace GameServer
         Public MonsterMovement As Timer() = New Timer(14999) {}
         Public MonsterDeath As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
+        Public PickUpTimer As Timer() = New Timer(14999) {}
         Public CastAttackTimer As Timer() = New Timer(14999) {}
         Public CastBuffTimer As Timer() = New Timer(14999) {}
         Public UsingItemTimer As Timer() = New Timer(14999) {}
@@ -14,7 +15,7 @@ Namespace GameServer
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttackTimer(TimerCount), MonsterMovement(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+                ReDim PlayerAttackTimer(TimerCount), PickUpTimer(TimerCount), MonsterMovement(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
 
                 For i As Integer = 0 To TimerCount - 1
                     PlayerAttackTimer(i) = New Timer()
@@ -23,6 +24,9 @@ Namespace GameServer
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
                     AddHandler SitUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
+                    PickUpTimer(i) = New Timer()
+                    AddHandler PickUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
+
                     AddHandler MonsterDeath.Elapsed, AddressOf MonsterDeath_Elapsed
                 Next
 
@@ -156,8 +160,31 @@ Namespace GameServer
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
             End Try
+        End Sub
 
+        Public Sub PickUpTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            Dim Index As Integer = -1
+            Try
+                Dim objB As Timer = DirectCast(sender, Timer)
+                For i As Integer = Information.LBound(PickUpTimer, 1) To Information.UBound(PickUpTimer, 1)
+                    If Object.ReferenceEquals(PickUpTimer(i), objB) Then
+                        Index = i
+                        Exit For
+                    End If
+                Next
 
+                If Index <> -1 Then
+                    PickUpTimer(Index).Stop()
+
+                    For i = 0 To ItemList.Count - 1
+                        If ItemList(i).UniqueID = PlayerData(Index).PickUpId Then
+                            PickUp(i, Index)
+                        End If
+                    Next
+                End If
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+            End Try
         End Sub
 
         Public Sub MonsterDeath_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)

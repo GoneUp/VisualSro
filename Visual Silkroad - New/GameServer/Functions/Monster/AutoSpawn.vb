@@ -3,28 +3,31 @@
         Public Sub LoadAutoSpawn(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
-                'Dim line2 As String = lines(i).Replace(".", ",")
+                If My.Computer.Info.OSFullName.Contains("x64") = False Then
+                    lines(i) = lines(i).Replace(".", ",")
+                End If
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim Pk2ID As UInt32 = tmpString(0)
+                Dim Angle As UShort = Math.Round((CInt(tmpString(5)) * 65535) / 360)
                 Dim refobject As Object_ = GetObjectById(Pk2ID)
                 Dim pos As New Position
 
                 pos.X = CSng(tmpString(2))
                 pos.Z = CSng(tmpString(3))
                 pos.Y = CSng(tmpString(4))
-                pos.XSector = Byte.Parse(Convert.ToInt16(tmpString(1)).ToString("X").Substring(2, 2), System.Globalization.NumberStyles.HexNumber)
-                pos.YSector = Byte.Parse(Convert.ToInt16(tmpString(1)).ToString("X").Substring(0, 2), System.Globalization.NumberStyles.HexNumber)
+                pos.XSector = Byte.Parse(Convert.ToUInt16(tmpString(1)).ToString("X").Substring(2, 2), System.Globalization.NumberStyles.HexNumber)
+                pos.YSector = Byte.Parse(Convert.ToUInt16(tmpString(1)).ToString("X").Substring(0, 2), System.Globalization.NumberStyles.HexNumber)
 
 
                 Select Case refobject.Type
                     Case Object_.Type_.Mob_Normal
-                        SpawnMob(Pk2ID, GetRadomMobType, pos)
+                        SpawnMob(Pk2ID, GetRadomMobType, pos, 0)
                     Case Object_.Type_.Npc
-                        SpawnNPC(Pk2ID, pos)
+                        SpawnNPC(Pk2ID, pos, 0)
                 End Select
 
-nexti:
             Next
+            'SaveAutoSpawn(System.AppDomain.CurrentDomain.BaseDirectory & "npcpos.txt")
         End Sub
 
 
@@ -46,21 +49,23 @@ nexti:
             Dim str As String = ""
 
             For i = 0 To MobList.Count - 1
-                str += MobList(i).Pk2ID
-                str += Integer.Parse(ByteFromInteger(MobList(i).Position.YSector) & ByteFromInteger(MobList(i).Position.XSector), Globalization.NumberStyles.HexNumber)
-                str += MobList(i).Position.X
-                str += MobList(i).Position.Z
-                str += MobList(i).Position.Y
+                str += CStr(MobList(i).Pk2ID) & ControlChars.Tab
+                str += CStr(Integer.Parse(ByteFromInteger(MobList(i).Position.YSector) & ByteFromInteger(MobList(i).Position.XSector), Globalization.NumberStyles.HexNumber)) & ControlChars.Tab
+                str += CStr(MobList(i).Position.X) & ControlChars.Tab
+                str += CStr(MobList(i).Position.Z) & ControlChars.Tab
+                str += CStr(MobList(i).Position.Y) & ControlChars.Tab
+                str += CStr(Math.Round((MobList(i).Angle * 360) / 65535))
                 str += ControlChars.NewLine
             Next
 
 
             For i = 0 To NpcList.Count - 1
-                str += NpcList(i).Pk2ID
-                str += Integer.Parse(ByteFromInteger(NpcList(i).Position.YSector) & ByteFromInteger(NpcList(i).Position.XSector), Globalization.NumberStyles.HexNumber)
-                str += NpcList(i).Position.X
-                str += NpcList(i).Position.Z
-                str += NpcList(i).Position.Y
+                str += CStr(NpcList(i).Pk2ID) & ControlChars.Tab
+                str += CStr(Integer.Parse(ByteFromInteger(NpcList(i).Position.YSector) & ByteFromInteger(NpcList(i).Position.XSector), Globalization.NumberStyles.HexNumber)) & ControlChars.Tab
+                str += CStr(NpcList(i).Position.X) & ControlChars.Tab
+                str += CStr(NpcList(i).Position.Z) & ControlChars.Tab
+                str += CStr(NpcList(i).Position.Y) & ControlChars.Tab
+                str += CStr(Math.Round((NpcList(i).Angle * 360) / 65535))
                 str += ControlChars.NewLine
             Next
 

@@ -34,7 +34,7 @@
         Scroll_Cancel = &H705B
         Hotkey_Update = &H7158
         Attack = &H7074
-
+        ClientStatus = &H70EA
 
         Npc_Chat = &H7046
         Npc_Chat_Left = &H704B
@@ -76,7 +76,8 @@
         CharacterInfo = &H3013
         CharacterID = &H3020
 		CharacterStats = &H303D
-		JoinWorldReply = &H3809
+        JoinWorldReply = &H3809
+        ClientStatus = &HB0EA
 
 		Movement = &HB021
 		Chat_Accept = &HB025
@@ -109,6 +110,8 @@
         ItemUseOtherPlayer = &H305C
 		EquipItem = &H3038
         UnEquipItem = &H3039
+        PickUp_Item = &H3036
+        PickUp_Move = &HB034
 
         'Spawns
 		SingleSpawn = &H3015

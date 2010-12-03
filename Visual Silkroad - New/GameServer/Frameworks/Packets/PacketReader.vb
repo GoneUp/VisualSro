@@ -30,7 +30,7 @@ Namespace GameServer
             Return Me.br.ReadSingle()
         End Function
 
-        Public Function LWord() As ULong
+        Public Function QWord() As ULong
             Return Me.br.ReadUInt64()
         End Function
 

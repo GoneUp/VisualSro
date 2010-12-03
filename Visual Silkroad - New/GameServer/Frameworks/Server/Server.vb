@@ -185,6 +185,16 @@ Namespace GameServer
             Next
         End Sub
 
+        Public Shared Sub SendIfItemIsSpawned(ByVal buff() As Byte, ByVal ItemUniqueID As Integer)
+            For i = 0 To MaxClients
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).SpawnedItems.Contains(ItemUniqueID) = True Then
+                        Server.Send(buff, i)
+                    End If
+                End If
+            Next
+        End Sub
+
 #Region "Propertys"
         Public Shared Property ip() As String
             Get

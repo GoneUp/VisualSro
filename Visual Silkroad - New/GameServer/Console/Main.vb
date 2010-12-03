@@ -43,6 +43,7 @@ Namespace GameServer
             GameServer.Log.WriteSystemLog("Started Server. Loading Data now.")
 
             Dim theard As New Threading.Thread(AddressOf GameServer.DatabaseCore.UpdateData)
+            theard.IsBackground = True
             theard.Start()
 
             SilkroadData.DumpDataFiles()

@@ -58,11 +58,12 @@
             Return writer.GetBytes
         End Function
 
-        Public Sub SpawnNPC(ByVal ItemId As UInteger, ByVal Position As Position)
+        Public Sub SpawnNPC(ByVal ItemId As UInteger, ByVal Position As Position, ByVal Angle As UInt16)
             Dim npc_ As Object_ = GetObjectById(ItemId)
             Dim toadd As New cNPC
             toadd.UniqueID = DatabaseCore.GetUnqiueID
             toadd.Pk2ID = npc_.Id
+            toadd.Angle = Angle
             If npc_.Type = Object_.Type_.Npc Then
                 toadd.Position = Position
             ElseIf npc_.Type = Object_.Type_.Teleport Then

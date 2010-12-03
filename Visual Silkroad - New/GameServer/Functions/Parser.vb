@@ -41,6 +41,9 @@ Namespace GameServer
                 Case ClientOpcodes.JoinWorldReq2
                     GameServer.Functions.OnJoinWorldRequest(index)
 
+                Case ClientOpcodes.ClientStatus
+                    GameServer.Functions.OnClientStatusUpdate(packet, index)
+
                     '============Ingame===========
 
                 Case ClientOpcodes.Movement

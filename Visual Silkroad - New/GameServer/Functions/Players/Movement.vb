@@ -121,7 +121,7 @@
                 For i = 0 To ItemList.Count - 1
                     Dim _item As cItemDrop = ItemList(i)
                     If CheckRange(PlayerData(Index_).Position, ItemList(i).Position) And CheckSectors(PlayerData(Index_).Position, ItemList(i).Position) Then
-                        If PlayerData(Index_).SpawnedNPCs.Contains(_item.UniqueID) = False Then
+                        If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = False Then
                             Server.Send(CreateItemSpawnPacket(_item), Index_)
                             PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)
                         End If

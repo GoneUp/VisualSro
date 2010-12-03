@@ -151,7 +151,7 @@ Public Class cInvItem
     ' Fields
     Public OwnerCharID As Integer = 0
     Public Slot As Integer = 0
-    Public Amount As Integer = 0
+    Public Amount As Long = 0
     Public Durability As Integer = 30
     Private ibluestatCount As Byte
     Private ibluestats As sBlueStat()

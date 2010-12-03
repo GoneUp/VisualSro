@@ -7,58 +7,76 @@
             Dim found As Boolean = False
             Dim type1 As Byte = packet.Byte
 
+            'UpdateState(4, 0, Index_)
+
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Reply)
 
-            Select Case type1
-                Case 1
-                    'Attacking
-                    Dim type2 As Byte = packet.Byte '1= punch -- 4 = skill
+            If type1 = 1 Then
+                'Attacking
+                Select Case packet.Byte
+                    Case 1
+                        'Normal Attack
+                        packet.Byte()
+                        Dim ObjectID As UInt32 = packet.DWord
+                        If PlayerData(Index_).Attacking = False Then
+                            For i = 0 To MobList.Count - 1
+                                If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
+                                    writer.Byte(1)
+                                    writer.Byte(1)
+                                    Server.Send(writer.GetBytes, Index_)
 
-
-                    If type1 = 1 And type2 = 1 And PlayerData(Index_).Attacking = False Then
+                                    PlayerAttackNormal(Index_, ObjectID)
+                                    found = True
+                                    Exit For
+                                End If
+                            Next
+                        End If
+                    Case 2
+                        'Pickup
                         packet.Byte()
                         Dim ObjectID As UInt32 = packet.DWord
 
-
-                        For i = 0 To MobList.Count - 1
-                            If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
-                                writer.Byte(1)
-                                writer.Byte(1)
-                                Server.Send(writer.GetBytes, Index_)
-
-                                PlayerAttackNormal(Index_, ObjectID)
-                                found = True
-                                Exit For
+                        For i = 0 To ItemList.Count - 1
+                            If ItemList(i).UniqueID = ObjectID Then
+                                PickUp(i, Index_)
                             End If
                         Next
-                    End If
+                End Select
 
-                    If found = False Then
-                        writer.Byte(2)
-                        writer.Byte(0)
-                        Server.Send(writer.GetBytes, Index_)
-                    End If
-                Case 2
-                    'Attack Abort
+
+                If found = False Then
                     writer.Byte(2)
                     writer.Byte(0)
                     Server.Send(writer.GetBytes, Index_)
+                End If
+            Else
+                'Attack Abort
+                writer.Byte(2)
+                writer.Byte(0)
+                Server.Send(writer.GetBytes, Index_)
 
-                    PlayerData(Index_).Attacking = False
-                    PlayerData(Index_).Busy = False
-                    PlayerData(Index_).AttackedMonsterID = 0
-                    PlayerData(Index_).AttackSkill = 0
-                    PlayerData(Index_).AttackType = AttackType_.Normal
-                    PlayerAttackTimer(Index_).Stop()
-            End Select
+                PlayerData(Index_).Attacking = False
+                PlayerData(Index_).Busy = False
+                PlayerData(Index_).AttackedMonsterID = 0
+                PlayerData(Index_).AttackSkill = 0
+                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerAttackTimer(Index_).Stop()
+            End If
 
         End Sub
 
         Public Sub PlayerAttackNormal(ByVal Index_ As Integer, ByVal ObjectID As UInteger)
             Dim NumberAttack = 1, NumberVictims = 1, AttackType, MobListIndex, afterstate As UInteger
-            Dim RefWeapon As cItem = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+            Dim RefWeapon As New cItem
             Dim AttObject As New Object_
+
+            If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
+                'Weapon
+                GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+            Else
+                'No Weapon
+            End If
 
             For i = 0 To MobList.Count - 1
                 If MobList(i).UniqueID = ObjectID Then
@@ -160,13 +178,20 @@
 
 
         Function CalculateDamageMob(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) As UInteger
-            Dim RefWeapon As cItem = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+            Dim RefWeapon As New cItem
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double = (1 + (PlayerData(Index_).Level - Mob.Level))
 
             Dim DamageMin As Double
             Dim DamageMax As Double
+
+            If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
+                'Weapon
+                GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+            Else
+                'No Weapon
+            End If
 
             If RefSkill.Type = TypeTable.Phy Then
                 DamageMin = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
@@ -238,6 +263,80 @@
                 tmp.Damage = Damage
                 MobList(MobListIndex).DamageFromPlayer.Add(tmp)
             End If
+        End Sub
+
+        Public Sub PickUp(ByVal ItemIndex As UInteger, ByVal Index_ As Integer)
+            Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, ItemList(ItemIndex).Position)
+
+            If distance >= 5 Then
+                'Out Of Range
+                OnMoveUser(Index_, ItemList(ItemIndex).Position)
+                Dim Traveltime = distance / PlayerData(Index_).RunSpeed
+                PickUpTimer(Index_).Interval = Traveltime
+                PickUpTimer(Index_).Start()
+
+            Else
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.PickUp_Move)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.Byte(ItemList(ItemIndex).Position.XSector)
+                writer.Byte(ItemList(ItemIndex).Position.YSector)
+                writer.Float(ItemList(ItemIndex).Position.X)
+                writer.Float(ItemList(ItemIndex).Position.X)
+                writer.Float(ItemList(ItemIndex).Position.X)
+                writer.Word(0)
+                Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+
+                writer.Create(ServerOpcodes.PickUp_Item)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.Byte(0)
+
+                If ItemList(Index_).Item.Pk2Id = 1 Or ItemList(Index_).Item.Pk2Id = 2 Or ItemList(Index_).Item.Pk2Id = 3 Then
+
+                    If ItemList(Index_).Item.Amount > 0 Then
+
+                    End If
+                Else
+                    Dim slot As Byte = GetFreeItemSlot(Index_)
+                    Dim ref As cItem = GetItemByID(ItemList(Index_).Item.Pk2Id)
+                    Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
+
+                    temp_item.Pk2Id = ItemList(Index_).Item.Pk2Id
+                    temp_item.OwnerCharID = PlayerData(Index_).CharacterId
+                    temp_item.Durability = ItemList(Index_).Item.Durability
+                    temp_item.Plus = ItemList(Index_).Item.Plus
+                    temp_item.Amount = ItemList(Index_).Item.Amount
+
+                    UpdateItem(Inventorys(Index_).UserItems(slot)) 'SAVE IT
+
+
+                    writer.Create(ServerOpcodes.ItemMove)
+                    writer.Byte(1)
+                    writer.Byte(6) 'type = new item
+                    writer.Byte(Inventorys(Index_).UserItems(slot).Slot)
+                    writer.DWord(Inventorys(Index_).UserItems(slot).Pk2Id)
+
+                    Select Case ref.CLASS_A
+                        Case 1 'Equipment
+                            writer.Byte(Inventorys(Index_).UserItems(slot).Plus)
+                            writer.QWord(0) 'mods
+                            writer.DWord(Inventorys(Index_).UserItems(slot).Durability)
+                            writer.Byte(0) 'blues
+                        Case 2 'Pets
+
+                        Case 3 'etc
+                            writer.Word(Inventorys(Index_).UserItems(slot).Amount)
+                    End Select
+
+                    Server.Send(writer.GetBytes, Index_)
+
+                    SendAttackEnd(Index_)
+                End If
+                End If
+
+
+
+
         End Sub
     End Module
 End Namespace

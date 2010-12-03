@@ -707,15 +707,20 @@
 
             Server.Send(writer.GetBytes, Index_)
 
-            OnStatsPacket(Index_)
-            OnSendSilks(Index_)
 
         End Sub
 
         Public Sub OnJoinWorldRequest(ByVal Index_ As Integer)
             PlayerData(Index_).Ingame = True
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.JoinWorldReply)
+            writer.Byte(1)
+            writer.Byte(&HB4)
+            Server.Send(writer.GetBytes, Index_)
 
             ObjectSpawnCheck(Index_)
+            OnStatsPacket(Index_)
+            OnSendSilks(Index_)
         End Sub
     End Module
 End Namespace

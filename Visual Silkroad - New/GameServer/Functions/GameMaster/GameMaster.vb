@@ -243,9 +243,9 @@
 
             Select Case selector
                 Case "MOB"
-                    SpawnMob(objectid, type, PlayerData(Index_).Position)
+                    SpawnMob(objectid, type, PlayerData(Index_).Position, 0)
                 Case "NPC"
-                    SpawnNPC(objectid, PlayerData(Index_).Position)
+                    SpawnNPC(objectid, PlayerData(Index_).Position, 0)
             End Select
 
             If LogGM Then

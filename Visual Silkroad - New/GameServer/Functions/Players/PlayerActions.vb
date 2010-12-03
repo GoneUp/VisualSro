@@ -221,10 +221,20 @@
 
             For i = 0 To NpcList.Count - 1
                 If NpcList(i).UniqueID = ObjectID Then
+                    Dim npc = NpcList(i)
                     OnNpcChat(i, Index_)
                     Exit Sub
                 End If
             Next
+        End Sub
+
+        Public Sub OnClientStatusUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim status As ULong = packet.QWord
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.ClientStatus)
+            writer.Byte(1)
+            writer.QWord(status)
+            Server.Send(writer.GetBytes, Index_)
         End Sub
     End Module
 End Namespace

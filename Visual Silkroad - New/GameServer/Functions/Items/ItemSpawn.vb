@@ -18,6 +18,7 @@
             writer.Float(Item_.Position.X)
             writer.Float(Item_.Position.Z)
             writer.Float(Item_.Position.Y)
+            writer.Word(0) 'angle
 
             writer.Byte(1)
             writer.DWord(UInt32.MaxValue)
@@ -33,7 +34,7 @@
             tmp_.UniqueID = DatabaseCore.GetUnqiueID
             tmp_.DroppedBy = Item.OwnerCharID
             tmp_.Position = Position
-            tmp_.Item = Item
+            tmp_.Item = FillItem(Item)
 
             ItemList.Add(tmp_)
 
@@ -53,7 +54,7 @@
 
         Public Sub RemoveItem(ByVal ItemIndex As Integer)
             Dim _item As cItemDrop = ItemList(ItemIndex)
-            Server.SendIfMobIsSpawned(CreateDespawnPacket(_item.UniqueID), _item.UniqueID)
+            Server.SendIfItemIsSpawned(CreateDespawnPacket(_item.UniqueID), _item.UniqueID)
             ItemList.RemoveAt(ItemIndex)
 
 

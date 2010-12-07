@@ -108,11 +108,16 @@ Namespace GameServer
 
 
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
-            ClientList.GetSocket(index).Send(buff)
+            Try
+                ClientList.GetSocket(index).Send(buff)
 
-            If GameServer.Program.Logpackets = True Then
-                Log.LogPacket(buff, True)
-            End If
+                If GameServer.Program.Logpackets = True Then
+                    Log.LogPacket(buff, True)
+                End If
+
+            Catch ex As Exception
+                RaiseEvent OnServerError(ex, index)
+            End Try
         End Sub
 
 

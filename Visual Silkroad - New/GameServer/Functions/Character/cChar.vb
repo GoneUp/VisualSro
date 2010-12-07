@@ -45,6 +45,7 @@
     Public UsedItemParameter As Integer
 
     Public Position As New Position
+    Public Position_To As New Position
     Public Position_Recall As New Position
     Public Position_Return As New Position
     Public Position_Dead As New Position

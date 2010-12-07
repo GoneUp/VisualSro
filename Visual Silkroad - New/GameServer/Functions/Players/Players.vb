@@ -208,7 +208,7 @@
 
             For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
                 Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
-                If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
+                If PlayerData(Other_Index) IsNot Nothing And PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
                     Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
                     PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
 

@@ -6,7 +6,12 @@
     Public HP_Cur As Int64
 
     Public Position As Position
+    Public Position_ToPos As Position
     Public Position_Spawn As Position
+
+    Public WalkStart As New Date
+    Public WalkEnd As New Date
+    Public Walking As Boolean = False
 
     Public Death As Boolean = False
 

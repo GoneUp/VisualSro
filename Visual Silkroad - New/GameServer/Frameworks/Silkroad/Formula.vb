@@ -2,10 +2,10 @@
     Module Formula
         Public Function CalculateDistance(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
             'Get Real Cords
-            Dim Pos1X As Double = (Pos_1.XSector - 135) * 192 + Pos_1.X / 10
-            Dim Pos1Y As Double = (Pos_1.YSector - 92) * 192 + Pos_1.Y / 10
-            Dim Pos2X As Double = (Pos_2.XSector - 135) * 192 + Pos_2.X / 10
-            Dim Pos2Y As Double = (Pos_2.YSector - 92) * 192 + Pos_2.Y / 10
+            Dim Pos1X As Double = GetRealX(Pos_1.XSector, Pos_1.X)
+            Dim Pos1Y As Double = GetRealY(Pos_2.YSector, Pos_2.Y)
+            Dim Pos2X As Double = GetRealX(Pos_1.XSector, Pos_1.X)
+            Dim Pos2Y As Double = GetRealY(Pos_2.YSector, Pos_2.Y)
 
             Dim distance_x As Double = Pos1X - Pos2X
             Dim distance_y As Double = Pos1Y - Pos2Y
@@ -22,6 +22,31 @@
 
             Return x + distance_y
         End Function
+
+#Region "Pos Help Functions"
+        Public Function GetRealX(ByVal XSec As Byte, ByVal XPos As Single) As Single
+            Return (XSec - 135) * 192 + XPos / 10
+        End Function
+
+        Public Function GetRealY(ByVal YSec As Byte, ByVal YPos As Single) As Single
+            Return (YSec - 92) * 192 + YPos / 10
+        End Function
+
+        Public Function GetXSec(ByVal X As Single) As Single
+            Return CSng(Math.Floor(CDbl(((X / 192.0!) + 135.0!))))
+        End Function
+        Public Function GetYSec(ByVal Y As Single) As Single
+            Return CSng(Math.Floor(CDbl(((Y / 192.0!) + 92.0!))))
+        End Function
+
+        Public Function GetXOffset(ByVal X As Single) As Integer
+            Return CInt(Math.Round(CDbl((((((X / 192.0!) - GetXSec(X)) + 135.0!) * 192.0!) * 10.0!))))
+        End Function
+
+        Public Function GetYOffset(ByVal Y As Single) As Integer
+            Return CInt(Math.Round(CDbl((((((Y / 192.0!) - GetYSec(Y)) + 92.0!) * 192.0!) * 10.0!))))
+        End Function
+#End Region
 
         Public Function GetMinPhy(ByVal stat As UShort) As Integer
             Return Convert.ToInt32(6 + ((stat - 20) \ 3))

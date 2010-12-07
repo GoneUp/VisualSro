@@ -36,5 +36,31 @@
             Next
             Return -1
         End Function
+
+
+        Public Sub MoveMob(ByVal MobListIndex As Integer, ByVal ToPos As Position)
+            Dim Obj As Object_ = GetObjectById(MobList(MobListIndex).Pk2ID)
+            Dim Distance As Single = CalculateDistance(MobList(MobListIndex).Position, ToPos)
+            Dim Time As Single = Distance / Obj.Speed
+
+            MobList(MobListIndex).Walking = True
+            MobList(MobListIndex).Position_ToPos = ToPos
+            MobList(MobListIndex).WalkStart = Date.Now
+            MobList(MobListIndex).WalkEnd = Date.Now.AddSeconds(Time)
+
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Movement)
+            writer.DWord(MobList(MobListIndex).UniqueID)
+            writer.Byte(1) 'destination
+            writer.Byte(ToPos.XSector)
+            writer.Byte(ToPos.YSector)
+            writer.Word(CUInt(ToPos.X))
+            writer.Byte(0)
+            writer.Word(CUInt(ToPos.Y))
+            writer.Byte(0) '1= source
+
+            Server.SendIfMobIsSpawned(writer.GetBytes, MobList(MobListIndex).UniqueID)
+        End Sub
+
     End Module
 End Namespace

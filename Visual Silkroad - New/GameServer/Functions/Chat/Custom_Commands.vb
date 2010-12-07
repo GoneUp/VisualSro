@@ -77,6 +77,24 @@
                     Functions.SendPm(Index_, "Saving start!", "[SERVER]")
                     Functions.SaveAutoSpawn(System.AppDomain.CurrentDomain.BaseDirectory & "npcpos.txt")
                     Functions.SendPm(Index_, "Saving finsihed!", "[SERVER]")
+
+                Case "\\turn"
+                    If IsNumeric(tmp(1)) Then
+                        For i = 0 To Functions.NpcList.Count - 1
+                            If Functions.NpcList(i).UniqueID = Functions.PlayerData(Index_).LastSelected Then
+                                Functions.NpcList(i).Angle = (tmp(1) * 65535) / 360
+                                Exit For
+                            End If
+                        Next
+                    End If
+
+                Case "\\count"
+                    Functions.SendPm(Index_, "===========COUNT============", "[SERVER]")
+                    Functions.SendPm(Index_, "Players: " & Server.OnlineClient, "[SERVER]")
+                    Functions.SendPm(Index_, "Mob: " & Functions.MobList.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "Npc: " & Functions.NpcList.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "Items: " & Functions.ItemList.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "== END ==", "[SERVER]")
             End Select
 
 

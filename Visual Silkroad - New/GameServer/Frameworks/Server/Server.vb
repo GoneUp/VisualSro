@@ -175,6 +175,16 @@ Namespace GameServer
             Next i
         End Sub
 
+        Public Shared Sub SendIfPlayerIsSpawned(ByVal buff() As Byte, ByVal Index_ As Integer)
+            For i = 0 To MaxClients
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).SpawnedPlayers.Contains(Index_) = True Then
+                        Server.Send(buff, i)
+                    End If
+                End If
+            Next
+        End Sub
+
         Public Shared Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobUniqueID As Integer)
             For i = 0 To MaxClients
                 If PlayerData(i) IsNot Nothing Then

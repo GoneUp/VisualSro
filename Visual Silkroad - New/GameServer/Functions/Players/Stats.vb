@@ -119,5 +119,67 @@
             End If
         End Sub
 
+
+        Public Sub GetXP(ByRef exp As ULong, ByRef sp As ULong, ByVal index_ As Integer, ByVal FromID As UInt32)
+            Dim NewLevel As Boolean = False
+
+            If PlayerData(index_).Experience + exp >= ULong.MaxValue Then
+                Log.WriteSystemLog("EXP OVERFLOW. Index: " & index_)
+                Exit Sub
+            End If
+
+            PlayerData(index_).Experience += exp
+
+            Do While True
+                Dim lvldata As cLevelData = GetLevelDataByLevel(PlayerData(index_).Level)
+
+                If PlayerData(index_).Experience >= lvldata.Experience Then
+                    'New Level   
+                    If Settings.ServerLevelCap >= PlayerData(index_).Level + 1 Then
+                        PlayerData(index_).Level += 1
+                        PlayerData(index_).Experience -= lvldata.Experience
+                        NewLevel = True
+
+                        'Level Up Things
+                        PlayerData(index_).CHP = PlayerData(index_).HP
+                        PlayerData(index_).CMP = PlayerData(index_).MP
+                        PlayerData(index_).Strength += 1
+                        PlayerData(index_).Intelligence += 1
+                        PlayerData(index_).Attributes += 3
+                    End If
+                Else
+                    Exit Do
+                End If
+            Loop
+
+
+            PlayerData(index_).SkillPointBar += sp
+            Do While PlayerData(index_).SkillPointBar >= 400
+                PlayerData(index_).SkillPoints += 1
+                PlayerData(index_).SkillPointBar -= 400
+            Loop
+
+
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Exp_Update)
+            writer.QWord(exp)
+            writer.QWord(sp)
+            writer.Byte(0)
+            If NewLevel = True Then
+                writer.Word(PlayerData(index_).Attributes)
+
+                SendLevelUpAnimation(index_)
+                OnStatsPacket(index_)
+            End If
+
+            Server.Send(writer.GetBytes, index_)
+        End Sub
+
+        Public Sub SendLevelUpAnimation(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.LevelUp_Animation)
+            writer.DWord(PlayerData(Index_).UniqueId)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+        End Sub
     End Module
 End Namespace

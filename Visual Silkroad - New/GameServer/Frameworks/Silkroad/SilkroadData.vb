@@ -221,7 +221,7 @@
             Next
         End Sub
 
-        Public Function GetLevelDataByLevel(ByVal level As Byte)
+        Public Function GetLevelDataByLevel(ByVal level As Byte) As cLevelData
             For i = 0 To RefLevelData.Count - 1
                 If RefLevelData(i).Level = level Then
                     Return RefLevelData(i)

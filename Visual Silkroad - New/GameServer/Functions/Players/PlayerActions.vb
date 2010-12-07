@@ -223,6 +223,7 @@
                 If NpcList(i).UniqueID = ObjectID Then
                     Dim npc = NpcList(i)
                     OnNpcChat(i, Index_)
+                    PlayerData(Index_).LastSelected = ObjectID
                     Exit Sub
                 End If
             Next

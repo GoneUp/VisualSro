@@ -4,7 +4,10 @@
     Public Mob_Type As Byte
     Public Angle As UInt16 = 0
     Public HP_Cur As Int64
+
     Public Position As Position
+    Public Position_Spawn As Position
+
     Public Death As Boolean = False
 
     Public DamageFromPlayer As New List(Of cDamageDone)

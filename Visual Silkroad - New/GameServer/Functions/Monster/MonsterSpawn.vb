@@ -40,6 +40,7 @@
             tmp.UniqueID = DatabaseCore.GetUnqiueID
             tmp.Pk2ID = mob_.Id
             tmp.Position = Position
+            tmp.Position_Spawn = Position
             tmp.Mob_Type = Type
             tmp.HP_Cur = mob_.Hp
 

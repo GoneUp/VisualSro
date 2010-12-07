@@ -22,8 +22,10 @@
                 Select Case refobject.Type
                     Case Object_.Type_.Mob_Normal
                         SpawnMob(Pk2ID, GetRadomMobType, pos, 0)
+                    Case Object_.Type_.Mob_Cave
+                        SpawnMob(Pk2ID, GetRadomMobType, pos, 0)
                     Case Object_.Type_.Npc
-                        SpawnNPC(Pk2ID, pos, 0)
+                        SpawnNPC(Pk2ID, pos, Angle)
                 End Select
 
             Next

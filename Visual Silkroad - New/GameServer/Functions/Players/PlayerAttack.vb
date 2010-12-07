@@ -42,6 +42,9 @@
                                 PickUp(i, Index_)
                             End If
                         Next
+                    Case 4
+
+
                 End Select
 
 
@@ -154,6 +157,8 @@
             Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
 
             If afterstate = &H80 Then
+                GetXP(AttObject.Exp, 1, Index_, ObjectID)
+
                 KillMob(MobListIndex)
                 UpdateState(0, 2, Index_, MobListIndex)
                 SendAttackEnd(Index_)

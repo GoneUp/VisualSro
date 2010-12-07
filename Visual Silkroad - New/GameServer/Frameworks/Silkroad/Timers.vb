@@ -2,7 +2,7 @@
 Namespace GameServer
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
-        Public MonsterMovement As Timer() = New Timer(14999) {}
+        Public MonsterMovement As Timer
         Public MonsterDeath As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
         Public PickUpTimer As Timer() = New Timer(14999) {}
@@ -15,7 +15,7 @@ Namespace GameServer
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttackTimer(TimerCount), PickUpTimer(TimerCount), MonsterMovement(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+                ReDim PlayerAttackTimer(TimerCount), PickUpTimer(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
 
                 For i As Integer = 0 To TimerCount - 1
                     PlayerAttackTimer(i) = New Timer()
@@ -202,5 +202,21 @@ Namespace GameServer
 
         End Sub
 
+
+        Public Sub MonsterMovement_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            Try
+                MonsterMovement.Stop()
+
+                For i = 0 To MobList.Count - 1
+                    If MobList(i).Death = False Then
+                        RemoveMob(i)
+                    End If
+                Next
+                MonsterMovement.Start()
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '
+            End Try
+
+        End Sub
     End Module
 End Namespace

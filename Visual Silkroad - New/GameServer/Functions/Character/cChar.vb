@@ -14,7 +14,7 @@
     Public Experience As ULong
     Public Gold As ULong
     Public SkillPoints As UInteger
-    Public SkillPointBar As UShort
+    Public SkillPointBar As ULong
     Public Attributes As UShort
     Public BerserkBar As Byte
     Public Berserk As Byte

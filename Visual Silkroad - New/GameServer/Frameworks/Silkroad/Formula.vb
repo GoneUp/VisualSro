@@ -3,8 +3,8 @@
         Public Function CalculateDistance(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
             'Get Real Cords
             Dim Pos1X As Double = GetRealX(Pos_1.XSector, Pos_1.X)
-            Dim Pos1Y As Double = GetRealY(Pos_2.YSector, Pos_2.Y)
-            Dim Pos2X As Double = GetRealX(Pos_1.XSector, Pos_1.X)
+            Dim Pos1Y As Double = GetRealY(Pos_1.YSector, Pos_1.Y)
+            Dim Pos2X As Double = GetRealX(Pos_2.XSector, Pos_2.X)
             Dim Pos2Y As Double = GetRealY(Pos_2.YSector, Pos_2.Y)
 
             Dim distance_x As Double = Pos1X - Pos2X

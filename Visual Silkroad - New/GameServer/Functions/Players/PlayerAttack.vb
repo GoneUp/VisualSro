@@ -186,7 +186,13 @@
             Dim RefWeapon As New cItem
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
-            Dim Balance As Double = (1 + (PlayerData(Index_).Level - Mob.Level))
+            Dim Balance As Double
+            If CSng(PlayerData(Index_).Level) - Mob.Level > 0 Then
+                Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 100))
+            Else
+                Balance = 0.01
+            End If
+
 
             Dim DamageMin As Double
             Dim DamageMax As Double

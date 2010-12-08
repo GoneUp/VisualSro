@@ -1,11 +1,16 @@
-﻿Imports Microsoft.VisualBasic
-Imports System
+﻿Imports Microsoft.VisualBasic, System.Threading
 Namespace GameServer
 
 
     Friend Class Program
 
         Public Shared Logpackets As Boolean = False
+
+        Public Shared TheardDB As New Thread(AddressOf GameServer.DatabaseCore.UpdateData)
+        Public Shared TheardLoad As New Thread(AddressOf SilkroadData.DumpDataFiles)
+        Public Shared TheardSettings As New Thread(AddressOf LoadSettings)
+        Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
+        Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
         Private Shared Sub db_OnConnectedToDatabase()
             GameServer.Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
@@ -33,31 +38,32 @@ Namespace GameServer
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
             Console.Title = "GAMESERVER ALPHA"
-            GameServer.Log.WriteSystemLog("Starting Agent Server")
+
+            GameServer.Log.WriteSystemLog("Connecting Database.")
+
             DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
             Server.ip = "78.111.78.27"
             Server.port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
-            Server.Start()
-            GameServer.Log.WriteSystemLog("Started Server. Loading Data now.")
+            GameServer.Log.WriteSystemLog("Connected. Loading Data now.")
 
-            Dim theard As New Threading.Thread(AddressOf GameServer.DatabaseCore.UpdateData)
-            theard.IsBackground = True
-            theard.Start()
+            TheardDB.Start()
+            TheardLoad.Start()
+            TheardSettings.Start()
+            TheardTimer.Start(1500)
+            GameServer.Log.WriteSystemLog("Data Loaded. Starting Server.")
 
-            SilkroadData.DumpDataFiles()
-            LoadSettings()
-            LoadTimers(Server.MaxClients)
+            TheardServer.Start()
 
             GameServer.Log.WriteSystemLog("Inital Loding complete!")
 
+
 read:
             Dim msg As String = Console.ReadLine()
-
-
             CheckCommand(msg)
             GoTo read
+
 
 
         End Sub

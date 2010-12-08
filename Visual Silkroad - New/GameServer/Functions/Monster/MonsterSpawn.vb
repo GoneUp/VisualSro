@@ -3,7 +3,7 @@
 
         Public MobList As New List(Of cMonster)
 
-        Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster) As Byte()
+        Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster, ByVal obj As Object_) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.SingleSpawn)
             writer.DWord(_mob.Pk2ID)
@@ -23,9 +23,9 @@
             writer.Byte(Convert.ToByte(_mob.Death)) 'death flag
             writer.Byte(0) 'berserker
 
-            writer.Float(20) 'walkspeed
-            writer.Float(50) 'runspeed
-            writer.Float(100) 'berserkerspeed
+            writer.Float(obj.WalkSpeed) 'walkspeed
+            writer.Float(obj.RunSpeed) 'runspeed
+            writer.Float(obj.BerserkSpeed) 'berserkerspeed
 
             writer.Word(0) 'unknwown  
             writer.Byte(_mob.Mob_Type)
@@ -65,7 +65,7 @@
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedNPCs.Contains(tmp.UniqueID) = False Then
-                            Server.Send(CreateMonsterSpawnPacket(tmp), refindex)
+                            Server.Send(CreateMonsterSpawnPacket(tmp, mob_), refindex)
                             PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
                         End If
                     End If

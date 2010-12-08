@@ -193,7 +193,6 @@ Namespace GameServer
             Try
                 command2.ExecuteNonQuery()
             Catch exception As Exception
-                'command2.Cancel()
                 RaiseEvent OnDatabaseError(exception, command)
             End Try
         End Sub

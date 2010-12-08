@@ -41,12 +41,18 @@
         Public Sub MoveMob(ByVal MobListIndex As Integer, ByVal ToPos As Position)
             Dim Obj As Object_ = GetObjectById(MobList(MobListIndex).Pk2ID)
             Dim Distance As Single = CalculateDistance(MobList(MobListIndex).Position, ToPos)
-            Dim Time As Single = Distance / Obj.Speed
+            Dim Time As Single = Distance / Obj.WalkSpeed
 
-            MobList(MobListIndex).Walking = True
-            MobList(MobListIndex).Position_ToPos = ToPos
-            MobList(MobListIndex).WalkStart = Date.Now
-            MobList(MobListIndex).WalkEnd = Date.Now.AddSeconds(Time)
+            If Time > 0 Then
+                MobList(MobListIndex).Walking = True
+                MobList(MobListIndex).Position_ToPos = ToPos
+                MobList(MobListIndex).WalkStart = Date.Now
+                MobList(MobListIndex).WalkEnd = Date.Now.AddSeconds(Time)
+            Else
+                Debug.Print(1)
+            End If
+
+
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Movement)
@@ -55,7 +61,7 @@
             writer.Byte(ToPos.XSector)
             writer.Byte(ToPos.YSector)
             writer.Word(CUInt(ToPos.X))
-            writer.Byte(0)
+            writer.Word(0)
             writer.Word(CUInt(ToPos.Y))
             writer.Byte(0) '1= source
 

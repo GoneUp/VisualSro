@@ -98,8 +98,10 @@
                 For i = 0 To MobList.Count - 1
                     If CheckRange(PlayerData(Index_).Position, MobList(i).Position) Then 'And CheckSectors(PlayerData(Index_).Position, MobList(i).Position) Then
                         Dim _mob As cMonster = MobList(i)
+                        Dim obj As Object = GetObjectById(_mob.Pk2ID)
+
                         If PlayerData(Index_).SpawnedMonsters.Contains(_mob.UniqueID) = False Then
-                            Server.Send(CreateMonsterSpawnPacket(_mob), Index_)
+                            Server.Send(CreateMonsterSpawnPacket(_mob, obj), Index_)
                             PlayerData(Index_).SpawnedMonsters.Add(_mob.UniqueID)
                             Debug.Print(GetObjectById(_mob.Pk2ID).Name)
                         End If

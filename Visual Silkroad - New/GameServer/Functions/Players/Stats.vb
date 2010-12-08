@@ -162,6 +162,7 @@
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Exp_Update)
+            writer.DWord(FromID)
             writer.QWord(exp)
             writer.QWord(sp)
             writer.Byte(0)

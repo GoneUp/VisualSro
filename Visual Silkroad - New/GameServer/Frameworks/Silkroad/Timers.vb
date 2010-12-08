@@ -35,7 +35,7 @@ Namespace GameServer
                 MonsterDeath.Interval = 4000
                 MonsterDeath.Start()
 
-                MonsterMovement.Interval = 10000
+                MonsterMovement.Interval = 15000
                 MonsterMovement.Start()
 
 
@@ -212,46 +212,57 @@ Namespace GameServer
             Try
                 MonsterMovement.Stop()
 
+                Dim time As Date = Date.Now
                 For i = 0 To MobList.Count - 1
-                    Dim obj As Object_ = GetObjectById(MobList(i).Pk2ID)
-
-                    If MobList(i).Death = False Or MobList(i).Walking = True Then
-                        Dim dist As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_Spawn)
+                    If i < MobList.Count Then
+                        Dim obj As Object_ = GetObjectById(MobList(i).Pk2ID)
                         Dim mob = MobList(i)
 
-                        If dist < ServerRange Then
-                            Dim ToX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X) + random.Next(-15, +10)
-                            Dim ToY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y) + random.Next(-10, +15)
+                        If MobList(i).Death = False And MobList(i).Walking = False Then
+                            Dim dist As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_Spawn)
+                            Dim mob_ = MobList(i)
 
-                            Dim ToPos As New Position
-                            ToPos.XSector = GetXSec(ToX)
-                            ToPos.YSector = GetYSec(ToY)
-                            ToPos.X = GetXOffset(ToX)
-                            ToPos.Z = MobList(i).Position.Z
-                            ToPos.Y = GetYOffset(ToY)
+                            If dist < ServerRange Then
+                                Dim ToX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X) + random.Next(-15, +10)
+                                Dim ToY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y) + random.Next(-10, +15)
 
-                            MoveMob(i, ToPos)
+                                Dim ToPos As New Position
+                                ToPos.XSector = GetXSec(ToX)
+                                ToPos.YSector = GetYSec(ToY)
+                                ToPos.X = GetXOffset(ToX)
+                                ToPos.Z = MobList(i).Position.Z
+                                ToPos.Y = GetYOffset(ToY)
 
-                        Else
-                            MoveMob(i, MobList(i).Position_Spawn)
-                        End If
+                                If ToPos.X = mob.Position.X And ToPos.Y = mob.Position.Y Then
+                                    ToPos.X += 1
+                                End If
 
 
-                    ElseIf MobList(i).Walking = True Then
-                        Dim wert As Integer = Date.Compare(MobList(i).WalkEnd, Date.Now)
-                        If wert = -1 Then
-                            'Abgelaufen
-                            MobList(i).Walking = False
-                            MobList(i).Position = MobList(i).Position_ToPos
-                        Else
-                            Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, MobList(i).WalkEnd)
-                            Dim FullTime As Single = DateDiff(DateInterval.Second, MobList(i).WalkStart, MobList(i).WalkEnd)
+                                MoveMob(i, ToPos)
+                            Else
+                                MoveMob(i, MobList(i).Position_Spawn)
+                            End If
 
-                            Dim XPerSecound As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_ToPos) / FullTime
+
+                        ElseIf MobList(i).Walking = True Then
+                            Dim wert As Integer = Date.Compare(MobList(i).WalkEnd, Date.Now)
+                            If wert = -1 Then
+                                'Abgelaufen
+                                MobList(i).Walking = False
+                                MobList(i).Position = MobList(i).Position_ToPos
+                            Else
+                                Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, MobList(i).WalkEnd)
+                                Dim FullTime As Single = DateDiff(DateInterval.Second, MobList(i).WalkStart, MobList(i).WalkEnd)
+
+                                Dim XPerSecound As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_ToPos) / FullTime
+                            End If
                         End If
                     End If
-
                 Next
+
+                Debug.Print("MM: " & DateDiff(DateInterval.Second, time, Date.Now))
+
+                MonsterMovement.Interval = 15000
                 MonsterMovement.Start()
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '

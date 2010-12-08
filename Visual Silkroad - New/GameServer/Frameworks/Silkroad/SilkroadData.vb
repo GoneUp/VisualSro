@@ -364,8 +364,9 @@
             Public Name As String
             Public OtherName As String
             Public Type As Type_
-
-            Public Speed As Single
+            Public WalkSpeed As Single
+            Public RunSpeed As Single
+            Public BerserkSpeed As Single
             Public Level As Byte
             Public Hp As UInteger
             Public InvSize As Byte
@@ -416,7 +417,9 @@
                 tmp.Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(2)
                 tmp.OtherName = tmpString(3)
-                tmp.Speed = Convert.ToSingle(tmpString(50))
+                tmp.WalkSpeed = Convert.ToSingle(tmpString(46))
+                tmp.RunSpeed = Convert.ToSingle(tmpString(47))
+                tmp.BerserkSpeed = Convert.ToSingle(tmpString(48))
                 tmp.Level = Convert.ToByte(tmpString(57))
                 tmp.Hp = Convert.ToUInt32(tmpString(59))
                 tmp.InvSize = 0
@@ -453,6 +456,18 @@
                     Case "COS"
                         tmp.Type = Object_.Type_.COS
                 End Select
+
+                'Error Preventing
+                If tmp.WalkSpeed = 0 Then
+                    tmp.WalkSpeed = 1
+                End If
+                If tmp.RunSpeed = 0 Then
+                    tmp.RunSpeed = 1
+                End If
+                If tmp.BerserkSpeed = 0 Then
+                    tmp.BerserkSpeed = 1
+                End If
+
                 RefObjects.Add(tmp)
             Next
         End Sub

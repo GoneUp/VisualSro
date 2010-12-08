@@ -192,7 +192,9 @@ Namespace GameServer
 
         Public Shared Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobUniqueID As Integer)
             For i = 0 To MaxClients
-                If PlayerData(i) IsNot Nothing Then
+                Dim socket As Socket = ClientList.GetSocket(i)
+                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) = True Then
                         Server.Send(buff, i)
                     End If

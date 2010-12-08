@@ -71,8 +71,8 @@
             For i As Integer = 0 To lines.Length - 1
 
 
-                If My.Computer.Info.OSFullName.Contains("x64") = False Then
-                    lines(i) = lines(i).Replace(".", ",")
+                If My.Computer.Info.OSFullName.Contains("x64") = True Then
+                    lines(i) = lines(i).Replace(",", ".")
                 End If
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 

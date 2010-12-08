@@ -3,9 +3,10 @@
         Public Sub LoadAutoSpawn(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
-                If My.Computer.Info.OSFullName.Contains("x64") = False Then
-                    lines(i) = lines(i).Replace(".", ",")
+                If My.Computer.Info.OSFullName.Contains("x64") = True Then
+                    lines(i) = lines(i).Replace(",", ".")
                 End If
+                Dim r = My.Computer.Info.OSFullName
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim Pk2ID As UInt32 = tmpString(0)
                 Dim Angle As UShort = Math.Round((CInt(tmpString(5)) * 65535) / 360)

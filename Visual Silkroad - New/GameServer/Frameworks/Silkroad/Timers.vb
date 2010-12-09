@@ -3,7 +3,7 @@ Namespace GameServer
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
         Public MonsterMovement As New Timer
-        Public MonsterDeath As New Timer
+        Public MonsterCheck As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
         Public PickUpTimer As Timer() = New Timer(14999) {}
         Public CastAttackTimer As Timer() = New Timer(14999) {}
@@ -27,13 +27,13 @@ Namespace GameServer
                     PickUpTimer(i) = New Timer()
                     AddHandler PickUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
 
-                    AddHandler MonsterDeath.Elapsed, AddressOf MonsterDeath_Elapsed
+                    AddHandler MonsterCheck.Elapsed, AddressOf MonsterCheck_Elapsed
                     AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
                 Next
 
                 'Start Timers
-                MonsterDeath.Interval = 4000
-                MonsterDeath.Start()
+                MonsterCheck.Interval = 5000
+                MonsterCheck.Start()
 
                 MonsterMovement.Interval = 15000
                 MonsterMovement.Start()
@@ -190,19 +190,25 @@ Namespace GameServer
             End Try
         End Sub
 
-        Public Sub MonsterDeath_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Public Sub MonsterCheck_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Try
-                MonsterDeath.Stop()
+                MonsterCheck.AutoReset = True
+                MonsterCheck.Stop()
+
                 For i = 0 To MobList.Count - 1
                     If MobList(i).Death = True Then
                         RemoveMob(i)
+                    ElseIf IsInSaveZone(MobList(i).Position) Then
+                        RemoveMob(i)
                     End If
                 Next
-                MonsterDeath.Start()
+
+                CheckForRespawns()
+
+                MonsterCheck.Start()
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MD") '
             End Try
-
         End Sub
 
 
@@ -253,8 +259,23 @@ Namespace GameServer
                             Else
                                 Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, MobList(i).WalkEnd)
                                 Dim FullTime As Single = DateDiff(DateInterval.Second, MobList(i).WalkStart, MobList(i).WalkEnd)
+                                Dim Verhältnis As Single = (Past / FullTime)
 
-                                Dim XPerSecound As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_ToPos) / FullTime
+                                Dim Walked As Single = (CalculateDistance(MobList(i).Position_FromPos, MobList(i).Position_ToPos) * Verhältnis)
+
+                                If Walked > 0 Then
+                                    Dim Full_X As Single = MobList(i).Position_FromPos.X - MobList(i).Position_FromPos.X
+                                    Dim Full_Y As Single = MobList(i).Position_FromPos.Y - MobList(i).Position_FromPos.Y
+
+                                    Dim Cur_X As Single = Full_X * Verhältnis
+                                    Dim Cur_Y As Single = Full_Y * Verhältnis
+
+                                    MobList(i).Position.X += Cur_X
+                                    MobList(i).Position.Y += Cur_Y
+
+                                    MobList(i).Position.XSector = GetXSec(MobList(i).Position.X)
+                                    MobList(i).Position.YSector = GetYSec(MobList(i).Position.Y)
+                                End If
                             End If
                         End If
                     End If

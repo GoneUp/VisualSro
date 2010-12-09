@@ -11,6 +11,8 @@
         Public RefMallItems As New List(Of MallPackage_)
         Public RefReversePoints As New List(Of ReversePoint_)
         Public RefTeleportPoints As New List(Of TeleportPoint_)
+        Public RefSafeZone As New List(Of SafeZone_)
+        Public RefRespawns As New List(Of Functions.ReSpawn_)
 
         Public Sub DumpDataFiles()
 
@@ -629,6 +631,37 @@
                     Return RefTeleportPoints(i)
                 End If
             Next
+        End Function
+
+
+        Public Structure SafeZone_
+            Public XSec As Byte
+            Public YSec As Byte
+        End Structure
+
+
+        Public Sub DumpSafeZoneFile(ByVal path As String)
+            Dim lines As String() = IO.File.ReadAllLines(path)
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False Then
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                    Dim tmp As New SafeZone_
+
+                    tmp.XSec = tmpString(0)
+                    tmp.YSec = tmpString(1)
+
+                    RefSafeZone.Add(tmp)
+                End If
+            Next i
+        End Sub
+
+        Public Function IsInSaveZone(ByVal Pos As Position) As Boolean
+            For i = 0 To RefSafeZone.Count - 1
+                If RefSafeZone(i).XSec = Pos.X And RefSafeZone(i).YSec = Pos.YSector Then
+                    Return True
+                End If
+            Next
+            Return False
         End Function
     End Module
 End Namespace

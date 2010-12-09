@@ -34,13 +34,14 @@
             Return writer.GetBytes
         End Function
 
-        Public Sub SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position, ByVal Angel As UInteger)
+        Public Sub SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position, ByVal Angle As UInteger, ByVal SpotID As Long)
             Dim mob_ As Object_ = GetObjectById(MobID)
             Dim tmp As New cMonster
             tmp.UniqueID = DatabaseCore.GetUnqiueID
             tmp.Pk2ID = mob_.Id
             tmp.Position = Position
             tmp.Position_Spawn = Position
+            tmp.SpotID = SpotID
             tmp.Mob_Type = Type
             tmp.HP_Cur = mob_.Hp
 

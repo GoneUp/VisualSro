@@ -243,7 +243,7 @@
 
             Select Case selector
                 Case "MOB"
-                    SpawnMob(objectid, type, PlayerData(Index_).Position, 0)
+                    SpawnMob(objectid, type, PlayerData(Index_).Position, 0, -1)
                 Case "NPC"
                     SpawnNPC(objectid, PlayerData(Index_).Position, 0)
             End Select

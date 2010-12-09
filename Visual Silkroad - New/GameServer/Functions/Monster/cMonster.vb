@@ -1,11 +1,14 @@
 ﻿Public Class cMonster
     Public Pk2ID As UInt32
     Public UniqueID As UInt32
+    Public SpotID As Long
+
     Public Mob_Type As Byte
     Public Angle As UInt16 = 0
     Public HP_Cur As Int64
 
     Public Position As Position
+    Public Position_FromPos As Position
     Public Position_ToPos As Position
     Public Position_Spawn As Position
 

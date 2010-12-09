@@ -45,6 +45,7 @@
 
             If Time > 0 Then
                 MobList(MobListIndex).Walking = True
+                MobList(MobListIndex).Position_FromPos = MobList(MobListIndex).Position
                 MobList(MobListIndex).Position_ToPos = ToPos
                 MobList(MobListIndex).WalkStart = Date.Now
                 MobList(MobListIndex).WalkEnd = Date.Now.AddSeconds(Time)

@@ -96,6 +96,8 @@
     <Compile Include="Frameworks\Server\Server.vb" />
     <Compile Include="Frameworks\Server\Settings.vb" />
     <Compile Include="Frameworks\Silkroad\Timers.vb" />
+    <Compile Include="Functions\Guild\cGuild.vb" />
+    <Compile Include="Functions\Guild\Guild.vb" />
     <Compile Include="Functions\Items\Alchemy.vb" />
     <Compile Include="Functions\Items\ItemMall.vb" />
     <Compile Include="Functions\Items\ItemSpawn.vb" />
@@ -198,9 +200,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Functions\Guild\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

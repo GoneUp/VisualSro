@@ -16,6 +16,7 @@
     Public ServerMasteryCap As UInteger = 300
     Public ServerRange As UInteger = 750
     Public ServerTaxRate As UInt16 = 0
+    Public ServerSpawnsPerSec As UInteger = 50
 
     Public LogGM As Boolean = False
     Public LogMall As Boolean = False
@@ -53,6 +54,7 @@
         ServerMasteryCap = 300
         ServerRange = 100
         ServerTaxRate = 20
+        ServerSpawnsPerSec = 50
 
         LogChat = True
         LogGM = True

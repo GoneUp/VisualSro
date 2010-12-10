@@ -98,7 +98,11 @@
         Public Sub CheckForRespawns()
             For i = 0 To RefRespawns.Count - 1
                 If IsSpawned(i) = False Then
-
+                    If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= ServerSpawnsPerSec Then
+                        If (New Random).Next(0, 2) = 0 Then
+                            ReSpawnMob(i)
+                        End If
+                    End If
                 End If
             Next
         End Sub
@@ -112,6 +116,15 @@
             Return False
         End Function
 
+        Private Function GetCountPerSector(ByVal Xsec As Byte, ByVal Ysec As Byte) As Integer
+            Dim Count As Integer
+            For i = 0 To MobList.Count - 1
+                If MobList(i).Position_Spawn.XSector = Xsec And MobList(i).Position_Spawn.YSector = Ysec Then
+                    Count += 1
+                End If
+            Next
+            Return Count
+        End Function
         Public Sub ReSpawnMob(ByVal SpotIndex As Integer)
             Dim obj_ As Object_ = GetObjectById(RefRespawns(SpotIndex).Pk2ID)
 

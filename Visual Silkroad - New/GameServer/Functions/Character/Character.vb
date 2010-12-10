@@ -659,7 +659,7 @@
             writer.DWord(0)  ' @@@@@@@@@@@@@
             writer.Word(0)  ' @@@@@@@@@@@@@
             writer.DWord(chari.AccountID)  ' Account ID
-            writer.Byte(chari.GM) 'TODO: Get GM Flag from db - GM Flag
+            writer.Byte(chari.GM)
             writer.Byte(7)  ' @@@@@@@@@@@@@
             '''''''''''''''''''''/
 

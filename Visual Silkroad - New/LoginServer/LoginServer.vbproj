@@ -92,6 +92,7 @@
     <Compile Include="Frameworks\Packets\PacketWriter.vb" />
     <Compile Include="Frameworks\Server\Settings.vb" />
     <Compile Include="Functions\Login\Ban.vb" />
+    <Compile Include="Functions\Login\Register.vb" />
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Frameworks\Server\Server.vb" />
     <Compile Include="Functions\Login\LoginServer.vb" />

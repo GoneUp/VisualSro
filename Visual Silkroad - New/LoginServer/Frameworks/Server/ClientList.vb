@@ -37,6 +37,10 @@ Namespace LoginServer
             End If
             Return socket
         End Function
+
+        Public Shared Function GetIP(ByVal index As Integer) As String
+            Return GetSocket(index).RemoteEndPoint.ToString
+        End Function
     End Class
 End Namespace
 

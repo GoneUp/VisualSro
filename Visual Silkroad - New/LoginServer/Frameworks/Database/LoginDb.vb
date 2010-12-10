@@ -6,43 +6,10 @@
 
         'Server
         Public Servers As New List(Of Server_)
-        Structure Server_
-            Public ServerId As UInteger
-            Public Name As String
-            Public AcUs As UInt16
-            Public MaxUs As UInt16
-            Public State As Byte
-            Public IP As String
-            Public Port As UInt16
-        End Structure
-
-
-        'News
         Public News As New List(Of News_)
-        Structure News_
-            Public NewsNumber As Integer
-            Public NewsTitle As String
-            Public NewsText As String
-            Public NewsMonth As Byte
-            Public NewsDay As Byte
-        End Structure
-
-        'User
         Public Users As New List(Of UserArray)
-        Public UserIdCounter As Integer
-
-        Structure UserArray
-            Public AccountId As Integer
-            Public Name As String
-            Public Pw As String
-            Public FailedLogins As Integer
-            Public Banned As Boolean
-            Public BannTime As Date
-            Public BannReason As String
-        End Structure
 
         Private First As Boolean
-
 
         Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
 
@@ -70,7 +37,15 @@
             End Try
         End Sub
 
-
+        Structure Server_
+            Public ServerId As UInteger
+            Public Name As String
+            Public AcUs As UInt16
+            Public MaxUs As UInt16
+            Public State As Byte
+            Public IP As String
+            Public Port As UInt16
+        End Structure
         Public Sub GetServerData()
             Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From Servers")
             Servers.Clear()
@@ -87,29 +62,39 @@
 
                 Servers.Add(tmp_server)
             Next
-
-
         End Sub
 
-        Public Sub GetNewsData()
+        Structure News_
+            Public NewsNumber As Integer
+            Public Title As String
+            Public Text As String
+            Public Time As Date
+        End Structure
 
+        Public Sub GetNewsData()
             Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From News")
             News.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
                 Dim tmp_news As New News_
-                tmp_news.NewsTitle = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                tmp_news.NewsText = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_news.NewsDay = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
-                tmp_news.NewsMonth = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
+                tmp_news.Title = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmp_news.Text = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_news.Time = CDate(tmp.Tables(0).Rows(i).ItemArray(3))
 
                 News.Add(tmp_news)
             Next
-
-
-
         End Sub
 
+
+        Structure UserArray
+            Public AccountId As Integer
+            Public Name As String
+            Public Pw As String
+            Public FailedLogins As Integer
+            Public Banned As Boolean
+            Public BannTime As Date
+            Public BannReason As String
+        End Structure
         Public Sub GetUserData()
 
             Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From Users")
@@ -127,7 +112,6 @@
 
                 Users.Add(tmpUser)
             Next
-
         End Sub
 
         Public Function GetUserWithID(ByVal id As String) As Integer

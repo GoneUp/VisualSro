@@ -59,6 +59,9 @@
     Public Invisible As Boolean = False 'For Gms
     Public Invincible As Boolean = False
 
+    Public InGuild As Boolean = False
+    Public GuildID As UInteger = 0
+
     Public InExchange As Boolean = False
     Public InExchangeWith As Integer = -1
     Public ExchangeID As Integer = -1

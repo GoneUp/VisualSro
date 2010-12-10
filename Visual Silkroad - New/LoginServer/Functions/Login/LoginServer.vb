@@ -37,32 +37,32 @@
         Public Sub SendLauncherInfo(ByVal index As Integer)
 
             Dim writer As New LoginServer.PacketWriter
-            writer.Create(ServerOpcodes.PatchInfo)
-            writer.Byte(1) 'Launcher News
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&HA104)
             Server.Send(writer.GetBytes, index)
 
 
 
-            writer.Create(ServerOpcodes.PatchInfo)
-            writer.Byte(0)
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(0) 'Data
             writer.Byte(LoginDb.News.Count) 'nummer of news
 
             For i = 0 To LoginDb.News.Count - 1
-                writer.Word(LoginDb.News(i).NewsTitle.Length)
-                writer.String(LoginDb.News(i).NewsTitle.Length)
+                writer.Word(LoginDb.News(i).Title.Length)
+                writer.String(LoginDb.News(i).Title.Length)
 
-                writer.Word(LoginDb.News(i).NewsText.Length)
-                writer.String(LoginDb.News(i).NewsText.Length)
+                writer.Word(LoginDb.News(i).Text.Length)
+                writer.String(LoginDb.News(i).Text.Length)
 
-                writer.Word(2010) 'jahr
-                writer.Word(LoginDb.News(i).NewsMonth)
-                writer.Word(LoginDb.News(i).NewsDay)
-                writer.Word(0) 'hour
-                writer.Word(0) 'minute
-                writer.Word(0) 'secound
-                writer.DWord(0) 'millisecond
+                writer.Word(LoginDb.News(i).Time.Year) 'jahr
+                writer.Word(LoginDb.News(i).Time.Month)
+                writer.Word(LoginDb.News(i).Time.Day)
+                writer.Word(LoginDb.News(i).Time.Hour) 'hour
+                writer.Word(LoginDb.News(i).Time.Minute) 'minute
+                writer.Word(LoginDb.News(i).Time.Second) 'secound
+                writer.DWord(LoginDb.News(i).Time.Millisecond) 'millisecond
             Next
 
 
@@ -116,19 +116,35 @@
                 'User exestiert nicht == We register a User
 
                 If Settings.AutoRegister = True Then
-                    RegisterUser(ID, Pw, Index_)
-                    Dim reason As String = String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw)
-                    writer.Byte(2) 'failed
-                    writer.Byte(2) 'gebannt
-                    writer.Byte(1) 'unknown
-                    writer.Word(reason.Length)
-                    writer.String(reason) 'grund
-                    writer.Word(2012) 'jahr
-                    writer.Word(12) 'monat
-                    writer.Word(12) 'tag
-                    writer.DWord(0) 'unknwon
-                    writer.DWord(0) 'unknwon
-                    writer.Word(0) 'unknwon
+                    If CheckIfUserCanRegister(ClientList.GetSocket(Index_).RemoteEndPoint.ToString) = True Then
+                        RegisterUser(ID, Pw, Index_)
+                        Dim reason As String = String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw)
+                        writer.Byte(2) 'failed
+                        writer.Byte(2) 'gebannt
+                        writer.Byte(1) 'unknown
+                        writer.Word(reason.Length)
+                        writer.String(reason) 'grund
+                        writer.Word(2015) 'jahr
+                        writer.Word(12) 'monat
+                        writer.Word(12) 'tag
+                        writer.DWord(0) 'unknwon
+                        writer.DWord(0) 'unknwon
+                        writer.Word(0) 'unknwon
+                    Else
+                        Dim reason As String = String.Format("You can only register {0} a day!", MaxRegistersPerDay)
+                        writer.Byte(2) 'failed
+                        writer.Byte(2) 'gebannt
+                        writer.Byte(1) 'unknown
+                        writer.Word(reason.Length)
+                        writer.String(reason) 'grund
+                        writer.Word(3000) 'jahr
+                        writer.Word(12) 'monat
+                        writer.Word(12) 'tag
+                        writer.DWord(0) 'unknwon
+                        writer.DWord(0) 'unknwon
+                        writer.Word(0) 'unknwon
+                    End If
+
 
                 ElseIf AutoRegister = False Then
                     'Normal Fail
@@ -208,25 +224,6 @@
                     End If
                 End If
             End If
-        End Sub
-
-        Private Sub RegisterUser(ByVal Name As String, ByVal Password As String, ByVal Index_ As Integer)
-            Database.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
-
-            Dim tmpUser As New UserArray
-            Dim r As New Random
-
-            tmpUser.AccountId = r.Next(500000, 1000000)
-            tmpUser.Name = Name
-            tmpUser.Pw = Password
-            tmpUser.FailedLogins = 0
-            tmpUser.Banned = True
-            tmpUser.BannReason = "Please wait for Activation."
-            tmpUser.BannTime = Date.Now.AddMinutes(2)
-
-            Users.Add(tmpUser)
-
-            Log.WriteGameLog(Index_, "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
         End Sub
 
         Private Function GetKey(ByVal Index_ As Integer) As UInt32

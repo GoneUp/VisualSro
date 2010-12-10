@@ -24,6 +24,8 @@
         'Skills
         Public Skills() As cSkill
 
+        'Guilds
+        Public Guilds As New List(Of cGuild)
 
         Private First As Boolean = False
         Public UniqueIdCounter As UInteger = 1
@@ -254,6 +256,52 @@
             Next
         End Sub
 
+        Public Sub GetGuildData()
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From guild_main")
+            Dim Count As Integer = tmp.Tables(0).Rows.Count
+
+            For i = 0 To Count - 1
+                Dim tmp_ As New cGuild
+                tmp_.GuildID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmp_.GuildName = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmp_.GuildPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_.GuildLevel = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                tmp_.GuildNoticeTitle = CStr(tmp.Tables(0).Rows(i).ItemArray(4))
+                tmp_.GuildNotice = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
+
+                Guilds.Add(tmp_)
+            Next
+
+
+            tmp = DataBase.GetDataSet("SELECT * From guild_member")
+            Count = tmp.Tables(0).Rows.Count
+
+            For i = 0 To Count - 1
+                Dim tmp_ As New cGuild.GuildMember_
+                tmp_.CharacterID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmp_.GuildID = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmp_.DonantedGP = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_.Rights.Invite = CBool(tmp.Tables(0).Rows(i).ItemArray(3))
+                tmp_.Rights.Kick = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
+                tmp_.Rights.Notice = CBool(tmp.Tables(0).Rows(i).ItemArray(5))
+                tmp_.Rights.Union = CBool(tmp.Tables(0).Rows(i).ItemArray(6))
+                tmp_.Rights.Strorage = CBool(tmp.Tables(0).Rows(i).ItemArray(7))
+
+                For g = 0 To Guilds.Count - 1
+                    If Guilds(g).GuildID = tmp_.GuildID Then
+                        Guilds(g).Member.Add(tmp_)
+                    End If
+                Next
+
+                For c = 0 To Chars.Count - 1
+                    If Chars(i).CharacterId = tmp_.CharacterID Then
+                        Chars(i).InGuild = True
+                    End If
+                Next
+            Next
+
+        End Sub
+
 #End Region
 
 #Region "Get Things from Array"
@@ -329,8 +377,15 @@
             Return toreturn
         End Function
 
+        Public Function GetGuildWithGuildID(ByVal GuildID As UInteger) As cGuild
+            For i = 0 To Guilds.Count - 1
+                If Guilds(i).GuildID = GuildID Then
+                    Return Guilds(i)
+                End If
+            Next
+            Return Nothing
+        End Function
 #End Region
+
     End Module
-
-
 End Namespace

@@ -22,7 +22,7 @@
 
         Handshake = &H5000
         ServerInfo = &H2001 'Gateway
-        PatchInfo = &H600D 'Patch Info
+        MassiveMessage = &H600D 'Patch Info
         LaucherInfo = &HA104
         ServerList = &HA101
         LoginAuthInfo = &HA102

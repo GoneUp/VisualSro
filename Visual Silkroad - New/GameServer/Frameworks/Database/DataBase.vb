@@ -33,6 +33,19 @@ Namespace GameServer
             End Try
         End Sub
 
+        Public Shared Sub ReConnect()
+            If connection IsNot Nothing Then
+                connection.Close()
+            End If
+            Try
+                connection = New MySqlConnection(ConnectionString)
+                connection.Open()
+                RaiseEvent OnConnectedToDatabase()
+            Catch exception As Exception
+                RaiseEvent OnDatabaseError(exception, ConnectionString)
+            End Try
+        End Sub
+
         Public Shared Sub DeleteData(ByVal command As String)
             SaveQuery(command)
         End Sub

@@ -26,17 +26,17 @@ Namespace GameServer
                     AddHandler SitUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
                     PickUpTimer(i) = New Timer()
                     AddHandler PickUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
-
-                    AddHandler MonsterCheck.Elapsed, AddressOf MonsterCheck_Elapsed
-                    AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
                 Next
+
+                AddHandler MonsterCheck.Elapsed, AddressOf MonsterCheck_Elapsed
+                AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
 
                 'Start Timers
                 MonsterCheck.Interval = 5000
                 MonsterCheck.Start()
 
-                MonsterMovement.Interval = 15000
-                MonsterMovement.Start()
+                MonsterMovement.Interval = 3000
+                'MonsterMovement.Start()
 
 
             Catch ex As Exception
@@ -192,17 +192,20 @@ Namespace GameServer
 
         Public Sub MonsterCheck_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Try
-                MonsterCheck.AutoReset = True
                 MonsterCheck.Stop()
 
                 For i = 0 To MobList.Count - 1
-                    If MobList(i).Death = True Then
-                        RemoveMob(i)
-                    ElseIf IsInSaveZone(MobList(i).Position) Then
-                        RemoveMob(i)
+                    If i < MobList.Count Then
+                        Dim mob_ = MobList(i)
+                        If MobList(i).Death = True Then
+                            RemoveMob(i)
+                        ElseIf IsInSaveZone(MobList(i).Position) Then
+                            RemoveMob(i)
+                        End If
                     End If
                 Next
 
+                Debug.Print(Date.Now.Second)
                 CheckForRespawns()
 
                 MonsterCheck.Start()
@@ -264,14 +267,14 @@ Namespace GameServer
                                 Dim Walked As Single = (CalculateDistance(MobList(i).Position_FromPos, MobList(i).Position_ToPos) * Verhältnis)
 
                                 If Walked > 0 Then
-                                    Dim Full_X As Single = MobList(i).Position_FromPos.X - MobList(i).Position_FromPos.X
-                                    Dim Full_Y As Single = MobList(i).Position_FromPos.Y - MobList(i).Position_FromPos.Y
+                                    Dim Full_X As Single = MobList(i).Position_FromPos.X - MobList(i).Position_ToPos.X
+                                    Dim Full_Y As Single = MobList(i).Position_FromPos.Y - MobList(i).Position_ToPos.Y
 
                                     Dim Cur_X As Single = Full_X * Verhältnis
                                     Dim Cur_Y As Single = Full_Y * Verhältnis
 
-                                    MobList(i).Position.X += Cur_X
-                                    MobList(i).Position.Y += Cur_Y
+                                    MobList(i).Position.X += (Full_X - Cur_X)
+                                    MobList(i).Position.Y += (Full_Y - Cur_Y)
 
                                     MobList(i).Position.XSector = GetXSec(MobList(i).Position.X)
                                     MobList(i).Position.YSector = GetYSec(MobList(i).Position.Y)
@@ -283,7 +286,6 @@ Namespace GameServer
 
                 Debug.Print("MM: " & DateDiff(DateInterval.Second, time, Date.Now))
 
-                MonsterMovement.Interval = 15000
                 MonsterMovement.Start()
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '

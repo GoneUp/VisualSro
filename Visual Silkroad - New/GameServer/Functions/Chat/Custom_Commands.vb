@@ -98,9 +98,6 @@
             End Select
 
 
-            If LogGM Then
-                Log.WriteGameLog(Index_, "GM", "Custom_Command", String.Format("Command: " & Msg))
-            End If
             Functions.OnStatsPacket(Index_)
         End Sub
 

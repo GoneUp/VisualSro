@@ -5,16 +5,13 @@
         Public WithEvents GameDbUpdate As New System.Timers.Timer
 
 		'User
-		Public UserCount As Integer
-		Public Users() As cCharListing.UserArray
+        Public Users() As cCharListing.UserArray
 
 		'Chars
-		Public CharCount As Integer
         Public Chars() As [cChar]
         Public Hotkeys As New List(Of cHotKey)
 
         'Itemcount
-        Public ItemCount As Integer
         Public AllItems() As cInvItem
 
         'Masterys
@@ -49,6 +46,7 @@
                     GetSkillData()
                     GetPositionData()
                     GetHotkeyData()
+                    GetGuildData()
                     First = True
                 End If
 
@@ -77,7 +75,7 @@
         Public Sub GetUserData()
 
             Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From Users")
-            UserCount = tmp.Tables(0).Rows.Count
+            Dim UserCount = tmp.Tables(0).Rows.Count
 
             ReDim Users(UserCount - 1) '-1 machen
 
@@ -95,7 +93,7 @@
         Public Sub GetCharData()
 
             Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From characters")
-            CharCount = tmp.Tables(0).Rows.Count
+            Dim CharCount = tmp.Tables(0).Rows.Count
 
             If CharCount >= 1 Then
                 ReDim Chars(CharCount - 1)
@@ -153,7 +151,7 @@
 
         Public Sub GetItemData()
             Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From items")
-            ItemCount = tmp.Tables(0).Rows.Count
+            Dim ItemCount = tmp.Tables(0).Rows.Count
 
             If ItemCount >= 1 Then
                 ReDim AllItems(ItemCount - 1)
@@ -263,11 +261,11 @@
             For i = 0 To Count - 1
                 Dim tmp_ As New cGuild
                 tmp_.GuildID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                tmp_.GuildName = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                tmp_.GuildPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_.GuildLevel = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
-                tmp_.GuildNoticeTitle = CStr(tmp.Tables(0).Rows(i).ItemArray(4))
-                tmp_.GuildNotice = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
+                tmp_.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmp_.Points = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_.Level = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                tmp_.NoticeTitle = CStr(tmp.Tables(0).Rows(i).ItemArray(4))
+                tmp_.Notice = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
 
                 Guilds.Add(tmp_)
             Next
@@ -281,23 +279,31 @@
                 tmp_.CharacterID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmp_.GuildID = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
                 tmp_.DonantedGP = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_.Rights.Invite = CBool(tmp.Tables(0).Rows(i).ItemArray(3))
-                tmp_.Rights.Kick = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
-                tmp_.Rights.Notice = CBool(tmp.Tables(0).Rows(i).ItemArray(5))
-                tmp_.Rights.Union = CBool(tmp.Tables(0).Rows(i).ItemArray(6))
-                tmp_.Rights.Strorage = CBool(tmp.Tables(0).Rows(i).ItemArray(7))
+                tmp_.GrantName = CStr(tmp.Tables(0).Rows(i).ItemArray(3))
+                tmp_.Rights.Master = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
+                tmp_.Rights.Invite = CBool(tmp.Tables(0).Rows(i).ItemArray(5))
+                tmp_.Rights.Kick = CBool(tmp.Tables(0).Rows(i).ItemArray(6))
+                tmp_.Rights.Notice = CBool(tmp.Tables(0).Rows(i).ItemArray(7))
+                tmp_.Rights.Union = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
+                tmp_.Rights.Storage = CBool(tmp.Tables(0).Rows(i).ItemArray(9))
 
-                For g = 0 To Guilds.Count - 1
-                    If Guilds(g).GuildID = tmp_.GuildID Then
-                        Guilds(g).Member.Add(tmp_)
-                    End If
-                Next
+                If tmp_.GuildID <> -1 Then
+                    For g = 0 To Guilds.Count - 1
+                        If Guilds(g).GuildID = tmp_.GuildID Then
+                            Guilds(g).Member.Add(tmp_)
+                            Exit For
+                        End If
+                    Next
 
-                For c = 0 To Chars.Count - 1
-                    If Chars(i).CharacterId = tmp_.CharacterID Then
-                        Chars(i).InGuild = True
-                    End If
-                Next
+                    For c = 0 To Chars.Count - 1
+                        If Chars(c).CharacterId = tmp_.CharacterID Then
+                            Chars(c).InGuild = True
+                            Chars(c).GuildID = tmp_.GuildID
+                            Exit For
+                        End If
+                    Next
+                End If
+
             Next
 
         End Sub
@@ -381,6 +387,15 @@
             For i = 0 To Guilds.Count - 1
                 If Guilds(i).GuildID = GuildID Then
                     Return Guilds(i)
+                End If
+            Next
+            Return Nothing
+        End Function
+
+        Public Function GetCharWithCharID(ByVal CharacterID As UInteger) As [cChar]
+            For i = 0 To Chars.Length - 1
+                If Chars(i).CharacterId = CharacterID Then
+                    Return Chars(i)
                 End If
             Next
             Return Nothing

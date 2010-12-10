@@ -76,7 +76,7 @@
 
             If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
                 'Weapon
-                GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+                RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Else
                 'No Weapon
             End If
@@ -88,15 +88,14 @@
                 End If
             Next
 
-            If AttObject.Name Is Nothing Then
+            If AttObject.Name Is Nothing Or PlayerData(Index_).Busy Then
                 Exit Sub
             End If
 
 
             Select Case RefWeapon.CLASS_C
                 Case 0
-                    NumberAttack = 2
-                    AttackType = 2
+                    AttackType = 1
                 Case 2
                     NumberAttack = 2
                     AttackType = 2
@@ -106,9 +105,29 @@
                 Case 4
                     AttackType = 40
                 Case 5
-                    AttackType = 53
+                    AttackType = 40
                 Case 6
                     AttackType = 70
+                Case 7
+                    AttackType = 7127
+                Case 8
+                    AttackType = 7128
+                Case 9
+                    NumberAttack = 2
+                    AttackType = 7129
+                Case 10
+                    AttackType = 9069
+                Case 11
+                    AttackType = 8454
+                Case 12
+                    AttackType = 7909
+                Case 13
+                    NumberAttack = 2
+                    AttackType = 7910
+                Case 14
+                    AttackType = 9606
+                Case 15
+                    AttackType = 9970
             End Select
 
             Dim writer As New PacketWriter
@@ -157,7 +176,7 @@
             Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
 
             If afterstate = &H80 Then
-                GetXP(AttObject.Exp, 1, Index_, ObjectID)
+                GetXP(AttObject.Exp * ServerXPRate, AttObject.Exp * ServerSPRate, Index_, ObjectID)
 
                 KillMob(MobListIndex)
                 UpdateState(0, 2, Index_, MobListIndex)
@@ -168,9 +187,10 @@
                 PlayerData(Index_).AttackedMonsterID = ObjectID
                 PlayerData(Index_).AttackSkill = AttackType
                 PlayerData(Index_).AttackType = AttackType_.Normal
-                PlayerAttackTimer(Index_).Stop()
-                PlayerAttackTimer(Index_).Interval = 2500
-                PlayerAttackTimer(Index_).Start()
+                If PlayerAttackTimer(Index_).Enabled = False Then
+                    PlayerAttackTimer(Index_).Interval = 2500
+                    PlayerAttackTimer(Index_).Start()
+                End If
             End If
 
         End Sub

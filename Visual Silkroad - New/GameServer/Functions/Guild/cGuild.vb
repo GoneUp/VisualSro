@@ -1,12 +1,12 @@
 ﻿Namespace GameServer
     Public Class cGuild
         Public GuildID As UInteger
-        Public GuildName As String
-        Public GuildPoints As UInteger
-        Public GuildLevel As Byte
+        Public Name As String
+        Public Points As UInteger
+        Public Level As Byte
 
-        Public GuildNoticeTitle As String
-        Public GuildNotice As String
+        Public NoticeTitle As String
+        Public Notice As String
 
         Public Member As New List(Of GuildMember_)
 
@@ -15,6 +15,7 @@
             Public CharacterID As UInteger
             Public GuildID As UInteger
             Public DonantedGP As UInteger
+            Public GrantName As String
             Public Rights As GuildRights_
         End Structure
 
@@ -24,7 +25,7 @@
             Public Kick As Boolean
             Public Notice As Boolean
             Public Union As Boolean
-            Public Strorage As Boolean
+            Public Storage As Boolean
         End Structure
     End Class
 End Namespace

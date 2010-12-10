@@ -15,12 +15,23 @@
             writer.Float(_mob.Position.Y)
 
             writer.Word(_mob.Angle)
-            writer.Byte(0) 'dest
-            writer.Byte(1) 'walk run flag
-            writer.Byte(0) 'dest
-            writer.Word(_mob.Angle)
+            If _mob.Walking = False Then
+                writer.Byte(0) 'dest
+                writer.Byte(1) 'walk run flag
+                writer.Byte(0) 'dest   
+                writer.Word(_mob.Angle)
+            Else
+                writer.Byte(1) 'dest
+                writer.Byte(1) 'walk run flag
+                writer.Byte(_mob.Position_ToPos.XSector)
+                writer.Byte(_mob.Position_ToPos.YSector)
+                writer.Word(_mob.Position_ToPos.X)
+                writer.Byte(BitConverter.GetBytes(CShort(_mob.Position_ToPos.Z)))
+                writer.Word(_mob.Position_ToPos.Y)
+            End If
+
             writer.Byte(0) 'unknown
-            writer.Byte(Convert.ToByte(_mob.Death)) 'death flag
+            writer.Byte(0) 'death flag
             writer.Byte(0) 'berserker
 
             writer.Float(obj.WalkSpeed) 'walkspeed

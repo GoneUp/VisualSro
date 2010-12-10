@@ -90,7 +90,6 @@
                 If PlayerData(Index_).Strength < UShort.MaxValue Then 'Prevent Errors
                     PlayerData(Index_).Strength += 1
 
-                    PlayerData(Index_).SetCharGroundStats()
                     OnStatsPacket(Index_)
 
                     Dim writer As New PacketWriter
@@ -108,7 +107,6 @@
                 If PlayerData(Index_).Intelligence < UShort.MaxValue Then 'Prevent Errors
                     PlayerData(Index_).Intelligence += 1
 
-                    PlayerData(Index_).SetCharGroundStats()
                     OnStatsPacket(Index_)
 
                     Dim writer As New PacketWriter
@@ -174,6 +172,8 @@
             End If
 
             Server.Send(writer.GetBytes, index_)
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'", PlayerData(index_).Level, PlayerData(index_).Experience, PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub SendLevelUpAnimation(ByVal Index_ As Integer)

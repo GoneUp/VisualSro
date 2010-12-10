@@ -45,6 +45,9 @@
                 DumpTeleportData(base_path & "data\teleportdata.txt", base_path & "data\teleportlink.txt")
                 Log.WriteSystemLog("Loaded " & RefTeleportPoints.Count & " Teleport-Points.")
 
+                DumpSafeZoneFile(base_path & "\data\safezone.txt")
+                Log.WriteSystemLog("Loaded " & RefSafeZone.Count & " SafeZone-Sectors.")
+
                 Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
                 Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
                 Log.WriteSystemLog("Loaded " & Functions.NpcList.Count & " Autospawn Npc's.")
@@ -657,7 +660,7 @@
 
         Public Function IsInSaveZone(ByVal Pos As Position) As Boolean
             For i = 0 To RefSafeZone.Count - 1
-                If RefSafeZone(i).XSec = Pos.X And RefSafeZone(i).YSec = Pos.YSector Then
+                If RefSafeZone(i).XSec = Pos.XSector And RefSafeZone(i).YSec = Pos.YSector Then
                     Return True
                 End If
             Next

@@ -180,7 +180,7 @@
 			writer.Create(ServerOpcodes.Character)
 			writer.Byte(1) 'create
 
-			Dim free As Boolean = GameServer.DatabaseCore.CheckNick(nick)
+            Dim free As Boolean = DatabaseCore.CheckNick(nick)
 			If free = False Or nick.StartsWith("[GM]") = True Then
 				writer.Byte(4)
 				writer.Byte(13)
@@ -188,11 +188,10 @@
 
 			Else
 
-				GameServer.DatabaseCore.CharCount += 1
-				Array.Resize(GameServer.DatabaseCore.Chars, GameServer.DatabaseCore.CharCount)
+                Array.Resize(DatabaseCore.Chars, DatabaseCore.Chars.Count + 1)
 
 				Dim newchar As New [cChar]
-				Dim NewCharacterIndex As Integer = GameServer.DatabaseCore.CharCount - 1
+                Dim NewCharacterIndex As Integer = DatabaseCore.Chars.Count - 1
 
 				DatabaseCore.Chars(NewCharacterIndex) = New [cChar]
 				DatabaseCore.Chars(NewCharacterIndex).AccountID = ClientList.OnCharListing(Index_).LoginInformation.Id
@@ -244,7 +243,7 @@
                 GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", DatabaseCore.Chars(NewCharacterIndex).CharacterId, DatabaseCore.Chars(NewCharacterIndex).AccountID, DatabaseCore.Chars(NewCharacterIndex).CharacterName, DatabaseCore.Chars(NewCharacterIndex).Model, DatabaseCore.Chars(NewCharacterIndex).Volume, DatabaseCore.Chars(NewCharacterIndex).Level, DatabaseCore.Chars(NewCharacterIndex).Gold, DatabaseCore.Chars(NewCharacterIndex).SkillPoints, CInt(DatabaseCore.Chars(NewCharacterIndex).GM)))
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", DatabaseCore.Chars(NewCharacterIndex).Position.XSector, DatabaseCore.Chars(NewCharacterIndex).Position.YSector, Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.X), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Z), Math.Round(DatabaseCore.Chars(NewCharacterIndex).Position.Y), DatabaseCore.Chars(NewCharacterIndex).CharacterId))
                 DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')", DatabaseCore.Chars(NewCharacterIndex).CharacterId))
-
+                DataBase.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')", DatabaseCore.Chars(NewCharacterIndex).CharacterId))
 
 				' Masterys
 
@@ -430,6 +429,7 @@
                 Next
 
 
+
 				'Finish
 
 				writer.Byte(1) 'success
@@ -448,13 +448,8 @@
 
         Public Sub AddItemToDB(ByVal item As cInvItem)
 
-            Dim NewIndex As UInteger = DatabaseCore.ItemCount + 1
-            DatabaseCore.ItemCount = NewIndex
-            Dim i = DatabaseCore.AllItems.Length
-            Array.Resize(DatabaseCore.AllItems, NewIndex)
-            Dim i2 = DatabaseCore.AllItems.Length
-
-            DatabaseCore.AllItems(NewIndex - 1) = item
+            Array.Resize(DatabaseCore.AllItems, DatabaseCore.AllItems.Count + 1)
+            DatabaseCore.AllItems(DatabaseCore.AllItems.Count - 1) = item
 
             DataBase.SaveQuery(String.Format("INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability, "item" & item.Slot))
         End Sub
@@ -706,8 +701,6 @@
 
 
             Server.Send(writer.GetBytes, Index_)
-
-
         End Sub
 
         Public Sub OnJoinWorldRequest(ByVal Index_ As Integer)
@@ -721,6 +714,9 @@
             ObjectSpawnCheck(Index_)
             OnStatsPacket(Index_)
             OnSendSilks(Index_)
+            If PlayerData(Index_).InGuild = True Then
+                SendGuildInfo(Index_, False)
+            End If
         End Sub
     End Module
 End Namespace

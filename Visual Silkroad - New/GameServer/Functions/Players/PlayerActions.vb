@@ -189,6 +189,7 @@
 
         Public Sub OnSelectObject(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ObjectID As UInteger = packet.DWord
+            PlayerData(Index_).LastSelected = ObjectID
             Dim writer As New PacketWriter
 
             For i = 0 To Server.MaxClients
@@ -223,7 +224,6 @@
                 If NpcList(i).UniqueID = ObjectID Then
                     Dim npc = NpcList(i)
                     OnNpcChat(i, Index_)
-                    PlayerData(Index_).LastSelected = ObjectID
                     Exit Sub
                 End If
             Next

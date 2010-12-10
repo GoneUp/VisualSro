@@ -182,11 +182,11 @@
             Dim NameLength As UInt16 = Packet.Word
             Dim Name As String = Packet.String(NameLength)
 
-            For i As Integer = 0 To DatabaseCore.CharCount
+            For i As Integer = 0 To DatabaseCore.Chars.Length - 1
                 If DatabaseCore.Chars(i).CharacterName = Name Then
                     DataBase.InsertData(String.Format("UPDATE users SET banned='1', bantime = '3000-01-01 00:00:00', banreason = 'You got banned by: {0}' where id='{1}'", PlayerData(index_).CharacterName, DatabaseCore.Chars(i).AccountID))
 
-                    For U = 0 To DatabaseCore.UserCount
+                    For U = 0 To DatabaseCore.Users.Count - 1
                         If DatabaseCore.Users(U).Id = DatabaseCore.Chars(i).AccountID Then
                             DatabaseCore.Users(U).Banned = True
                         End If

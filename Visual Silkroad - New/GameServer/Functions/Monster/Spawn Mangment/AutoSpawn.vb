@@ -29,13 +29,15 @@
                     tmp.Pk2ID = Pk2ID
                     tmp.SpotID = i
                     tmp.Position = pos
-                    RefRespawns.Add(tmp)
+
 
                     Select Case obj_.Type
                         Case Object_.Type_.Mob_Normal
                             SpawnMob(Pk2ID, GetRadomMobType, pos, 0, i)
+                            RefRespawns.Add(tmp)
                         Case Object_.Type_.Mob_Cave
                             SpawnMob(Pk2ID, GetRadomMobType, pos, 0, i)
+                            RefRespawns.Add(tmp)
                         Case Object_.Type_.Npc
                             SpawnNPC(Pk2ID, pos, Angle)
                     End Select
@@ -96,10 +98,12 @@
         End Function
 
         Public Sub CheckForRespawns()
+            Dim Random As New Random
+
             For i = 0 To RefRespawns.Count - 1
                 If IsSpawned(i) = False Then
                     If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= ServerSpawnsPerSec Then
-                        If (New Random).Next(0, 2) = 0 Then
+                        If Random.Next(0, 7) = 0 Then
                             ReSpawnMob(i)
                         End If
                     End If

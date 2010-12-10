@@ -1,21 +1,15 @@
 /*
-Navicat MySQL Data Transfer
-
-Source Server         : localhost_3306
-Source Server Version : 50151
-Source Host           : localhost:3306
-Source Database       : visualsro
-
-Target Server Type    : MYSQL
-Target Server Version : 50151
-File Encoding         : 65001
-
-Date: 2010-12-10 19:34:02
+MySQL Data Transfer
+Source Host: localhost
+Source Database: visualsro
+Target Host: localhost
+Target Database: visualsro
+Date: 11.12.2010 00:03:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
--- Table structure for `characters`
+-- Table structure for characters
 -- ----------------------------
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE `characters` (
@@ -38,8 +32,8 @@ CREATE TABLE `characters` (
   `gm` tinyint(1) NOT NULL DEFAULT '0',
   `xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'Default loc Jangan',
   `ysect` int(10) unsigned NOT NULL DEFAULT '98',
-  `xpos` int(10) unsigned NOT NULL DEFAULT '978',
-  `ypos` int(10) unsigned NOT NULL DEFAULT '1097',
+  `xpos` bigint(10) NOT NULL DEFAULT '978',
+  `ypos` bigint(10) NOT NULL DEFAULT '1097',
   `zpos` bigint(10) NOT NULL DEFAULT '40',
   `cur_hp` int(10) unsigned NOT NULL DEFAULT '200',
   `cur_mp` int(10) unsigned NOT NULL DEFAULT '300',
@@ -62,18 +56,7 @@ CREATE TABLE `characters` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of characters
--- ----------------------------
-INSERT INTO `characters` VALUES ('1', '3', 'Over', '1919', '34', '100', '0', '120', '20', '0', '8523', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '96', '473', '990', '-20', '6760', '1421', '551', '703', '152', '152', '36', '6', '110', '110', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('8780', '9', 'Build', '1907', '34', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '98', '964', '24', '4', '200', '300', '936', '1121', '1579', '1579', '59', '6', '110', '110', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('8781', '9', '___', '14731', '65', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '153', '102', '944', '412', '-105', '200', '300', '6', '109', '1954', '1954', '53', '6', '110', '110', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('8782', '10', 'se', '1907', '34', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '96', '970', '1623', '0', '200', '300', '850', '1021', '1439', '1439', '86', '206', '110', '110', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('8783', '12', '_1_2_3_4_5_', '1911', '68', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '153', '102', '907', '23', '-104', '200', '300', '1026', '1227', '1457', '1457', '59', '6', '110', '110', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('8785', '9', 'manneke', '1907', '34', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '96', '972', '1420', '-5', '200', '300', '850', '1021', '1439', '1439', '86', '206', '110', '110', '16', '50', '100', '0', '255', '45', '1');
-INSERT INTO `characters` VALUES ('8840', '13', 'dongdong', '1919', '34', '90', '0', '20', '20', '0', '1165', '1165', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '97', '966', '1649', '0', '200', '300', '99', '200', '151', '151', '6', '6', '100', '100', '16', '50', '100', '0', '255', '45', '1');
-
--- ----------------------------
--- Table structure for `guild_main`
+-- Table structure for guild_main
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_main`;
 CREATE TABLE `guild_main` (
@@ -82,21 +65,19 @@ CREATE TABLE `guild_main` (
   `gp` int(10) unsigned NOT NULL DEFAULT '0',
   `level` int(10) NOT NULL DEFAULT '1',
   `notice_title` varchar(255) NOT NULL DEFAULT '--',
-  `notice` varchar(255) NOT NULL,
+  `notice` varchar(255) NOT NULL DEFAULT '--',
   PRIMARY KEY (`guildid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of guild_main
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guild_member`
+-- Table structure for guild_member
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_member`;
 CREATE TABLE `guild_member` (
   `charid` int(255) NOT NULL AUTO_INCREMENT,
   `guildid` bigint(255) NOT NULL DEFAULT '-1',
+  `guildpoints` int(255) NOT NULL DEFAULT '0',
+  `grantname` varchar(255) NOT NULL DEFAULT '',
   `master` int(255) NOT NULL DEFAULT '0',
   `invite` int(255) NOT NULL DEFAULT '0',
   `kick` int(255) NOT NULL DEFAULT '0',
@@ -104,14 +85,10 @@ CREATE TABLE `guild_member` (
   `union` int(255) NOT NULL DEFAULT '0',
   `storage` int(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`charid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of guild_member
--- ----------------------------
-
--- ----------------------------
--- Table structure for `hotkeys`
+-- Table structure for hotkeys
 -- ----------------------------
 DROP TABLE IF EXISTS `hotkeys`;
 CREATE TABLE `hotkeys` (
@@ -124,8 +101,149 @@ CREATE TABLE `hotkeys` (
 ) ENGINE=InnoDB AUTO_INCREMENT=563 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of hotkeys
+-- Table structure for items
 -- ----------------------------
+DROP TABLE IF EXISTS `items`;
+CREATE TABLE `items` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` int(10) unsigned NOT NULL,
+  `owner` int(10) NOT NULL,
+  `plusvalue` int(10) unsigned NOT NULL DEFAULT '0',
+  `slot` int(10) unsigned NOT NULL,
+  `quantity` int(10) unsigned NOT NULL DEFAULT '1',
+  `durability` int(10) unsigned NOT NULL DEFAULT '30',
+  `itemnumber` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1474 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for log
+-- ----------------------------
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ip_adress` varchar(255) NOT NULL DEFAULT '0.0.0.0',
+  `charname` varchar(255) NOT NULL,
+  `action` varchar(255) NOT NULL COMMENT 'Types: Login, GM, Chat, Register',
+  `action2` varchar(255) NOT NULL COMMENT 'SubTypes: Login (None); GM (Item Create, Command, Ban); Chat (Normal, GM, Party, Guild, Whisper, Notice)',
+  `parameter` longtext NOT NULL COMMENT 'Ex. Char Message',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=447 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for masteries
+-- ----------------------------
+DROP TABLE IF EXISTS `masteries`;
+CREATE TABLE `masteries` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `owner` int(10) unsigned NOT NULL,
+  `mastery` int(10) unsigned NOT NULL,
+  `level` int(10) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=317 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for news
+-- ----------------------------
+DROP TABLE IF EXISTS `news`;
+CREATE TABLE `news` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `head` varchar(30) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `datetime` datetime NOT NULL DEFAULT '2010-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for positions
+-- ----------------------------
+DROP TABLE IF EXISTS `positions`;
+CREATE TABLE `positions` (
+  `OwnerCharID` int(10) NOT NULL,
+  `return_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point for Return Scroll, Respawn when dead',
+  `return_ysect` int(10) unsigned NOT NULL DEFAULT '97',
+  `return_xpos` int(10) unsigned NOT NULL DEFAULT '980',
+  `return_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
+  `return_zpos` int(10) NOT NULL DEFAULT '65504',
+  `recall_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point of Last Return Scroll usage',
+  `recall_ysect` int(10) unsigned NOT NULL DEFAULT '97',
+  `recall_xpos` int(10) unsigned NOT NULL DEFAULT '980',
+  `recall_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
+  `recall_zpos` int(10) NOT NULL DEFAULT '65504',
+  `dead_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point of Last Dead',
+  `dead_ysect` int(10) unsigned NOT NULL DEFAULT '97',
+  `deadl_xpos` int(10) unsigned NOT NULL DEFAULT '980',
+  `dead_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
+  `dead_zpos` int(10) NOT NULL DEFAULT '65504',
+  PRIMARY KEY (`OwnerCharID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for quests
+-- ----------------------------
+DROP TABLE IF EXISTS `quests`;
+CREATE TABLE `quests` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `owner` int(10) unsigned NOT NULL,
+  `quest` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for servers
+-- ----------------------------
+DROP TABLE IF EXISTS `servers`;
+CREATE TABLE `servers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `users_current` int(10) unsigned NOT NULL DEFAULT '0',
+  `users_max` int(10) unsigned NOT NULL DEFAULT '500',
+  `state` int(10) unsigned NOT NULL DEFAULT '1',
+  `ip` varchar(45) NOT NULL,
+  `port` int(10) unsigned NOT NULL DEFAULT '15000',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for skills
+-- ----------------------------
+DROP TABLE IF EXISTS `skills`;
+CREATE TABLE `skills` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `Owner` int(10) NOT NULL,
+  `SkillID` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `failed_logins` int(10) unsigned NOT NULL DEFAULT '0',
+  `banned` int(1) NOT NULL DEFAULT '0',
+  `banreason` varchar(255) NOT NULL DEFAULT '...',
+  `bantime` datetime NOT NULL DEFAULT '3000-01-01 00:00:00',
+  `silk` int(10) unsigned NOT NULL DEFAULT '500',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records 
+-- ----------------------------
+INSERT INTO `characters` VALUES ('1', '3', 'Over', '1919', '34', '140', '994267238', '852', '203', '0', '133618', '31836', '0', '1000-01-01 00:00:00', '1000000', '3485753', '-1', '79', '105', '242', '1600', '79', '6760', '1421', '283', '426', '68', '68', '336', '67', '150', '150', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('8780', '9', 'Build', '1907', '34', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '98', '964', '24', '4', '200', '300', '936', '1121', '1579', '1579', '59', '6', '110', '110', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('8781', '9', '___', '14731', '65', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '153', '102', '944', '412', '-105', '200', '300', '6', '109', '1954', '1954', '53', '6', '110', '110', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('8782', '10', 'se', '1907', '34', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '96', '970', '1623', '0', '200', '300', '850', '1021', '1439', '1439', '86', '206', '110', '110', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('8783', '12', '_1_2_3_4_5_', '1911', '68', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '153', '102', '907', '23', '-104', '200', '300', '1026', '1227', '1457', '1457', '59', '6', '110', '110', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('8785', '9', 'manneke', '1907', '34', '100', '0', '20', '20', '0', '1421', '1421', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '96', '972', '1420', '-5', '200', '300', '850', '1021', '1439', '1439', '86', '206', '110', '110', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `characters` VALUES ('8840', '13', 'dongdong', '1919', '34', '90', '0', '20', '20', '0', '1165', '1165', '0', '1000-01-01 00:00:00', '1000000', '1000000', '-1', '168', '97', '966', '1649', '0', '200', '300', '99', '200', '151', '151', '6', '6', '100', '100', '16', '50', '100', '0', '255', '45', '1');
+INSERT INTO `guild_main` VALUES ('1', 'First', '0', '1', '--', '--');
+INSERT INTO `guild_member` VALUES ('1', '1', '0', '', '1', '0', '0', '0', '0', '0');
 INSERT INTO `hotkeys` VALUES ('206', '1', '0', '0', '0');
 INSERT INTO `hotkeys` VALUES ('207', '1', '1', '0', '0');
 INSERT INTO `hotkeys` VALUES ('208', '1', '2', '0', '0');
@@ -483,33 +601,13 @@ INSERT INTO `hotkeys` VALUES ('559', '8840', '47', '0', '0');
 INSERT INTO `hotkeys` VALUES ('560', '8840', '48', '0', '0');
 INSERT INTO `hotkeys` VALUES ('561', '8840', '49', '0', '0');
 INSERT INTO `hotkeys` VALUES ('562', '8840', '50', '0', '0');
-
--- ----------------------------
--- Table structure for `items`
--- ----------------------------
-DROP TABLE IF EXISTS `items`;
-CREATE TABLE `items` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `itemtype` int(10) unsigned NOT NULL,
-  `owner` int(10) NOT NULL,
-  `plusvalue` int(10) unsigned NOT NULL DEFAULT '0',
-  `slot` int(10) unsigned NOT NULL,
-  `quantity` int(10) unsigned NOT NULL DEFAULT '1',
-  `durability` int(10) unsigned NOT NULL DEFAULT '30',
-  `itemnumber` varchar(10) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1474 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of items
--- ----------------------------
 INSERT INTO `items` VALUES ('1159', '0', '1', '0', '0', '0', '30', 'item0');
-INSERT INTO `items` VALUES ('1160', '0', '1', '0', '1', '0', '30', 'item1');
+INSERT INTO `items` VALUES ('1160', '3640', '1', '2', '1', '0', '30', 'item1');
 INSERT INTO `items` VALUES ('1161', '0', '1', '0', '2', '0', '30', 'item2');
 INSERT INTO `items` VALUES ('1162', '0', '1', '0', '3', '0', '30', 'item3');
-INSERT INTO `items` VALUES ('1163', '0', '1', '0', '4', '0', '30', 'item4');
-INSERT INTO `items` VALUES ('1164', '0', '1', '0', '5', '0', '30', 'item5');
-INSERT INTO `items` VALUES ('1165', '3635', '1', '1', '6', '0', '30', 'item6');
+INSERT INTO `items` VALUES ('1163', '3641', '1', '2', '4', '0', '30', 'item4');
+INSERT INTO `items` VALUES ('1164', '3642', '1', '2', '5', '0', '30', 'item5');
+INSERT INTO `items` VALUES ('1165', '0', '1', '0', '6', '0', '30', 'item6');
 INSERT INTO `items` VALUES ('1166', '0', '1', '0', '7', '0', '30', 'item7');
 INSERT INTO `items` VALUES ('1167', '0', '1', '0', '8', '0', '30', 'item8');
 INSERT INTO `items` VALUES ('1168', '0', '1', '0', '9', '0', '30', 'item9');
@@ -528,7 +626,7 @@ INSERT INTO `items` VALUES ('1180', '24405', '1', '0', '21', '1', '30', 'item21'
 INSERT INTO `items` VALUES ('1181', '24406', '1', '0', '22', '1', '30', 'item22');
 INSERT INTO `items` VALUES ('1182', '23297', '1', '0', '23', '0', '30', 'item23');
 INSERT INTO `items` VALUES ('1183', '23299', '1', '0', '24', '0', '30', 'item24');
-INSERT INTO `items` VALUES ('1184', '19634', '1', '5', '25', '0', '30', 'item25');
+INSERT INTO `items` VALUES ('1184', '3635', '1', '1', '25', '0', '30', 'item25');
 INSERT INTO `items` VALUES ('1185', '24311', '1', '0', '26', '0', '30', 'item26');
 INSERT INTO `items` VALUES ('1186', '24286', '1', '0', '27', '0', '30', 'item27');
 INSERT INTO `items` VALUES ('1187', '3784', '1', '0', '28', '11', '30', 'item28');
@@ -537,7 +635,7 @@ INSERT INTO `items` VALUES ('1189', '8', '1', '0', '30', '49', '30', 'item30');
 INSERT INTO `items` VALUES ('1190', '8', '1', '0', '31', '50', '30', 'item31');
 INSERT INTO `items` VALUES ('1191', '8', '1', '0', '32', '50', '30', 'item32');
 INSERT INTO `items` VALUES ('1192', '3851', '1', '0', '33', '10', '30', 'item33');
-INSERT INTO `items` VALUES ('1193', '0', '1', '0', '34', '0', '0', 'item34');
+INSERT INTO `items` VALUES ('1193', '19634', '1', '5', '34', '0', '30', 'item34');
 INSERT INTO `items` VALUES ('1194', '3795', '1', '0', '35', '11', '30', 'item35');
 INSERT INTO `items` VALUES ('1195', '3640', '1', '2', '36', '0', '30', 'item36');
 INSERT INTO `items` VALUES ('1196', '0', '1', '0', '37', '0', '30', 'item37');
@@ -818,25 +916,6 @@ INSERT INTO `items` VALUES ('1470', '0', '8840', '0', '41', '0', '30', 'item41')
 INSERT INTO `items` VALUES ('1471', '0', '8840', '0', '42', '0', '30', 'item42');
 INSERT INTO `items` VALUES ('1472', '0', '8840', '0', '43', '0', '30', 'item43');
 INSERT INTO `items` VALUES ('1473', '0', '8840', '0', '44', '0', '30', 'item44');
-
--- ----------------------------
--- Table structure for `log`
--- ----------------------------
-DROP TABLE IF EXISTS `log`;
-CREATE TABLE `log` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `ip_adress` varchar(255) NOT NULL DEFAULT '0.0.0.0',
-  `charname` varchar(255) NOT NULL,
-  `action` varchar(255) NOT NULL COMMENT 'Types: Login, GM, Chat, Register',
-  `action2` varchar(255) NOT NULL COMMENT 'SubTypes: Login (None); GM (Item Create, Command, Ban); Chat (Normal, GM, Party, Guild, Whisper, Notice)',
-  `parameter` longtext NOT NULL COMMENT 'Ex. Char Message',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of log
--- ----------------------------
 INSERT INTO `log` VALUES ('1', '0000-00-00 00:00:00', '127.0.0.1:59141', '[UNKNOWN]', 'Login', 'Sucess', 'Locale: 40, Name: SR_Client, Version: 18');
 INSERT INTO `log` VALUES ('2', '0000-00-00 00:00:00', '127.0.0.1:59143', '[UNKNOWN]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
 INSERT INTO `log` VALUES ('3', '0000-00-00 00:00:00', '127.0.0.1:59143', '[UNKNOWN]', 'Login', 'Sucess', 'Name: i, Server: Local');
@@ -1222,22 +1301,67 @@ INSERT INTO `log` VALUES ('382', '2010-12-08 22:48:11', '84.157.134.55:64217', '
 INSERT INTO `log` VALUES ('383', '2010-12-08 22:48:11', '84.157.134.55:64217', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 1933, Monster_Name: MOB_CH_MANGNYANG Type: 0');
 INSERT INTO `log` VALUES ('384', '2010-12-08 22:48:11', '84.157.134.55:64217', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 1933, Monster_Name: MOB_CH_MANGNYANG Type: 0');
 INSERT INTO `log` VALUES ('385', '2010-12-08 22:50:50', '84.157.134.55:64217', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 1933, Monster_Name: MOB_CH_MANGNYANG Type: 0');
-
--- ----------------------------
--- Table structure for `masteries`
--- ----------------------------
-DROP TABLE IF EXISTS `masteries`;
-CREATE TABLE `masteries` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `owner` int(10) unsigned NOT NULL,
-  `mastery` int(10) unsigned NOT NULL,
-  `level` int(10) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=317 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of masteries
--- ----------------------------
+INSERT INTO `log` VALUES ('386', '2010-12-10 20:40:36', '127.0.0.1:53366', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('387', '2010-12-10 20:40:56', '127.0.0.1:53366', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('388', '2010-12-10 20:44:09', '127.0.0.1:53374', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('389', '2010-12-10 20:44:20', '127.0.0.1:53374', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('390', '2010-12-10 20:46:11', '127.0.0.1:53375', 'Over', 'Chat', 'GM', 'Message: \\level 1');
+INSERT INTO `log` VALUES ('391', '2010-12-10 20:48:07', '127.0.0.1:53375', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 2002, Monster_Name: MOB_KK_ISYUTARU Type: 0');
+INSERT INTO `log` VALUES ('392', '2010-12-10 21:01:09', '127.0.0.1:53375', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 2002, Monster_Name: MOB_KK_ISYUTARU Type: 0');
+INSERT INTO `log` VALUES ('393', '2010-12-10 21:05:45', '127.0.0.1:53375', 'Over', 'Chat', 'GM', 'Message: \\count');
+INSERT INTO `log` VALUES ('394', '2010-12-10 21:06:46', '127.0.0.1:53375', 'Over', 'Chat', 'GM', 'Message: \\count');
+INSERT INTO `log` VALUES ('395', '2010-12-10 21:15:49', '127.0.0.1:53900', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('396', '2010-12-10 21:15:57', '127.0.0.1:53900', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('397', '2010-12-10 21:17:20', '127.0.0.1:53901', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 3875, Monster_Name: MOB_RM_TAHOMET Type: 0');
+INSERT INTO `log` VALUES ('398', '2010-12-10 21:21:04', '127.0.0.1:53901', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 3875, Monster_Name: MOB_RM_TAHOMET Type: 0');
+INSERT INTO `log` VALUES ('399', '2010-12-10 21:52:56', '127.0.0.1:54465', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('400', '2010-12-10 21:53:04', '127.0.0.1:54465', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('401', '2010-12-10 21:54:07', '127.0.0.1:54647', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('402', '2010-12-10 21:54:54', '127.0.0.1:54711', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('403', '2010-12-10 21:56:50', '127.0.0.1:54711', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('404', '2010-12-10 21:58:20', '127.0.0.1:54827', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 3810, Monster_Name: MOB_TK_BONELORD Type: 3');
+INSERT INTO `log` VALUES ('405', '2010-12-10 22:03:27', '127.0.0.1:54827', 'Over', 'GM', 'Monster_Spawn', 'PK2ID: 3810, Monster_Name:  Type: 0');
+INSERT INTO `log` VALUES ('406', '2010-12-10 22:19:01', '127.0.0.1:55069', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('407', '2010-12-10 22:19:13', '127.0.0.1:55069', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('408', '2010-12-10 22:36:49', '127.0.0.1:55347', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('409', '2010-12-10 22:38:44', '127.0.0.1:55347', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('410', '2010-12-10 22:39:51', '127.0.0.1:55503', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('411', '2010-12-10 22:40:07', '127.0.0.1:55504', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('412', '2010-12-10 22:40:23', '127.0.0.1:55504', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('413', '2010-12-10 22:54:58', '127.0.0.1:55539', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('414', '2010-12-10 22:55:12', '127.0.0.1:55540', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('415', '2010-12-10 22:56:41', '127.0.0.1:55540', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('416', '2010-12-10 22:41:08', '127.0.0.1:55505', 'Over', 'Chat', 'GM', 'Message: \\level 140');
+INSERT INTO `log` VALUES ('417', '2010-12-10 23:01:36', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 280 ');
+INSERT INTO `log` VALUES ('418', '2010-12-10 23:02:12', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 40');
+INSERT INTO `log` VALUES ('419', '2010-12-10 23:02:25', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 80');
+INSERT INTO `log` VALUES ('420', '2010-12-10 23:02:45', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 300');
+INSERT INTO `log` VALUES ('421', '2010-12-10 23:02:54', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 280');
+INSERT INTO `log` VALUES ('422', '2010-12-10 23:03:05', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 320');
+INSERT INTO `log` VALUES ('423', '2010-12-10 23:03:17', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 320');
+INSERT INTO `log` VALUES ('424', '2010-12-10 23:03:36', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 260');
+INSERT INTO `log` VALUES ('425', '2010-12-10 23:04:00', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\tun 45');
+INSERT INTO `log` VALUES ('426', '2010-12-10 23:04:44', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 130');
+INSERT INTO `log` VALUES ('427', '2010-12-10 23:05:02', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 90');
+INSERT INTO `log` VALUES ('428', '2010-12-10 23:05:19', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 45');
+INSERT INTO `log` VALUES ('429', '2010-12-10 23:05:44', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 85');
+INSERT INTO `log` VALUES ('430', '2010-12-10 23:05:58', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 90');
+INSERT INTO `log` VALUES ('431', '2010-12-10 23:06:23', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 0');
+INSERT INTO `log` VALUES ('432', '2010-12-10 23:06:40', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 180');
+INSERT INTO `log` VALUES ('433', '2010-12-10 23:07:01', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 180');
+INSERT INTO `log` VALUES ('434', '2010-12-10 23:07:15', '127.0.0.1:55660', 'Over', 'Chat', 'GM', 'Message: \\turn 180');
+INSERT INTO `log` VALUES ('435', '2010-12-10 23:13:16', '127.0.0.1:55832', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('436', '2010-12-10 23:13:31', '127.0.0.1:55832', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('437', '2010-12-10 23:32:59', '127.0.0.1:55850', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('438', '2010-12-10 23:33:09', '127.0.0.1:55850', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('439', '2010-12-10 23:39:33', '127.0.0.1:55864', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('440', '2010-12-10 23:39:41', '127.0.0.1:55864', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('441', '2010-12-10 23:40:14', '127.0.0.1:55866', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('442', '2010-12-10 23:40:52', '127.0.0.1:55866', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('443', '2010-12-10 23:43:43', '127.0.0.1:55875', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('444', '2010-12-10 23:43:50', '127.0.0.1:55875', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
+INSERT INTO `log` VALUES ('445', '2010-12-10 23:46:48', '127.0.0.1:55878', '[UNKNWON]', 'Client_Connect', '(None)', 'Locale: 40, Name: SR_Client, Version: 18');
+INSERT INTO `log` VALUES ('446', '2010-12-10 23:54:42', '127.0.0.1:55878', '[UNKNWON]', 'Login', 'Sucess', 'Name: i, Server: Local');
 INSERT INTO `masteries` VALUES ('269', '1', '257', '0');
 INSERT INTO `masteries` VALUES ('270', '1', '258', '0');
 INSERT INTO `masteries` VALUES ('271', '1', '259', '0');
@@ -1286,51 +1410,7 @@ INSERT INTO `masteries` VALUES ('313', '8840', '273', '0');
 INSERT INTO `masteries` VALUES ('314', '8840', '274', '0');
 INSERT INTO `masteries` VALUES ('315', '8840', '275', '0');
 INSERT INTO `masteries` VALUES ('316', '8840', '276', '0');
-
--- ----------------------------
--- Table structure for `news`
--- ----------------------------
-DROP TABLE IF EXISTS `news`;
-CREATE TABLE `news` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `head` varchar(30) NOT NULL,
-  `text` varchar(255) NOT NULL,
-  `datetime` datetime NOT NULL DEFAULT '2010-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of news
--- ----------------------------
-INSERT INTO `news` VALUES ('1', 'Opening', '<center><font color=red><b>Welcome to the Visual Silkroad Project</b></font></center>', '0000-00-00 00:00:00');
-
--- ----------------------------
--- Table structure for `positions`
--- ----------------------------
-DROP TABLE IF EXISTS `positions`;
-CREATE TABLE `positions` (
-  `OwnerCharID` int(10) NOT NULL,
-  `return_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point for Return Scroll, Respawn when dead',
-  `return_ysect` int(10) unsigned NOT NULL DEFAULT '97',
-  `return_xpos` int(10) unsigned NOT NULL DEFAULT '980',
-  `return_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
-  `return_zpos` int(10) NOT NULL DEFAULT '65504',
-  `recall_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point of Last Return Scroll usage',
-  `recall_ysect` int(10) unsigned NOT NULL DEFAULT '97',
-  `recall_xpos` int(10) unsigned NOT NULL DEFAULT '980',
-  `recall_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
-  `recall_zpos` int(10) NOT NULL DEFAULT '65504',
-  `dead_xsect` int(10) unsigned NOT NULL DEFAULT '168' COMMENT 'jangan -- Point of Last Dead',
-  `dead_ysect` int(10) unsigned NOT NULL DEFAULT '97',
-  `deadl_xpos` int(10) unsigned NOT NULL DEFAULT '980',
-  `dead_ypos` int(10) unsigned NOT NULL DEFAULT '1330',
-  `dead_zpos` int(10) NOT NULL DEFAULT '65504',
-  PRIMARY KEY (`OwnerCharID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of positions
--- ----------------------------
+INSERT INTO `news` VALUES ('1', 'Opening', '<center><font color=red><b>Welcome to the Visual Silkroad Project</b></font></center>', '3000-01-01 00:00:00');
 INSERT INTO `positions` VALUES ('1', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504');
 INSERT INTO `positions` VALUES ('8780', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504');
 INSERT INTO `positions` VALUES ('8781', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504');
@@ -1338,77 +1418,8 @@ INSERT INTO `positions` VALUES ('8782', '168', '97', '980', '1330', '65504', '16
 INSERT INTO `positions` VALUES ('8783', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504');
 INSERT INTO `positions` VALUES ('8785', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504', '168', '97', '980', '1330', '65504');
 INSERT INTO `positions` VALUES ('8840', '168', '97', '980', '1330', '65504', '168', '97', '1048', '1713', '-4', '168', '97', '980', '1330', '65504');
-
--- ----------------------------
--- Table structure for `quests`
--- ----------------------------
-DROP TABLE IF EXISTS `quests`;
-CREATE TABLE `quests` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `owner` int(10) unsigned NOT NULL,
-  `quest` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of quests
--- ----------------------------
-
--- ----------------------------
--- Table structure for `servers`
--- ----------------------------
-DROP TABLE IF EXISTS `servers`;
-CREATE TABLE `servers` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `users_current` int(10) unsigned NOT NULL DEFAULT '0',
-  `users_max` int(10) unsigned NOT NULL DEFAULT '500',
-  `state` int(10) unsigned NOT NULL DEFAULT '1',
-  `ip` varchar(45) NOT NULL,
-  `port` int(10) unsigned NOT NULL DEFAULT '15000',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of servers
--- ----------------------------
 INSERT INTO `servers` VALUES ('3', 'Local', '0', '500', '1', '127.0.0.1', '15780');
 INSERT INTO `servers` VALUES ('4', 'Remote', '0', '500', '1', '78.111.78.27', '15780');
-
--- ----------------------------
--- Table structure for `skills`
--- ----------------------------
-DROP TABLE IF EXISTS `skills`;
-CREATE TABLE `skills` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `Owner` int(10) NOT NULL,
-  `SkillID` int(10) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of skills
--- ----------------------------
-
--- ----------------------------
--- Table structure for `users`
--- ----------------------------
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  `failed_logins` int(10) unsigned NOT NULL DEFAULT '0',
-  `banned` int(1) NOT NULL DEFAULT '0',
-  `banreason` varchar(255) NOT NULL DEFAULT '...',
-  `bantime` datetime NOT NULL DEFAULT '3000-01-01 00:00:00',
-  `silk` int(10) unsigned NOT NULL DEFAULT '500',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of users
--- ----------------------------
 INSERT INTO `users` VALUES ('3', 'i', 'i', '0', '0', 'You got banned for 10 Minutes because of 5 failed Logins.', '2010-10-01 16:01:38', '6001');
 INSERT INTO `users` VALUES ('9', 'test', 'test', '0', '0', '...', '3000-01-01 00:00:00', '431');
 INSERT INTO `users` VALUES ('10', 'new', 'new', '0', '0', '...', '3000-01-01 00:00:00', '51');

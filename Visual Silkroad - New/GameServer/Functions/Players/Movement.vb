@@ -14,8 +14,7 @@
                 to_pos.XSector = packet.Byte
                 to_pos.YSector = packet.Byte
                 to_pos.X = packet.WordInt
-                Dim zByte As Byte() = packet.ByteArray(2) 'real z converting
-                to_pos.Z = BitConverter.ToInt16(zByte, 0)
+                to_pos.Z = packet.WordInt
                 to_pos.Y = packet.WordInt
 
 
@@ -31,9 +30,9 @@
                 writer.Byte(1) 'destination
                 writer.Byte(to_pos.XSector)
                 writer.Byte(to_pos.YSector)
-                writer.Word(CUInt(to_pos.X))
-                writer.Byte(zByte)
-                writer.Word(CUInt(to_pos.Y))
+                writer.Byte(BitConverter.GetBytes(CShort(to_pos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(to_pos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(to_pos.Y)))
                 writer.Byte(0) '1= source
 
 
@@ -118,6 +117,7 @@
                         End If
                     End If
                 Next
+
 
                 '===========ITEMS===================
                 For i = 0 To ItemList.Count - 1

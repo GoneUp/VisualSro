@@ -107,11 +107,11 @@
                     'Is a Equip
                     If _item.Slot = 6 Then 'Weapon
                         '=============Unsure
-                        MinPhy += _refitem.MIN_HPHYATK + ((Me.Strength * _refitem.MIN_HPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
-                        MaxPhy += _refitem.MAX_HPHYATK + ((Me.Strength * _refitem.MAX_HPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                        MinPhy += _refitem.MIN_HPHYATK + ((Me.Strength * _refitem.MIN_LPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                        MaxPhy += _refitem.MAX_HPHYATK + ((Me.Strength * _refitem.MAX_LPHYS_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
 
-                        MinMag += _refitem.MIN_LMAGATK + ((Me.Intelligence * _refitem.MIN_HMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
-                        MaxMag += _refitem.MAX_LMAGATK + ((Me.Intelligence * _refitem.MAX_HMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                        MinMag += _refitem.MIN_LMAGATK + ((Me.Intelligence * _refitem.MIN_LMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
+                        MaxMag += _refitem.MAX_LMAGATK + ((Me.Intelligence * _refitem.MAX_LMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
                     Else
                         'Prevent Errors
                         If PhyDef + _refitem.MIN_PHYSDEF < UShort.MaxValue Then

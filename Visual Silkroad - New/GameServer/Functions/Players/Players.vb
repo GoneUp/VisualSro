@@ -262,6 +262,16 @@
             PlayerData(Index_).SpawnedNPCs.Clear()
             PlayerData(Index_).SpawnedMonsters.Clear()
             PlayerData(Index_).SpawnedItems.Clear()
+
+            PlayerData(Index_).Busy = False
+            PlayerData(Index_).Attacking = False
+            PlayerData(Index_).AttackedMonsterID = 0
+            PlayerData(Index_).AttackSkill = 0
+            PlayerData(Index_).AttackType = AttackType_.Normal
+            PlayerData(Index_).LastSelected = 0
+            PlayerData(Index_).UsedItem = UseItemTypes.None
+            PlayerData(Index_).UsedItemParameter = 0
+            PlayerData(Index_).PickUpId = 0
         End Sub
     End Module
 End Namespace

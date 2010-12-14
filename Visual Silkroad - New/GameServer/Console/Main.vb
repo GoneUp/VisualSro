@@ -119,9 +119,14 @@ read:
             Try
                 If Functions.PlayerData(index) IsNot Nothing Then
                     Functions.DespawnPlayer(index)
+                    Functions.CleanUpPlayer(index)
                 End If
                 GameServer.ClientList.OnCharListing(index) = Nothing
                 Functions.PlayerData(index) = Nothing
+
+                Server.RevTheard(index).Abort()
+                Server.RevTheard(index) = Nothing
+
             Catch ex As Exception
                 Functions.PlayerData(index) = Nothing
             End Try

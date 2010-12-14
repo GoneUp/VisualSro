@@ -36,7 +36,7 @@ Namespace GameServer
                 MonsterCheck.Start()
 
                 MonsterMovement.Interval = 3000
-                'MonsterMovement.Start()
+                MonsterMovement.Start()
 
 
             Catch ex As Exception

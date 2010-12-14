@@ -7,13 +7,13 @@ Imports GameServer.GameServer.Functions
 Namespace GameServer
 
     Public Class Server
-        Private Shared Buffer(&H10000 - 1) As Byte
         Private Shared IP_Renamed As IPAddress
         Private Shared maxClients_Renamed As Integer
         Private Shared onlineClient_Renamed As Integer
         Private Shared onlineMob_Renamed As Integer
         Private Shared ServerPort As Integer
         Private Shared ServerSocket As Socket
+        Public Shared RevTheard(1) As Threading.Thread
 
         Public Shared Event OnClientConnect As dConnection
         Public Shared Event OnClientDisconnect As dDisconnected
@@ -30,6 +30,8 @@ Namespace GameServer
                 ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
 
                 ClientList.StartPingCheck()
+
+                ReDim RevTheard(MaxClients + 1)
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -2)
             Finally
@@ -46,7 +48,8 @@ Namespace GameServer
                     ClientList.Add(sock)
                     Dim index As Integer = ClientList.FindIndex(sock)
                     RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
-                    sock.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), sock)
+                    RevTheard(index) = New Threading.Thread(AddressOf ReceiveData)
+                    RevTheard(index).Start(index)
                     ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
                 Else
                     'More then 1500 Sockets
@@ -79,31 +82,43 @@ Namespace GameServer
             End Try
         End Sub
 
-        Private Shared Sub ReceiveData(ByVal ar As IAsyncResult)
-            Dim asyncState As Socket = CType(ar.AsyncState, Socket)
-            Dim index As Integer = ClientList.FindIndex(asyncState)
-            If asyncState.Connected Then
+        Private Shared Sub ReceiveData(ByVal Index_ As Integer)
+            Dim index As Integer = index
+            Dim socket As Socket = ClientList.GetSocket(index)
+            Dim buffer(&H10000 - 1) As Byte
+
+
+            Do While True
+
                 Try
-                    If asyncState.EndReceive(ar) > 0 Then
-                        RaiseEvent OnReceiveData(Buffer, index)
-                        Array.Clear(Buffer, 0, Buffer.Length)
+                    If socket.Connected Then
+                        If socket.Available > 0 Then
+                            socket.Receive(buffer, socket.Available, SocketFlags.None)
+                            RaiseEvent OnReceiveData(buffer, index)
+                            Array.Clear(buffer, 0, buffer.Length)
+                        Else
+                            Threading.Thread.Sleep(10)
+                        End If
+
+                    Else
+                        Log.WriteSystemLog(buffer.ToString)
+                        Exit Do
                     End If
-                    asyncState.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
+
+
                 Catch exception As SocketException
                     If exception.ErrorCode = &H2746 Then
                         ClientList.Delete(index)
-                        RaiseEvent OnClientDisconnect(asyncState.RemoteEndPoint.ToString(), index)
+                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
                     End If
                 Catch exception2 As Exception
                     RaiseEvent OnServerError(exception2, index)
-                    Array.Clear(Buffer, 0, Buffer.Length)
-                    If asyncState.Connected = True Then
-                        asyncState.BeginReceive(Buffer, 0, Buffer.Length, SocketFlags.None, New AsyncCallback(AddressOf Server.ReceiveData), asyncState)
-                    End If
+                    Array.Clear(buffer, 0, buffer.Length)
                 End Try
-            Else
-                Log.WriteSystemLog(Buffer.ToString)
-            End If
+            Loop
+
+
+
         End Sub
 
 

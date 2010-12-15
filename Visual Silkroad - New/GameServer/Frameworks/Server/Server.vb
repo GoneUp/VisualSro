@@ -29,7 +29,7 @@ Namespace GameServer
                 ServerSocket.Listen(5)
                 ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
 
-                ClientList.StartPingCheck()
+                ClientList.SetupClientList(MaxClients)
 
                 ReDim RevTheard(MaxClients + 1)
             Catch exception As Exception
@@ -44,7 +44,7 @@ Namespace GameServer
         Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
             Try
                 Dim sock As Socket = ServerSocket.EndAccept(ar)
-                If OnlineClient + 1 <= 1500 Then
+                If OnlineClient + 1 <= MaxClients Then
                     ClientList.Add(sock)
                     Dim index As Integer = ClientList.FindIndex(sock)
                     RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)

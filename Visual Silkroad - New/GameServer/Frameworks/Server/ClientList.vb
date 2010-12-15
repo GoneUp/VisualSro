@@ -40,22 +40,29 @@ Namespace GameServer
             Return socket
         End Function
 
-        Public Sub StartPingCheck()
+        Public Sub SetupClientList(ByVal MaxUser As Integer)
+            ReDim List(MaxUser), LastPingTime(MaxUser)
+
             PingTimer.Interval = 60000
             PingTimer.Start()
         End Sub
 
 
+
         Public Sub CheckUserPings() Handles PingTimer.Elapsed
             PingTimer.Stop()
-            For i = 0 To 1500
-                If DateDiff(DateInterval.Second, ClientList.LastPingTime(i), DateTime.Now) > 30 Then
-                    Dim socket As Socket = GetSocket(i)
-                    If socket IsNot Nothing Then
+            Server.OnlineClient = 0
+
+            For i = 0 To Server.MaxClients
+                Dim socket As Socket = GetSocket(i)
+                If socket IsNot Nothing Then
+                    If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
                         If socket.Connected = True Then
-                            'Server.Dissconnect(i)
+                            Server.Dissconnect(i)
                         End If
                     End If
+
+                    Server.OnlineClient += 1
                 End If
             Next
             PingTimer.Interval = 60000

@@ -37,7 +37,7 @@ Namespace LoginServer
             Log.WriteSystemLog("Starting Server")
             Database.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
             Server.ip = "78.111.78.27"
-            Server.port = 15779 'Loginserver
+            Server.Port = 15779 'Loginserver
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             Server.Start()
@@ -102,6 +102,7 @@ read:
 
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
             Server.OnlineClient -= 1
+            Server.RevTheard(index).Abort()
         End Sub
     End Class
 End Namespace

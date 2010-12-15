@@ -162,3 +162,9 @@ Public Enum AttackType_
     Normal = 0
     Skill = 1
 End Enum
+
+Public Enum MoveType_
+    Walk = 0
+    Run = 1
+    Berserk = 2
+End Enum

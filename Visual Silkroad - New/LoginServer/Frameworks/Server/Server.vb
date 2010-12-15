@@ -8,9 +8,8 @@ Namespace LoginServer
     Public Class Server
         Private Shared buffer(&H1000 - 1) As Byte
         Private Shared IP_Renamed As IPAddress
-        Private Shared maxClients_Renamed As Integer
-        Private Shared onlineClient_Renamed As Integer
-        Private Shared onlineMob_Renamed As Integer
+        Private Shared MaxClients_ As Integer
+        Private Shared OnlineClients_ As Integer
         Private Shared ServerPort As Integer
         Private Shared ServerSocket As Socket
         Public Shared RevTheard(1) As Threading.Thread
@@ -30,6 +29,8 @@ Namespace LoginServer
                 ServerSocket.Listen(5)
                 ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
 
+                ClientList.SetupClientList(MaxClients)
+
                 ReDim RevTheard(MaxClients + 1)
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -2)
@@ -43,7 +44,7 @@ Namespace LoginServer
         Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
             Try
                 Dim sock As Socket = ServerSocket.EndAccept(ar)
-                If OnlineClient + 1 <= 1500 Then
+                If OnlineClient + 1 <= MaxClients Then
                     ClientList.Add(sock)
                     Dim index As Integer = ClientList.FindIndex(sock)
                     RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
@@ -54,6 +55,7 @@ Namespace LoginServer
                     'More then 1500 Sockets
                     sock.Disconnect(False)
                     Log.WriteSystemLog("Socket Stack Full!")
+                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
                 End If
 
             Catch exception As Exception
@@ -66,6 +68,7 @@ Namespace LoginServer
                 Dim socket As Socket = ClientList.GetSocket(index)
                 ClientList.Delete(index)
                 socket.Shutdown(SocketShutdown.Both)
+                Server.RevTheard(index).Abort()
                 OnlineClient -= 1
             Catch ex As Exception
             End Try
@@ -150,32 +153,23 @@ Namespace LoginServer
 
         Public Shared Property MaxClients() As Integer
             Get
-                Return maxClients_Renamed
+                Return MaxClients_
             End Get
             Set(ByVal value As Integer)
-                maxClients_Renamed = value
+                MaxClients_ = value
             End Set
         End Property
 
         Public Shared Property OnlineClient() As Integer
             Get
-                Return onlineClient_Renamed
+                Return OnlineClients_
             End Get
             Set(ByVal value As Integer)
-                onlineClient_Renamed = value
+                OnlineClients_ = value
             End Set
         End Property
 
-        Public Shared Property OnlineMOB() As Integer
-            Get
-                Return onlineMob_Renamed
-            End Get
-            Set(ByVal value As Integer)
-                onlineMob_Renamed = value
-            End Set
-        End Property
-
-        Public Shared Property port() As Integer
+        Public Shared Property Port() As Integer
             Get
                 Return ServerPort
             End Get

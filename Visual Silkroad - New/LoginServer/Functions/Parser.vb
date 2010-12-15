@@ -10,6 +10,8 @@ Namespace LoginServer
             Dim opcode As UInteger = packet.Word
             Dim security As UInteger = packet.Word
 
+            ClientList.LastPingTime(Index_) = Date.Now
+
             Select Case opcode
                 Case ClientOpcodes.Ping
 

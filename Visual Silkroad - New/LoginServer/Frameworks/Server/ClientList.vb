@@ -1,29 +1,29 @@
-﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.Net.Sockets
+﻿Imports System.Net.Sockets, System.Timers
 Namespace LoginServer
 
     Public Class ClientList
-        Public Shared lista(1500) As Socket
+        Public Shared List(1500) As Socket
+        Public Shared LastPingTime(1500) As DateTime
+        Public Shared WithEvents PingTimer As New Timer
 
         Public Shared Sub Add(ByVal sock As Socket)
-            For i As Integer = 0 To lista.Length - 1
-                If lista(i) Is Nothing Then
-                    lista(i) = sock
+            For i As Integer = 0 To List.Length - 1
+                If List(i) Is Nothing Then
+                    List(i) = sock
                     Return
                 End If
             Next i
         End Sub
 
         Public Shared Sub Delete(ByVal index As Integer)
-            If lista(index) IsNot Nothing Then
-                lista(index) = Nothing
+            If List(index) IsNot Nothing Then
+                List(index) = Nothing
             End If
         End Sub
 
         Public Shared Function FindIndex(ByVal sock As Socket) As Integer
-            For i As Integer = 0 To lista.Length - 1
-                If sock Is lista(i) Then
+            For i As Integer = 0 To List.Length - 1
+                If sock Is List(i) Then
                     Return i
                 End If
             Next i
@@ -32,8 +32,8 @@ Namespace LoginServer
 
         Public Shared Function GetSocket(ByVal index As Integer) As Socket
             Dim socket As Socket = Nothing
-            If (lista(index) IsNot Nothing) AndAlso lista(index).Connected Then
-                socket = lista(index)
+            If (List(index) IsNot Nothing) AndAlso List(index).Connected Then
+                socket = List(index)
             End If
             Return socket
         End Function
@@ -41,6 +41,34 @@ Namespace LoginServer
         Public Shared Function GetIP(ByVal index As Integer) As String
             Return GetSocket(index).RemoteEndPoint.ToString
         End Function
+
+        Public Shared Sub SetupClientList(ByVal MaxUser As Integer)
+            ReDim List(MaxUser), ClientList.LastPingTime(MaxUser)
+
+            PingTimer.Interval = 60000
+            PingTimer.Start()
+        End Sub
+
+
+        Public Shared Sub CheckUserPings() Handles PingTimer.Elapsed
+            PingTimer.Stop()
+            Server.OnlineClient = 0
+
+            For i = 0 To Server.MaxClients
+                Dim socket As Socket = GetSocket(i)
+                If socket IsNot Nothing Then
+                    If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
+                        If socket.Connected = True Then
+                            Server.Dissconnect(i)
+                        End If
+                    End If
+
+                    Server.OnlineClient += 1
+                End If
+            Next
+            PingTimer.Interval = 60000
+            PingTimer.Start()
+        End Sub
     End Class
 End Namespace
 

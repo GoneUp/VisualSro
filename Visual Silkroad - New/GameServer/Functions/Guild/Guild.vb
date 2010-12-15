@@ -56,6 +56,10 @@
             End If
         End Sub
 
+        Public Sub LinkPlayerToGuild(ByVal Index_ As Integer)
+
+
+        End Sub
 
 
 

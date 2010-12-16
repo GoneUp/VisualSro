@@ -13,6 +13,9 @@
         Public RefTeleportPoints As New List(Of TeleportPoint_)
         Public RefSafeZone As New List(Of SafeZone_)
         Public RefRespawns As New List(Of Functions.ReSpawn_)
+        Public RefRespawnsUnique As New List(Of Functions.ReSpawnUnique_)
+        Public RefUniques As New List(Of UInteger)
+
 
         Public Sub DumpDataFiles()
 
@@ -31,6 +34,9 @@
 
                 DumpSkillFiles()
                 Log.WriteSystemLog("Loaded " & RefSkills.Count & " Ref-Skills.")
+
+                DumpUniqueFile(base_path & "\data\unique_ids.txt")
+                Log.WriteSystemLog("Loaded " & RefUniques.Count & " Unique-Id's.")
 
                 DumpObjectFiles()
                 Log.WriteSystemLog("Loaded " & RefObjects.Count & " Ref-Objects.")
@@ -365,7 +371,7 @@
         End Function
 
         Public Structure Object_
-            Public Id As UInteger
+            Public Pk2ID As UInteger
             Public Name As String
             Public OtherName As String
             Public Type As Type_
@@ -401,6 +407,7 @@
                 [Structure] = 3
                 Mob_Cave = 4
                 COS = 5
+                Mob_Unique = 6
             End Enum
         End Structure
 
@@ -419,7 +426,7 @@
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New Object_()
-                tmp.Id = Convert.ToUInt32(tmpString(1))
+                tmp.Pk2ID = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(2)
                 tmp.OtherName = tmpString(3)
                 tmp.WalkSpeed = Convert.ToSingle(tmpString(46))
@@ -448,6 +455,8 @@
                     Case "MOB"
                         If selector(1) = "TQ" Or selector(1) = "DH" Then
                             tmp.Type = Object_.Type_.Mob_Cave
+                        ElseIf IsUnique(tmp.Pk2ID) Then
+                            tmp.Type = Object_.Type_.Mob_Unique
                         Else
                             tmp.Type = Object_.Type_.Mob_Normal
                         End If
@@ -479,7 +488,7 @@
 
         Public Function GetObjectById(ByVal ItemId As UInteger) As Object_
             For i As Integer = 0 To RefObjects.Count - 1
-                If RefObjects(i).Id = ItemId Then
+                If RefObjects(i).Pk2ID = ItemId Then
                     Return RefObjects(i)
                 End If
             Next
@@ -560,7 +569,7 @@
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim obj As New Object_
 
-                obj.Id = tmpString(1)
+                obj.Pk2ID = tmpString(1)
                 obj.Name = tmpString(2)
                 obj.Type = Object_.Type_.Teleport
 
@@ -642,7 +651,6 @@
             Public YSec As Byte
         End Structure
 
-
         Public Sub DumpSafeZoneFile(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
@@ -657,10 +665,28 @@
                 End If
             Next i
         End Sub
-
         Public Function IsInSaveZone(ByVal Pos As Position) As Boolean
             For i = 0 To RefSafeZone.Count - 1
                 If RefSafeZone(i).XSec = Pos.XSector And RefSafeZone(i).YSec = Pos.YSector Then
+                    Return True
+                End If
+            Next
+            Return False
+        End Function
+
+
+        Public Sub DumpUniqueFile(ByVal path As String)
+            Dim lines As String() = IO.File.ReadAllLines(path)
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False Then
+                    RefUniques.Add(lines(i))
+                End If
+            Next i
+        End Sub
+
+        Public Function IsUnique(ByVal Pk2ID As UInteger) As Boolean
+            For i = 0 To RefUniques.Count - 1
+                If RefUniques(i) = Pk2ID Then
                     Return True
                 End If
             Next

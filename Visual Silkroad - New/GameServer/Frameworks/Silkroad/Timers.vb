@@ -205,7 +205,6 @@ Namespace GameServer
                     End If
                 Next
 
-                Debug.Print(Date.Now.Second)
                 CheckForRespawns()
 
                 MonsterCheck.Start()

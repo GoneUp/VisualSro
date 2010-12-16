@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Custom
+﻿Namespace GameServer.Mod
     Module Costum_Log
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
             'This Function is for additional Log from a GM
@@ -88,13 +88,43 @@
                         Next
                     End If
 
-                Case "\\count"
+                Case "\\count_me"
+                    Functions.SendPm(Index_, "===========COUNT============", "[SERVER]")
+                    Functions.SendPm(Index_, "Players: " & Functions.PlayerData(Index_).SpawnedPlayers.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "Mob: " & Functions.PlayerData(Index_).SpawnedMonsters.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "Npc: " & Functions.PlayerData(Index_).SpawnedNPCs.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "Items: " & Functions.PlayerData(Index_).SpawnedItems.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "== END ==", "[SERVER]")
+
+                Case "\\count_world"
                     Functions.SendPm(Index_, "===========COUNT============", "[SERVER]")
                     Functions.SendPm(Index_, "Players: " & Server.OnlineClient, "[SERVER]")
                     Functions.SendPm(Index_, "Mob: " & Functions.MobList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "Npc: " & Functions.NpcList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "Items: " & Functions.ItemList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "== END ==", "[SERVER]")
+
+
+                Case "\\name_me"
+                    If tmp(1) <> "" Then
+                        Functions.PlayerData(Index_).CharacterName = tmp(1)
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'", Functions.PlayerData(Index_).CharacterName, Functions.PlayerData(Index_).CharacterId))
+                    End If
+
+                Case "\\name_world"
+                    '\\name_world [Old_Name] [New_Name]
+                    If tmp(1) <> "" And tmp(2) = "" Then
+                        For i = 0 To Server.OnlineClient - 1
+                            If Functions.PlayerData(i) IsNot Nothing Then
+                                If Functions.PlayerData(i).CharacterName = tmp(1) Then
+                                    Functions.PlayerData(i).CharacterName = tmp(2)
+                                    DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'", Functions.PlayerData(i).CharacterName, Functions.PlayerData(i).CharacterId))
+                                    Exit For
+                                End If
+                            End If
+                        Next
+                    End If
+
             End Select
 
 

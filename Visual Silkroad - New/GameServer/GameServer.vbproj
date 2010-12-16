@@ -107,6 +107,7 @@
     <Compile Include="Functions\Character\Character.vb" />
     <Compile Include="Functions\Monster\Spawn Mangment\AutoSpawn.vb" />
     <Compile Include="Functions\Monster\MonsterAction.vb" />
+    <Compile Include="Functions\Monster\Spawn Mangment\Respawn.vb" />
     <Compile Include="Functions\Players\Movement.vb" />
     <Compile Include="Functions\Players\PlayerAttack.vb" />
     <Compile Include="Functions\Skills\cMastery.vb" />

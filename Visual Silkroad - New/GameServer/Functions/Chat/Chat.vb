@@ -143,7 +143,7 @@
                 writer.UString(message)
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
 
-                Custom.CheckForCoustum(message, Index_)
+                [Mod].CheckForCoustum(message, Index_)
 
                 If LogChat Then
                     Log.WriteGameLog(Index_, "Chat", "GM", "Message: " & message)

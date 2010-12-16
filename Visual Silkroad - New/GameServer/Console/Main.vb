@@ -30,10 +30,10 @@ Namespace GameServer
             AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
             AddHandler DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
 
-            Console.WindowHeight = 10
-            Console.BufferHeight = 30
-            Console.WindowWidth = 60
-            Console.BufferWidth = 60
+            Console.WindowHeight = 20
+            Console.BufferHeight = 50
+            Console.WindowWidth = 70
+            Console.BufferWidth = 70
             Console.BackgroundColor = ConsoleColor.White
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()

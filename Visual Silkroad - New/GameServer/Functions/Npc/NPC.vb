@@ -62,7 +62,7 @@
             Dim npc_ As Object_ = GetObjectById(ItemId)
             Dim toadd As New cNPC
             toadd.UniqueID = DatabaseCore.GetUnqiueID
-            toadd.Pk2ID = npc_.Id
+            toadd.Pk2ID = npc_.Pk2ID
             toadd.Angle = Angle
             If npc_.Type = Object_.Type_.Npc Then
                 toadd.Position = Position

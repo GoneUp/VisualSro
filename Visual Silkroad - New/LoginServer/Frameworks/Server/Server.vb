@@ -60,6 +60,10 @@ Namespace LoginServer
 
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -1)
+
+                If ServerSocket.Blocking = True Then
+                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+                End If
             End Try
         End Sub
 

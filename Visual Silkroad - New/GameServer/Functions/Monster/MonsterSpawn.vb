@@ -49,7 +49,7 @@
             Dim mob_ As Object_ = GetObjectById(MobID)
             Dim tmp As New cMonster
             tmp.UniqueID = DatabaseCore.GetUnqiueID
-            tmp.Pk2ID = mob_.Id
+            tmp.Pk2ID = mob_.Pk2ID
             tmp.Position = Position
             tmp.Position_Spawn = Position
             tmp.SpotID = SpotID
@@ -58,12 +58,13 @@
 
             Select Case Type
                 Case 1
-                    tmp.HP_Cur = mob_.Hp * 2
+                    tmp.HP_Cur = mob_.Hp * MobMultiplier.Normal
+                Case 2
+                    tmp.HP_Cur = mob_.Hp * MobMultiplier.Champion
                 Case 3
-                    tmp.HP_Cur = mob_.Hp * 2
                     SendUniqueSpawn(MobID)
                 Case 4
-                    tmp.HP_Cur = mob_.Hp * 20
+                    tmp.HP_Cur = mob_.Hp * MobMultiplier.Giant
             End Select
 
             MobList.Add(tmp)
@@ -118,5 +119,12 @@
             writer.String(KillName)
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
+
+        Enum MobMultiplier
+            Normal = 1
+            Champion = 2
+            Unique = 2
+            Giant = 20
+        End Enum
     End Module
 End Namespace

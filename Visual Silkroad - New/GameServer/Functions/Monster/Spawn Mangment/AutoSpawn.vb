@@ -38,6 +38,8 @@
                         Case Object_.Type_.Mob_Cave
                             SpawnMob(Pk2ID, GetRadomMobType, pos, 0, i)
                             RefRespawns.Add(tmp)
+                        Case Object_.Type_.Mob_Unique
+                            AddUnqiueRespawn(tmp)
                         Case Object_.Type_.Npc
                             SpawnNPC(Pk2ID, pos, Angle)
                     End Select
@@ -45,8 +47,7 @@
             Next
         End Sub
 
-
-        Private Function GetRadomMobType() As Byte
+        Public Function GetRadomMobType() As Byte
             Dim num As Integer = Rnd() * 10
 
             If num <= 5 Then
@@ -96,57 +97,5 @@
             End If
             Return str
         End Function
-
-        Public Sub CheckForRespawns()
-            Dim Random As New Random
-
-            For i = 0 To RefRespawns.Count - 1
-                If IsSpawned(i) = False Then
-                    If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= ServerSpawnsPerSec Then
-                        If Random.Next(0, 7) = 0 Then
-                            ReSpawnMob(i)
-                        End If
-                    End If
-                End If
-            Next
-        End Sub
-
-        Private Function IsSpawned(ByVal SpotID As Long) As Boolean
-            For i = 0 To MobList.Count - 1
-                If MobList(i).SpotID = SpotID Then
-                    Return True
-                End If
-            Next
-            Return False
-        End Function
-
-        Private Function GetCountPerSector(ByVal Xsec As Byte, ByVal Ysec As Byte) As Integer
-            Dim Count As Integer
-            For i = 0 To MobList.Count - 1
-                If MobList(i).Position_Spawn.XSector = Xsec And MobList(i).Position_Spawn.YSector = Ysec Then
-                    Count += 1
-                End If
-            Next
-            Return Count
-        End Function
-        Public Sub ReSpawnMob(ByVal SpotIndex As Integer)
-            Dim obj_ As Object_ = GetObjectById(RefRespawns(SpotIndex).Pk2ID)
-
-            Select Case obj_.Type
-                Case Object_.Type_.Mob_Normal
-                    SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, SpotIndex)
-                Case Object_.Type_.Mob_Cave
-                    SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, SpotIndex)
-                Case Object_.Type_.Npc
-                    SpawnNPC(RefRespawns(SpotIndex).Pk2ID, RefRespawns(SpotIndex).Position, RefRespawns(SpotIndex).Angle)
-            End Select
-        End Sub
-
-        Structure ReSpawn_
-            Public SpotID As Long
-            Public Pk2ID As UInteger
-            Public Position As Position
-            Public Angle As UShort
-        End Structure
     End Module
 End Namespace

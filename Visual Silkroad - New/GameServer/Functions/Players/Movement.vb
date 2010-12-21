@@ -3,7 +3,7 @@
 
         Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
 
-            If PlayerData(Index_).Busy = True Then
+            If PlayerData(Index_).Busy = True Or PlayerData(Index_).Attacking = True Then
                 Exit Sub
             End If
 
@@ -17,53 +17,61 @@
                 to_pos.Z = packet.WordInt
                 to_pos.Y = packet.WordInt
 
-
                 'Dim x = PlayerData(Index_).Position.X - to_pos.X
                 'Dim y = PlayerData(Index_).Position.Y - to_pos.Y
                 'Dim Distance = Math.Sqrt(x * x + y * y)
                 'Dim Traveltime = Distance / PlayerData(Index_).RunSpeed
                 'Console.WriteLine(Distance & "    " & Traveltime)
 
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Movement)
-                writer.DWord(PlayerData(Index_).UniqueId)
-                writer.Byte(1) 'destination
-                writer.Byte(to_pos.XSector)
-                writer.Byte(to_pos.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(to_pos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(to_pos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(to_pos.Y)))
-                writer.Byte(0) '1= source
-
-
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                PlayerData(Index_).Position = to_pos
-
-                ObjectSpawnCheck(Index_)
-
-                Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+                OnMoveUser(Index_, to_pos)
             End If
         End Sub
 
-        Public Sub OnMoveUser(ByVal Index_ As Integer, ByVal To_Pos As Position)
+        Public Sub OnMoveUser(ByVal Index_ As Integer, ByVal ToPos As Position)
             Try
+                Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
+                Dim Time As Single
+                Select Case PlayerData(Index_).MovementType
+                    Case MoveType_.Walk
+                        Time = Distance / PlayerData(Index_).WalkSpeed
+                    Case MoveType_.Run
+                        Time = Distance / PlayerData(Index_).RunSpeed
+                    Case MoveType_.Berserk
+                        Time = Distance / PlayerData(Index_).BerserkSpeed
+                End Select
+
+
+                If Time > 0 Then
+                    PlayerData(Index_).Walking = True
+                    PlayerData(Index_).Position_FromPos = PlayerData(Index_).Position
+                    PlayerData(Index_).Position_ToPos = ToPos
+                    PlayerData(Index_).WalkStart = Date.Now
+                    PlayerData(Index_).WalkEnd = Date.Now.AddSeconds(Time)
+                Else
+                    Debug.Print("Move ERRRR")
+                End If
+
+
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Movement)
                 writer.DWord(PlayerData(Index_).UniqueId)
                 writer.Byte(1) 'destination
-                writer.Byte(To_Pos.XSector)
-                writer.Byte(To_Pos.YSector)
-                writer.Word(CUInt(To_Pos.X))
-                writer.Byte(CUInt(To_Pos.Z))
-                writer.Word(CUInt(To_Pos.Y))
+                writer.Byte(ToPos.XSector)
+                writer.Byte(ToPos.YSector)
+                writer.Byte(BitConverter.GetBytes(CShort(ToPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Y)))
                 writer.Byte(0) '1= source
+                'writer.Byte(PlayerData(Index_).Position.XSector)
+                'writer.Byte(PlayerData(Index_).Position.YSector)
+                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X)))
+                'writer.Float(PlayerData(Index_).Position.Z)
+                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
+
 
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                PlayerData(Index_).Position = To_Pos
-
                 ObjectSpawnCheck(Index_)
-
                 Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
             Catch ex As Exception
                 Console.WriteLine("OnMoveUser::error...")
@@ -83,10 +91,14 @@
                             If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
                                 Server.Send(CreateSpawnPacket(Index_), refindex)
                                 PlayerData(refindex).SpawnedPlayers.Add(Index_)
+
+                                LinkPlayerToGuild(Index_)
                             End If
                             If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
                                 Server.Send(CreateSpawnPacket(refindex), Index_)
                                 PlayerData(Index_).SpawnedPlayers.Add(refindex)
+
+                                LinkPlayerToGuild(Index_)
                             End If
 
                         End If
@@ -98,11 +110,9 @@
                     If CheckRange(PlayerData(Index_).Position, MobList(i).Position) Then 'And CheckSectors(PlayerData(Index_).Position, MobList(i).Position) Then
                         Dim _mob As cMonster = MobList(i)
                         Dim obj As Object = GetObjectById(_mob.Pk2ID)
-
                         If PlayerData(Index_).SpawnedMonsters.Contains(_mob.UniqueID) = False Then
                             Server.Send(CreateMonsterSpawnPacket(_mob, obj), Index_)
                             PlayerData(Index_).SpawnedMonsters.Add(_mob.UniqueID)
-                            Debug.Print(GetObjectById(_mob.Pk2ID).Name)
                         End If
                     End If
                 Next

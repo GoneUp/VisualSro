@@ -13,7 +13,7 @@
 
         Structure GuildMember_
             Public CharacterID As UInteger
-            Public GuildID As UInteger
+            Public GuildID As Long
             Public DonantedGP As UInteger
             Public GrantName As String
             Public Rights As GuildRights_

@@ -3,6 +3,7 @@
         Public Sub KillMob(ByVal MobIndex As Integer)
             MobList(MobIndex).HP_Cur = 0
             MobList(MobIndex).Death = True
+            MobList(MobIndex).DeathRemoveTime = Date.Now.AddSeconds(5)
 
             Dim tmp_ As Integer = GetPlayerWithMostDamage(MobIndex)
             If tmp_ >= 0 Then
@@ -69,5 +70,48 @@
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(MobListIndex).UniqueID)
         End Sub
 
+
+        Public Sub GetEXPFromMob(ByVal mob_ As cMonster)
+            Dim ref_ As Object_ = GetObjectById(mob_.Pk2ID)
+            For i = 0 To mob_.DamageFromPlayer.Count - 1
+                Dim Index_ As Integer = mob_.DamageFromPlayer(i).PlayerIndex
+                Dim Percent As Single = mob_.DamageFromPlayer(i).Damage / mob_.HP_Max
+
+                Dim Balance As Double 'The Level factor...
+                If CSng(PlayerData(Index_).Level) - ref_.Level > 0 Then
+                    Balance = (1 + ((CSng(PlayerData(Index_).Level) - ref_.Level) / 100))
+                Else
+                    Balance = 0.01
+                End If
+
+                Dim EXP As Long = ((ref_.Exp * GetExpMultiplier(mob_.Mob_Type)) * ServerXPRate * Percent) * Balance
+                Dim SP As Long = (ref_.Exp * ServerSPRate * Percent)
+
+                GetXP(EXP, SP, Index_, mob_.UniqueID)
+            Next
+        End Sub
+
+        Private Function GetExpMultiplier(ByVal Type As Byte) As Byte
+            Select Case Type
+                Case 0
+                    Return MobMultiplierExp.Normal
+                Case 1
+                    Return MobMultiplierExp.Champion
+                Case 3
+                    Return MobMultiplierExp.Unique
+                Case 4
+                    Return MobMultiplierExp.Giant
+                Case 6
+                    Return MobMultiplierExp.Elite
+                Case 16
+                    Return MobMultiplierExp.Party_Normal
+                Case 17
+                    Return MobMultiplierExp.Party_Champ
+                Case 20
+                    Return MobMultiplierExp.Party_Giant
+                Case Else
+                    Return 1
+            End Select
+        End Function
     End Module
 End Namespace

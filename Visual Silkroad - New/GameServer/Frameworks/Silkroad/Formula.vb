@@ -79,24 +79,38 @@
             Dim _item As cInvItem = GameServer.Functions.Inventorys(Index_).UserItems(6)
             Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
             '8-11
-            If _refitem.CLASS_A = 1 Then
-                Dim selector As String = _refitem.ITEM_TYPE_NAME.Substring(8, 3)
-                Select Case selector
-                    '========CH
-                    Case "SWO" 'Sword
+            If _refitem.CLASS_A = 1 And _refitem.CLASS_B = 6 Then
+                Select Case _refitem.CLASS_C
+                    '=============CH
+                    Case 2 'Sword
                         Return GameServer.Functions.GetMasteryByID(257, Index_).Level
-                    Case "BLA" 'Blade
+                    Case 3 'Blade
                         Return GameServer.Functions.GetMasteryByID(257, Index_).Level
-                    Case "SPE" 'Spear
+                    Case 4 'Spear
                         Return GameServer.Functions.GetMasteryByID(258, Index_).Level
-                    Case "TBL" 'Glavie
+                    Case 5 'Glavie
                         Return GameServer.Functions.GetMasteryByID(258, Index_).Level
-                    Case "BOW" 'Bow
+                    Case 6 'Bow
                         Return GameServer.Functions.GetMasteryByID(259, Index_).Level
-                        '======EU
-                    Case Else
-                        Return 1
-
+                        '=========EU
+                    Case 7
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 8
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 9
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 10
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 11
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 12
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 13
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 14
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                    Case 15
+                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
                 End Select
             End If
         End Function

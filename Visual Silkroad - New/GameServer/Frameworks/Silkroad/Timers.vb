@@ -2,6 +2,7 @@
 Namespace GameServer
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
+        Public PlayerMoveTimer As Timer() = New Timer(14999) {}
         Public MonsterMovement As New Timer
         Public MonsterCheck As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
@@ -15,11 +16,13 @@ Namespace GameServer
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttackTimer(TimerCount), PickUpTimer(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+                ReDim PlayerAttackTimer(TimerCount), PlayerMoveTimer(TimerCount), PickUpTimer(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
 
                 For i As Integer = 0 To TimerCount - 1
                     PlayerAttackTimer(i) = New Timer()
                     AddHandler PlayerAttackTimer(i).Elapsed, AddressOf AttackTimer_Elapsed
+                    PlayerMoveTimer(i) = New Timer()
+                    AddHandler PlayerMoveTimer(i).Elapsed, AddressOf PlayerMoveTimer_Elapsed
                     UsingItemTimer(i) = New Timer()
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
@@ -65,6 +68,8 @@ Namespace GameServer
                         Dim mob_ As cMonster = MobList(GetMobIndex(PlayerData(Index).AttackedMonsterID))
                         If mob_.Death = False Then
                             If PlayerData(Index).AttackType = AttackType_.Normal Then
+                                PlayerAttackNormal(Index, mob_.UniqueID)
+                            ElseIf PlayerData(Index).AttackType = AttackType_.Skill Then
                                 PlayerAttackNormal(Index, mob_.UniqueID)
                             End If
                         End If
@@ -198,7 +203,11 @@ Namespace GameServer
                     If i < MobList.Count Then
                         Dim mob_ = MobList(i)
                         If MobList(i).Death = True Then
-                            RemoveMob(i)
+                            Dim wert As Integer = Date.Compare(MobList(i).DeathRemoveTime, Date.Now)
+                            If wert = -1 Then
+                                'Abgelaufen
+                                RemoveMob(i)
+                            End If
                         ElseIf IsInSaveZone(MobList(i).Position) Then
                             RemoveMob(i)
                         End If
@@ -291,5 +300,58 @@ Namespace GameServer
             End Try
 
         End Sub
+
+        Public Sub PlayerMoveTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            Dim Index As Integer = -1
+            Try
+                Dim objB As Timer = DirectCast(sender, Timer)
+                For i As Integer = Information.LBound(PlayerMoveTimer, 1) To Information.UBound(PickUpTimer, 1)
+                    If Object.ReferenceEquals(PlayerMoveTimer(i), objB) Then
+                        Index = i
+                        Exit For
+                    End If
+                Next
+
+                If Index <> -1 Then
+                    PlayerMoveTimer(Index).Stop()
+
+                    If PlayerData(Index).Walking = True Then
+                        Dim wert As Integer = Date.Compare(PlayerData(Index).WalkEnd, Date.Now)
+                        If wert = -1 Then
+                            'Abgelaufen
+                            PlayerData(Index).Walking = False
+                            PlayerData(Index).Position = PlayerData(Index).Position_ToPos
+                        Else
+                            Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, PlayerData(Index).WalkEnd)
+                            Dim FullTime As Single = DateDiff(DateInterval.Second, PlayerData(Index).WalkStart, PlayerData(Index).WalkEnd)
+                            Dim Verhältnis As Single = (Past / FullTime)
+
+                            Dim Walked As Single = (CalculateDistance(PlayerData(Index).Position_FromPos, PlayerData(Index).Position_ToPos) * Verhältnis)
+
+                            If Walked > 0 Then
+                                Dim Full_X As Single = PlayerData(Index).Position_FromPos.X - PlayerData(Index).Position_ToPos.X
+                                Dim Full_Y As Single = PlayerData(Index).Position_FromPos.Y - PlayerData(Index).Position_ToPos.Y
+
+                                Dim Cur_X As Single = Full_X * Verhältnis
+                                Dim Cur_Y As Single = Full_Y * Verhältnis
+
+                                PlayerData(Index).Position.X += (Full_X - Cur_X)
+                                PlayerData(Index).Position.Y += (Full_Y - Cur_Y)
+
+                                PlayerData(Index).Position.XSector = GetXSec(PlayerData(Index).Position.X)
+                                PlayerData(Index).Position.YSector = GetYSec(PlayerData(Index).Position.Y)
+                            End If
+                        End If
+                    End If
+
+
+
+
+                End If
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+            End Try
+        End Sub
+
     End Module
 End Namespace

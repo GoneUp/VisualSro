@@ -716,6 +716,7 @@
             OnSendSilks(Index_)
             If PlayerData(Index_).InGuild = True Then
                 SendGuildInfo(Index_, False)
+                LinkPlayerToGuild(Index_)
             End If
         End Sub
     End Module

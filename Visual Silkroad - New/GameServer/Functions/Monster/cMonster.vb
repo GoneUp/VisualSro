@@ -5,7 +5,8 @@
 
     Public Mob_Type As Byte
     Public Angle As UInt16 = 0
-    Public HP_Cur As Int64
+    Public HP_Cur As UInteger
+    Public HP_Max As UInteger
 
     Public Position As Position
     Public Position_FromPos As Position
@@ -17,6 +18,7 @@
     Public Walking As Boolean = False
 
     Public Death As Boolean = False
+    Public DeathRemoveTime As Date
 
     Public DamageFromPlayer As New List(Of cDamageDone)
 End Class

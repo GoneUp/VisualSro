@@ -34,6 +34,7 @@
 
             Catch ex As Exception
                 Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+                LoginDbUpdate.Start()
             End Try
         End Sub
 

@@ -57,11 +57,38 @@
         End Sub
 
         Public Sub LinkPlayerToGuild(ByVal Index_ As Integer)
+            If PlayerData(Index_).GuildID <> -1 Then
+                Dim guild As cGuild = DatabaseCore.GetGuildWithGuildID(PlayerData(Index_).GuildID)
+                Dim member As cGuild.GuildMember_ = GetMember(PlayerData(Index_).GuildID, PlayerData(Index_).CharacterId)
 
-
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.Guild_Link)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).GuildID)
+                writer.Word(guild.Name.Length)
+                writer.String(guild.Name)
+                writer.Word(member.GrantName.Length)
+                writer.String(member.GrantName)
+                writer.DWord(1)
+                writer.DWord(1)
+                writer.DWord(0)
+                writer.Byte(1)
+                writer.Byte(1)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+            End If
         End Sub
 
-
+        Private Function GetMember(ByVal GuildID As UInteger, ByVal CharID As UInteger) As cGuild.GuildMember_
+            For i = 0 To DatabaseCore.Guilds.Count - 1
+                If DatabaseCore.Guilds(i).GuildID = GuildID Then
+                    For m = 0 To DatabaseCore.Guilds(i).Member.Count - 1
+                        If DatabaseCore.Guilds(i).Member(m).CharacterID = CharID Then
+                            Return DatabaseCore.Guilds(i).Member(m)
+                        End If
+                    Next
+                End If
+            Next
+        End Function
 
 
     End Module

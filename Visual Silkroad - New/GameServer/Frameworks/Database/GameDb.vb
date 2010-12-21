@@ -55,6 +55,7 @@
 
             Catch ex As Exception
                 Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+                GameDbUpdate.Start()
             End Try
         End Sub
 

@@ -56,17 +56,27 @@
             tmp.Mob_Type = Type
             tmp.HP_Cur = mob_.Hp
 
+
             Select Case Type
+                Case 0
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Normal
                 Case 1
-                    tmp.HP_Cur = mob_.Hp * MobMultiplier.Normal
-                Case 2
-                    tmp.HP_Cur = mob_.Hp * MobMultiplier.Champion
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
                 Case 3
                     SendUniqueSpawn(MobID)
                 Case 4
-                    tmp.HP_Cur = mob_.Hp * MobMultiplier.Giant
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
+                Case 6
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
+                Case 16
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Normal
+                Case 17
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Champ
+                Case 20
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
             End Select
 
+            tmp.HP_Max = tmp.HP_Cur
             MobList.Add(tmp)
 
             Dim MyIndex As UInteger = MobList.IndexOf(tmp)
@@ -120,11 +130,26 @@
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
 
-        Enum MobMultiplier
+        Enum MobMultiplierHP
             Normal = 1
             Champion = 2
             Unique = 2
             Giant = 20
+            Elite = 10
+            Party_Normal = 10
+            Party_Champ = 20
+            Party_Giant = 200
+        End Enum
+
+        Enum MobMultiplierExp
+            Normal = 1
+            Champion = 2
+            Unique = 7
+            Giant = 3
+            Elite = 4
+            Party_Normal = 5
+            Party_Champ = 6
+            Party_Giant = 8
         End Enum
     End Module
 End Namespace

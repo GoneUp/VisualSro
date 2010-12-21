@@ -45,10 +45,18 @@
     Public UsedItemParameter As Integer
 
     Public Position As New Position
-    Public Position_To As New Position
+
     Public Position_Recall As New Position
     Public Position_Return As New Position
     Public Position_Dead As New Position
+
+    Public Position_FromPos As Position
+    Public Position_ToPos As Position
+
+    Public WalkStart As New Date
+    Public WalkEnd As New Date
+    Public Walking As Boolean = False
+    Public MovementType As MoveType_ = MoveType_.Run
 
     Public SpawnedPlayers As New List(Of Integer)
     Public SpawnedMonsters As New List(Of Integer)
@@ -60,7 +68,7 @@
     Public Invincible As Boolean = False
 
     Public InGuild As Boolean = False
-    Public GuildID As UInteger = 0
+    Public GuildID As Long = -1
 
     Public InExchange As Boolean = False
     Public InExchangeWith As Integer = -1

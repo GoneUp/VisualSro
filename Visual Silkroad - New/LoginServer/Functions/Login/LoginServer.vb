@@ -185,7 +185,7 @@
                     user.FailedLogins += 1
                     Users(UserIndex) = user
 
-                    Database.UpdateData(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
+                    DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
 
                     writer.Byte(2) 'login failed
                     writer.Byte(1)
@@ -197,7 +197,7 @@
                         user.FailedLogins = 0
                         Users(UserIndex) = user
 
-                        Database.UpdateData(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
+                        DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
                         BanUser(Date.Now.AddMinutes(10), UserIndex) 'Ban for 10 mins
                     End If
 

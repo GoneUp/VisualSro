@@ -11,6 +11,7 @@ Namespace GameServer
         Public CastBuffTimer As Timer() = New Timer(14999) {}
         Public UsingItemTimer As Timer() = New Timer(14999) {}
         Public SitUpTimer As Timer() = New Timer(14999) {}
+        Public DatabaseTimer As New Timer
 
         Public Sub LoadTimers(ByVal TimerCount As Integer)
             Log.WriteSystemLog("Loading Timers...")
@@ -33,14 +34,17 @@ Namespace GameServer
 
                 AddHandler MonsterCheck.Elapsed, AddressOf MonsterCheck_Elapsed
                 AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
+                AddHandler DatabaseTimer.Elapsed, AddressOf DatabaseTimer_Elapsed
 
                 'Start Timers
                 MonsterCheck.Interval = 5000
                 MonsterCheck.Start()
 
-                MonsterMovement.Interval = 3000
+                MonsterMovement.Interval = 5000
                 MonsterMovement.Start()
 
+                DatabaseTimer.Interval = 30000
+                DatabaseTimer.Start()
 
             Catch ex As Exception
 
@@ -353,5 +357,10 @@ Namespace GameServer
             End Try
         End Sub
 
+        Public Sub DatabaseTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            DatabaseTimer.Stop()
+            DataBase.ExecuteQuerys()
+            DatabaseTimer.Start()
+        End Sub
     End Module
 End Namespace

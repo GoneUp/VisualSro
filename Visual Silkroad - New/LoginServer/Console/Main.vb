@@ -7,23 +7,14 @@ Namespace LoginServer
         Public Shared Logpackets As Boolean = False
 
 
-        Private Shared Sub db_OnConnectedToDatabase()
-            Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
-
-        End Sub
-
-        Private Shared Sub db_OnDatabaseError(ByVal ex As Exception)
-            Log.WriteSystemLog("Database error: " & ex.Message)
-        End Sub
-
         Shared Sub Main()
             AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
             AddHandler Server.OnClientDisconnect, AddressOf Program.Server_OnClientDisconnect
             AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
             AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
             AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
-            AddHandler Database.OnDatabaseError, AddressOf Program.db_OnDatabaseError
-            AddHandler Database.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
+            AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
+            AddHandler DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
 
 
             Console.WindowHeight = 10
@@ -35,7 +26,7 @@ Namespace LoginServer
             Console.Clear()
             Console.Title = "LOGINSERVER ALPHA"
             Log.WriteSystemLog("Starting Server")
-            Database.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
+            DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
             Server.ip = "78.111.78.27"
             Server.Port = 15779 'Loginserver
             Server.MaxClients = 1500
@@ -44,6 +35,8 @@ Namespace LoginServer
 
             LoginDb.UpdateData()
             Settings.LoadSettings()
+            DataBase.DatabaseTimer.Interval = 30000
+            DataBase.DatabaseTimer.Start()
 
 read:
             Dim msg As String = Console.ReadLine()
@@ -103,6 +96,15 @@ read:
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
             Server.OnlineClient -= 1
             Server.RevTheard(index).Abort()
+        End Sub
+
+        Private Shared Sub db_OnConnectedToDatabase()
+            Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
+
+        End Sub
+
+        Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
+            Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
         End Sub
     End Class
 End Namespace

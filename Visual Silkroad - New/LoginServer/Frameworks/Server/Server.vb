@@ -79,8 +79,7 @@ Namespace LoginServer
         End Sub
 
         Private Shared Sub ReceiveData(ByVal Index_ As Integer)
-            Dim index As Integer = index
-            Dim socket As Socket = ClientList.GetSocket(index)
+            Dim socket As Socket = ClientList.GetSocket(Index_)
             Dim buffer(&H10000 - 1) As Byte
 
 
@@ -90,7 +89,7 @@ Namespace LoginServer
                     If socket.Connected Then
                         If socket.Available > 0 Then
                             socket.Receive(buffer, socket.Available, SocketFlags.None)
-                            RaiseEvent OnReceiveData(buffer, index)
+                            RaiseEvent OnReceiveData(buffer, Index_)
                             Array.Clear(buffer, 0, buffer.Length)
                         Else
                             Threading.Thread.Sleep(10)
@@ -104,17 +103,17 @@ Namespace LoginServer
 
                 Catch exception As SocketException
                     If exception.ErrorCode = &H2746 Then
-                        ClientList.Delete(index)
-                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
+                        ClientList.Delete(Index_)
+                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                     End If
+                Catch exception1 As Threading.ThreadAbortException
+                    ClientList.Delete(Index_)
+                    RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                 Catch exception2 As Exception
-                    RaiseEvent OnServerError(exception2, index)
+                    RaiseEvent OnServerError(exception2, Index_)
                     Array.Clear(buffer, 0, buffer.Length)
                 End Try
             Loop
-
-
-
         End Sub
 
 

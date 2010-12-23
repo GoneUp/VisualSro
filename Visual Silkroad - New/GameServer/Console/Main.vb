@@ -12,14 +12,6 @@ Namespace GameServer
         Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
         Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
-        Private Shared Sub db_OnConnectedToDatabase()
-            GameServer.Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
-
-        End Sub
-
-        Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
-            GameServer.Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
-        End Sub
 
         Shared Sub Main()
             AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
@@ -124,12 +116,20 @@ read:
                 GameServer.ClientList.OnCharListing(index) = Nothing
                 Functions.PlayerData(index) = Nothing
 
-                Server.RevTheard(index).Abort()
-                Server.RevTheard(index) = Nothing
-
+                'Server.RevTheard(index).Abort()
+                'Server.RevTheard(index) = Nothing
             Catch ex As Exception
                 Functions.PlayerData(index) = Nothing
             End Try
+        End Sub
+
+        Private Shared Sub db_OnConnectedToDatabase()
+            GameServer.Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
+
+        End Sub
+
+        Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
+            GameServer.Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
         End Sub
     End Class
 End Namespace

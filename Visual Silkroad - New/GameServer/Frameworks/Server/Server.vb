@@ -70,11 +70,7 @@ Namespace GameServer
                 OnlineClient -= 1
 
                 Try
-                    If Functions.PlayerData(index) IsNot Nothing Then
-                        Functions.DespawnPlayer(index)
-                    End If
-                    GameServer.ClientList.OnCharListing(index) = Nothing
-                    Functions.PlayerData(index) = Nothing
+                    RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
                 Catch ex As Exception
                     Functions.PlayerData(index) = Nothing
                 End Try
@@ -83,8 +79,7 @@ Namespace GameServer
         End Sub
 
         Private Shared Sub ReceiveData(ByVal Index_ As Integer)
-            Dim index As Integer = index
-            Dim socket As Socket = ClientList.GetSocket(index)
+            Dim socket As Socket = ClientList.GetSocket(Index_)
             Dim buffer(&H10000 - 1) As Byte
 
 
@@ -94,31 +89,32 @@ Namespace GameServer
                     If socket.Connected Then
                         If socket.Available > 0 Then
                             socket.Receive(buffer, socket.Available, SocketFlags.None)
-                            RaiseEvent OnReceiveData(buffer, index)
+                            RaiseEvent OnReceiveData(buffer, Index_)
                             Array.Clear(buffer, 0, buffer.Length)
                         Else
                             Threading.Thread.Sleep(10)
                         End If
 
                     Else
-                        Log.WriteSystemLog(buffer.ToString)
+                        ClientList.Delete(Index_)
+                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                         Exit Do
                     End If
 
 
                 Catch exception As SocketException
                     If exception.ErrorCode = &H2746 Then
-                        ClientList.Delete(index)
-                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
+                        ClientList.Delete(Index_)
+                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                     End If
+                Catch exception1 As Threading.ThreadAbortException
+                    ClientList.Delete(Index_)
+                    RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                 Catch exception2 As Exception
-                    RaiseEvent OnServerError(exception2, index)
+                    RaiseEvent OnServerError(exception2, Index_)
                     Array.Clear(buffer, 0, buffer.Length)
                 End Try
             Loop
-
-
-
         End Sub
 
 

@@ -33,9 +33,11 @@
             Select Case action
                 Case 2 'Run --> Walk
                     UpdateState(1, action, Index_)
+                    PlayerData(Index_).MovementType = MoveType_.Walk
 
                 Case 3 'Walk --> Run
                     UpdateState(1, action, Index_)
+                    PlayerData(Index_).MovementType = MoveType_.Run
 
                 Case 4 'sit down
                     If SitUpTimer(Index_).Enabled = True Then

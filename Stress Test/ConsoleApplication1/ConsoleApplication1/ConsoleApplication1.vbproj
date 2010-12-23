@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C79450B8-9666-4183-8375-6319F4E19F96}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>ConsoleApplication1.Module1</StartupObject>
+    <StartupObject>ConsoleApplication1.Main</StartupObject>
     <RootNamespace>ConsoleApplication1</RootNamespace>
     <AssemblyName>ConsoleApplication1</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -62,7 +62,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Module1.vb" />
+    <Compile Include="Main.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -78,6 +78,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Packets\cChar.vb" />
+    <Compile Include="Packets\Formula.vb" />
+    <Compile Include="Packets\Opcodes.vb" />
+    <Compile Include="Packets\PacketReader.vb" />
+    <Compile Include="Packets\PacketWriter.vb" />
+    <Compile Include="Parser.vb" />
+    <Compile Include="Timers.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

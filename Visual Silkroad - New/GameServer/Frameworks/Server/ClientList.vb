@@ -37,6 +37,10 @@ Namespace GameServer
             If (List(index) IsNot Nothing) AndAlso List(index).Connected Then
                 socket = List(index)
             End If
+
+            If socket Is Nothing Then
+                Debug.Print(1)
+            End If
             Return socket
         End Function
 
@@ -58,7 +62,7 @@ Namespace GameServer
                 If socket IsNot Nothing Then
                     If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
                         If socket.Connected = True Then
-                            'Server.Dissconnect(i)
+                            Server.Dissconnect(i)
                         End If
                     End If
 

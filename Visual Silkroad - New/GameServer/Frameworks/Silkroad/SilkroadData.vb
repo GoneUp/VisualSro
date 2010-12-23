@@ -678,7 +678,7 @@
         Public Sub DumpUniqueFile(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
-                If lines(i).StartsWith("//") = False Then
+                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
                     RefUniques.Add(lines(i))
                 End If
             Next i

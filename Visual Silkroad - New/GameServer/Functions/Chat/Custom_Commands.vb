@@ -31,14 +31,14 @@
                 Case "\\mastery"
 
                     If IsNumeric(tmp(1)) Then
-                        For i = 0 To DatabaseCore.Masterys.Length - 1
-                            If DatabaseCore.Masterys(i).OwnerID = Functions.PlayerData(Index_).CharacterId Then
-                                DatabaseCore.Masterys(i).Level = tmp(1)
+                        For i = 0 To GameDB.Masterys.Length - 1
+                            If GameDB.Masterys(i).OwnerID = Functions.PlayerData(Index_).CharacterId Then
+                                GameDB.Masterys(i).Level = tmp(1)
 
                                 writer.Create(ServerOpcodes.Mastery_Up)
                                 writer.Byte(1)
-                                writer.DWord(DatabaseCore.Masterys(i).MasteryID)
-                                writer.Byte(DatabaseCore.Masterys(i).Level)
+                                writer.DWord(GameDB.Masterys(i).MasteryID)
+                                writer.Byte(GameDB.Masterys(i).Level)
                                 Server.Send(writer.GetBytes, Index_)
                             End If
                         Next
@@ -59,11 +59,11 @@
                     End If
                 Case "\\silk"
                     If IsNumeric(tmp(1)) Then
-                        Dim UserIndex As Integer = DatabaseCore.GetUserWithAccID(Functions.PlayerData(Index_).AccountID)
-                        Dim user = DatabaseCore.Users(UserIndex)
+                        Dim UserIndex As Integer = GameDB.GetUserWithAccID(Functions.PlayerData(Index_).AccountID)
+                        Dim user = GameDB.Users(UserIndex)
                         user.Silk += tmp(1)
-                        DatabaseCore.Users(UserIndex) = user
-                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", DatabaseCore.Users(UserIndex).Silk, Functions.PlayerData(Index_).AccountID))
+                        GameDB.Users(UserIndex) = user
+                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", GameDB.Users(UserIndex).Silk, Functions.PlayerData(Index_).AccountID))
                         Functions.OnSendSilks(Index_)
                     End If
 

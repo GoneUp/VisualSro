@@ -48,7 +48,7 @@
         Public Sub SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position, ByVal Angle As UInteger, ByVal SpotID As Long)
             Dim mob_ As Object_ = GetObjectById(MobID)
             Dim tmp As New cMonster
-            tmp.UniqueID = DatabaseCore.GetUnqiueID
+            tmp.UniqueID = GameDB.GetUnqiueID
             tmp.Pk2ID = mob_.Pk2ID
             tmp.Position = Position
             tmp.Position_Spawn = Position

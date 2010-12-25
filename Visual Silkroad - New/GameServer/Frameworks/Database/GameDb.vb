@@ -1,13 +1,13 @@
-﻿Namespace GameServer.DatabaseCore
-	Module GameDb
+﻿Namespace GameServer.GameDB
+    Module GameDb
 
-		'Timer
+        'Timer
         Public WithEvents GameDbUpdate As New System.Timers.Timer
 
-		'User
+        'User
         Public Users() As cCharListing.UserArray
 
-		'Chars
+        'Chars
         Public Chars() As [cChar]
         Public Hotkeys As New List(Of cHotKey)
 
@@ -343,9 +343,11 @@
             CharArray.Chars.Clear()
 
             For i = 0 To Chars.Length - 1
-                If CharArray.LoginInformation.Id = Chars(i).AccountID Then
-                    CharArray.Chars.Add(Chars(i))
-                    CharCount += 1
+                If Chars(i) IsNot Nothing Then
+                    If CharArray.LoginInformation.Id = Chars(i).AccountID Then
+                        CharArray.Chars.Add(Chars(i))
+                        CharCount += 1
+                    End If
                 End If
             Next
 
@@ -356,8 +358,10 @@
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
             Dim inventory As New cInventory([char].MaxSlots)
             For i = 0 To (AllItems.Length - 1)
-                If AllItems(i).OwnerCharID = [char].CharacterId Then
-                    inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                If AllItems(i) IsNot Nothing Then
+                    If AllItems(i).OwnerCharID = [char].CharacterId Then
+                        inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                    End If
                 End If
             Next
             Return inventory

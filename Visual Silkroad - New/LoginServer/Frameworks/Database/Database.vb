@@ -49,15 +49,23 @@ Namespace LoginServer
 
 #Region "Unused"
         Public Shared Function GetDataSet(ByVal command As String) As DataSet
-            Dim reader As New MySqlDataAdapter(command, connection)
             Dim tmpset As New DataSet
+
             Try
+                Dim tmp_con As New MySqlConnection(ConnectionString)
+                tmp_con.Open()
+
+                Dim reader As New MySqlDataAdapter(command, tmp_con)
                 reader.Fill(tmpset)
+
+                tmp_con.Close()
+
             Catch ex As MySqlException
                 RaiseEvent OnDatabaseError(ex, command)
             End Try
             Return tmpset
         End Function
+
 
         Public Shared Function GetRowsCount(ByVal command As String) As Integer
             Dim count As Integer = 0
@@ -101,28 +109,24 @@ Namespace LoginServer
                 RaiseEvent OnDatabaseError(exception, command)
             End Try
         End Sub
-#End Region
 
-#Region "Query"
+        Public Shared Sub InsertData(ByVal command As String, ByVal NewConnetion As Boolean)
 
-        Public Shared Sub SaveQuery(ByVal command As String)
             Try
-                Query.Add(command)
+                Dim tmp_con As New MySqlConnection(ConnectionString)
+                tmp_con.Open()
+
+                Dim command2 As New MySqlCommand(command, tmp_con)
+                command2.ExecuteNonQuery()
+
+                tmp_con.Close()
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception, command)
             End Try
         End Sub
-
-        Public Shared Sub ExecuteQuerys() Handles DatabaseTimer.Elapsed
-            For i = 0 To Query.Count - 1
-                InsertData(Query(i))
-            Next
-
-            Query.Clear()
-        End Sub
-
-
 #End Region
+
+
     End Class
 End Namespace
 

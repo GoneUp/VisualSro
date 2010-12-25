@@ -5,9 +5,9 @@
             Dim masterycount As UInteger = 0
             Dim writer As New PacketWriter
 
-            For i = 0 To DatabaseCore.Masterys.Length - 1
-                If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).CharacterId Then
-                    masterycount += DatabaseCore.Masterys(i).Level
+            For i = 0 To GameDB.Masterys.Length - 1
+                If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId Then
+                    masterycount += GameDB.Masterys(i).Level
                 End If
             Next
             If PlayerData(index_).Model >= 1907 And PlayerData(index_).Model <= 1932 Then
@@ -15,22 +15,22 @@
                 If masterycount < ServerMasteryCap Then
                     'Free mastery
 
-                    For i = 0 To DatabaseCore.Masterys.Length - 1
-                        If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).CharacterId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
+                    For i = 0 To GameDB.Masterys.Length - 1
+                        If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
 
-                            Dim _lvldata As cLevelData = GetLevelDataByLevel(DatabaseCore.Masterys(i).Level)
+                            Dim _lvldata As cLevelData = GetLevelDataByLevel(GameDB.Masterys(i).Level)
                             If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
-                                DatabaseCore.Masterys(i).Level += 1
+                                GameDB.Masterys(i).Level += 1
 
                                 PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                 UpdateSP(index_)
 
-                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ", DatabaseCore.Masterys(i).Level, DatabaseCore.Masterys(i).OwnerID, DatabaseCore.Masterys(i).MasteryID))
+                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
 
                                 writer.Create(ServerOpcodes.Mastery_Up)
                                 writer.Byte(1)
-                                writer.DWord(DatabaseCore.Masterys(i).MasteryID)
-                                writer.Byte(DatabaseCore.Masterys(i).Level)
+                                writer.DWord(GameDB.Masterys(i).MasteryID)
+                                writer.Byte(GameDB.Masterys(i).Level)
                                 Server.Send(writer.GetBytes, index_)
 
                             Else
@@ -61,22 +61,22 @@
                 If masterycount < maxmastery Then
                     'Free mastery
 
-                    For i = 0 To DatabaseCore.Masterys.Length - 1
-                        If DatabaseCore.Masterys(i).OwnerID = PlayerData(index_).CharacterId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
+                    For i = 0 To GameDB.Masterys.Length - 1
+                        If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
 
-                            Dim _lvldata As cLevelData = GetLevelDataByLevel(DatabaseCore.Masterys(i).Level + 1)
+                            Dim _lvldata As cLevelData = GetLevelDataByLevel(GameDB.Masterys(i).Level + 1)
                             If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
-                                DatabaseCore.Masterys(i).Level += 1
+                                GameDB.Masterys(i).Level += 1
 
                                 PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                 UpdateSP(index_)
 
-                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2} ", DatabaseCore.Masterys(i).Level, DatabaseCore.Masterys(i).OwnerID, DatabaseCore.Masterys(i).MasteryID))
+                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2} ", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
 
                                 writer.Create(ServerOpcodes.Mastery_Up)
                                 writer.Byte(1)
-                                writer.DWord(DatabaseCore.Masterys(i).MasteryID)
-                                writer.Byte(DatabaseCore.Masterys(i).Level)
+                                writer.DWord(GameDB.Masterys(i).MasteryID)
+                                writer.Byte(GameDB.Masterys(i).Level)
                                 Server.Send(writer.GetBytes, index_)
 
                             Else
@@ -132,9 +132,9 @@
 
 
         Private Sub AddSkillToDB(ByVal toadd As cSkill)
-            Dim NewIndex As UInteger = DatabaseCore.Skills.Length + 1
-            Array.Resize(DatabaseCore.Skills, NewIndex)
-            DatabaseCore.Skills(NewIndex - 1) = toadd
+            Dim NewIndex As UInteger = GameDB.Skills.Length + 1
+            Array.Resize(GameDB.Skills, NewIndex)
+            GameDB.Skills(NewIndex - 1) = toadd
 
             DataBase.SaveQuery(String.Format("INSERT INTO skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID, toadd.SkillID))
         End Sub
@@ -143,9 +143,18 @@
 
         Public Function GetMasteryByID(ByVal MasteryID As UInteger, ByVal Index_ As Integer) As cMastery
             Dim ToReturn As New cMastery
-            For i = 0 To DatabaseCore.Masterys.Length - 1
-                If DatabaseCore.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And DatabaseCore.Masterys(i).MasteryID = MasteryID Then
-                    ToReturn = DatabaseCore.Masterys(i)
+            For i = 0 To GameDB.Masterys.Length - 1
+
+                If GameDB.Masterys(i) IsNot Nothing Then
+                    If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
+                        ToReturn = GameDB.Masterys(i)
+                    End If
+                Else
+                    Debug.Print("Mastery is notihing = " & Index_)
+                    Dim dfgdf = GameDB.Masterys
+                    'Dim dfg = GameDB.Masterys(1225)
+                    Dim B = GameDB.Masterys.Length
+
                 End If
             Next
             Return ToReturn

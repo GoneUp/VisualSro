@@ -67,14 +67,9 @@ Namespace GameServer
                 Dim socket As Socket = ClientList.GetSocket(index)
                 ClientList.Delete(index)
                 socket.Shutdown(SocketShutdown.Both)
-                OnlineClient -= 1
 
-                Try
-                    RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
-                Catch ex As Exception
-                    Functions.PlayerData(index) = Nothing
-                End Try
-            Catch
+                RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
+            Catch ex As Exception
             End Try
         End Sub
 
@@ -84,20 +79,25 @@ Namespace GameServer
 
 
             Do While True
-
                 Try
-                    If socket.Connected Then
-                        If socket.Available > 0 Then
-                            socket.Receive(buffer, socket.Available, SocketFlags.None)
-                            RaiseEvent OnReceiveData(buffer, Index_)
-                            Array.Clear(buffer, 0, buffer.Length)
-                        Else
-                            Threading.Thread.Sleep(10)
-                        End If
+                    If socket IsNot Nothing Then
+                        If socket.Connected Then
+                            If socket.Available > 0 Then
+                                socket.Receive(buffer, socket.Available, SocketFlags.None)
+                                RaiseEvent OnReceiveData(buffer, Index_)
+                                Array.Clear(buffer, 0, buffer.Length)
+                            Else
+                                Threading.Thread.Sleep(10)
+                            End If
 
+                        Else
+                            'Not Connected..
+                            ClientList.Delete(Index_)
+                            RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+                            Exit Do
+                        End If
                     Else
-                        ClientList.Delete(Index_)
-                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+                        'Is Nothing
                         Exit Do
                     End If
 
@@ -120,14 +120,21 @@ Namespace GameServer
 
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
             Try
-                ClientList.GetSocket(index).Send(buff)
+                Dim socket = ClientList.GetSocket(index)
+
+                If socket IsNot Nothing Then
+                    socket.Send(buff)
+                End If
+
 
                 If GameServer.Program.Logpackets = True Then
                     Log.LogPacket(buff, True)
                 End If
 
             Catch ex As Exception
-                RaiseEvent OnServerError(ex, index)
+                If Log_Detail Then
+                    RaiseEvent OnServerError(ex, index)
+                End If
             End Try
         End Sub
 

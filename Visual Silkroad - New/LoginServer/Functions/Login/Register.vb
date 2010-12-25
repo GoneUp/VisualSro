@@ -5,7 +5,7 @@
         Public Rand As New Random
 
         Public Sub RegisterUser(ByVal Name As String, ByVal Password As String, ByVal Index_ As Integer)
-            Database.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
+            DataBase.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password), True)
 
             Dim tmp As New UserArray
             tmp.AccountId = Rand.Next(500000, 1000000)
@@ -24,7 +24,9 @@
             tmp_2.Time = Date.Now
             RegisterList.Add(tmp_2)
 
-            Log.WriteGameLog(Index_, "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
+            If Log_Register Then
+                Log.WriteGameLog(Index_, "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
+            End If
         End Sub
 
         Public Function CheckIfUserCanRegister(ByVal IP As String) As Boolean

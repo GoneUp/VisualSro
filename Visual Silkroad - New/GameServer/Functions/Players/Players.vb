@@ -28,7 +28,7 @@
 
             'items
             Dim inventory As New cInventory(chari.MaxSlots)
-            inventory = GameServer.DatabaseCore.FillInventory(chari)
+            inventory = GameServer.GameDB.FillInventory(chari)
 
             Dim PlayerItemCount As Integer = 0
             For b = 0 To 9
@@ -89,7 +89,7 @@
             writer.DWord(0)
             writer.Byte(0)
             writer.Byte(chari.PVP)
-			writer.Byte(1)
+            writer.Byte(1)
 
             Return writer.GetBytes
         End Function
@@ -107,7 +107,7 @@
 
             'items
             Dim inventory As New cInventory(chari.MaxSlots)
-            inventory = GameServer.DatabaseCore.FillInventory(chari)
+            inventory = GameServer.GameDB.FillInventory(chari)
 
             Dim PlayerItemCount As Integer = 0
             For b = 0 To 9
@@ -248,9 +248,12 @@
         Public Sub DespawnPlayer(ByVal Index_ As Integer)
             For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
                 Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
-                If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
-                    Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                If PlayerData(Other_Index) IsNot Nothing Then
+                    If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
+                        Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                    End If
                 End If
+
             Next
 
             PlayerData(Index_).SpawnedPlayers.Clear()

@@ -1,4 +1,4 @@
-﻿Imports GameServer.GameServer.DatabaseCore, GameServer.GameServer.Functions
+﻿Imports GameServer.GameServer.GameDB, GameServer.GameServer.Functions
 Public Class cInventory
 
     Sub New(ByVal slots As Integer)

@@ -48,7 +48,7 @@
                 writer.UString(message)
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
 
-                If LogChat Then
+                If Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "Public", "Message: " & message)
                 End If
             End If
@@ -93,7 +93,7 @@
 
                 Server.Send(writer.GetBytes, senderindex)
 
-                If LogChat Then
+                If Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "Whisper", String.Format("Sender: {0} Message: {1}", sender, message))
                 End If
             Else
@@ -145,7 +145,7 @@
 
                 [Mod].CheckForCoustum(message, Index_)
 
-                If LogChat Then
+                If Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "GM", "Message: " & message)
                 End If
             End If
@@ -161,7 +161,7 @@
 
                 SendNotice(message)
 
-                If LogChat Then
+                If Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "Notice", "Message: " & message)
                 End If
 
@@ -186,7 +186,7 @@
             writer.UString(Message)
             Server.SendToAllIngame(writer.GetBytes)
 
-            If LogChat Then
+            If Log_Chat Then
                 Log.WriteGameLog(Index_, "Chat", "Global", "Message: " & Message)
             End If
         End Sub

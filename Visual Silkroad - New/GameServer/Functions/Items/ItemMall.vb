@@ -1,12 +1,12 @@
 ﻿Namespace GameServer.Functions
     Module ItemMall
         Public Sub OnSendSilks(ByVal Index_ As Integer)
-            Dim UserIndex As Integer = GameServer.DatabaseCore.GetUserWithAccID(PlayerData(Index_).AccountID)
+            Dim UserIndex As Integer = GameServer.GameDB.GetUserWithAccID(PlayerData(Index_).AccountID)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Silk)
-            writer.DWord(DatabaseCore.Users(UserIndex).Silk)
-            writer.DWord(DatabaseCore.Users(UserIndex).Silk_Bonus)
-            writer.DWord(DatabaseCore.Users(UserIndex).Silk_Points)
+            writer.DWord(GameDB.Users(UserIndex).Silk)
+            writer.DWord(GameDB.Users(UserIndex).Silk_Bonus)
+            writer.DWord(GameDB.Users(UserIndex).Silk_Points)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
@@ -20,10 +20,10 @@
             Dim RefObject As MallPackage_ = GetItemMallItemByName(LongName)
             Dim writer As New PacketWriter
 
-            Dim UserIndex As Integer = DatabaseCore.GetUserWithAccID(PlayerData(index_).AccountID)
+            Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(index_).AccountID)
 
             If LongName = RefObject.Name_Package Then
-                If DatabaseCore.Users(UserIndex).Silk - RefObject.Price >= 0 Then
+                If GameDB.Users(UserIndex).Silk - RefObject.Price >= 0 Then
                     Dim _Refitem As cItem = GetItemByName(RefObject.Name_Normal)
                     Dim slot As Byte = GetFreeItemSlot(index_)
                     Dim item As cInvItem = Inventorys(index_).UserItems(slot)
@@ -40,8 +40,8 @@
                             UpdateItem(item)
                     End Select
 
-                    DatabaseCore.Users(UserIndex).Silk -= RefObject.Price
-                    DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", DatabaseCore.Users(UserIndex).Silk, PlayerData(index_).AccountID))
+                    GameDB.Users(UserIndex).Silk -= RefObject.Price
+                    DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", GameDB.Users(UserIndex).Silk, PlayerData(index_).AccountID))
                     OnSendSilks(index_)
 
                     writer.Create(ServerOpcodes.ItemMove)

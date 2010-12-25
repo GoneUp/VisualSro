@@ -18,9 +18,10 @@
     Public ServerTaxRate As UInt16 = 0
     Public ServerSpawnsPerSec As UInteger = 50
 
-    Public LogGM As Boolean = False
-    Public LogMall As Boolean = False
-    Public LogChat As Boolean = False
+    Public Log_Detail As Boolean = False
+    Public Log_GM As Boolean = False
+    Public Log_Mall As Boolean = False
+    Public Log_Chat As Boolean = False
 
     'Enable or disable Mods
     Public ModGeneral As Boolean = True
@@ -56,9 +57,9 @@
         ServerTaxRate = 20
         ServerSpawnsPerSec = 50
 
-        LogChat = True
-        LogGM = True
-        LogMall = True
+        Log_Chat = True
+        Log_GM = True
+        Log_Mall = True
 
         ModGeneral = True
         ModDamage = True

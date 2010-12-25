@@ -6,7 +6,7 @@
             Dim Random As New Random
 
             For i = 0 To RefRespawns.Count - 1
-                If IsSpawned(i) = False Then
+                If IsSpawned(i) = 0 Then
                     If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= ServerSpawnsPerSec Then
                         If Random.Next(0, 7) = 0 Then
                             ReSpawnMob(i)

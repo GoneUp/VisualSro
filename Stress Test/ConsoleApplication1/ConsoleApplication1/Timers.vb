@@ -80,7 +80,7 @@ Module Timers
             End If
 
 
-            OnMoveUser(ToPos, Index)
+            'OnMoveUser(ToPos, Index)
 
 
             PlayerMoveTimer(Index).Start()

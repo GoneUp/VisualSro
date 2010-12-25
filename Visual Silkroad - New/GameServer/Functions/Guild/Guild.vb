@@ -3,7 +3,7 @@
 
         Public Sub SendGuildInfo(ByVal Index_ As Integer, ByVal update As Boolean)
             Dim writer As New PacketWriter
-            Dim guild As cGuild = DatabaseCore.GetGuildWithGuildID(PlayerData(Index_).GuildID)
+            Dim guild As cGuild = GameDB.GetGuildWithGuildID(PlayerData(Index_).GuildID)
 
             If update = False Then
                 writer.Create(ServerOpcodes.Guild_Info)
@@ -22,7 +22,7 @@
 
                 writer.Byte(guild.Member.Count)
                 For i = 0 To guild.Member.Count - 1
-                    Dim char_ As [cChar] = DatabaseCore.GetCharWithCharID(guild.Member(i).CharacterID)
+                    Dim char_ As [cChar] = GameDB.GetCharWithCharID(guild.Member(i).CharacterID)
 
                     writer.DWord(char_.CharacterId)
                     writer.Word(char_.CharacterName.Length)
@@ -58,7 +58,7 @@
 
         Public Sub LinkPlayerToGuild(ByVal Index_ As Integer)
             If PlayerData(Index_).GuildID <> -1 Then
-                Dim guild As cGuild = DatabaseCore.GetGuildWithGuildID(PlayerData(Index_).GuildID)
+                Dim guild As cGuild = GameDB.GetGuildWithGuildID(PlayerData(Index_).GuildID)
                 Dim member As cGuild.GuildMember_ = GetMember(PlayerData(Index_).GuildID, PlayerData(Index_).CharacterId)
 
                 Dim writer As New PacketWriter
@@ -79,11 +79,11 @@
         End Sub
 
         Private Function GetMember(ByVal GuildID As UInteger, ByVal CharID As UInteger) As cGuild.GuildMember_
-            For i = 0 To DatabaseCore.Guilds.Count - 1
-                If DatabaseCore.Guilds(i).GuildID = GuildID Then
-                    For m = 0 To DatabaseCore.Guilds(i).Member.Count - 1
-                        If DatabaseCore.Guilds(i).Member(m).CharacterID = CharID Then
-                            Return DatabaseCore.Guilds(i).Member(m)
+            For i = 0 To GameDB.Guilds.Count - 1
+                If GameDB.Guilds(i).GuildID = GuildID Then
+                    For m = 0 To GameDB.Guilds(i).Member.Count - 1
+                        If GameDB.Guilds(i).Member(m).CharacterID = CharID Then
+                            Return GameDB.Guilds(i).Member(m)
                         End If
                     Next
                 End If

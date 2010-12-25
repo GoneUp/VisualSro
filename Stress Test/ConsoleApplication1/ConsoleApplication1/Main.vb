@@ -1,11 +1,11 @@
 ﻿Imports System.Net, System.Net.Sockets
 Module Main
 
-    Public s(100) As Socket
-    Public Rev(1000) As Threading.Thread
-    Public GameServer(1000) As Boolean
-    Public Key(1000) As UInt32
-    Public Pos(1000) As Position
+    Public s(500) As Socket
+    Public Rev(10000) As Threading.Thread
+    Public GameServer(10000) As Boolean
+    Public Key(10000) As UInt32
+    Public Pos(10000) As Position
 
     Dim ip1 As String = "127.0.0.1"
     Dim ip2 As String = "78.111.78.27"

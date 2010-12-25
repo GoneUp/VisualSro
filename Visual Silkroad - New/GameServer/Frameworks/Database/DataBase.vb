@@ -6,7 +6,7 @@ Imports MySql.Data.MySqlClient
 Namespace GameServer
 
     Public Class DataBase
-        Private Shared connection As MySqlConnection
+        Private Shared Connection As MySqlConnection
         Private Shared ConnectionString As String
         Private Shared da As MySqlDataAdapter
         Private Shared gets As String
@@ -51,10 +51,17 @@ Namespace GameServer
 
 #Region "Unused"
         Public Shared Function GetDataSet(ByVal command As String) As DataSet
-            Dim reader As New MySqlDataAdapter(command, connection)
             Dim tmpset As New DataSet
+
             Try
+                Dim tmp_con As New MySqlConnection(ConnectionString)
+                tmp_con.Open()
+
+                Dim reader As New MySqlDataAdapter(command, tmp_con)
                 reader.Fill(tmpset)
+
+                tmp_con.Close()
+
             Catch ex As MySqlException
                 RaiseEvent OnDatabaseError(ex, command)
             End Try
@@ -102,7 +109,15 @@ Namespace GameServer
 
 
             Catch exception As MySqlException
+                If exception.ErrorCode = -2147467259 Then
+                    Dim tmp_con As New MySqlConnection(ConnectionString)
+                    tmp_con.Open()
 
+                    Dim command3 As New MySqlCommand(command, tmp_con)
+                    'command3.ExecuteNonQuery()
+
+                    tmp_con.Close()
+                End If
 
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception, command)

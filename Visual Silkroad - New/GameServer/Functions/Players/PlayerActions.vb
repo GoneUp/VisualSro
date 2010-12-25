@@ -178,9 +178,9 @@
         End Sub
 
         Private Sub UpdateHotkey(ByVal hotkey As cHotKey)
-            For i = 0 To DatabaseCore.Hotkeys.Count - 1
-                If DatabaseCore.Hotkeys(i).OwnerID = hotkey.OwnerID And DatabaseCore.Hotkeys(i).Slot = hotkey.Slot Then
-                    DatabaseCore.Hotkeys(i) = hotkey
+            For i = 0 To GameDB.Hotkeys.Count - 1
+                If GameDB.Hotkeys(i).OwnerID = hotkey.OwnerID And GameDB.Hotkeys(i).Slot = hotkey.Slot Then
+                    GameDB.Hotkeys(i) = hotkey
                     Exit For
                 End If
             Next

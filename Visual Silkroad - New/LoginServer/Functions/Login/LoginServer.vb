@@ -7,7 +7,9 @@
             Dim clientname As String = packet.String(packet.Word)
             Dim version As UInt32 = packet.DWord
 
-            Log.WriteGameLog(Index_, "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", locale, clientname, version))
+            If Log_Connect Then
+                Log.WriteGameLog(Index_, "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", locale, clientname, version))
+            End If
         End Sub
 
         Public Sub GateWay(ByVal index As Integer)
@@ -185,7 +187,7 @@
                     user.FailedLogins += 1
                     Users(UserIndex) = user
 
-                    DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
+                    DataBase.InsertData(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
 
                     writer.Byte(2) 'login failed
                     writer.Byte(1)
@@ -197,7 +199,7 @@
                         user.FailedLogins = 0
                         Users(UserIndex) = user
 
-                        DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
+                        DataBase.InsertData(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
                         BanUser(Date.Now.AddMinutes(10), UserIndex) 'Ban for 10 mins
                     End If
 
@@ -220,7 +222,9 @@
                         writer.Word(Servers(ServerIndex).Port)
                         Server.Send(writer.GetBytes, Index_)
 
-                        Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", ID, Servers(ServerIndex).Name))
+                        If Log_Login Then
+                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", ID, Servers(ServerIndex).Name))
+                        End If
                     End If
                 End If
             End If

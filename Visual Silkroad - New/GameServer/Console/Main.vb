@@ -6,7 +6,7 @@ Namespace GameServer
 
         Public Shared Logpackets As Boolean = False
 
-        Public Shared TheardDB As New Thread(AddressOf GameServer.DatabaseCore.UpdateData)
+        Public Shared TheardDB As New Thread(AddressOf GameServer.GameDB.UpdateData)
         Public Shared TheardLoad As New Thread(AddressOf SilkroadData.DumpDataFiles)
         Public Shared TheardSettings As New Thread(AddressOf LoadSettings)
         Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
@@ -61,7 +61,10 @@ read:
         End Sub
 
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-            GameServer.Log.WriteSystemLog("Client Connected : " & ip)
+            If Log_Detail Then
+                GameServer.Log.WriteSystemLog("Client Connected : " & ip)
+            End If
+
             Server.OnlineClient += 1
 
             Dim packet As New PacketWriter
@@ -107,13 +110,13 @@ read:
         End Sub
 
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
-            Server.OnlineClient -= 1
             Try
+                Server.OnlineClient -= 1
                 If Functions.PlayerData(index) IsNot Nothing Then
                     Functions.DespawnPlayer(index)
                     Functions.CleanUpPlayer(index)
                 End If
-                GameServer.ClientList.OnCharListing(index) = Nothing
+                GameServer.ClientList.CharListing(index) = Nothing
                 Functions.PlayerData(index) = Nothing
 
                 'Server.RevTheard(index).Abort()

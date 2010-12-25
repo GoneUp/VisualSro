@@ -190,7 +190,7 @@
         writer.Create(ClientOpcodes.JoinWorldReq)
         Send(writer.GetBytes, index_)
 
-        PlayerMoveTimer(index_).Interval = 5000
+        PlayerMoveTimer(index_).Interval = 10000
         PlayerMoveTimer(index_).Start()
 
         Console.WriteLine("Ingame: " & index_)

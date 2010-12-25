@@ -96,7 +96,7 @@
 
                     Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
 
-                    If LogGM Then
+                    If Log_GM Then
                         Log.WriteGameLog(index_, "GM", "Item_Create", String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus))
                         Exit For
                     End If
@@ -136,11 +136,11 @@
             Server.SendToAllIngame(writer.GetBytes)
 
 
-		End Sub
+        End Sub
 
-		Private Sub OnMoveToUser(ByVal packet As PacketReader, ByVal index_ As Integer)
-			Dim NameLength As Byte = packet.Word
-			Dim Name As String = packet.String(NameLength)
+        Private Sub OnMoveToUser(ByVal packet As PacketReader, ByVal index_ As Integer)
+            Dim NameLength As Byte = packet.Word
+            Dim Name As String = packet.String(NameLength)
 
             For i As Integer = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
@@ -157,11 +157,11 @@
                 End If
             Next
 
-		End Sub
+        End Sub
 
-		Private Sub OnRecallUser(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Private Sub OnRecallUser(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim NameLength As UInt16 = packet.Word
-			Dim Name As String = packet.String(NameLength)
+            Dim Name As String = packet.String(NameLength)
 
             For i As Integer = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
@@ -182,13 +182,13 @@
             Dim NameLength As UInt16 = Packet.Word
             Dim Name As String = Packet.String(NameLength)
 
-            For i As Integer = 0 To DatabaseCore.Chars.Length - 1
-                If DatabaseCore.Chars(i).CharacterName = Name Then
-                    DataBase.InsertData(String.Format("UPDATE users SET banned='1', bantime = '3000-01-01 00:00:00', banreason = 'You got banned by: {0}' where id='{1}'", PlayerData(index_).CharacterName, DatabaseCore.Chars(i).AccountID))
+            For i As Integer = 0 To GameDB.Chars.Length - 1
+                If GameDB.Chars(i).CharacterName = Name Then
+                    DataBase.InsertData(String.Format("UPDATE users SET banned='1', bantime = '3000-01-01 00:00:00', banreason = 'You got banned by: {0}' where id='{1}'", PlayerData(index_).CharacterName, GameDB.Chars(i).AccountID))
 
-                    For U = 0 To DatabaseCore.Users.Count - 1
-                        If DatabaseCore.Users(U).Id = DatabaseCore.Chars(i).AccountID Then
-                            DatabaseCore.Users(U).Banned = True
+                    For U = 0 To GameDB.Users.Count - 1
+                        If GameDB.Users(U).Id = GameDB.Chars(i).AccountID Then
+                            GameDB.Users(U).Banned = True
                         End If
                     Next
 
@@ -205,7 +205,7 @@
                 End If
             Next i
 
-            If LogGM Then
+            If Log_GM Then
                 Log.WriteGameLog(index_, "GM", "Ban", String.Format("Banned User:" & Name))
             End If
 
@@ -248,7 +248,7 @@
                     SpawnNPC(objectid, PlayerData(Index_).Position, 0)
             End Select
 
-            If LogGM Then
+            If Log_GM Then
                 Log.WriteGameLog(Index_, "GM", "Monster_Spawn", String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.Name, type))
             End If
         End Sub

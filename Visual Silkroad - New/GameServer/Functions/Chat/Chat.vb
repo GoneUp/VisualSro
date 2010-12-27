@@ -18,9 +18,9 @@
 
                 Case ChatModes.Party
                 Case ChatModes.Guild
+
                 Case ChatModes.Notice
                     OnNoticeChat(Packet, Index_)
-
                 Case ChatModes.Union
                 Case ChatModes.Academy
 

@@ -140,7 +140,6 @@
         End Sub
 
 
-
         Public Function GetMasteryByID(ByVal MasteryID As UInteger, ByVal Index_ As Integer) As cMastery
             Dim ToReturn As New cMastery
             For i = 0 To GameDB.Masterys.Length - 1
@@ -151,10 +150,6 @@
                     End If
                 Else
                     Debug.Print("Mastery is notihing = " & Index_)
-                    Dim dfgdf = GameDB.Masterys
-                    'Dim dfg = GameDB.Masterys(1225)
-                    Dim B = GameDB.Masterys.Length
-
                 End If
             Next
             Return ToReturn

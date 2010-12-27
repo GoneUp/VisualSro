@@ -25,6 +25,17 @@
         Public Sub SendPatchInfo(ByVal index As Integer)
 
             'Note: Patch Info for Rsro
+            Dim writer As New LoginServer.PacketWriter
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(1) 'Header Byte
+            writer.Word(1) '1 Data Packet
+            writer.Word(&H2005)
+            'Server.Send(writer.GetBytes, index) '2005
+
+
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(0) 'Data
+
 
             LoginServer.Server.Send(New Byte() {5, 0, 13, 96, 0, 0, 1, 1, 0, 5, 32, _
                                                 11, 0, 13, 96, 0, 0, 0, 1, 0, 1, 9, 10, 5, 0, 0, 0, 2, _
@@ -32,7 +43,9 @@
                                                 6, 0, 13, 96, 0, 0, 0, 3, 0, 2, 0, 2, _
                                                 5, 0, 13, 96, 0, 0, 1, 1, 0, 0, 161, _
                                                 2, 0, 13, 96, 0, 0, 0, 1}, index)
-
+            '2005
+            '6005
+            'A100
 
         End Sub
 

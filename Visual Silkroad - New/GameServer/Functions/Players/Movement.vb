@@ -69,10 +69,12 @@
                 'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
 
 
-
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                 ObjectSpawnCheck(Index_)
+                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                 Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+
+                PlayerMoveTimer(Index_).Interval = 200
+                PlayerMoveTimer(Index_).Start()
             Catch ex As Exception
                 Console.WriteLine("OnMoveUser::error...")
                 Debug.Write(ex)

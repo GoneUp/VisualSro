@@ -7,10 +7,9 @@ Imports GameServer.GameServer.Functions
 Namespace GameServer
 
     Public Class Server
-        Private Shared IP_Renamed As IPAddress
-        Private Shared maxClients_Renamed As Integer
-        Private Shared onlineClient_Renamed As Integer
-        Private Shared onlineMob_Renamed As Integer
+        Private Shared IP_ As IPAddress
+        Private Shared MaxClients_ As Integer
+        Private Shared OnlineClient_ As Integer
         Private Shared ServerPort As Integer
         Private Shared ServerSocket As Socket
         Public Shared RevTheard(1) As Threading.Thread
@@ -145,7 +144,7 @@ Namespace GameServer
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If player.Ingame = True Then
-                        socket.Send(buff)
+                        Send(buff, i)
                     End If
                 End If
             Next i
@@ -157,7 +156,7 @@ Namespace GameServer
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> index) Then
                     If player.Ingame = True Then
-                        socket.Send(buff)
+                        Send(buff, i)
                     End If
                 End If
             Next i
@@ -174,7 +173,7 @@ Namespace GameServer
                     If distance < ServerRange Then
                         'In Rage 
                         If player.Ingame = True Then
-                            socket.Send(buff)
+                            Send(buff, i)
                         End If
                     End If
                 End If
@@ -191,7 +190,7 @@ Namespace GameServer
                     If distance < ServerRange Then
                         'In Rage 
                         If player.Ingame = True Then
-                            socket.Send(buff)
+                            Send(buff, i)
                         End If
                     End If
                 End If
@@ -202,7 +201,7 @@ Namespace GameServer
             For i = 0 To MaxClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).SpawnedPlayers.Contains(Index_) = True Or Index_ = i Then
-                        Server.Send(buff, i)
+                        Send(buff, i)
                     End If
                 End If
             Next
@@ -214,7 +213,7 @@ Namespace GameServer
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) = True Then
-                        Server.Send(buff, i)
+                        Send(buff, i)
                     End If
                 End If
             Next
@@ -224,50 +223,52 @@ Namespace GameServer
             For i = 0 To MaxClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).SpawnedItems.Contains(ItemUniqueID) = True Then
-                        Server.Send(buff, i)
+                        Send(buff, i)
+                    End If
+                End If
+            Next
+        End Sub
+
+
+        Public Shared Sub SendToGuild(ByVal buff() As Byte, ByVal GuildID As UInteger)
+            For i = 0 To MaxClients
+                If PlayerData(i) IsNot Nothing Then
+                    If PlayerData(i).GuildID = GuildID Then
+                        Send(buff, i)
                     End If
                 End If
             Next
         End Sub
 
 #Region "Propertys"
-        Public Shared Property ip() As String
+        Public Shared Property Ip() As String
             Get
-                Return IP_Renamed.ToString()
+                Return IP_.ToString()
             End Get
             Set(ByVal value As String)
-                IP_Renamed = IPAddress.Parse(value)
+                IP_ = IPAddress.Parse(value)
             End Set
         End Property
 
         Public Shared Property MaxClients() As Integer
             Get
-                Return maxClients_Renamed
+                Return MaxClients_
             End Get
             Set(ByVal value As Integer)
-                maxClients_Renamed = value
+                MaxClients_ = value
             End Set
         End Property
 
         Public Shared Property OnlineClient() As Integer
             Get
-                Return onlineClient_Renamed
+                Return OnlineClient_
             End Get
             Set(ByVal value As Integer)
-                onlineClient_Renamed = value
+                OnlineClient_ = value
             End Set
         End Property
 
-        Public Shared Property OnlineMOB() As Integer
-            Get
-                Return onlineMob_Renamed
-            End Get
-            Set(ByVal value As Integer)
-                onlineMob_Renamed = value
-            End Set
-        End Property
-
-        Public Shared Property port() As Integer
+        Public Shared Property Port() As Integer
             Get
                 Return ServerPort
             End Get

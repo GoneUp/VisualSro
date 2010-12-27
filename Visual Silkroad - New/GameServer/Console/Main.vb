@@ -34,8 +34,8 @@ Namespace GameServer
             GameServer.Log.WriteSystemLog("Connecting Database.")
 
             DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
-            Server.ip = "78.111.78.27"
-            Server.port = 15780
+            Server.Ip = "78.111.78.27"
+            Server.Port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
             GameServer.Log.WriteSystemLog("Connected. Loading Data now.")

@@ -14,19 +14,6 @@
             GameServer.Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub SendPatchInfo(ByVal index_ As Integer)
-
-            'Note: Patch Info for Rsro
-
-
-            GameServer.Server.Send(New Byte() {5, 0, 13, 96, 0, 0, 1, 1, 0, 5, 32, _
-                                                11, 0, 13, 96, 0, 0, 0, 1, 0, 1, 16, 10, 5, 0, 0, 0, 2, _
-                                                5, 0, 13, 96, 0, 0, 1, 1, 0, 5, 96, _
-                                                6, 0, 13, 96, 0, 0, 0, 3, 0, 2, 0, 2}, index_)
-
-
-        End Sub
-
         Public Sub CheckLogin(ByVal index_ As Integer, ByVal packet As PacketReader)
             Dim Key As UInteger = packet.DWord()
             Dim Name As String = packet.String(packet.Word)

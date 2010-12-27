@@ -41,7 +41,7 @@ Namespace GameServer
                 MonsterCheck.Start()
 
                 MonsterMovement.Interval = 5000
-                MonsterMovement.Start()
+                'MonsterMovement.Start()
 
                 DatabaseTimer.Interval = 30000
                 DatabaseTimer.Start()
@@ -279,14 +279,14 @@ Namespace GameServer
                                 Dim Walked As Single = (CalculateDistance(MobList(i).Position_FromPos, MobList(i).Position_ToPos) * Verhältnis)
 
                                 If Walked > 0 Then
-                                    Dim Full_X As Single = MobList(i).Position_FromPos.X - MobList(i).Position_ToPos.X
-                                    Dim Full_Y As Single = MobList(i).Position_FromPos.Y - MobList(i).Position_ToPos.Y
+                                    Dim Full_X As Single = GetRealX(MobList(i).Position_FromPos.XSector, MobList(i).Position_FromPos.X) - GetRealX(MobList(i).Position_ToPos.XSector, MobList(i).Position_ToPos.X)
+                                    Dim Full_Y As Single = GetRealX(MobList(i).Position_FromPos.YSector, MobList(i).Position_FromPos.Y) - GetRealY(MobList(i).Position_ToPos.YSector, MobList(i).Position_ToPos.Y)
 
                                     Dim Cur_X As Single = Full_X * Verhältnis
                                     Dim Cur_Y As Single = Full_Y * Verhältnis
 
-                                    MobList(i).Position.X += (Full_X - Cur_X)
-                                    MobList(i).Position.Y += (Full_Y - Cur_Y)
+                                    MobList(i).Position.X = GetXOffset(Full_X - Cur_X)
+                                    MobList(i).Position.Y = GetYOffset(Full_Y - Cur_Y)
 
                                     MobList(i).Position.XSector = GetXSec(MobList(i).Position.X)
                                     MobList(i).Position.YSector = GetYSec(MobList(i).Position.Y)
@@ -326,25 +326,30 @@ Namespace GameServer
                             PlayerData(Index).Walking = False
                             PlayerData(Index).Position = PlayerData(Index).Position_ToPos
                         Else
-                            Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, PlayerData(Index).WalkEnd)
+                            Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, PlayerData(Index).WalkStart)
                             Dim FullTime As Single = DateDiff(DateInterval.Second, PlayerData(Index).WalkStart, PlayerData(Index).WalkEnd)
                             Dim Verhältnis As Single = (Past / FullTime)
 
                             Dim Walked As Single = (CalculateDistance(PlayerData(Index).Position_FromPos, PlayerData(Index).Position_ToPos) * Verhältnis)
 
                             If Walked > 0 Then
-                                Dim Full_X As Single = PlayerData(Index).Position_FromPos.X - PlayerData(Index).Position_ToPos.X
-                                Dim Full_Y As Single = PlayerData(Index).Position_FromPos.Y - PlayerData(Index).Position_ToPos.Y
+                                Dim Full_X As Single = GetRealX(PlayerData(Index).Position_FromPos.XSector, PlayerData(Index).Position_FromPos.X) - GetRealX(PlayerData(Index).Position_ToPos.XSector, PlayerData(Index).Position_ToPos.X)
+                                Dim Full_Y As Single = GetRealX(PlayerData(Index).Position_FromPos.YSector, PlayerData(Index).Position_FromPos.Y) - GetRealY(PlayerData(Index).Position_ToPos.YSector, PlayerData(Index).Position_ToPos.Y)
 
                                 Dim Cur_X As Single = Full_X * Verhältnis
                                 Dim Cur_Y As Single = Full_Y * Verhältnis
 
-                                PlayerData(Index).Position.X += (Full_X - Cur_X)
-                                PlayerData(Index).Position.Y += (Full_Y - Cur_Y)
+                                PlayerData(Index).Position.X = GetXOffset(Full_X - Cur_X)
+                                PlayerData(Index).Position.Y = GetYOffset(Full_Y - Cur_Y)
 
                                 PlayerData(Index).Position.XSector = GetXSec(PlayerData(Index).Position.X)
                                 PlayerData(Index).Position.YSector = GetYSec(PlayerData(Index).Position.Y)
+
+                                SendPm(Index, "X: " & GetRealX(PlayerData(Index).Position.XSector, PlayerData(Index).Position.X) & " Y:" & GetRealY(PlayerData(Index).Position.YSector, PlayerData(Index).Position.Y), "[TMP]")
+
                             End If
+
+                            PlayerMoveTimer(Index).Start()
                         End If
                     End If
 

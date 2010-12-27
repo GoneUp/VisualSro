@@ -15,7 +15,6 @@
         Public AllItems() As cInvItem
 
         'Masterys
-        Public MasteryCount As Integer
         Public Masterys() As cMastery
 
         'Skills
@@ -176,7 +175,7 @@
         Public Sub GetMasteryData()
 
             Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From masteries")
-            MasteryCount = tmp.Tables(0).Rows.Count
+            Dim MasteryCount = tmp.Tables(0).Rows.Count
 
             If MasteryCount >= 1 Then
 

@@ -25,121 +25,121 @@ Namespace GameServer
                     Case ClientOpcodes.Handshake  'Client accepts
 
                     Case ClientOpcodes.InfoReq  'GateWay
-                        GameServer.Functions.GateWay(index)
+                        Functions.GateWay(index)
 
                     Case ClientOpcodes.Login
-                        GameServer.Functions.CheckLogin(index, packet)
+                        Functions.CheckLogin(index, packet)
 
                     Case ClientOpcodes.Character
-                        GameServer.Functions.HandleCharPacket(index, packet)
+                        Functions.HandleCharPacket(index, packet)
 
                     Case ClientOpcodes.IngameReq
-                        GameServer.Functions.CharLoading(index, packet)
+                        Functions.CharLoading(index, packet)
 
                     Case ClientOpcodes.JoinWorldReq
-                        GameServer.Functions.OnJoinWorldRequest(index)
+                        Functions.OnJoinWorldRequest(index)
 
                     Case ClientOpcodes.JoinWorldReq2
-                        GameServer.Functions.OnJoinWorldRequest(index)
+                        Functions.OnJoinWorldRequest(index)
 
                     Case ClientOpcodes.ClientStatus
-                        GameServer.Functions.OnClientStatusUpdate(packet, index)
+                        Functions.OnClientStatusUpdate(packet, index)
 
                         '============Ingame===========
 
                     Case ClientOpcodes.Movement
-                        GameServer.Functions.OnPlayerMovement(index, packet)
+                        Functions.OnPlayerMovement(index, packet)
 
                     Case ClientOpcodes.Chat
-                        GameServer.Functions.OnChat(packet, index)
+                        Functions.OnChat(packet, index)
 
                     Case ClientOpcodes.GameMaster
-                        GameServer.Functions.OnGM(packet, index)
+                        Functions.OnGM(packet, index)
 
                     Case ClientOpcodes.Action
-                        GameServer.Functions.OnPlayerAction(packet, index)
+                        Functions.OnPlayerAction(packet, index)
 
                     Case ClientOpcodes.Angle_Update
-                        GameServer.Functions.OnAngleUpdate(packet, index)
+                        Functions.OnAngleUpdate(packet, index)
 
                     Case ClientOpcodes.Teleport_Reply
-                        GameServer.Functions.OnTeleportRequest(index)
+                        Functions.OnTeleportRequest(index)
 
                     Case ClientOpcodes.Exit
-                        GameServer.Functions.OnLogout(packet, index)
+                        Functions.OnLogout(packet, index)
 
                     Case ClientOpcodes.Emotion
-                        GameServer.Functions.OnEmotion(packet, index)
+                        Functions.OnEmotion(packet, index)
 
                     Case ClientOpcodes.HelperIcon
-                        GameServer.Functions.OnHelperIcon(packet, index)
+                        Functions.OnHelperIcon(packet, index)
 
                     Case ClientOpcodes.Hotkey_Update
-                        GameServer.Functions.OnHotkeyUpdate(packet, index)
+                        Functions.OnHotkeyUpdate(packet, index)
 
                         '=======ATTACK======
 
                     Case ClientOpcodes.Target
-                        GameServer.Functions.OnSelectObject(packet, index)
+                        Functions.OnSelectObject(packet, index)
 
 
                     Case ClientOpcodes.Attack
-                        GameServer.Functions.OnPlayerAttack(packet, index)
+                        Functions.OnPlayerAttack(packet, index)
                         '=======NPC========
 
                     Case ClientOpcodes.Npc_Chat
-                        GameServer.Functions.OnNpcChatSelect(packet, index)
+                        Functions.OnNpcChatSelect(packet, index)
 
                     Case ClientOpcodes.Npc_Chat_Left
-                        GameServer.Functions.OnNpcChatLeft(packet, index)
+                        Functions.OnNpcChatLeft(packet, index)
 
                     Case ClientOpcodes.Npc_Teleport
-                        GameServer.Functions.OnNpcTeleport(packet, index)
+                        Functions.OnNpcTeleport(packet, index)
 
                         '=======ITEMS======
                     Case ClientOpcodes.Alchemy
-                        GameServer.Functions.OnAlchemyRequest(packet, index)
+                        Functions.OnAlchemyRequest(packet, index)
 
                     Case ClientOpcodes.ItemMove
-                        GameServer.Functions.OnInventory(packet, index)
+                        Functions.OnInventory(packet, index)
 
                     Case ClientOpcodes.ItemUse
-                        GameServer.Functions.OnUseItem(packet, index)
+                        Functions.OnUseItem(packet, index)
 
                     Case ClientOpcodes.Scroll_Cancel
-                        GameServer.Functions.OnReturnScroll_Cancel(index)
+                        Functions.OnReturnScroll_Cancel(index)
 
                         '========STR+INT UP=====
 
                     Case ClientOpcodes.Str_Up
-                        GameServer.Functions.UpStrength(index)
+                        Functions.UpStrength(index)
 
                     Case ClientOpcodes.Int_Up
-                        GameServer.Functions.UpIntelligence(index)
+                        Functions.UpIntelligence(index)
 
                         '======Mastery+Skills
 
                     Case ClientOpcodes.Mastery_Up
-                        GameServer.Functions.OnUpMastery(packet, index)
+                        Functions.OnUpMastery(packet, index)
 
                     Case ClientOpcodes.Skill_Up
-                        GameServer.Functions.OnAddSkill(packet, index)
+                        Functions.OnAddSkill(packet, index)
 
                         '=========EXCHANGE======
                     Case ClientOpcodes.Exchange_Invite
-                        GameServer.Functions.OnExchangeInvite(packet, index)
+                        Functions.OnExchangeInvite(packet, index)
 
                     Case ClientOpcodes.Exchange_Invite_Accept
-                        GameServer.Functions.OnExchangeInviteReply(packet, index)
+                        Functions.OnExchangeInviteReply(packet, index)
 
                     Case ClientOpcodes.Exchange_Confirm
-                        GameServer.Functions.OnExchangeConfirm(packet, index)
+                        Functions.OnExchangeConfirm(packet, index)
 
                     Case ClientOpcodes.Exchange_Approve
-                        GameServer.Functions.OnExchangeApprove(packet, index)
+                        Functions.OnExchangeApprove(packet, index)
 
                     Case ClientOpcodes.Exchange_Abort
-                        GameServer.Functions.OnExchangeAbort(packet, index)
+                        Functions.OnExchangeAbort(packet, index)
 
                     Case Else
                         Log.WriteSystemLog("opCode: " & opcode & " Packet : " & BitConverter.ToString(packet.ByteArray(length), 0, length))

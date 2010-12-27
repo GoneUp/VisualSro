@@ -7,8 +7,6 @@
             Dim found As Boolean = False
             Dim type1 As Byte = packet.Byte
 
-            'UpdateState(4, 0, Index_)
-
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Reply)
 
@@ -110,12 +108,10 @@
                 Exit Sub
             End If
 
-            If CalculateDistance(PlayerData(Index_).Position, MobList(MobListIndex).Position) >= RefWeapon.ATTACK_DISTANCE Then
-                Dim pos2 As Position = MobList(MobListIndex).Position
-                pos2.X += 2
-                pos2.Y += 2
-                OnMoveUser(Index_, pos2)
-                Exit Sub
+            Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, MobList(MobListIndex).Position)
+            If Distance >= RefWeapon.ATTACK_DISTANCE Then
+                'OnMoveUser(Index_, MobList(MobListIndex).Position)
+                'Exit Sub
             End If
 
 
@@ -160,6 +156,7 @@
             writer.Create(ServerOpcodes.Attack_Main)
             writer.Byte(1)
             writer.Byte(2)
+            writer.Byte(&H30)
 
             writer.DWord(AttackType)
             writer.DWord(PlayerData(Index_).UniqueId)
@@ -247,10 +244,7 @@
             End If
 
             If CalculateDistance(PlayerData(Index_).Position, MobList(MobListIndex).Position) >= RefSkill.Distance Then
-                Dim pos2 As Position = PlayerData(Index_).Position
-                pos2.X += 2
-                pos2.Y += 2
-                OnMoveUser(Index_, pos2)
+                OnMoveUser(Index_, MobList(MobListIndex).Position)
                 Exit Sub
             End If
 
@@ -260,6 +254,7 @@
             writer.Create(ServerOpcodes.Attack_Main)
             writer.Byte(1)
             writer.Byte(2)
+            writer.Byte(&H30)
 
             writer.DWord(RefSkill.Id)
             writer.DWord(PlayerData(Index_).UniqueId)

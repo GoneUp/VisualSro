@@ -46,9 +46,8 @@
                     writer.DWord(0) 'speeds
                     writer.DWord(0)
                     writer.Float(100) 'berserker speed
-                    writer.Byte(0)
-                    writer.Byte(2)
-                    writer.DWord(2)
+                    writer.Word(0)
+                    
 
                 Case Object_.Type_.Teleport
                     writer.Word(0)
@@ -83,60 +82,16 @@
             writer.Byte(1) 'Sucess
             writer.DWord(NpcList(NpcIndex).UniqueID)
 
-            Select Case name(2)
-                Case "SMITH"
-                    writer.Byte(0)
-                    writer.Byte(&HB)
-                    writer.Word(0)
-                    writer.Byte(&H80)
-                    writer.Byte(0)
-                Case "POTION"
-                    writer.Byte(0)
-                    writer.DWord(3)
-                    writer.Byte(0)
-                Case "ARMOR"
-                    writer.Byte(0)
-                    writer.DWord(9)
-                    writer.Byte(0)
-                Case "ACCESSORY"
-                    writer.Byte(0)
-                    writer.DWord(1)
-                    writer.Byte(0)
-                Case "HORSE"
-                    writer.Byte(0)
-                    writer.DWord(1025)
-                    writer.Byte(0)
-                Case "WAREHOUSE"
-                    writer.Byte(0)
-                    writer.DWord(5)
-                    writer.Byte(0)
-                Case "SPECIAL"
-                    writer.Byte(0)
-                    writer.DWord(2049)
-                    writer.Byte(0)
-                Case "FERRY"
-                    writer.Byte(0)
-                    writer.Byte(1)
-                    writer.Byte(0)
-                    writer.Byte(8)
-                    writer.Word(0)
-                Case "GATE"
-                    writer.DWord(192)
-                Case "SOLDIER" 'Only JG
-                    If name(3) = "EM1" Or name(3) = "WE1" Or name(3) = "EA2" Or name(3) = "SO1" Then
-                        writer.Byte(0)
-                        writer.DWord(128)
-                        writer.Byte(0)
-                    Else
-                        writer.Byte(0)
-                        writer.DWord(0)
-                        writer.Byte(0)
-                    End If
-                Case Else
-                    writer.Byte(0)
-                    writer.DWord(0)
-                    writer.Byte(0)
-            End Select
+            If obj.ChatBytes.Length > 0 Then
+                For i = 0 To obj.ChatBytes.Length - 1
+                    writer.Byte(obj.ChatBytes(i))
+                Next
+            Else
+                writer.Byte(0)
+                writer.DWord(0)
+                writer.Byte(0)
+            End If
+
 
             CheckForTax(obj.Name, writer)
             Server.Send(writer.GetBytes, Index_)

@@ -52,16 +52,16 @@
                         Dim diff As Long = DateDiff(DateInterval.Minute, DateTime.Now, ClientList.CharListing(Index_).Chars(i).DeletionTime)
                         writer.Byte(1) 'to delete
                         writer.DWord(diff)
-                        writer.Word(0)
-                        writer.Byte(0) 'In Academy
                     Else
-                        writer.DWord(0)
+                        writer.Byte(0)
                     End If
 
+                    writer.Word(0) 'Job Alias
+                    writer.Byte(0) 'In Academy
 
                     'Now Items
                     Dim inventory As New cInventory(ClientList.CharListing(Index_).Chars(i).MaxSlots)
-                    inventory = GameServer.GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
+                    inventory = GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
 
                     Dim PlayerItemCount As Integer = 0
                     For b = 0 To 9
@@ -82,21 +82,19 @@
                     writer.Byte(0) 'Char End
 
                 Next
-                GameServer.Server.Send(writer.GetBytes, Index_)
+                Server.Send(writer.GetBytes, Index_)
 
             End If
         End Sub
 
-        Public Sub OnCheckNick(ByVal pack As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnCheckNick(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nick As String = packet.String(packet.Word)
 
-            Dim nick As String = pack.String(pack.Word)
-            Dim free As Boolean = GameServer.GameDB.CheckNick(nick)
             Dim writer As New PacketWriter
-
             writer.Create(ServerOpcodes.Character)
             writer.Byte(4) 'nick check
 
-            If free And (nick.ToLowerInvariant.Contains("gm") Or nick.ToLowerInvariant.Contains("admin") Or nick.ToLowerInvariant.Contains("helper") Or nick.ToLowerInvariant.Contains("dev")) = False Then
+            If GameDB.CheckNick(nick) And CheckForAbuse(nick) = False Then
                 writer.Byte(1)
             Else
                 writer.Byte(2)
@@ -104,11 +102,20 @@
                 '13 invalid 10 server error
             End If
 
-            GameServer.Server.Send(writer.GetBytes, Index_)
+            Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub OnDeleteChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
-            Dim nick As String = pack.String(pack.Word)
+        Public Function CheckForAbuse(ByVal nick As String) As Boolean
+            For i = 0 To RefAbuseList.Count - 1
+                If nick.ToLowerInvariant.Contains(RefAbuseList(i)) = True Then
+                    Return True
+                End If
+            Next
+            Return False
+        End Function
+
+        Public Sub OnDeleteChar(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nick As String = packet.String(packet.Word)
             For i = 0 To ClientList.CharListing(Index_).NumberOfChars - 1
                 If ClientList.CharListing(Index_).Chars(i).CharacterName = nick Then
                     ClientList.CharListing(Index_).Chars(i).Deleted = True
@@ -127,8 +134,8 @@
         End Sub
 
 
-        Public Sub OnRestoreChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
-            Dim nick As String = pack.String(pack.Word)
+        Public Sub OnRestoreChar(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nick As String = packet.String(packet.Word)
             For i = 0 To ClientList.CharListing(Index_).NumberOfChars - 1
                 If ClientList.CharListing(Index_).Chars(i).CharacterName = nick Then
                     ClientList.CharListing(Index_).Chars(i).Deleted = False
@@ -157,7 +164,7 @@
 
             If model >= 1907 And model <= 1932 = False And model >= 14717 And model <= 14743 = False Then
                 'Wrong Model Code! 
-                GameServer.Server.Dissconnect(Index_)
+                Server.Dissconnect(Index_)
                 Log.WriteSystemLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
             End If
 
@@ -169,7 +176,7 @@
 
             For i = 1 To 4
                 If _refitems(i).ITEM_TYPE_NAME.EndsWith("_DEF") = False Then
-                    GameServer.Server.Dissconnect(Index_)
+                    Server.Dissconnect(Index_)
                     Log.WriteSystemLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
                 End If
                 Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
@@ -180,12 +187,10 @@
             writer.Create(ServerOpcodes.Character)
             writer.Byte(1) 'create
 
-            Dim free As Boolean = GameDB.CheckNick(nick)
-            If free = False Or nick.StartsWith("[GM]") = True Then
+            If GameDB.CheckNick(nick) And CheckForAbuse(nick) = False Then
                 writer.Byte(4)
                 writer.Byte(13)
-                GameServer.Server.Send(writer.GetBytes, Index_)
-
+                Server.Send(writer.GetBytes, Index_)
             Else
 
                 Array.Resize(GameDB.Chars, GameDB.Chars.Count + 1)
@@ -240,7 +245,7 @@
                 GameDB.Chars(NewCharacterIndex).Parry = parry
                 GameDB.Chars(NewCharacterIndex).SetCharGroundStats()
 
-                GameServer.DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", GameDB.Chars(NewCharacterIndex).CharacterId, GameDB.Chars(NewCharacterIndex).AccountID, GameDB.Chars(NewCharacterIndex).CharacterName, GameDB.Chars(NewCharacterIndex).Model, GameDB.Chars(NewCharacterIndex).Volume, GameDB.Chars(NewCharacterIndex).Level, GameDB.Chars(NewCharacterIndex).Gold, GameDB.Chars(NewCharacterIndex).SkillPoints, CInt(GameDB.Chars(NewCharacterIndex).GM)))
+                DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", GameDB.Chars(NewCharacterIndex).CharacterId, GameDB.Chars(NewCharacterIndex).AccountID, GameDB.Chars(NewCharacterIndex).CharacterName, GameDB.Chars(NewCharacterIndex).Model, GameDB.Chars(NewCharacterIndex).Volume, GameDB.Chars(NewCharacterIndex).Level, GameDB.Chars(NewCharacterIndex).Gold, GameDB.Chars(NewCharacterIndex).SkillPoints, CInt(GameDB.Chars(NewCharacterIndex).GM)))
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", GameDB.Chars(NewCharacterIndex).Position.XSector, GameDB.Chars(NewCharacterIndex).Position.YSector, Math.Round(GameDB.Chars(NewCharacterIndex).Position.X), Math.Round(GameDB.Chars(NewCharacterIndex).Position.Z), Math.Round(GameDB.Chars(NewCharacterIndex).Position.Y), GameDB.Chars(NewCharacterIndex).CharacterId))
                 DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')", GameDB.Chars(NewCharacterIndex).CharacterId))
                 DataBase.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')", GameDB.Chars(NewCharacterIndex).CharacterId))
@@ -428,10 +433,7 @@
                     AddHotKeyToDB(toadd)
                 Next
 
-
-
                 'Finish
-
                 writer.Byte(1) 'success
                 Server.Send(writer.GetBytes, Index_)
             End If
@@ -449,7 +451,6 @@
         End Sub
 
         Public Sub AddItemToDB(ByVal item As cInvItem)
-
             Array.Resize(GameDB.AllItems, GameDB.AllItems.Count + 1)
             GameDB.AllItems(GameDB.AllItems.Count - 1) = item
 
@@ -457,11 +458,8 @@
         End Sub
 
         Public Sub AddMasteryToDB(ByVal toadd As cMastery)
-
-            Dim NewIndex As UInteger = GameDB.MasteryCount + 1
-            GameDB.MasteryCount = NewIndex
-            Array.Resize(GameDB.Masterys, NewIndex)
-            GameDB.Masterys(NewIndex - 1) = toadd
+            Array.Resize(GameDB.Masterys, GameDB.Masterys.Length + 1)
+            GameDB.Masterys(GameDB.Masterys.Length + 1 - 1) = toadd
 
             DataBase.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}','{1}','{2}')", toadd.OwnerID, toadd.MasteryID, toadd.Level))
         End Sub
@@ -471,15 +469,9 @@
             DataBase.SaveQuery(String.Format("INSERT INTO hotkeys(OwnerID, slot) VALUE ('{0}','{1}')", toadd.OwnerID, toadd.Slot))
         End Sub
         Public Sub CharLoading(ByVal Index_ As Integer, ByVal pack As PacketReader)
-
             Dim SelectedNick As String = pack.String(pack.Word)
-
-            'Reply
-            'Loading Start
-            'Char Info Packet
-            'Loading End
-
             Dim writer As New PacketWriter
+
             writer.Create(ServerOpcodes.IngameReqRepley)
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
@@ -510,8 +502,8 @@
             writer.Create(ServerOpcodes.CharacterID)
             writer.DWord(PlayerData(Index_).UniqueId) 'charid
             writer.Word(13) 'moon pos
-            writer.Byte(9) 'hours
-            writer.Byte(28) 'minute
+            writer.Byte(Date.Now.Hour) 'hours
+            writer.Byte(Date.Now.Minute) 'minute
             Server.Send(writer.GetBytes, Index_)
 
         End Sub
@@ -548,7 +540,7 @@
             'INVENTORY HERE
 
             Inventorys(Index_).CalculateItemCount()
-            writer.Byte(chari.MaxSlots)  ' Max Item Slot (0 Minimum + 13) (4 Seiten x 24 Slots = 96 Maximum + 13)
+            writer.Byte(chari.MaxSlots)  ' Max Item Slot (0 Minimum + 13) (4 Seiten x 24 Slots = 96 Maximum + 13 --> 109)
             writer.Byte(Inventorys(Index_).ItemCount)  ' Amount of Items  
 
             For Each _item As cInvItem In Inventorys(Index_).UserItems
@@ -561,10 +553,42 @@
                     Select Case refitem.CLASS_A
                         Case 1 'Equipment
                             writer.Byte(_item.Plus)
-                            writer.QWord(0)
+                            writer.Byte(_item.Mod_1)
+                            writer.Byte(_item.Mod_2)
+                            writer.Byte(_item.Mod_3)
+                            writer.Byte(_item.Mod_4)
+                            writer.Byte(_item.Mod_5)
+                            writer.Byte(_item.Mod_6)
+                            writer.Byte(_item.Mod_7)
+                            writer.Byte(_item.Mod_8)
                             writer.DWord(_item.Durability)
-                            writer.Byte(0)
+
+                            writer.Byte(_item.Blues.Count)
+                            For i = 0 To _item.Blues.Count - 1
+                                writer.DWord(_item.Blues(i).Typ)
+                                writer.DWord(_item.Blues(i).Amount)
+                            Next
+
                         Case 2 'Pets
+                            If refitem.CLASS_B = 1 Then
+                                Dim name As String = "Test"
+                                Select Case refitem.CLASS_C
+                                    Case 1
+                                        'Attack
+                                        writer.DWord(0)
+                                        writer.Byte(0)
+                                        writer.Word(name.Length)
+                                        writer.String(name)
+
+                                    Case 2
+                                        'Pick
+                                        writer.DWord(0)
+                                        writer.Byte(0)
+                                        writer.Word(name.Length)
+                                        writer.String(name)
+                                        writer.DWord(0)
+                                End Select
+                            End If
 
                         Case 3 'etc
                             writer.Word(_item.Amount)

@@ -2,7 +2,7 @@
     Module GameMaster
         Public Sub OnGM(ByVal Packet As GameServer.PacketReader, ByVal Index As Integer)
 
-            Dim tag As Byte = Packet.Byte
+            Dim tag As Byte = Packet.Word
             Debug.Print("[GM][Tag:" & tag & "]")
 
             If PlayerData(Index).GM = True Then

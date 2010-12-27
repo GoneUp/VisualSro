@@ -216,7 +216,8 @@
                     writer.DWord(MobList(i).UniqueID)
                     writer.Byte(1) 'unknown
                     writer.DWord(MobList(i).HP_Cur)
-                    writer.DWord(16) 'unknown
+                    writer.Byte(1) 'unknown
+                    writer.Byte(5) 'unknown
                     Server.Send(writer.GetBytes, Index_)
                     Exit Sub
                 End If

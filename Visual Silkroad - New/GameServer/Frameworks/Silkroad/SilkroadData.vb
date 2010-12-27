@@ -15,6 +15,7 @@
         Public RefRespawns As New List(Of Functions.ReSpawn_)
         Public RefRespawnsUnique As New List(Of Functions.ReSpawnUnique_)
         Public RefUniques As New List(Of UInteger)
+        Public RefAbuseList As New List(Of String)
 
 
         Public Sub DumpDataFiles()
@@ -53,6 +54,10 @@
 
                 DumpSafeZoneFile(base_path & "\data\safezone.txt")
                 Log.WriteSystemLog("Loaded " & RefSafeZone.Count & " SafeZone-Sectors.")
+
+                DumpNpcChatFile(base_path & "\data\npcchatid.txt")
+
+                DumpAbuseListFile(base_path & "\data\abuselist.txt")
 
                 Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
                 Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
@@ -370,7 +375,7 @@
             Return New tmpSkill_()
         End Function
 
-        Public Structure Object_
+        Public Class Object_
             Public Pk2ID As UInteger
             Public Name As String
             Public OtherName As String
@@ -395,6 +400,7 @@
             Public Skill7 As UInteger
             Public Skill8 As UInteger
             Public Skill9 As UInteger
+            Public ChatBytes() As Byte 'For the NPC Chat
 
             'These Fileds are for Teleports
             Public T_Position As Position
@@ -409,7 +415,7 @@
                 COS = 5
                 Mob_Unique = 6
             End Enum
-        End Structure
+        End Class
 
 
 
@@ -692,5 +698,38 @@
             Next
             Return False
         End Function
+
+
+        Public Sub DumpNpcChatFile(ByVal path As String)
+            Dim lines As String() = IO.File.ReadAllLines(path)
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+
+                    For d = 0 To RefObjects.Count - 1
+                        If RefObjects(d).Pk2ID = tmpString(1) Then
+                            Dim b = RefObjects(d)
+                            ReDim RefObjects(d).ChatBytes(tmpString.Length - 3)
+
+                            For c = 0 To RefObjects(d).ChatBytes.Count - 1
+                                RefObjects(d).ChatBytes(c) = tmpString(c + 2)
+                            Next
+
+                            Exit For
+                        End If
+                    Next
+                End If
+            Next i
+        End Sub
+
+        Public Sub DumpAbuseListFile(ByVal path As String)
+            Dim lines As String() = IO.File.ReadAllLines(path)
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+                    RefAbuseList.Add(lines(i))
+                End If
+            Next i
+        End Sub
     End Module
 End Namespace

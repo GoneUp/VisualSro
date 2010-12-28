@@ -40,6 +40,8 @@
                                 writer.DWord(GameDB.Masterys(i).MasteryID)
                                 writer.Byte(GameDB.Masterys(i).Level)
                                 Server.Send(writer.GetBytes, Index_)
+
+                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
                             End If
                         Next
                     End If

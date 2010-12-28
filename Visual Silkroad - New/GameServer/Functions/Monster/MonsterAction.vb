@@ -4,6 +4,7 @@
             MobList(MobIndex).HP_Cur = 0
             MobList(MobIndex).Death = True
             MobList(MobIndex).DeathRemoveTime = Date.Now.AddSeconds(5)
+            UpdateState(0, 2, 0, MobIndex)
 
             Dim tmp_ As Integer = GetPlayerWithMostDamage(MobIndex)
             If tmp_ >= 0 Then

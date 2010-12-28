@@ -116,6 +116,7 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.UniqueAnnonce)
             writer.Byte(5) 'Spawn
+            writer.Byte(&HC)
             writer.DWord(PK2ID)
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
@@ -123,7 +124,8 @@
         Public Sub SendUniqueKill(ByVal PK2ID As UInteger, ByVal KillName As String)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.UniqueAnnonce)
-            writer.Byte(6) 'Spawn
+            writer.Byte(6) 'Kill
+            writer.Byte(&HC)
             writer.DWord(PK2ID)
             writer.Word(KillName.Length)
             writer.String(KillName)

@@ -31,6 +31,8 @@
                     Case GmTypes.ToTown
                         OnMoveUserToTown(Index, Packet)
 
+                    Case GmTypes.KillMob
+                        OnKillObject(Packet, Index)
                 End Select
             Else
                 Server.Dissconnect(Index)
@@ -77,53 +79,8 @@
                     writer.Byte(1)
                     writer.Byte(6) 'type = new item
                     writer.Byte(Inventorys(index_).UserItems(i).Slot)
-                    writer.DWord(Inventorys(index_).UserItems(i).Pk2Id)
 
-                    Select Case refitem.CLASS_A
-                        Case 1 'Equipment
-
-                            writer.Byte(Inventorys(index_).UserItems(i).Plus)
-                            writer.Byte(Inventorys(index_).UserItems(i).Plus)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_1)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_2)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_3)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_4)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_5)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_6)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_7)
-                            writer.Byte(Inventorys(index_).UserItems(i).Mod_8)
-                            writer.DWord(Inventorys(index_).UserItems(i).Durability)
-
-                            writer.Byte(Inventorys(index_).UserItems(i).Blues.Count)
-                            For b = 0 To Inventorys(index_).UserItems(i).Blues.Count - 1
-                                writer.DWord(Inventorys(index_).UserItems(i).Blues(b).Typ)
-                                writer.DWord(Inventorys(index_).UserItems(i).Blues(b).Amount)
-                            Next
-                        Case 2 'Pets
-                            If refitem.CLASS_B = 1 Then
-                                Dim name As String = "Test"
-                                Select Case refitem.CLASS_C
-                                    Case 1
-                                        'Attack
-                                        writer.Byte(1)
-                                        'writer.DWord(0)
-                                        'writer.Byte(0)
-                                        'writer.Word(name.Length)
-                                        'writer.String(name)
-
-                                    Case 2
-                                        'Pick
-                                        writer.Byte(1)
-                                        'writer.DWord(0)
-                                        'writer.Byte(0)
-                                        'writer.Word(name.Length)
-                                        'writer.String(name)
-                                        'writer.DWord(0)
-                                End Select
-                            End If
-                        Case 3 'etc
-                            writer.Word(Inventorys(index_).UserItems(i).Amount)
-                    End Select
+                    AddItemDataToPacket(Inventorys(index_).UserItems(i), writer)
 
                     Server.Send(writer.GetBytes, index_)
 
@@ -286,6 +243,19 @@
             End If
         End Sub
 
+        Public Sub OnKillObject(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+            Dim unique_Id As UInteger = Packet.DWord
+
+
+            For i = 0 To MobList.Count - 1
+                If MobList(i).UniqueID = unique_Id Then
+                    AddDamageFromPlayer(MobList(i).HP_Cur, Index_, i)
+                    GetEXPFromMob(MobList(i))
+                    KillMob(i)
+                End If
+            Next
+        End Sub
+
 
         Enum GmTypes
             FindUser = &H1
@@ -294,11 +264,12 @@
             MakeMonster = &H6
             MakeItem = &H7
             MoveToUser = &H8
-			WayPoints = &H10
-			RecallUser = &H11
+            WayPoints = &H10
+            RecallUser = &H11
+            KillMob = &H14
             Ban = &HD
-			MoveToNpc = &H31
-		End Enum
+            MoveToNpc = &H31
+        End Enum
 
     End Module
 End Namespace

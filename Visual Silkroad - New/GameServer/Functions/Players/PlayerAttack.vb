@@ -204,7 +204,6 @@
                 GetEXPFromMob(MobList(MobListIndex))
 
                 KillMob(MobListIndex)
-                UpdateState(0, 2, Index_, MobListIndex)
                 SendAttackEnd(Index_)
             Else
                 PlayerData(Index_).Attacking = True
@@ -302,7 +301,6 @@
                 GetEXPFromMob(MobList(MobListIndex))
 
                 KillMob(MobListIndex)
-                UpdateState(0, 2, Index_, MobListIndex)
                 SendAttackEnd(Index_)
             Else
                 PlayerData(Index_).Attacking = True
@@ -393,7 +391,7 @@
             End If
         End Function
 
-        Private Sub AddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobListIndex As UInteger)
+        Public Sub AddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobListIndex As UInteger)
             Dim found As Boolean = False
             Dim d = MobList(MobListIndex)
 

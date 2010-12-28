@@ -48,7 +48,7 @@ CREATE TABLE `characters` (
   `walkspeed` int(10) unsigned NOT NULL DEFAULT '16',
   `runspeed` int(10) unsigned NOT NULL DEFAULT '50',
   `berserkspeed` int(10) unsigned NOT NULL DEFAULT '100',
-  `berserking` tinyint(1) NOT NULL DEFAULT '0',
+  `berserk` tinyint(1) NOT NULL DEFAULT '0',
   `pvp` int(10) unsigned NOT NULL DEFAULT '255',
   `maxitemslots` int(1) NOT NULL DEFAULT '45' COMMENT 'xycvyyxvcxy',
   `helpericon` int(1) NOT NULL DEFAULT '1',

@@ -155,6 +155,11 @@
                         PlayerData(index_).Strength += 1
                         PlayerData(index_).Intelligence += 1
                         PlayerData(index_).Attributes += 3
+                    Else
+                        'Max Cap Reached
+                        Dim toget As ULong = PlayerData(index_).Experience - (lvldata.Experience - 1)
+                        exp = toget
+                        PlayerData(index_).Experience = lvldata.Experience - 1
                     End If
                 Else
                     Exit Do
@@ -164,7 +169,13 @@
 
             PlayerData(index_).SkillPointBar += sp
             Do While PlayerData(index_).SkillPointBar >= 400
-                PlayerData(index_).SkillPoints += 1
+                If PlayerData(index_).SkillPoints + 1 > UInt32.MaxValue = False Then
+                    PlayerData(index_).SkillPoints += 1
+                Else
+                    Log.WriteSystemLog("SP1 OVERFLOW. Index: " & index_)
+                    Exit Sub
+                End If
+
                 PlayerData(index_).SkillPointBar -= 400
             Loop
 

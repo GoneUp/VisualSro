@@ -7,34 +7,6 @@ Public Class cInventory
             UserItems(i) = New cInvItem
         Next
     End Sub
-
-    Sub ReOrderItems(ByVal index_ As Integer)
-        Dim now As ULong = DateTime.Now.Ticks
-        For A = 0 To AllItems.Length - 1
-            For B = 0 To UserItems.Length - 1
-                If AllItems(A).OwnerCharID = UserItems(B).OwnerCharID And AllItems(A).Slot = UserItems(B).Slot Then
-                    'AllItems(A) = UserItems(B)
-                    Exit For
-                End If
-            Next
-        Next
-        Dim past As Long = DateTime.Now.Ticks - now
-        Debug.Print("[Item Reorder][Time: " & past & "ms]")
-
-        'ReDim UserItems(PlayerData(index_).MaxSlots)
-        For i = 0 To UserItems.Length - 1
-            'UserItems(i) = New cInvItem
-        Next
-
-
-        For I = 0 To (AllItems.Length - 1)
-            If AllItems(I).OwnerCharID = PlayerData(index_).CharacterId Then
-                'Me.UserItems(AllItems(I).Slot) = AllItems(I)
-            End If
-        Next
-
-    End Sub
-
     Sub CalculateItemCount()
         ItemCount = 0
         For i = 0 To UserItems.Length - 1
@@ -50,8 +22,6 @@ Public Class cInventory
 End Class
 
 Public Class cItem
-
-
     Public ITEM_TYPE As UInteger
     Public ITEM_TYPE_NAME As String
     Public ITEM_MALL As Byte
@@ -120,8 +90,6 @@ Public Class cItem
     Public USE_TIME_HP_PER As Integer ' steht drin wieviel prozent HP ein grain heilt    //* Das hier muss wahrscheinlich
     Public USE_TIME_MP As Integer ' steht drin wieviel MP ein potion heilt           //* umbenannt werden, USE_TIME
     Public USE_TIME_MP_PER As Integer ' steht drin wieviel prozent MP ein grain heilt    //* passt nicht ganz.
-
-
 End Class
 
 Public Class cInvItem
@@ -143,6 +111,8 @@ Public Class cInvItem
     Public Mod_6 As Byte
     Public Mod_7 As Byte
     Public Mod_8 As Byte
+
+    Public Locked As Boolean
 
     ' Nested Types
     Public Structure sBlue

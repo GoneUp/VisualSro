@@ -14,8 +14,6 @@
 
                 End Select
             End If
-
-            Inventorys(Index_).ReOrderItems(Index_)
         End Sub
         Public Sub OnAlchemyPlusNormal(ByVal Packet As PacketReader, ByVal Index_ As Integer)
 
@@ -60,8 +58,8 @@
 
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE items SET plusvalue='{0}' where id='{1}'", weapon.Plus, weapon.DatabaseID))
             Inventorys(Index_).UserItems(weapon_slot) = weapon
+            UpdateItem(weapon)
 
             'Delete Items
             DeleteItemFromDB(elix_slot, Index_)
@@ -119,8 +117,9 @@
             End If
 
             Server.Send(writer.GetBytes, Index_)
-            DataBase.SaveQuery(String.Format("UPDATE items SET plusvalue='{0}' where id='{1}'", weapon.Plus, weapon.DatabaseID))
+
             Inventorys(Index_).UserItems(weapon_slot) = weapon
+            UpdateItem(weapon)
 
             'Delete Items
             'Elex

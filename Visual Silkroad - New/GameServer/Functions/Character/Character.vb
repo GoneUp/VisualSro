@@ -188,7 +188,7 @@
             writer.Create(ServerOpcodes.Character)
             writer.Byte(1) 'create
 
-            If GameDB.CheckNick(nick) And CheckForAbuse(nick) = False Then
+            If GameDB.CheckNick(nick) And CheckForAbuse(nick) = True Then
                 writer.Byte(2)
                 writer.Byte(&H10)
                 writer.Byte(4)
@@ -461,7 +461,7 @@
 
         Public Sub AddMasteryToDB(ByVal toadd As cMastery)
             Array.Resize(GameDB.Masterys, GameDB.Masterys.Length + 1)
-            GameDB.Masterys(GameDB.Masterys.Length + 1 - 1) = toadd
+            GameDB.Masterys(GameDB.Masterys.Length - 1) = toadd
 
             DataBase.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}','{1}','{2}')", toadd.OwnerID, toadd.MasteryID, toadd.Level))
         End Sub
@@ -547,56 +547,9 @@
 
             For Each _item As cInvItem In Inventorys(Index_).UserItems
                 If _item.Pk2Id <> 0 Then
-                    Dim refitem As cItem = GetItemByID(_item.Pk2Id)
-
                     writer.Byte(_item.Slot)
-                    writer.DWord(_item.Pk2Id)
 
-                    Select Case refitem.CLASS_A
-                        Case 1 'Equipment
-                            writer.Byte(_item.Plus)
-                            writer.Byte(_item.Mod_1)
-                            writer.Byte(_item.Mod_2)
-                            writer.Byte(_item.Mod_3)
-                            writer.Byte(_item.Mod_4)
-                            writer.Byte(_item.Mod_5)
-                            writer.Byte(_item.Mod_6)
-                            writer.Byte(_item.Mod_7)
-                            writer.Byte(_item.Mod_8)
-                            writer.DWord(_item.Durability)
-
-                            writer.Byte(_item.Blues.Count)
-                            For i = 0 To _item.Blues.Count - 1
-                                writer.DWord(_item.Blues(i).Typ)
-                                writer.DWord(_item.Blues(i).Amount)
-                            Next
-
-                        Case 2 'Pets
-                            If refitem.CLASS_B = 1 Then
-                                Dim name As String = "Test"
-                                Select Case refitem.CLASS_C
-                                    Case 1
-                                        'Attack
-                                        writer.Byte(1)
-                                        'writer.DWord(0)
-                                        'writer.Byte(0)
-                                        'writer.Word(name.Length)
-                                        'writer.String(name)
-
-                                    Case 2
-                                        'Pick
-                                        writer.Byte(1)
-                                        'writer.DWord(0)
-                                        'writer.Byte(0)
-                                        'writer.Word(name.Length)
-                                        'writer.String(name)
-                                        'writer.DWord(0)
-                                End Select
-                            End If
-
-                        Case 3 'etc
-                            writer.Word(_item.Amount)
-                    End Select
+                    AddItemDataToPacket(_item, writer)
                 End If
             Next
 

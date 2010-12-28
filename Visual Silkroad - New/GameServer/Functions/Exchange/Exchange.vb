@@ -93,19 +93,8 @@
                             writer.Byte(_item.Slot) 'Fromslot
                         End If
                         writer.Byte(i) 'To Slot
-                        writer.DWord(_item.Pk2Id)
 
-                        Select Case refitem.CLASS_A 'Hope this 
-                            Case 1 'Equipment
-                                writer.Byte(_item.Plus)
-                                writer.QWord(0)
-                                writer.DWord(_item.Durability)
-                                writer.Byte(0) '0 blues
-                            Case 2 'Pets
-
-                            Case 3 'etc
-                                writer.Word(_item.Amount)
-                        End Select
+                        AddItemDataToPacket(_item, writer)
                     End If
                 Next
 
@@ -142,19 +131,8 @@
                             writer.Byte(_item.Slot) 'Fromslot
                         End If
                         writer.Byte(i) 'To Slot
-                        writer.DWord(_item.Pk2Id)
 
-                        Select Case refitem.CLASS_A 'Hope this 
-                            Case 1 'Equipment
-                                writer.Byte(_item.Plus)
-                                writer.QWord(0)
-                                writer.DWord(_item.Durability)
-                                writer.Byte(0) '0 blues
-                            Case 2 'Pets
-
-                            Case 3 'etc
-                                writer.Word(_item.Amount)
-                        End Select
+                        AddItemDataToPacket(_item, writer)
                     End If
                 Next
                 If own_decider = 0 Then
@@ -231,7 +209,6 @@
                         'Finish Exchange
                         FinishExchange(exlist)
                     Else
-
                         'Hack Attempt
                         Exit Sub
                     End If
@@ -253,27 +230,32 @@
             'Player 1 items --> Player 2
             For i = 0 To 11
                 If tmp_ex.Items1(i) <> -1 Then
+                    Dim From_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
+                    Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player2Index)
+                    Dim To_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(To_Slot)
 
-                    Dim remove_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
-                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items1(i))
+                    'Overwrite
+                    To_item.Pk2Id = From_item.Pk2Id
+                    To_item.Durability = From_item.Durability
+                    To_item.Plus = From_item.Plus
+                    To_item.Amount = From_item.Amount
+                    To_item.Blues = From_item.Blues
+                    To_item.Mod_1 = From_item.Mod_1
+                    To_item.Mod_2 = From_item.Mod_2
+                    To_item.Mod_3 = From_item.Mod_3
+                    To_item.Mod_4 = From_item.Mod_4
+                    To_item.Mod_5 = From_item.Mod_5
+                    To_item.Mod_6 = From_item.Mod_6
+                    To_item.Mod_7 = From_item.Mod_7
+                    To_item.Mod_8 = From_item.Mod_8
 
                     'Add to new...
-                    add_item.Pk2Id = remove_item.Pk2Id
-                    add_item.Durability = remove_item.Durability
-                    add_item.Plus = remove_item.Plus
-                    add_item.Amount = remove_item.Amount
-
-                    Inventorys(tmp_ex.Player2Index).UserItems(add_item.Slot) = add_item
-                    UpdateItem(add_item)
+                    Inventorys(tmp_ex.Player2Index).UserItems(To_item.Slot) = To_item
+                    UpdateItem(To_item)
 
                     'Remove...
                     DeleteItemFromDB(tmp_ex.Items1(i), tmp_ex.Player1Index)
-                    remove_item.Pk2Id = 0
-                    remove_item.Durability = 0
-                    remove_item.Plus = 0
-                    remove_item.Amount = 0
-
-                    Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i)) = remove_item
+                    Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i)) = ClearItem(From_item)
                 End If
             Next
             PlayerData(tmp_ex.Player1Index).Gold += tmp_ex.Player2Gold
@@ -285,26 +267,31 @@
             For i = 0 To 11
                 If tmp_ex.Items2(i) <> -1 Then
 
-                    Dim remove_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
-                    Dim add_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items2(i))
+                    Dim From_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
+                    Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player1Index)
+                    Dim To_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(To_Slot)
 
                     'Add to new...
-                    add_item.Pk2Id = remove_item.Pk2Id
-                    add_item.Durability = remove_item.Durability
-                    add_item.Plus = remove_item.Plus
-                    add_item.Amount = remove_item.Amount
+                    To_item.Pk2Id = From_item.Pk2Id
+                    To_item.Durability = From_item.Durability
+                    To_item.Plus = From_item.Plus
+                    To_item.Amount = From_item.Amount
+                    To_item.Blues = From_item.Blues
+                    To_item.Mod_1 = From_item.Mod_1
+                    To_item.Mod_2 = From_item.Mod_2
+                    To_item.Mod_3 = From_item.Mod_3
+                    To_item.Mod_4 = From_item.Mod_4
+                    To_item.Mod_5 = From_item.Mod_5
+                    To_item.Mod_6 = From_item.Mod_6
+                    To_item.Mod_7 = From_item.Mod_7
+                    To_item.Mod_8 = From_item.Mod_8
 
-                    Inventorys(tmp_ex.Player1Index).UserItems(add_item.Slot) = add_item
-                    UpdateItem(add_item)
+                    Inventorys(tmp_ex.Player1Index).UserItems(To_item.Slot) = To_item
+                    UpdateItem(To_item)
 
                     'Remove...
                     DeleteItemFromDB(tmp_ex.Items2(i), tmp_ex.Player2Index)
-                    remove_item.Pk2Id = 0
-                    remove_item.Durability = 0
-                    remove_item.Plus = 0
-                    remove_item.Amount = 0
-
-                    Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i)) = remove_item
+                    Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i)) = ClearItem(From_item)
 
                 End If
             Next
@@ -321,10 +308,6 @@
             PlayerData(tmp_ex.Player2Index).ExchangeID = -1
             PlayerData(tmp_ex.Player2Index).InExchangeWith = -1
             PlayerData(tmp_ex.Player2Index).InExchange = False
-
-            Inventorys(tmp_ex.Player1Index).ReOrderItems(tmp_ex.Player1Index)
-            Inventorys(tmp_ex.Player2Index).ReOrderItems(tmp_ex.Player2Index)
-
         End Sub
 
 
@@ -380,5 +363,13 @@
 
             End If
         End Sub
+
+        Public Function GetFreeSlotExchage(ByVal Index_ As Integer)
+            For r = 13 To Inventorys(Index_).UserItems.Length - 1
+                If Inventorys(Index_).UserItems(r).Pk2Id = 0 And Inventorys(Index_).UserItems(r).Locked = False Then
+                    Return r
+                End If
+            Next
+        End Function
     End Module
 End Namespace

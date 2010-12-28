@@ -37,8 +37,6 @@
                         OnUseSkinScroll(slot, Index_, packet)
                 End Select
             End If
-
-            Inventorys(Index_).ReOrderItems(Index_)
         End Sub
 
         Public Sub OnUseHPPot(ByVal Slot As Byte, ByVal Index_ As Integer)

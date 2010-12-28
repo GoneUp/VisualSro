@@ -51,16 +51,16 @@
                     temp_item.OwnerCharID = PlayerData(index_).CharacterId
 
 
-                    Dim ref As cItem = GetItemByID(pk2id)
-                    If ref.CLASS_A = 1 Then
+                    Dim refitem As cItem = GetItemByID(pk2id)
+                    If refitem.CLASS_A = 1 Then
                         'Equip
                         temp_item.Plus = plus
                         temp_item.Durability = 30
 
-                    ElseIf ref.CLASS_A = 2 Then
+                    ElseIf refitem.CLASS_A = 2 Then
                         'Pet
 
-                    ElseIf ref.CLASS_A = 3 Then
+                    ElseIf refitem.CLASS_A = 3 Then
                         'Etc
                         temp_item.Amount = plus
                     End If
@@ -79,15 +79,48 @@
                     writer.Byte(Inventorys(index_).UserItems(i).Slot)
                     writer.DWord(Inventorys(index_).UserItems(i).Pk2Id)
 
-                    Select Case ref.CLASS_A
+                    Select Case refitem.CLASS_A
                         Case 1 'Equipment
 
                             writer.Byte(Inventorys(index_).UserItems(i).Plus)
-                            writer.QWord(0) 'blue, unknwown
+                            writer.Byte(Inventorys(index_).UserItems(i).Plus)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_1)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_2)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_3)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_4)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_5)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_6)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_7)
+                            writer.Byte(Inventorys(index_).UserItems(i).Mod_8)
                             writer.DWord(Inventorys(index_).UserItems(i).Durability)
-                            writer.Byte(0)
-                        Case 2 'Pets
 
+                            writer.Byte(Inventorys(index_).UserItems(i).Blues.Count)
+                            For b = 0 To Inventorys(index_).UserItems(i).Blues.Count - 1
+                                writer.DWord(Inventorys(index_).UserItems(i).Blues(b).Typ)
+                                writer.DWord(Inventorys(index_).UserItems(i).Blues(b).Amount)
+                            Next
+                        Case 2 'Pets
+                            If refitem.CLASS_B = 1 Then
+                                Dim name As String = "Test"
+                                Select Case refitem.CLASS_C
+                                    Case 1
+                                        'Attack
+                                        writer.Byte(1)
+                                        'writer.DWord(0)
+                                        'writer.Byte(0)
+                                        'writer.Word(name.Length)
+                                        'writer.String(name)
+
+                                    Case 2
+                                        'Pick
+                                        writer.Byte(1)
+                                        'writer.DWord(0)
+                                        'writer.Byte(0)
+                                        'writer.Word(name.Length)
+                                        'writer.String(name)
+                                        'writer.DWord(0)
+                                End Select
+                            End If
                         Case 3 'etc
                             writer.Word(Inventorys(index_).UserItems(i).Amount)
                     End Select

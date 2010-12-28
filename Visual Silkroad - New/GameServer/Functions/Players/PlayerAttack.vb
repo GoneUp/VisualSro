@@ -95,6 +95,7 @@
                 RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Else
                 'No Weapon
+                RefWeapon.ATTACK_DISTANCE = 6
             End If
 
             For i = 0 To MobList.Count - 1
@@ -108,10 +109,11 @@
                 Exit Sub
             End If
 
+
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, MobList(MobListIndex).Position)
             If Distance >= RefWeapon.ATTACK_DISTANCE Then
-                'OnMoveUser(Index_, MobList(MobListIndex).Position)
-                'Exit Sub
+                OnMoveUser(Index_, MobList(MobListIndex).Position)
+                Exit Sub
             End If
 
 

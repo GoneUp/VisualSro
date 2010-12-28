@@ -16,6 +16,9 @@
                     Case &H10 'MP-Pot 
                         OnUseMPPot(slot, Index_)
                     Case &HE 'Speed Drug
+
+                    Case &H40 'Berserk Scroll
+                        OnUseBerserkScroll(slot, Index_)
                 End Select
 
             ElseIf ID1 = &HED Then
@@ -358,6 +361,49 @@
 
                     DataBase.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'", PlayerData(Index_).Model, PlayerData(Index_).Volume, PlayerData(Index_).CharacterId))
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                End If
+            End If
+        End Sub
+
+
+        Public Sub OnUseBerserkScroll(ByVal Slot As Byte, ByVal Index_ As Integer)
+            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+
+            If _item.Pk2Id <> 0 Then
+                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+
+                If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 2 Then
+                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
+                        'Despawn Item
+
+                        _item.Pk2Id = 0
+                        _item.Durability = 0
+                        _item.Plus = 0
+                        _item.Amount = 0
+
+                        Inventorys(Index_).UserItems(Slot) = _item
+                        DeleteItemFromDB(Slot, Index_)
+
+                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
+                        _item.Amount -= 1
+                        Inventorys(Index_).UserItems(Slot) = _item
+                        UpdateItem(_item)
+                    End If
+
+
+                    PlayerData(Index_).BerserkBar = 5
+                    UpdateBerserk(Index_)
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Byte(1)
+                    writer.Byte(Slot)
+                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Byte(&HEC)
+                    writer.Byte(&H10)
+                    Server.Send(writer.GetBytes, Index_)
+
+                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
                 End If
             End If
         End Sub

@@ -33,6 +33,11 @@
                             item.Durability = 30
                             item.Amount = 0
                             UpdateItem(item)
+                        Case 2
+                            item.Pk2Id = _Refitem.ITEM_TYPE
+                            item.Durability = 30
+                            item.Amount = 10
+                            UpdateItem(item)
                         Case 3
                             item.Pk2Id = _Refitem.ITEM_TYPE
                             item.Durability = 30

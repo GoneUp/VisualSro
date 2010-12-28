@@ -59,19 +59,13 @@
             End If
 
             Server.Send(writer.GetBytes, Index_)
+
             DataBase.SaveQuery(String.Format("UPDATE items SET plusvalue='{0}' where id='{1}'", weapon.Plus, weapon.DatabaseID))
             Inventorys(Index_).UserItems(weapon_slot) = weapon
 
             'Delete Items
             DeleteItemFromDB(elix_slot, Index_)
-
-            Dim fake_item As cInvItem = Inventorys(Index_).UserItems(elix_slot)
-            fake_item.Pk2Id = 0
-            fake_item.Durability = 0
-            fake_item.Plus = 0
-            fake_item.Amount = 0
-
-            Inventorys(Index_).UserItems(elix_slot) = fake_item
+            Inventorys(Index_).UserItems(elix_slot) = ClearItem(Inventorys(Index_).UserItems(elix_slot))
 
             writer.Create(ServerOpcodes.ItemMove)
             writer.Byte(1)
@@ -131,14 +125,7 @@
             'Delete Items
             'Elex
             DeleteItemFromDB(elix_slot, Index_)
-
-            Dim fake_item As cInvItem = Inventorys(Index_).UserItems(elix_slot)
-            fake_item.Pk2Id = 0
-            fake_item.Durability = 0
-            fake_item.Plus = 0
-            fake_item.Amount = 0
-
-            Inventorys(Index_).UserItems(elix_slot) = fake_item
+            Inventorys(Index_).UserItems(elix_slot) = ClearItem(Inventorys(Index_).UserItems(elix_slot))
 
             writer.Create(ServerOpcodes.ItemMove)
             writer.Byte(1)
@@ -149,14 +136,7 @@
 
             'Lucky Powder
             DeleteItemFromDB(powder_slot, Index_)
-
-            Dim fake_item2 As cInvItem = Inventorys(Index_).UserItems(powder_slot)
-            fake_item.Pk2Id = 0
-            fake_item.Durability = 0
-            fake_item.Plus = 0
-            fake_item.Amount = 0
-
-            Inventorys(Index_).UserItems(powder_slot) = fake_item
+            Inventorys(Index_).UserItems(powder_slot) = ClearItem(Inventorys(Index_).UserItems(powder_slot))
 
             writer.Create(ServerOpcodes.ItemMove)
             writer.Byte(1)

@@ -98,7 +98,8 @@
                 writer.Byte(1)
             Else
                 writer.Byte(2)
-                writer.Byte(13)
+                writer.Byte(&H10)
+                writer.Byte(4)
                 '13 invalid 10 server error
             End If
 
@@ -188,8 +189,9 @@
             writer.Byte(1) 'create
 
             If GameDB.CheckNick(nick) And CheckForAbuse(nick) = False Then
+                writer.Byte(2)
+                writer.Byte(&H10)
                 writer.Byte(4)
-                writer.Byte(13)
                 Server.Send(writer.GetBytes, Index_)
             Else
 
@@ -575,18 +577,20 @@
                                 Select Case refitem.CLASS_C
                                     Case 1
                                         'Attack
-                                        writer.DWord(0)
-                                        writer.Byte(0)
-                                        writer.Word(name.Length)
-                                        writer.String(name)
+                                        writer.Byte(1)
+                                        'writer.DWord(0)
+                                        'writer.Byte(0)
+                                        'writer.Word(name.Length)
+                                        'writer.String(name)
 
                                     Case 2
                                         'Pick
-                                        writer.DWord(0)
-                                        writer.Byte(0)
-                                        writer.Word(name.Length)
-                                        writer.String(name)
-                                        writer.DWord(0)
+                                        writer.Byte(1)
+                                        'writer.DWord(0)
+                                        'writer.Byte(0)
+                                        'writer.Word(name.Length)
+                                        'writer.String(name)
+                                        'writer.DWord(0)
                                 End Select
                             End If
 

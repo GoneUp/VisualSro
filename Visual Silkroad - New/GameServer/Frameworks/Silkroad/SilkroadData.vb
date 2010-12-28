@@ -477,17 +477,6 @@
                         tmp.Type = Object_.Type_.COS
                 End Select
 
-                'Error Preventing
-                If tmp.WalkSpeed = 0 Then
-                    tmp.WalkSpeed = 1
-                End If
-                If tmp.RunSpeed = 0 Then
-                    tmp.RunSpeed = 1
-                End If
-                If tmp.BerserkSpeed = 0 Then
-                    tmp.BerserkSpeed = 1
-                End If
-
                 RefObjects.Add(tmp)
             Next
         End Sub

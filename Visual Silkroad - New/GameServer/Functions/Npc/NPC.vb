@@ -82,7 +82,7 @@
             writer.Byte(1) 'Sucess
             writer.DWord(NpcList(NpcIndex).UniqueID)
 
-            If obj.ChatBytes.Length > 0 Then
+            If obj.ChatBytes IsNot Nothing Then
                 For i = 0 To obj.ChatBytes.Length - 1
                     writer.Byte(obj.ChatBytes(i))
                 Next

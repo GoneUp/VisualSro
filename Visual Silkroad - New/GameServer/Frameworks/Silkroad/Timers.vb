@@ -239,11 +239,14 @@ Namespace GameServer
                         Dim obj As Object_ = GetObjectById(MobList(i).Pk2ID)
                         Dim mob = MobList(i)
 
-                        If MobList(i).Death = False And MobList(i).Walking = False Then
+
+                        If MobList(i).Death = False And MobList(i).Walking = False And obj.WalkSpeed > 0 Then
                             Dim dist As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_Spawn)
                             Dim mob_ = MobList(i)
 
                             If dist < ServerRange Then
+                                Dim OldX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X)
+                                Dim OldY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y)
                                 Dim ToX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X) + random.Next(-15, +10)
                                 Dim ToY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y) + random.Next(-10, +15)
 
@@ -265,7 +268,7 @@ Namespace GameServer
                             End If
 
 
-                        ElseIf MobList(i).Walking = True Then
+                        ElseIf MobList(i).Walking = True And obj.WalkSpeed > 0 Then
                             Dim wert As Integer = Date.Compare(MobList(i).WalkEnd, Date.Now)
                             If wert = -1 Then
                                 'Abgelaufen

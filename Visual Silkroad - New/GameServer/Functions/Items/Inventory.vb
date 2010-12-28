@@ -20,7 +20,7 @@
                     Console.WriteLine("[INVENTORY][TAG: " & type & "]")
             End Select
 
-            Inventorys(index_).ReOrderItems(index_)
+            'Inventorys(index_).ReOrderItems(index_)
         End Sub
         Public Sub OnNormalMove(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim Old_Slot As Byte = packet.Byte
@@ -49,17 +49,15 @@
                         DestItem.Amount = SourceItem.Amount
                         Inventorys(index_).UserItems(New_Slot) = DestItem
 
-                        SourceItem.Pk2Id = 0
-                        SourceItem.Amount = 0
-                        SourceItem.Plus = 0
-                        SourceItem.Durability = 30
-                        Inventorys(index_).UserItems(Old_Slot) = SourceItem
+                        Inventorys(index_).UserItems(Old_Slot) = ClearItem(SourceItem)
                     ElseIf DestItem.Pk2Id <> 0 Then
                         Dim _DestRef As cItem = GetItemByID(DestItem.Pk2Id)
                         If _DestRef.CLASS_A = 1 And CheckItemGender(_DestRef, index_) And CheckLevel(_DestRef, index_) Then 'Only Equipment
                             Inventorys(index_).UserItems(New_Slot) = SourceItem
+                            Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
                             Inventorys(index_).UserItems(Old_Slot) = DestItem
+                            Inventorys(index_).UserItems(Old_Slot).Slot = Old_Slot
                         Else
                             Exit Sub
                         End If
@@ -68,18 +66,18 @@
                 ElseIf DestItem.Slot <= 12 And SourceItem.Slot >= 13 Then
                     'Equip a Item
                     If DestItem.Pk2Id = 0 Then
-                        DestItem.Pk2Id = SourceItem.Pk2Id
-                        DestItem.Durability = SourceItem.Durability
-                        DestItem.Plus = SourceItem.Plus
-                        DestItem.Amount = SourceItem.Amount
-                        Inventorys(index_).UserItems(New_Slot) = DestItem
+                        Inventorys(index_).UserItems(New_Slot) = SourceItem
+                        Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
+                        Inventorys(index_).UserItems(Old_Slot) = ClearItem(SourceItem)
                     ElseIf DestItem.Pk2Id <> 0 Then
                         Dim _DestRef As cItem = GetItemByID(DestItem.Pk2Id)
                         If _DestRef.CLASS_A = 1 Then 'Only Equipment
                             Inventorys(index_).UserItems(New_Slot) = SourceItem
+                            Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
                             Inventorys(index_).UserItems(Old_Slot) = DestItem
+                            Inventorys(index_).UserItems(Old_Slot).Slot = Old_Slot
                         End If
                     End If
 
@@ -89,15 +87,10 @@
                     If DestItem.Pk2Id = 0 Then
                         If amout = SourceItem.Amount Or _SourceRef.CLASS_A = 1 Then
                             'Complete Move
-                            Inventorys(index_).UserItems(New_Slot).Pk2Id = SourceItem.Pk2Id
-                            Inventorys(index_).UserItems(New_Slot).Durability = SourceItem.Durability
-                            Inventorys(index_).UserItems(New_Slot).Plus = SourceItem.Plus
-                            Inventorys(index_).UserItems(New_Slot).Amount = SourceItem.Amount
+                            Inventorys(index_).UserItems(New_Slot) = SourceItem
+                            Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
-                            Inventorys(index_).UserItems(Old_Slot).Pk2Id = 0
-                            Inventorys(index_).UserItems(Old_Slot).Amount = 0
-                            Inventorys(index_).UserItems(Old_Slot).Plus = 0
-                            Inventorys(index_).UserItems(Old_Slot).Durability = 30
+                            Inventorys(index_).UserItems(Old_Slot) = ClearItem(SourceItem)
                         ElseIf amout < SourceItem.Amount Then
                             'Disturb
                             Inventorys(index_).UserItems(New_Slot).Pk2Id = SourceItem.Pk2Id
@@ -106,7 +99,6 @@
                             Inventorys(index_).UserItems(New_Slot).Amount = amout
 
                             Inventorys(index_).UserItems(Old_Slot).Amount -= amout 'Reduce it
-                            Inventorys(index_).UserItems(Old_Slot) = SourceItem
                         End If
                     ElseIf DestItem.Pk2Id <> 0 Then
                         If _SourceRef.CLASS_A = 3 Then
@@ -119,10 +111,8 @@
                                     SourceItem.Amount -= amout 'Reduce it
                                     Inventorys(index_).UserItems(Old_Slot) = SourceItem
                                 Else
-                                    Inventorys(index_).UserItems(Old_Slot).Pk2Id = 0
-                                    Inventorys(index_).UserItems(Old_Slot).Amount = 0
-                                    Inventorys(index_).UserItems(Old_Slot).Plus = 0
-                                    Inventorys(index_).UserItems(Old_Slot).Durability = 30
+                                    'Remove it
+                                    Inventorys(index_).UserItems(Old_Slot) = ClearItem(SourceItem)
                                 End If
 
                             ElseIf DestItem.Pk2Id = SourceItem.Pk2Id And DestItem.Amount + amout >= _SourceRef.MAX_STACK Then
@@ -136,10 +126,8 @@
                                     SourceItem.Amount -= tostack  'Reduce it
                                     Inventorys(index_).UserItems(Old_Slot) = SourceItem
                                 Else
-                                    Inventorys(index_).UserItems(Old_Slot).Pk2Id = 0
-                                    Inventorys(index_).UserItems(Old_Slot).Amount = 0
-                                    Inventorys(index_).UserItems(Old_Slot).Plus = 0
-                                    Inventorys(index_).UserItems(Old_Slot).Durability = 30
+                                    'Remove it
+                                    Inventorys(index_).UserItems(Old_Slot) = ClearItem(SourceItem)
                                 End If
                             Else
                                 Inventorys(index_).UserItems(New_Slot) = SourceItem
@@ -147,13 +135,16 @@
                                 Inventorys(index_).UserItems(Old_Slot) = DestItem
                             End If
                         Else
+                            'Eqquip Move
                             Inventorys(index_).UserItems(New_Slot) = SourceItem
+                            Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
                             Inventorys(index_).UserItems(Old_Slot) = DestItem
+                            Inventorys(index_).UserItems(Old_Slot).Slot = Old_Slot
                         End If
-
                     End If
                 End If
+
                 UpdateItem(Inventorys(index_).UserItems(New_Slot))
                 UpdateItem(Inventorys(index_).UserItems(Old_Slot))
             End If
@@ -192,12 +183,7 @@
             DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
 
             DeleteItemFromDB(slot, index_)
-            Dim fake_item As cInvItem = Inventorys(index_).UserItems(slot)
-            fake_item.Pk2Id = 0
-            fake_item.Durability = 0
-            fake_item.Plus = 0
-            fake_item.Amount = 0
-            Inventorys(index_).UserItems(slot) = fake_item
+            Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))
 
 
             Dim writer As New PacketWriter
@@ -410,8 +396,35 @@
             tmp_.Slot = From_item.Slot
             tmp_.Amount = From_item.Amount
             tmp_.Durability = From_item.Durability
+            tmp_.Blues = From_item.Blues
+            tmp_.Mod_1 = From_item.Mod_1
+            tmp_.Mod_2 = From_item.Mod_2
+            tmp_.Mod_3 = From_item.Mod_3
+            tmp_.Mod_4 = From_item.Mod_4
+            tmp_.Mod_5 = From_item.Mod_5
+            tmp_.Mod_6 = From_item.Mod_6
+            tmp_.Mod_7 = From_item.Mod_7
+            tmp_.Mod_8 = From_item.Mod_8
 
             Return tmp_
+        End Function
+
+        Public Function ClearItem(ByVal OldItem As cInvItem) As cInvItem
+            OldItem.Pk2Id = 0
+            OldItem.Amount = 0
+            OldItem.Plus = 0
+            OldItem.Durability = 30
+            OldItem.Mod_1 = 0
+            OldItem.Mod_2 = 0
+            OldItem.Mod_3 = 0
+            OldItem.Mod_4 = 0
+            OldItem.Mod_5 = 0
+            OldItem.Mod_6 = 0
+            OldItem.Mod_7 = 0
+            OldItem.Mod_8 = 0
+            OldItem.Blues = Nothing
+
+            Return OldItem
         End Function
     End Module
 End Namespace

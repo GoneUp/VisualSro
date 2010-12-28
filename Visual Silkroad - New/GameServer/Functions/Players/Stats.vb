@@ -84,6 +84,17 @@
             DataBase.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'", PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 
+        Public Sub UpdateBerserk(ByVal index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Gold_Update)
+            writer.Byte(4)
+            writer.Byte(PlayerData(index_).BerserkBar)
+            writer.DWord(0)
+            Server.Send(writer.GetBytes, index_)
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'", PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
+        End Sub
+
         Public Sub UpStrength(ByVal Index_ As Integer)
             If PlayerData(Index_).Attributes > 0 Then
                 PlayerData(Index_).Attributes -= 1

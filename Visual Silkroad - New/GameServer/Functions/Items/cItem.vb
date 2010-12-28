@@ -13,7 +13,7 @@ Public Class cInventory
         For A = 0 To AllItems.Length - 1
             For B = 0 To UserItems.Length - 1
                 If AllItems(A).OwnerCharID = UserItems(B).OwnerCharID And AllItems(A).Slot = UserItems(B).Slot Then
-                    AllItems(A) = UserItems(B)
+                    'AllItems(A) = UserItems(B)
                     Exit For
                 End If
             Next
@@ -21,15 +21,15 @@ Public Class cInventory
         Dim past As Long = DateTime.Now.Ticks - now
         Debug.Print("[Item Reorder][Time: " & past & "ms]")
 
-        ReDim UserItems(PlayerData(index_).MaxSlots)
+        'ReDim UserItems(PlayerData(index_).MaxSlots)
         For i = 0 To UserItems.Length - 1
-            UserItems(i) = New cInvItem
+            'UserItems(i) = New cInvItem
         Next
 
 
         For I = 0 To (AllItems.Length - 1)
             If AllItems(I).OwnerCharID = PlayerData(index_).CharacterId Then
-                Me.UserItems(AllItems(I).Slot) = AllItems(I)
+                'Me.UserItems(AllItems(I).Slot) = AllItems(I)
             End If
         Next
 

@@ -49,6 +49,7 @@
                     PlayerData(Index_).WalkEnd = Date.Now.AddSeconds(Time)
                 Else
                     Debug.Print("Move ERRRR")
+                    Exit Sub
                 End If
 
 

@@ -370,7 +370,7 @@
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
-                If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 2 Then
+                If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 8 Then
                     If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
                         'Despawn Item
 

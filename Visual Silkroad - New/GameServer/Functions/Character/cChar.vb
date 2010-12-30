@@ -73,13 +73,24 @@
     Public InExchange As Boolean = False
     Public InExchangeWith As Integer = -1
     Public ExchangeID As Integer = -1
-    Public PickUpId As UInteger = 0
 
+    Public PickUpId As UInteger = 0
     Public Attacking As Boolean = False
-    Public AttackedMonsterID As UInt32 = 0
-    Public AttackSkill As UInt32 = 0
+    Public AttackedId As UInt32 = 0
+    Public UsingSkillId As UInt32 = 0
     Public AttackType As AttackType_
+    Public SkillOverId As UInt32 = 0
     Public LastSelected As UInt32 = 0
+
+    Public Pot_HP_Slot As Byte = 0
+    Public Pot_HP_Value As Byte = 0
+    Public Pot_MP_Slot As Byte = 0
+    Public Pot_MP_Value As Byte = 0
+    Public Pot_Abormal_Slot As Byte = 0
+    Public Pot_Abormal_Value As Byte = 0
+    Public Pot_Delay As Byte = 0
+
+    Public Buffs As New List(Of cBuff)
 
     Public TeleportType As TeleportType_
 
@@ -134,6 +145,21 @@
         Next
     End Sub
 
+    Sub AddBuffsToStats(ByVal Index_ As Integer)
+
+        For i = 0 To Buffs.Count - 1
+            Select Case Buffs(i).Type
+                Case BuffType_.ItemBuff
+                    Dim Ref As cItem = GameServer.GetItemByID(Buffs(i).ItemID)
+
+
+                Case BuffType_.SkillBuff
+                    Dim Ref As GameServer.Skill_ = GameServer.GetSkillById(Buffs(i).SkillID)
+
+
+            End Select
+        Next
+    End Sub
 End Class
 
 Public Structure Position
@@ -175,4 +201,26 @@ Public Enum MoveType_
     Walk = 0
     Run = 1
     Berserk = 2
+End Enum
+
+Public Structure cBuff
+    Public OwnerID As UInteger
+    Public DurationStart As DateTime
+    Public DurationEnd As DateTime
+
+    Public Type As BuffType_
+
+    'If Skill
+    Public SkillID As UInteger
+
+    'If Item
+    Public ItemID As UInteger
+
+
+
+End Structure
+
+Public Enum BuffType_
+    ItemBuff = 0
+    SkillBuff = 0
 End Enum

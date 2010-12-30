@@ -4,14 +4,23 @@
             Dim type As Byte = packet.Byte
 
             Select Case type
-                Case 0 'normales Movement
+                Case 0 'Normal Movement
                     OnNormalMove(packet, index_)
+                Case 1 'Storage Move
+                Case 2 'Inventory --> Storage
+                Case 3 'Storage --> Inventory
                 Case 4 'Inventory --> Exchange
                     OnExchangeAddItem(packet, index_)
                 Case 5 'Exchange --> Inventory
                     OnExchangeRemoveItem(packet, index_)
                 Case 7 'drop
                     OnDropItem(packet, index_)
+                Case 8 'BuyItem
+                Case 9 'SellItem
+                Case 10 'Drop Gold
+                    OnDropGold(packet, index_)
+                Case 11 'Gold to Storage
+                Case 12 'Storage_Gold to Inventory
                 Case 13  'Exchange Gold
                     OnExchangeAddGold(packet, index_)
                 Case 24 'Buy From Item Mall
@@ -42,11 +51,8 @@
                 If SourceItem.Slot <= 12 And DestItem.Slot >= 13 Then
                     'Uneuqip
                     If DestItem.Pk2Id = 0 Then
-                        DestItem.Pk2Id = SourceItem.Pk2Id
-                        DestItem.Durability = SourceItem.Durability
-                        DestItem.Plus = SourceItem.Plus
-                        DestItem.Amount = SourceItem.Amount
-                        Inventorys(index_).UserItems(New_Slot) = DestItem
+                        Inventorys(index_).UserItems(New_Slot) = SourceItem
+                        Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
                         Inventorys(index_).UserItems(Old_Slot) = ClearItem(DestItem)
                         Inventorys(index_).UserItems(Old_Slot).Slot = Old_Slot
@@ -212,9 +218,7 @@
             Dim slot As Byte = packet.Byte
             Dim ref_item As cItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
 
-
             DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
-
 
             DeleteItemFromDB(slot, index_)
             Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))
@@ -229,12 +233,34 @@
             Server.Send(writer.GetBytes, index_)
         End Sub
 
+        Public Sub OnDropGold(ByVal packet As PacketReader, ByVal index_ As Integer)
+            Dim amout As UInt64 = packet.QWord
+
+            If CLng(PlayerData(index_).Gold) - amout >= 0 Then
+                Dim item As New cInvItem
+                item.Amount = amout
+                item.Pk2Id = 1
+
+                DropItem(item, PlayerData(index_).Position)
+
+                PlayerData(index_).Gold -= amout
+                UpdateGold(index_)
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.ItemMove)
+                writer.Byte(1)
+                writer.Byte(10)
+                writer.QWord(amout)
+                Server.Send(writer.GetBytes, index_)
+            End If
+        End Sub
+
 #Region "Exchange"
         Public Sub OnExchangeAddItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim slot As Byte = packet.Byte
             Dim ExListInd As Integer = PlayerData(index_).ExchangeID
 
-            If ExListInd = -1 Or Inventorys(index_).UserItems(slot).Pk2Id = 0 Or PlayerData(index_).InExchange = False Then 'Security...
+            If ExListInd = -1 Or Inventorys(index_).UserItems(slot).Pk2Id = 0 Or PlayerData(index_).InExchange = False Or Inventorys(index_).UserItems(slot).Locked = True Then 'Security...
                 Exit Sub
             End If
 

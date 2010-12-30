@@ -95,6 +95,16 @@
             DataBase.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'", PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 
+        Public Sub UpdateSpeeds(ByVal index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Speed_Update)
+            writer.Byte(PlayerData(index_).UniqueId)
+            writer.Float(PlayerData(index_).WalkSpeed)
+            writer.Float(PlayerData(index_).RunSpeed)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
+        End Sub
+
+
         Public Sub UpStrength(ByVal Index_ As Integer)
             If PlayerData(Index_).Attributes > 0 Then
                 PlayerData(Index_).Attributes -= 1
@@ -191,6 +201,10 @@
 
                 SendLevelUpAnimation(index_)
                 OnStatsPacket(index_)
+
+                PlayerData(index_).CHP = PlayerData(index_).HP
+                PlayerData(index_).CMP = PlayerData(index_).MP
+                UpdateHP_MP(index_)
             End If
 
             Server.Send(writer.GetBytes, index_)

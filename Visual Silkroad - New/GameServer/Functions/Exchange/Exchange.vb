@@ -136,6 +136,7 @@
                     End If
                 Next
                 If own_decider = 0 Then
+                    'Own Data with own Slots
                     Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player2Index)
                 Else
                     Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player1Index)
@@ -308,6 +309,14 @@
             PlayerData(tmp_ex.Player2Index).ExchangeID = -1
             PlayerData(tmp_ex.Player2Index).InExchangeWith = -1
             PlayerData(tmp_ex.Player2Index).InExchange = False
+
+            For i = 0 To Inventorys(tmp_ex.Player1Index).UserItems.Count - 1
+                Inventorys(tmp_ex.Player1Index).UserItems(i).Locked = False
+            Next
+
+            For i = 0 To Inventorys(tmp_ex.Player2Index).UserItems.Count - 1
+                Inventorys(tmp_ex.Player2Index).UserItems(i).Locked = False
+            Next
         End Sub
 
 

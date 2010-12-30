@@ -82,6 +82,25 @@
             End Try
 
         End Sub
+
+        Public Sub MoveUserToMonster(ByVal Index_ As Integer, ByVal MobIndex As Integer)
+            Dim RefWeapon As New cItem
+
+            If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
+                'Weapon
+                RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+            Else
+                'No Weapon
+                RefWeapon.ATTACK_DISTANCE = 6
+            End If
+
+
+            Dim pos As Position = MobList(MobIndex).Position
+            pos.X += (RefWeapon.ATTACK_DISTANCE - 1)
+            pos.Y += (RefWeapon.ATTACK_DISTANCE - 1)
+
+            OnMoveUser(Index_, pos)
+        End Sub
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try
                 Dim range As Integer = ServerRange

@@ -11,6 +11,11 @@
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
                     writer.Byte(Item_.Item.Plus)
+                Case 3 'Etc
+                    If refitem.CLASS_B = 5 And refitem.CLASS_C = 0 Then
+                        'Gold...
+                        writer.DWord(Item_.Item.Amount)
+                    End If
             End Select
             writer.DWord(Item_.UniqueID)
             writer.Byte(Item_.Position.XSector)
@@ -35,6 +40,17 @@
             tmp_.DroppedBy = Item.OwnerCharID
             tmp_.Position = Position
             tmp_.Item = FillItem(Item)
+
+            If tmp_.Item.Pk2Id = 1 Then
+                'Gold...
+                If tmp_.Item.Amount >= 1000 Then
+                    tmp_.Item.Pk2Id = 1
+                ElseIf tmp_.Item.Amount > 1000 And tmp_.Item.Amount <= 10000 Then
+                    tmp_.Item.Pk2Id = 2
+                ElseIf tmp_.Item.Amount > 10000 Then
+                    tmp_.Item.Pk2Id = 3
+                End If
+            End If
 
             ItemList.Add(tmp_)
 
@@ -65,6 +81,69 @@
                     End If
                 End If
             Next
+
+        End Sub
+
+        Public Sub PickUp(ByVal ItemIndex As UInteger, ByVal Index_ As Integer)
+            Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, ItemList(ItemIndex).Position)
+
+            If distance >= 5 Then
+                'Out Of Range
+                OnMoveUser(Index_, ItemList(ItemIndex).Position)
+                Dim Traveltime = distance / PlayerData(Index_).RunSpeed
+                PickUpTimer(Index_).Interval = Traveltime
+                PickUpTimer(Index_).Start()
+
+            Else
+                UpdateState(1, 1, Index_)
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.PickUp_Move)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.Byte(ItemList(ItemIndex).Position.XSector)
+                writer.Byte(ItemList(ItemIndex).Position.YSector)
+                writer.Float(ItemList(ItemIndex).Position.X)
+                writer.Float(ItemList(ItemIndex).Position.X)
+                writer.Float(ItemList(ItemIndex).Position.X)
+                writer.Word(0)
+                Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+
+                writer.Create(ServerOpcodes.PickUp_Item)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.Byte(0)
+
+                If ItemList(Index_).Item.Pk2Id = 1 Or ItemList(Index_).Item.Pk2Id = 2 Or ItemList(Index_).Item.Pk2Id = 3 Then
+                    If ItemList(Index_).Item.Amount > 0 Then
+                        PlayerData(Index_).Gold += ItemList(Index_).Item.Amount
+                        UpdateGold(Index_)
+                    End If
+                Else
+                    Dim slot As Byte = GetFreeItemSlot(Index_)
+                    Dim ref As cItem = GetItemByID(ItemList(Index_).Item.Pk2Id)
+                    Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
+
+                    temp_item.Pk2Id = ItemList(Index_).Item.Pk2Id
+                    temp_item.OwnerCharID = PlayerData(Index_).CharacterId
+                    temp_item.Durability = ItemList(Index_).Item.Durability
+                    temp_item.Plus = ItemList(Index_).Item.Plus
+                    temp_item.Amount = ItemList(Index_).Item.Amount
+
+                    UpdateItem(Inventorys(Index_).UserItems(slot)) 'SAVE IT
+
+
+                    writer.Create(ServerOpcodes.ItemMove)
+                    writer.Byte(1)
+                    writer.Byte(6) 'type = new item
+                    writer.Byte(Inventorys(Index_).UserItems(slot).Slot)
+
+                    AddItemDataToPacket(Inventorys(Index_).UserItems(slot), writer)
+
+                    Server.Send(writer.GetBytes, Index_)
+                End If
+            End If
+
+
+
 
         End Sub
     End Module

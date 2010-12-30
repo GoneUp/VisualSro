@@ -268,8 +268,8 @@
 
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Attacking = False
-            PlayerData(Index_).AttackedMonsterID = 0
-            PlayerData(Index_).AttackSkill = 0
+            PlayerData(Index_).AttackedId = 0
+            PlayerData(Index_).UsingSkillId = 0
             PlayerData(Index_).AttackType = AttackType_.Normal
             PlayerData(Index_).LastSelected = 0
             PlayerData(Index_).UsedItem = UseItemTypes.None

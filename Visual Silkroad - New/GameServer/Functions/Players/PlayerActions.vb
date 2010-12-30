@@ -160,21 +160,32 @@
         Public Sub OnHotkeyUpdate(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim tag As Byte = packet.Byte
 
-            If tag = 1 Then
-                Dim slot As Byte = packet.Byte
-                Dim type As Byte = packet.Byte
-                Dim IconID As UInteger = packet.DWord
+            Select Case tag
+                Case 1
+                    'Hotkey Update 
+                    Dim slot As Byte = packet.Byte
+                    Dim type As Byte = packet.Byte
+                    Dim IconID As UInteger = packet.DWord
 
 
-                If slot >= 0 And slot <= 50 Then 'Check Slots
-                    Dim tmp_ As New cHotKey
-                    tmp_.OwnerID = PlayerData(index_).CharacterId
-                    tmp_.Slot = slot
-                    tmp_.Type = type
-                    tmp_.IconID = IconID
-                    UpdateHotkey(tmp_)
-                End If
-            End If
+                    If slot >= 0 And slot <= 50 Then 'Check Slots
+                        Dim tmp_ As New cHotKey
+                        tmp_.OwnerID = PlayerData(index_).CharacterId
+                        tmp_.Slot = slot
+                        tmp_.Type = type
+                        tmp_.IconID = IconID
+                        UpdateHotkey(tmp_)
+                    End If
+                Case 2
+                    PlayerData(index_).Pot_HP_Slot = packet.Byte
+                    PlayerData(index_).Pot_HP_Value = packet.Byte
+                    PlayerData(index_).Pot_MP_Slot = packet.Byte
+                    PlayerData(index_).Pot_MP_Value = packet.Byte
+                    PlayerData(index_).Pot_Abormal_Slot = packet.Byte
+                    PlayerData(index_).Pot_Abormal_Value = packet.Byte
+                    PlayerData(index_).Pot_Delay = packet.Byte
+            End Select
+
         End Sub
 
         Private Sub UpdateHotkey(ByVal hotkey As cHotKey)
@@ -200,8 +211,9 @@
                         writer.Create(ServerOpcodes.Target)
                         writer.Byte(1) 'Sucess
                         writer.DWord(PlayerData(i).UniqueId)
-                        writer.Byte(10) 'unknown
-                        writer.DWord(&H4000000) '0x04 00 00 00
+                        writer.Byte(1) 'unknown
+                        writer.Byte(5) 'unknown
+                        writer.Byte(4) 'unknown
                         Server.Send(writer.GetBytes, Index_)
                         Exit Sub
                     End If

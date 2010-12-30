@@ -67,14 +67,14 @@ Namespace GameServer
                 PlayerData(Index).Busy = False
                 PlayerData(Index).Attacking = False
 
-                If PlayerData(Index).AttackedMonsterID <> 0 Then
-                    If GetMobIndex(PlayerData(Index).AttackedMonsterID) <> -1 Then
-                        Dim mob_ As cMonster = MobList(GetMobIndex(PlayerData(Index).AttackedMonsterID))
+                If PlayerData(Index).AttackedId <> 0 Then
+                    If GetMobIndex(PlayerData(Index).AttackedId) <> -1 Then
+                        Dim mob_ As cMonster = MobList(GetMobIndex(PlayerData(Index).AttackedId))
                         If mob_.Death = False Then
                             If PlayerData(Index).AttackType = AttackType_.Normal Then
                                 PlayerAttackNormal(Index, mob_.UniqueID)
                             ElseIf PlayerData(Index).AttackType = AttackType_.Skill Then
-                                PlayerAttackNormal(Index, mob_.UniqueID)
+                                PlayerAttackEndSkill(Index)
                             End If
                         End If
                     End If
@@ -245,8 +245,6 @@ Namespace GameServer
                             Dim mob_ = MobList(i)
 
                             If dist < ServerRange Then
-                                Dim OldX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X)
-                                Dim OldY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y)
                                 Dim ToX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X) + random.Next(-15, +10)
                                 Dim ToY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y) + random.Next(-10, +15)
 
@@ -282,14 +280,16 @@ Namespace GameServer
                                 Dim Walked As Single = (CalculateDistance(MobList(i).Position_FromPos, MobList(i).Position_ToPos) * Verhältnis)
 
                                 If Walked > 0 Then
+                                    Dim OldX As Single = GetRealX(MobList(i).Position_FromPos.XSector, MobList(i).Position_FromPos.X)
+                                    Dim OldY As Single = GetRealY(MobList(i).Position_FromPos.YSector, MobList(i).Position_FromPos.Y)
                                     Dim Full_X As Single = GetRealX(MobList(i).Position_FromPos.XSector, MobList(i).Position_FromPos.X) - GetRealX(MobList(i).Position_ToPos.XSector, MobList(i).Position_ToPos.X)
                                     Dim Full_Y As Single = GetRealX(MobList(i).Position_FromPos.YSector, MobList(i).Position_FromPos.Y) - GetRealY(MobList(i).Position_ToPos.YSector, MobList(i).Position_ToPos.Y)
 
                                     Dim Cur_X As Single = Full_X * Verhältnis
                                     Dim Cur_Y As Single = Full_Y * Verhältnis
 
-                                    MobList(i).Position.X = GetXOffset(Full_X - Cur_X)
-                                    MobList(i).Position.Y = GetYOffset(Full_Y - Cur_Y)
+                                    MobList(i).Position.X = GetXOffset(OldX + Cur_X)
+                                    MobList(i).Position.Y = GetYOffset(OldY + Cur_Y)
 
                                     MobList(i).Position.XSector = GetXSec(MobList(i).Position.X)
                                     MobList(i).Position.YSector = GetYSec(MobList(i).Position.Y)
@@ -329,21 +329,23 @@ Namespace GameServer
                             PlayerData(Index).Walking = False
                             PlayerData(Index).Position = PlayerData(Index).Position_ToPos
                         Else
-                            Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, PlayerData(Index).WalkStart)
+                            Dim Past As Single = DateDiff(DateInterval.Second, PlayerData(Index).WalkStart, Date.Now)
                             Dim FullTime As Single = DateDiff(DateInterval.Second, PlayerData(Index).WalkStart, PlayerData(Index).WalkEnd)
                             Dim Verhältnis As Single = (Past / FullTime)
 
                             Dim Walked As Single = (CalculateDistance(PlayerData(Index).Position_FromPos, PlayerData(Index).Position_ToPos) * Verhältnis)
 
                             If Walked > 0 Then
+                                Dim OldX As Single = GetRealX(PlayerData(Index).Position_FromPos.XSector, PlayerData(Index).Position_FromPos.X)
+                                Dim OldY As Single = GetRealY(PlayerData(Index).Position_FromPos.YSector, PlayerData(Index).Position_FromPos.Y)
                                 Dim Full_X As Single = GetRealX(PlayerData(Index).Position_FromPos.XSector, PlayerData(Index).Position_FromPos.X) - GetRealX(PlayerData(Index).Position_ToPos.XSector, PlayerData(Index).Position_ToPos.X)
                                 Dim Full_Y As Single = GetRealX(PlayerData(Index).Position_FromPos.YSector, PlayerData(Index).Position_FromPos.Y) - GetRealY(PlayerData(Index).Position_ToPos.YSector, PlayerData(Index).Position_ToPos.Y)
 
                                 Dim Cur_X As Single = Full_X * Verhältnis
                                 Dim Cur_Y As Single = Full_Y * Verhältnis
 
-                                PlayerData(Index).Position.X = GetXOffset(Full_X - Cur_X)
-                                PlayerData(Index).Position.Y = GetYOffset(Full_Y - Cur_Y)
+                                PlayerData(Index).Position.X = GetXOffset(OldX + Cur_X)
+                                PlayerData(Index).Position.Y = GetYOffset(OldY + Cur_Y)
 
                                 PlayerData(Index).Position.XSector = GetXSec(PlayerData(Index).Position.X)
                                 PlayerData(Index).Position.YSector = GetYSec(PlayerData(Index).Position.Y)

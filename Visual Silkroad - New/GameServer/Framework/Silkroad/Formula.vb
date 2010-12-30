@@ -92,25 +92,35 @@
                         Return GameServer.Functions.GetMasteryByID(258, Index_).Level
                     Case 6 'Bow
                         Return GameServer.Functions.GetMasteryByID(259, Index_).Level
-                        '=========EU
+
+                        '=========EU (6 diffs)
                     Case 7
+                        'Long Sword (1 hand) == Warrior
                         Return GameServer.Functions.GetMasteryByID(513, Index_).Level
                     Case 8
+                        'War Sword (2 Hand)  == Warrior
                         Return GameServer.Functions.GetMasteryByID(513, Index_).Level
                     Case 9
+                        'Axe == Warrior
                         Return GameServer.Functions.GetMasteryByID(513, Index_).Level
                     Case 10
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        'Warlock == Warlock
+                        Return GameServer.Functions.GetMasteryByID(516, Index_).Level
                     Case 11
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        'Long Staff (Wizard) == Wizard
+                        Return GameServer.Functions.GetMasteryByID(514, Index_).Level
                     Case 12
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        'Crossbow == Rouge
+                        Return GameServer.Functions.GetMasteryByID(515, Index_).Level
                     Case 13
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        'Dagger == ROuge
+                        Return GameServer.Functions.GetMasteryByID(515, Index_).Level
                     Case 14
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        'Harp  == Bard
+                        Return GameServer.Functions.GetMasteryByID(517, Index_).Level
                     Case 15
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        'Cleric --> Clweric
+                        Return GameServer.Functions.GetMasteryByID(518, Index_).Level
                 End Select
             End If
         End Function

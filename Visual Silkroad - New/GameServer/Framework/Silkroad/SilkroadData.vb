@@ -66,7 +66,7 @@
                 Log.WriteSystemLog("Loading took " & DateDiff(DateInterval.Second, time, Date.Now) & " Seconds.")
 
             Catch ex As Exception
-                Log.WriteSystemLog("Error at Loading Data! Message: " & ex.Message)
+                Log.WriteSystemLog("Error at Loading Data! Message: " & ex.Message & " Stack: " & ex.StackTrace)
             End Try
 
 
@@ -85,11 +85,7 @@
 
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
-
-
-                If My.Computer.Info.OSFullName.Contains("x64") = True Then
-                    lines(i) = lines(i).Replace(",", ".")
-                End If
+                lines(i) = lines(i).Replace(".", ",")
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
                 Dim tmp As New cItem
@@ -135,7 +131,7 @@
                 tmp.MIN_AMAG_REINFORCE = Convert.ToSingle(tmpString(80))
                 tmp.MAX_AMAG_REINFORCE = Convert.ToSingle(tmpString(81))
                 tmp.ATTACK_DISTANCE = Convert.ToSingle(tmpString(94))
-                tmp.MIN_LPHYATK = Convert.ToDouble(tmpString(95))
+                tmp.MIN_LPHYATK = Convert.ToSingle(tmpString(95))
                 tmp.MAX_LPHYATK = Convert.ToDouble(tmpString(96))
                 tmp.MIN_HPHYATK = Convert.ToDouble(tmpString(97))
                 tmp.MAX_HPHYATK = Convert.ToDouble(tmpString(98))
@@ -250,6 +246,8 @@
             Public Name As String
             Public Id As UInteger
             Public NextId As UInteger
+            Public MasteryID As UInteger
+            Public MasteryLevel As Byte
             Public RequiredSp As ULong
             Public RequiredMp As UShort
             Public CastTime As Byte
@@ -296,6 +294,8 @@
                 tmp.Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(3)
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
+                tmp.MasteryID = Convert.ToUInt32(tmpString(34))
+                tmp.MasteryLevel = Convert.ToUInt32(tmpString(36))
                 tmp.RequiredSp = Convert.ToUInt64(tmpString(46))
                 tmp.RequiredMp = Convert.ToUInt16(tmpString(53))
                 tmp.CastTime = Convert.ToByte(tmpString(68))

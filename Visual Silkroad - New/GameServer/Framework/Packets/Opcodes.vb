@@ -103,6 +103,7 @@
         Gold_Update = &H304E
         Exp_Update = &H3056
         LevelUp_Animation = &H3054
+        Speed_Update = &H30D0
 
         'Guild
         Guild_Info = &H3101

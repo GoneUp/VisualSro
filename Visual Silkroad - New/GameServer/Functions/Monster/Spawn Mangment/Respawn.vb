@@ -6,7 +6,10 @@
             Dim Random As New Random
 
             For i = 0 To RefRespawns.Count - 1
-                If IsSpawned(i) = 0 Then
+                If IsSpawned(i) = False Then
+                    Dim dgsdfg = RefRespawns(i)
+                    Dim obj As Object_ = GetObjectById(dgsdfg.Pk2ID)
+                    Debug.Print(obj.Name)
                     If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= ServerSpawnsPerSec Then
                         If Random.Next(0, 7) = 0 Then
                             ReSpawnMob(i)
@@ -28,6 +31,7 @@
 
         Public Sub ReSpawnMob(ByVal SpotIndex As Integer)
             Dim obj_ As Object_ = GetObjectById(RefRespawns(SpotIndex).Pk2ID)
+            Dim re As ReSpawn_ = RefRespawns(SpotIndex)
 
             Select Case obj_.Type
                 Case Object_.Type_.Mob_Normal

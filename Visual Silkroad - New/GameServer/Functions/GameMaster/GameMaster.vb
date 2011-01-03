@@ -119,14 +119,11 @@
 
         End Sub
         Public Sub OnSetWeather(ByVal Type As Byte, ByVal Strength As Byte, ByVal index_ As Integer)
-
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Weather)
             writer.Byte(Type)
             writer.Byte(Strength)
             Server.SendToAllIngame(writer.GetBytes)
-
-
         End Sub
 
         Private Sub OnMoveToUser(ByVal packet As PacketReader, ByVal index_ As Integer)

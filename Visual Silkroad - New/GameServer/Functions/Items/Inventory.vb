@@ -82,7 +82,7 @@
                             Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
                             Inventorys(index_).UserItems(Old_Slot) = ClearItem(DestItem)
-
+                            Inventorys(index_).UserItems(Old_Slot).Slot = Old_Slot
                         ElseIf CheckItemGender(_SourceRef, index_) = False Then
                             OnItemMoveError(index_, &H16, &H18)
                             Exit Sub
@@ -240,6 +240,7 @@
                 Dim item As New cInvItem
                 item.Amount = amout
                 item.Pk2Id = 1
+                item.OwnerCharID = PlayerData(index_).UniqueId
 
                 DropItem(item, PlayerData(index_).Position)
 

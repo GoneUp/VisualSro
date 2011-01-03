@@ -43,7 +43,7 @@
 
             If tmp_.Item.Pk2Id = 1 Then
                 'Gold...
-                If tmp_.Item.Amount >= 1000 Then
+                If tmp_.Item.Amount <= 1000 Then
                     tmp_.Item.Pk2Id = 1
                 ElseIf tmp_.Item.Amount > 1000 And tmp_.Item.Amount <= 10000 Then
                     tmp_.Item.Pk2Id = 2

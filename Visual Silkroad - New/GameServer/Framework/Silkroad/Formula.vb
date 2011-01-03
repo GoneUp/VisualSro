@@ -23,6 +23,24 @@
             Return x + distance_y
         End Function
 
+        Public Function CalculateDistance2(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
+          
+            Dim distance_x As Double = Pos_1.X - Pos_2.X
+            Dim distance_y As Double = Pos_1.Y - Pos_2.Y
+
+            Dim x As Double = 0
+            If distance_x < 0 And distance_x <> 0 Then
+                x = distance_x * -1
+            Else
+                x = distance_x
+            End If
+            If distance_y < 0 And distance_y <> 0 Then
+                Return ((distance_y * -1) + x)
+            End If
+
+            Return x + distance_y
+        End Function
+
 #Region "Pos Help Functions"
         Public Function GetRealX(ByVal XSec As Byte, ByVal XPos As Single) As Single
             Return (XSec - 135) * 192 + XPos / 10

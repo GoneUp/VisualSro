@@ -103,9 +103,9 @@
         Parry = Math.Round(Me.Level + 10)
 
         '=================Really unsure of these Formulas=============
-        Me.WalkSpeed = Me.Level + 15
+        Me.WalkSpeed = 15
         Me.RunSpeed = Me.Level + 49
-        Me.BerserkSpeed = Me.Level + 99
+        Me.BerserkSpeed = Me.RunSpeed * 2
 
 
         MinPhy = GameServer.Functions.GetMinPhy(Me.Strength)

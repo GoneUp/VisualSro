@@ -128,6 +128,7 @@
         Target = &HB045
         Attack_Reply = &HB074
         Attack_Main = &HB070
+        Attack_End = &HB071
 
         Str_Up = &HB050
         Int_Up = &HB051

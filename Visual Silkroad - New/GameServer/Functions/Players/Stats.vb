@@ -167,9 +167,11 @@
                         PlayerData(index_).Attributes += 3
                     Else
                         'Max Cap Reached
-                        Dim toget As ULong = PlayerData(index_).Experience - (lvldata.Experience - 1)
+                        PlayerData(index_).Experience -= exp
+                        Dim toget As ULong = ((lvldata.Experience - PlayerData(index_).Experience) - 1)
                         exp = toget
                         PlayerData(index_).Experience = lvldata.Experience - 1
+                        Exit Do
                     End If
                 Else
                     Exit Do

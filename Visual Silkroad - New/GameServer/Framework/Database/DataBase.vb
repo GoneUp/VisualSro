@@ -123,6 +123,27 @@ Namespace GameServer
                 RaiseEvent OnDatabaseError(exception, command)
             End Try
         End Sub
+
+        Public Shared Sub InsertData(ByVal command As String, ByVal newConnection As Boolean)
+
+            Try
+                Dim tmp_con As New MySqlConnection(ConnectionString)
+                tmp_con.Open()
+
+                Dim command3 As New MySqlCommand(command, tmp_con)
+                command3.ExecuteNonQuery()
+
+                tmp_con.Close()
+
+            Catch exception As MySqlException
+                If exception.ErrorCode = -2147467259 Then
+
+                End If
+
+            Catch exception As Exception
+                RaiseEvent OnDatabaseError(exception, command)
+            End Try
+        End Sub
 #End Region
 
 #Region "Query"

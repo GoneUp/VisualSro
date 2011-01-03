@@ -58,7 +58,7 @@ Namespace GameServer
                 If socket IsNot Nothing Then
                     If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
                         If socket.Connected = True Then
-                            Server.Dissconnect(i)
+                            'Server.Dissconnect(i)
                         End If
                     Else
                         Count += 1
@@ -68,7 +68,7 @@ Namespace GameServer
 
             Server.OnlineClient = Count
 
-            PingTimer.Interval = 30000
+            PingTimer.Interval = 10000
             PingTimer.Start()
         End Sub
     End Module

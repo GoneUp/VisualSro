@@ -52,6 +52,13 @@ CREATE TABLE `characters` (
   `pvp` int(10) unsigned NOT NULL DEFAULT '255',
   `maxitemslots` int(1) NOT NULL DEFAULT '45' COMMENT 'xycvyyxvcxy',
   `helpericon` int(1) NOT NULL DEFAULT '1',
+  `pot_hp_slot` int(1) NOT NULL DEFAULT '0',
+  `pot_hp_value` int(1) NOT NULL DEFAULT '0',
+  `pot_mp_slot` int(1) NOT NULL DEFAULT '0',
+  `pot_mp_value` int(1) NOT NULL DEFAULT '0',
+  `pot_abnormal_slot` int(1) NOT NULL DEFAULT '0',
+  `pot_abnormal_value` int(1) NOT NULL DEFAULT '0',
+  `pot_delay` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

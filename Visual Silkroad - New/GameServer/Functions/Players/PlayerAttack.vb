@@ -17,7 +17,7 @@
                         If PlayerData(Index_).Attacking = False Then
                             For i = 0 To MobList.Count - 1
                                 If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
-                                    PlayerAttackNormal(Index_, ObjectID)
+                                    PlayerAttackNormal(Index_, i)
                                     found = True
                                     Exit For
                                 End If
@@ -43,11 +43,21 @@
                             If PlayerData(Index_).Attacking = False Then
                                 For i = 0 To MobList.Count - 1
                                     If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
-                                        PlayerAttackBeginSkill(skillid, Index_, ObjectID)
+                                        PlayerAttackBeginSkill(skillid, Index_, i)
                                         found = True
                                         Exit For
                                     End If
                                 Next
+                            Else
+                                If PlayerData(Index_).AttackType = AttackType_.Normal Then
+                                    For i = 0 To MobList.Count - 1
+                                        If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
+                                            PlayerAttackBeginSkill(skillid, Index_, i)
+                                            found = True
+                                            Exit For
+                                        End If
+                                    Next
+                                End If
                             End If
                         End If
 
@@ -80,10 +90,10 @@
 
         End Sub
 
-        Public Sub PlayerAttackNormal(ByVal Index_ As Integer, ByVal ObjectID As UInteger)
-            Dim NumberAttack = 1, NumberVictims = 1, AttackType, MobListIndex, afterstate As UInteger
+        Public Sub PlayerAttackNormal(ByVal Index_ As Integer, ByVal MobListIndex As Integer)
+            Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
             Dim RefWeapon As New cItem
-            Dim AttObject As New Object_
+            Dim AttObject As Object_ = GetObjectById(MobList(MobListIndex).Pk2ID)
 
 
 
@@ -92,23 +102,15 @@
                 RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Else
                 'No Weapon
-                RefWeapon.ATTACK_DISTANCE = 6
+                RefWeapon.ATTACK_DISTANCE = 36
             End If
-
-            For i = 0 To MobList.Count - 1
-                If MobList(i).UniqueID = ObjectID Then
-                    AttObject = GetObjectById(MobList(i).Pk2ID)
-                    MobListIndex = i
-                End If
-            Next
 
             If AttObject.Name Is Nothing Or PlayerData(Index_).Busy Then
                 Exit Sub
             End If
 
-
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, MobList(MobListIndex).Position)
-            If Distance >= RefWeapon.ATTACK_DISTANCE Then
+            If Distance >= (RefWeapon.ATTACK_DISTANCE) Then
                 MoveUserToMonster(Index_, MobListIndex)
                 Exit Sub
             End If
@@ -166,14 +168,14 @@
             writer.DWord(AttackType)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.DWord(CUInt(Random.Next(1000, 10000) + PlayerData(Index_).UniqueId))
-            writer.DWord(ObjectID)
+            writer.DWord(MobList(MobListIndex).UniqueID)
 
             writer.Byte(1)
             writer.Byte(NumberAttack)
             writer.Byte(NumberVictims) '1 victim
 
             For d = 0 To NumberVictims - 1
-                writer.DWord(ObjectID)
+                writer.DWord(MobList(MobListIndex).UniqueID)
 
                 For i = 0 To NumberAttack - 1
                     Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, AttackType)
@@ -208,10 +210,17 @@
 
                 KillMob(MobListIndex)
                 SendAttackEnd(Index_)
+
+                PlayerData(Index_).Attacking = False
+                PlayerData(Index_).Busy = False
+                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackedId = 0
+                PlayerData(Index_).UsingSkillId = 0
+                PlayerData(Index_).SkillOverId = 0
             Else
                 PlayerData(Index_).Attacking = True
                 PlayerData(Index_).Busy = True
-                PlayerData(Index_).AttackedId = ObjectID
+                PlayerData(Index_).AttackedId = MobList(MobListIndex).UniqueID
                 PlayerData(Index_).UsingSkillId = AttackType
                 PlayerData(Index_).AttackType = AttackType_.Normal
                 If PlayerAttackTimer(Index_).Enabled = False Then
@@ -222,24 +231,18 @@
 
         End Sub
 
-        Public Sub PlayerAttackBeginSkill(ByVal SkillID As UInt32, ByVal Index_ As Integer, ByVal ObjectID As UInteger)
+        Public Sub PlayerAttackBeginSkill(ByVal SkillID As UInt32, ByVal Index_ As Integer, ByVal MobIndex As Integer)
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim RefWeapon As New cItem
-            Dim MobListIndex As Integer
 
             If PlayerData(Index_).Busy Or CheckIfUserOwnSkill(SkillID, Index_) = False Then
                 Exit Sub
             End If
 
-            For i = 0 To MobList.Count - 1
-                If MobList(i).UniqueID = ObjectID Then
-                    MobListIndex = i
-                End If
-            Next
 
-            If CalculateDistance(PlayerData(Index_).Position, MobList(MobListIndex).Position) >= RefSkill.Distance Then
-                OnMoveUser(Index_, MobList(MobListIndex).Position)
-                Exit Sub
+            If CalculateDistance(PlayerData(Index_).Position, MobList(MobIndex).Position) >= RefSkill.Distance Then
+                'MoveUserToMonster(Index_, MobIndex)
+                'Exit Sub
             End If
 
             If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 Then
@@ -251,7 +254,7 @@
                 UpdateMP(Index_)
             End If
 
-            PlayerData(Index_).AttackedId = ObjectID
+            PlayerData(Index_).AttackedId = MobList(MobIndex).UniqueID
             PlayerData(Index_).Attacking = True
             PlayerData(Index_).UsingSkillId = SkillID
             PlayerData(Index_).AttackType = AttackType_.Skill
@@ -274,7 +277,7 @@
             writer.DWord(PlayerData(Index_).SkillOverId)
             writer.DWord(PlayerData(Index_).AttackedId)
             writer.Byte(0)
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
             If RefSkill.CastTime > 0 Then
                 PlayerAttackTimer(Index_).Interval = RefSkill.CastTime * 1000
@@ -306,17 +309,13 @@
             Next
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Main)
+            writer.Create(ServerOpcodes.Attack_End)
             writer.Byte(1)
-            writer.Byte(2)
-            writer.Byte(&H30)
 
-            writer.DWord(PlayerData(Index_).UsingSkillId)
-            writer.DWord(PlayerData(Index_).UniqueId)
             writer.DWord(PlayerData(Index_).SkillOverId)
             writer.DWord(PlayerData(Index_).AttackedId)
 
-            writer.Byte(True)
+            writer.Byte(1)
             writer.Byte(RefSkill.NumberOfAttacks)
             writer.Byte(NumberVictims) '1 victim
 
@@ -349,13 +348,20 @@
                     writer.Word(0)
                 Next
             Next
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
             If afterstate = &H80 Then
                 GetEXPFromMob(MobList(MobListIndex))
 
                 KillMob(MobListIndex)
                 SendAttackEnd(Index_)
+
+                PlayerData(Index_).Attacking = False
+                PlayerData(Index_).Busy = False
+                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackedId = 0
+                PlayerData(Index_).UsingSkillId = 0
+                PlayerData(Index_).SkillOverId = 0
             Else
                 PlayerData(Index_).Attacking = True
                 PlayerData(Index_).Busy = True

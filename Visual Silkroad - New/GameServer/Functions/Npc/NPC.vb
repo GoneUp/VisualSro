@@ -100,13 +100,29 @@
         End Sub
 
         Public Sub OnNpcChatSelect(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ObjectID As UInteger = packet.DWord
-            Dim ChatID As UInteger = packet.DWord
+            Dim UniqueID As UInteger = packet.DWord
+            Dim NpcIndex As Integer
+            Dim RefObj As New Object_
+
+            For i = 0 To NpcList.Count - 1
+                If NpcList(i).UniqueID = UniqueID Then
+                    NpcIndex = i
+                    RefObj = GetObjectById(NpcList(NpcIndex).Pk2ID)
+                    Exit For
+                End If
+            Next
+
+
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Npc_Chat)
             writer.Byte(1) 'Sucess
-            writer.DWord(ChatID)
+            If RefObj.Name <> "NPC_CH_GACHA_MACHINE" Then
+                writer.Byte(1) 'Type
+            Else
+                writer.Byte(&H11)
+            End If
+
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = True
@@ -138,14 +154,16 @@
             writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
+
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+            OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
         End Sub
 
         Private Function CheckForTax(ByVal Model_Name As String, ByVal writer As PacketWriter)
             Select Case Model_Name
-                Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY", "NPC_KT_SMITH", "NPC_KT_ARMOR", _
-                 "NPC_KT_POTION", "NPC_KT_ACCESSORY", "STORE_CH_GATE", "STORE_KT_GATE", "NPC_CH_FERRY", "NPC_CH_FERRY2", _
-                 "NPC_KT_FERRY", "NPC_KT_FERRY2", "NPC_KT_FERRY3"
-
+                Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY", _
+                 "STORE_CH_GATE", "NPC_CH_FERRY", "NPC_CH_FERRY2"
                     writer.Word(ServerTaxRate)
             End Select
         End Function

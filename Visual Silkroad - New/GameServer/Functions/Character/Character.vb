@@ -633,9 +633,8 @@
             '''''''''''''''''''''/  
             ' Account
 
-            writer.Word(1)  ' @@@@@@@@@@@@@
+            writer.DWord(1)  ' @@@@@@@@@@@@@
             writer.DWord(0)  ' @@@@@@@@@@@@@
-            writer.Word(0)  ' @@@@@@@@@@@@@
             writer.DWord(chari.AccountID)  ' Account ID
             writer.Byte(chari.GM)
             writer.Byte(7)  ' @@@@@@@@@@@@@
@@ -664,13 +663,13 @@
 
 
             ' Autopotion
-            writer.Byte(0)  ' HP Slot
-            writer.Byte(0)  ' HP Value
-            writer.Byte(0)  ' MP Slot
-            writer.Byte(0)  ' MP Value
-            writer.Byte(0)  ' Abnormal Slot
-            writer.Byte(0)  ' Abnormal Value
-            writer.Byte(0)  ' Potion Delay
+            writer.Byte(chari.Pot_HP_Slot)  ' HP Slot
+            writer.Byte(chari.Pot_HP_Value)  ' HP Value
+            writer.Byte(chari.Pot_MP_Slot)  ' MP Slot
+            writer.Byte(chari.Pot_MP_Value)  ' MP Value
+            writer.Byte(chari.Pot_Abormal_Slot)  ' Abnormal Slot
+            writer.Byte(chari.Pot_HP_Value)  ' Abnormal Value
+            writer.Byte(chari.Pot_Delay)  ' Potion Delay
 
 
             writer.Byte(0)  ' Amount of Players Blocked
@@ -680,7 +679,7 @@
             writer.Word(1)  'unknown
             writer.Word(1)
             writer.Byte(0)
-            writer.Byte(1)
+            writer.Byte(2)
 
 
             Server.Send(writer.GetBytes, Index_)
@@ -694,6 +693,7 @@
             writer.Byte(&HB4)
             Server.Send(writer.GetBytes, Index_)
 
+            'UpdateState(4, 2, Index_) 'Untouchable Status
             ObjectSpawnCheck(Index_)
             OnStatsPacket(Index_)
             OnSendSilks(Index_)

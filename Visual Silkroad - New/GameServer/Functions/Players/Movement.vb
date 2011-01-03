@@ -29,7 +29,7 @@
 
         Public Sub OnMoveUser(ByVal Index_ As Integer, ByVal ToPos As Position)
             Try
-                Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
+                Dim Distance As Single = CalculateDistance2(PlayerData(Index_).Position, ToPos)
                 Dim Time As Single
                 Select Case PlayerData(Index_).MovementType
                     Case MoveType_.Walk
@@ -39,7 +39,7 @@
                     Case MoveType_.Berserk
                         Time = Distance / PlayerData(Index_).BerserkSpeed
                 End Select
-
+                Debug.Print("Distance: " & Distance & " Time: " & Time)
 
                 If Time > 0 Then
                     PlayerData(Index_).Walking = True
@@ -69,13 +69,13 @@
                 'writer.Float(PlayerData(Index_).Position.Z)
                 'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
 
-
-                ObjectSpawnCheck(Index_)
+                PlayerData(Index_).Position = ToPos
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                 Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
 
+
                 PlayerMoveTimer(Index_).Interval = 200
-                PlayerMoveTimer(Index_).Start()
+                'PlayerMoveTimer(Index_).Start()
             Catch ex As Exception
                 Console.WriteLine("OnMoveUser::error...")
                 Debug.Write(ex)
@@ -94,12 +94,37 @@
                 RefWeapon.ATTACK_DISTANCE = 6
             End If
 
+            'Dim AttObject = GetObjectById(MobList(MobIndex).Pk2ID)
+            'Dim mob = MobList(MobIndex)
 
-            Dim pos As Position = MobList(MobIndex).Position
-            pos.X += (RefWeapon.ATTACK_DISTANCE - 1)
-            pos.Y += (RefWeapon.ATTACK_DISTANCE - 1)
+            Dim ToX As Single = GetRealX(MobList(MobIndex).Position.XSector, MobList(MobIndex).Position.X) + (1)
+            Dim ToY As Single = GetRealY(MobList(MobIndex).Position.YSector, MobList(MobIndex).Position.Y) + (1)
 
-            OnMoveUser(Index_, pos)
+            Dim ToPos As New Position
+            ToPos.XSector = GetXSec(ToX)
+            ToPos.YSector = GetYSec(ToY)
+            ToPos.X = GetXOffset(ToX)
+            ToPos.Z = MobList(MobIndex).Position.Z
+            ToPos.Y = GetYOffset(ToY)
+
+            Dim Distance As Single = CalculateDistance2(PlayerData(Index_).Position, ToPos)
+            Dim Time As Single
+            Select Case PlayerData(Index_).MovementType
+                Case MoveType_.Walk
+                    Time = Distance / PlayerData(Index_).WalkSpeed
+                Case MoveType_.Run
+                    Time = Distance / PlayerData(Index_).RunSpeed
+                Case MoveType_.Berserk
+                    Time = Distance / PlayerData(Index_).BerserkSpeed
+            End Select
+
+            PlayerData(Index_).AttackType = AttackType_.Normal
+            PlayerData(Index_).AttackedId = MobList(MobIndex).UniqueID
+            PlayerAttackTimer(Index_).Interval = Time * 1000
+            PlayerAttackTimer(Index_).Start()
+
+
+            OnMoveUser(Index_, ToPos)
         End Sub
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try

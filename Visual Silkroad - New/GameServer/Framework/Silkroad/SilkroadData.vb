@@ -578,6 +578,8 @@
                 obj.T_Position.Y = tmpString(45)
 
                 RefObjects.Add(obj)
+
+                Functions.SpawnNPC(obj.Pk2ID, obj.T_Position, 0)
             Next
         End Sub
 

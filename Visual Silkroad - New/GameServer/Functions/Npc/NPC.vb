@@ -101,6 +101,7 @@
 
         Public Sub OnNpcChatSelect(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim UniqueID As UInteger = packet.DWord
+            Dim ChatId As Byte = packet.Byte
             Dim NpcIndex As Integer
             Dim RefObj As New Object_
 
@@ -118,9 +119,9 @@
             writer.Create(ServerOpcodes.Npc_Chat)
             writer.Byte(1) 'Sucess
             If RefObj.Name <> "NPC_CH_GACHA_MACHINE" Then
-                writer.Byte(1) 'Type
+                writer.Byte(ChatId) 'Type
             Else
-                writer.Byte(&H11)
+                writer.Byte(17)
             End If
 
             Server.Send(writer.GetBytes, Index_)
@@ -145,19 +146,44 @@
             packet.Byte()
             Dim TeleportNumber As Integer = packet.DWord
             Dim Point_ As TeleportPoint_ = GetTeleportPoint(TeleportNumber)
-
-            PlayerData(Index_).Busy = True
-            PlayerData(Index_).Position = Point_.ToPos
-            PlayerData(Index_).TeleportType = TeleportType_.Npc
-
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
-            writer.Byte(1)
-            Server.Send(writer.GetBytes, Index_)
+
+            If CSng(PlayerData(Index_).Gold) - Point_.Cost <= 0 Then
+                'Not enough Gold...
+                writer.Byte(2)
+                writer.Byte(7)
+                'Server.Send(writer.GetBytes, Index_)
+
+            ElseIf PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
+                'Level too low
+                writer.Byte(2)
+                writer.Byte(&H15)
+                'Server.Send(writer.GetBytes, Index_)
+
+            ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
+                'Level too high
+                writer.Byte(2)
+                writer.Byte(&H16)
+                'Server.Send(writer.GetBytes, Index_)
+
+            Else
+                PlayerData(Index_).Busy = True
+                PlayerData(Index_).Position = Point_.ToPos
+                PlayerData(Index_).TeleportType = TeleportType_.Npc
+
+                PlayerData(Index_).Gold -= Point_.Cost
+                UpdateGold(Index_)
+
+                writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, Index_)
 
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-            OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+            End If
+
         End Sub
 
         Private Function CheckForTax(ByVal Model_Name As String, ByVal writer As PacketWriter)

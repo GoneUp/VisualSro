@@ -79,10 +79,12 @@
                 Dim Percent As Single = mob_.DamageFromPlayer(i).Damage / mob_.HP_Max
 
                 Dim Balance As Double 'The Level factor...
-                If CSng(PlayerData(Index_).Level) - ref_.Level > 0 Then
-                    Balance = (1 + ((CSng(PlayerData(Index_).Level) - ref_.Level) / 100))
+                If CSng(ref_.Level) - PlayerData(Index_).Level > 0 Then
+                    'Mob is higher then you
+                    Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 10))
                 Else
-                    Balance = 0.01
+                    'Mob is lower then you
+                    Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 100))
                 End If
 
                 Dim EXP As Long = ((ref_.Exp * GetExpMultiplier(mob_.Mob_Type)) * ServerXPRate * Percent) * Balance

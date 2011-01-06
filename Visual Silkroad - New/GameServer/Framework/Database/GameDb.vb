@@ -139,7 +139,13 @@
                     Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
                     Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
                     Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))
-                    Chars(i).SetCharGroundStats()
+                    Chars(i).Pot_HP_Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(39))
+                    Chars(i).Pot_HP_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(40))
+                    Chars(i).Pot_MP_Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(41))
+                    Chars(i).Pot_MP_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(42))
+                    Chars(i).Pot_Abormal_Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(43))
+                    Chars(i).Pot_Abormal_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(44))
+                    Chars(i).Pot_Delay = CByte(tmp.Tables(0).Rows(i).ItemArray(45))
 
                     Chars(i).UniqueId = GetUnqiueID()
                 Next
@@ -359,6 +365,7 @@
             For i = 0 To (AllItems.Length - 1)
                 If AllItems(i) IsNot Nothing Then
                     If AllItems(i).OwnerCharID = [char].CharacterId Then
+                        Dim item As cInvItem = AllItems(i)
                         inventory.UserItems(AllItems(i).Slot) = AllItems(i)
                     End If
                 End If

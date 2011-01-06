@@ -101,6 +101,7 @@
     <Compile Include="Functions\Items\Alchemy.vb" />
     <Compile Include="Functions\Items\ItemMall.vb" />
     <Compile Include="Functions\Items\ItemSpawn.vb" />
+    <Compile Include="Functions\Items\ItemShop.vb" />
     <Compile Include="Functions\LoginAuth.vb" />
     <Compile Include="Functions\Character\cCharListing.vb" />
     <Compile Include="Functions\Character\cChar.vb" />

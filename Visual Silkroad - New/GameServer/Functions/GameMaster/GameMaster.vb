@@ -68,10 +68,6 @@
                         temp_item.Amount = plus
                     End If
 
-                    If temp_item.Slot = 0 Then
-                        Debug.Print(0)
-                    End If
-
                     Inventorys(index_).UserItems(i) = temp_item
                     UpdateItem(Inventorys(index_).UserItems(i)) 'SAVE IT
 

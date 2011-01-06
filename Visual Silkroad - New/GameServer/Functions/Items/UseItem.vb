@@ -421,6 +421,7 @@
                 PlayerData(Index_).UsedItem = UseItemTypes.None
                 Timers.UsingItemTimer(Index_).Stop()
                 UpdateState(&HB, 0, Index_)
+                PlayerData(Index_).Busy = False
             End If
         End Sub
 

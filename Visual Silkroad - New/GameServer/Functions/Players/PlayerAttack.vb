@@ -289,7 +289,7 @@
 
         Public Sub PlayerAttackEndSkill(ByVal Index_ As Integer)
             Dim RefSkill As Skill_ = GetSkillById(PlayerData(Index_).UsingSkillId)
-            Dim AttObject As Object = GetObjectById(PlayerData(Index_).AttackedId)
+            Dim AttObject As Object
             Dim RefWeapon As New cItem
             Dim MobListIndex, afterstate, NumberVictims As Integer
             NumberVictims = 1
@@ -305,6 +305,7 @@
             For i = 0 To MobList.Count - 1
                 If MobList(i).UniqueID = PlayerData(Index_).AttackedId Then
                     MobListIndex = i
+                    AttObject = GetObjectById(MobList(i).Pk2ID)
                 End If
             Next
 
@@ -379,11 +380,12 @@
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
-            If CSng(PlayerData(Index_).Level) - Mob.Level > 0 Then
-                Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 100))
+            If (CSng(PlayerData(Index_).Level) - Mob.Level) > -10 Then
+                Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 10))
             Else
                 Balance = 0.01
             End If
+
 
 
             Dim DamageMin As Double

@@ -145,7 +145,6 @@ Namespace GameServer
                         Log.WriteSystemLog("opCode: " & opcode & " Packet : " & BitConverter.ToString(packet.ByteArray(length), 0, length))
                 End Select
 
-
             Catch ex As Exception
                 Log.WriteSystemLog("Parsing Error:  " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
             End Try

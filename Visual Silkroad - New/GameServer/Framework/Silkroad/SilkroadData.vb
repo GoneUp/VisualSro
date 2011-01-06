@@ -17,11 +17,12 @@
         Public RefUniques As New List(Of UInteger)
         Public RefAbuseList As New List(Of String)
 
+        Public base_path As String = System.AppDomain.CurrentDomain.BaseDirectory
 
         Public Sub DumpDataFiles()
 
             Try
-                Dim base_path As String = System.AppDomain.CurrentDomain.BaseDirectory
+
                 Dim time As Date = Date.Now
 
                 DumpItemFiles()
@@ -58,6 +59,8 @@
                 DumpNpcChatFile(base_path & "\data\npcchatid.txt")
 
                 DumpAbuseListFile(base_path & "\data\abuselist.txt")
+
+                DumpShopDataFile()
 
                 Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
                 Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
@@ -328,7 +331,7 @@
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.All
                 End If
-                If tmpString(3).Contains("ROG") OrElse tmpString(3).Contains("WARRIOR") Then
+                If tmpString(3).Contains("ROG") OrElse tmpString(3).Contains("WARRIOR") OrElse tmpString(3).Contains("AXE") Then
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.All
                 End If
@@ -401,6 +404,8 @@
             Public Skill8 As UInteger
             Public Skill9 As UInteger
             Public ChatBytes() As Byte 'For the NPC Chat
+
+            Public Shop As Functions.ShopData_
 
             'These Fileds are for Teleports
             Public T_Position As Position
@@ -722,5 +727,137 @@
                 End If
             Next i
         End Sub
+
+        Public Sub DumpShopDataFile()
+
+            Dim lines As String() = IO.File.ReadAllLines(base_path & "data\shopdata.txt")
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+
+                    If i = 41 Then
+                        Dim b = 9
+                    End If
+
+                    If (tmpString(5) > 0) Then
+                        Dim obj As Object_ = GetObjectById(tmpString(5))
+
+                        obj.Shop = New Functions.ShopData_
+                        obj.Shop.Pk2ID = obj.Pk2ID
+                        obj.Shop.StoreName = tmpString(2)
+                        obj.Shop.Init()
+                    End If
+                End If
+            Next
+
+
+            'Dump Tabs
+            lines = IO.File.ReadAllLines(base_path & "data\refshoptab.txt")
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+
+                    If tmpString(3).StartsWith("STORE") Then
+                        Dim StoreName As String = tmpString(3).Remove(tmpString(3).Length - 5, 5)
+                        Dim Index As Integer = GetNpc(StoreName)
+                        Dim TabIndex As Integer = tmpString(3).Remove(0, tmpString(3).Length - 1)
+
+                        If RefObjects(Index).Shop IsNot Nothing Then
+                            If StoreName.StartsWith("STORE_KT_SMITH") = False Or StoreName.StartsWith("STORE_KT_ARMOR") = False Or StoreName.StartsWith("STORE_KT_ACCESSORY") = False Then
+                                RefObjects(Index).Shop.Tab(TabIndex - 1).TabName = tmpString(3)
+                            End If
+                        End If
+                    End If
+                End If
+            Next
+
+            CorrectHotanData()
+
+            'Dump Items
+            lines = IO.File.ReadAllLines(base_path & "data\refshopgoods.txt")
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                    Dim TabName As String = tmpString(2)
+                    Dim Index As Integer = GetNpc2(TabName)
+                    Dim ItemLine As Byte = tmpString(4)
+
+                    If Index <> -1 Then
+                        For r = 0 To RefObjects(Index).Shop.Tab.Count - 1
+                            If RefObjects(Index).Shop.Tab(r) IsNot Nothing Then
+                                If RefObjects(Index).Shop.Tab(r).TabName = TabName Then
+                                    If RefObjects(Index).Shop.Tab(r).Items.Count <= ItemLine Then
+                                        Dim d = RefObjects(Index).Shop.Tab(r)
+                                        Debug.Print(9)
+                                    End If
+
+                                    RefObjects(Index).Shop.Tab(r).Items(ItemLine) = New Functions.ShopData_.ShopItem_
+                                    RefObjects(Index).Shop.Tab(r).Items(ItemLine).ItemLine = ItemLine
+                                    RefObjects(Index).Shop.Tab(r).Items(ItemLine).PackageName = tmpString(3)
+                                End If
+                            End If
+                        Next
+                    End If
+
+                End If
+            Next
+        End Sub
+
+        Public Sub CorrectHotanData()
+            Dim obj As Object_ = GetObjectById(2072)
+            obj.Shop.Tab(0).TabName = "STORE_KT_SMITH_EU_TAB1"
+            obj.Shop.Tab(1).TabName = "STORE_KT_SMITH_EU_TAB2"
+            obj.Shop.Tab(2).TabName = "STORE_KT_SMITH_EU_TAB3"
+            obj.Shop.Tab(3).TabName = "STORE_KT_SMITH_TAB1"
+            obj.Shop.Tab(4).TabName = "STORE_KT_SMITH_TAB2"
+            obj.Shop.Tab(5).TabName = "STORE_KT_SMITH_TAB3"
+
+            obj = GetObjectById(2073)
+            obj.Shop.Tab(0).TabName = "STORE_KT_ARMOR_EU_TAB1"
+            obj.Shop.Tab(1).TabName = "STORE_KT_ARMOR_EU_TAB2"
+            obj.Shop.Tab(2).TabName = "STORE_KT_ARMOR_EU_TAB3"
+            obj.Shop.Tab(3).TabName = "STORE_KT_ARMOR_EU_TAB4"
+            obj.Shop.Tab(4).TabName = "STORE_KT_ARMOR_EU_TAB5"
+            obj.Shop.Tab(5).TabName = "STORE_KT_ARMOR_EU_TAB6"
+            obj.Shop.Tab(6).TabName = "STORE_KT_ARMOR_TAB1"
+            obj.Shop.Tab(7).TabName = "STORE_KT_ARMOR_TAB2"
+            obj.Shop.Tab(8).TabName = "STORE_KT_ARMOR_TAB3"
+            obj.Shop.Tab(9).TabName = "STORE_KT_ARMOR_TAB4"
+            obj.Shop.Tab(10).TabName = "STORE_KT_ARMOR_TAB5"
+            obj.Shop.Tab(11).TabName = "STORE_KT_ARMOR_TAB6"
+
+            obj = GetObjectById(2075)
+            obj.Shop.Tab(0).TabName = "STORE_KT_ACCESSORY_EU_TAB1"
+            obj.Shop.Tab(1).TabName = "STORE_KT_ACCESSORY_EU_TAB2"
+            obj.Shop.Tab(2).TabName = "STORE_KT_ACCESSORY_EU_TAB3"
+            obj.Shop.Tab(3).TabName = "STORE_KT_ACCESSORY_TAB1"
+            obj.Shop.Tab(4).TabName = "STORE_KT_ACCESSORY_TAB2"
+            obj.Shop.Tab(5).TabName = "STORE_KT_ACCESSORY_TAB3"
+        End Sub
+
+        Public Function GetNpc(ByVal StoreName As String)
+            For i = 0 To RefObjects.Count - 1
+                If RefObjects(i).Shop IsNot Nothing Then
+                    If RefObjects(i).Shop.StoreName = StoreName Then
+                        Return i
+                    End If
+                End If
+            Next
+        End Function
+
+        Public Function GetNpc2(ByVal TabName As String)
+            For i = 0 To RefObjects.Count - 1
+                If RefObjects(i).Shop IsNot Nothing Then
+                    For r = 0 To RefObjects(i).Shop.Tab.Count - 1
+                        If RefObjects(i).Shop.Tab(r) IsNot Nothing Then
+                            If RefObjects(i).Shop.Tab(r).TabName = TabName Then
+                                Return i
+                            End If
+                        End If
+                    Next
+                End If
+            Next
+            Return -1
+        End Function
     End Module
 End Namespace

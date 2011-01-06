@@ -41,7 +41,7 @@ Namespace GameServer
                 MonsterCheck.Start()
 
                 MonsterMovement.Interval = 5000
-                'MonsterMovement.Start()
+                MonsterMovement.Start()
 
                 DatabaseTimer.Interval = 30000
                 DatabaseTimer.Start()
@@ -365,7 +365,7 @@ Namespace GameServer
                                 'PlayerData(Index).Position.YSector = GetYSec(PlayerData(Index).Position.Y)
 
                                 Dim r = GetRealX(PlayerData(Index).Position.XSector, PlayerData(Index).Position.X)
-                                SendPm(Index, "X: " & CStr(GetRealX(PlayerData(Index).Position.XSector, PlayerData(Index).Position.X)) & " Y:" & GetRealY(PlayerData(Index).Position.YSector, PlayerData(Index).Position.Y), "[TMP]")
+                                'SendPm(Index, "X: " & CStr(GetRealX(PlayerData(Index).Position.XSector, PlayerData(Index).Position.X)) & " Y:" & GetRealY(PlayerData(Index).Position.YSector, PlayerData(Index).Position.Y), "[TMP]")
                                 ObjectSpawnCheck(Index)
                             End If
 

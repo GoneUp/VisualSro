@@ -75,7 +75,7 @@
 
 
                 PlayerMoveTimer(Index_).Interval = 200
-                'PlayerMoveTimer(Index_).Start()
+                PlayerMoveTimer(Index_).Start()
             Catch ex As Exception
                 Console.WriteLine("OnMoveUser::error...")
                 Debug.Write(ex)

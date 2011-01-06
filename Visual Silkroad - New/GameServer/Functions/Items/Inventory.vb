@@ -16,7 +16,9 @@
                 Case 7 'drop
                     OnDropItem(packet, index_)
                 Case 8 'BuyItem
+                    OnBuyItem(packet, index_)
                 Case 9 'SellItem
+                    OnSellItem(packet, index_)
                 Case 10 'Drop Gold
                     OnDropGold(packet, index_)
                 Case 11 'Gold to Storage
@@ -411,7 +413,7 @@
         End Function
 
         Private Function CheckLevel(ByVal tmpItem As cItem, ByVal Index_ As Integer)
-            If tmpItem.LV_REQ >= PlayerData(Index_).Level Then
+            If tmpItem.LV_REQ > PlayerData(Index_).Level Then
                 Return False
             Else
                 Return True

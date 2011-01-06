@@ -71,7 +71,7 @@
                                 PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                 UpdateSP(index_)
 
-                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2} ", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
+                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}'", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
 
                                 writer.Create(ServerOpcodes.Mastery_Up)
                                 writer.Byte(1)

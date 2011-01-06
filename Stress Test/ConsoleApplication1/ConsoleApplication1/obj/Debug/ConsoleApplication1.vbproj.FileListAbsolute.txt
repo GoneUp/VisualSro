@@ -16,3 +16,12 @@ C:\Documents and Settings\Administrator.VPS-4099\My Documents\Visual Studio 2008
 C:\Documents and Settings\Administrator.VPS-4099\My Documents\Visual Studio 2008\Projects\ConsoleApplication1\ConsoleApplication1\obj\Debug\ResolveAssemblyReference.cache
 C:\Documents and Settings\Administrator.VPS-4099\My Documents\Visual Studio 2008\Projects\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.Resources.resources
 C:\Documents and Settings\Administrator.VPS-4099\My Documents\Visual Studio 2008\Projects\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.vbproj.GenerateResource.Cache
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.xml
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.xml
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.Resources.resources
+C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.vbproj.GenerateResource.Cache

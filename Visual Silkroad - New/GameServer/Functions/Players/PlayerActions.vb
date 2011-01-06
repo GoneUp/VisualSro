@@ -14,6 +14,8 @@
                     writer = New PacketWriter
                     writer.Create(ServerOpcodes.Exit2)
                     Server.Send(writer.GetBytes, Index)
+
+                    Server.Dissconnect(Index)
                 Case 2 'Restart
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Exit)
@@ -25,6 +27,8 @@
                     writer = New PacketWriter
                     writer.Create(ServerOpcodes.Exit2)
                     Server.Send(writer.GetBytes, Index)
+
+                    Server.Dissconnect(Index)
             End Select
         End Sub
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -184,6 +188,9 @@
                     PlayerData(index_).Pot_Abormal_Slot = packet.Byte
                     PlayerData(index_).Pot_Abormal_Value = packet.Byte
                     PlayerData(index_).Pot_Delay = packet.Byte
+
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET pot_hp_slot='{0}', pot_hp_value='{1}', pot_mp_slot='{2}', pot_mp_value='{3}', pot_abnormal_slot='{4}', pot_abnormal_value='{5}', , pot_delay='{6}' where id='{7}'", _
+                                                     PlayerData(index_).Pot_HP_Slot, PlayerData(index_).Pot_HP_Value, PlayerData(index_).Pot_MP_Slot, PlayerData(index_).Pot_MP_Value, PlayerData(index_).Pot_Abormal_Slot, PlayerData(index_).Pot_Abormal_Value, PlayerData(index_).Pot_Delay, PlayerData(index_).CharacterId))
             End Select
 
         End Sub

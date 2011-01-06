@@ -240,6 +240,25 @@ Namespace GameServer
             Next
         End Sub
 
+
+        Public Shared Sub SendToStallSession(ByVal buff() As Byte, ByVal StallID As UInteger, ByVal Owner As Boolean)
+            For i = 0 To Stalls.Count - 1
+                If Stalls(i).StallID = StallID Then
+                    'Send to Visitors
+                    For v = 0 To Stalls(i).Visitors.Count - 1
+                        Server.Send(buff, Stalls(i).Visitors(v))
+                    Next
+
+                    'Send To Owner
+                    If Owner Then
+                        Server.Send(buff, Stalls(i).OwnerIndex)
+                    End If
+
+                    Exit For
+                End If
+            Next
+        End Sub
+
 #Region "Propertys"
         Public Shared Property Ip() As String
             Get

@@ -24,17 +24,21 @@
 		Action = &H704F
 		Emotion = &H3091
 		[Exit] = &H7005
-		Target = &H7045
+        Target = &H7045
+
 		ItemMove = &H7034
-		Alchemy = &H7150
-		Angle_Update = &H7024
-		Teleport_Reply = &H34B6
-        HelperIcon = &H7402
+        Alchemy = &H7150
         ItemUse = &H704C
         Scroll_Cancel = &H705B
+        Buy_Back = &H7168
+
+        Angle_Update = &H7024
+        Teleport_Reply = &H34B6
+        HelperIcon = &H7402
         Hotkey_Update = &H7158
         Attack = &H7074
         ClientStatus = &H70EA
+        CTF_Register = &H74B2
 
         Npc_Chat = &H7046
         Npc_Chat_Left = &H704B
@@ -54,9 +58,17 @@
         Mastery_Up = &H70A2
         Skill_Up = &H70A1
 
-	End Enum
+        'Stall
+        Stall_Open = &H70B1
+        Stall_Close_Own = &H70B2
+        Stall_Select = &H70B3
+        Stall_Close_Visitor = &H70B5
+        Stall_Data = &H70BA
 
-	'S --> C
+
+    End Enum
+
+    'S --> C 
 
 	Enum ServerOpcodes
 
@@ -117,6 +129,7 @@
         PickUp_Item = &H3036
         PickUp_Move = &HB034
 
+
         'Spawns
 		SingleSpawn = &H3015
 		SingleDespawn = &H3016
@@ -150,7 +163,18 @@
         Exchange_Gold = &H3089
         Exchange_Abort_Reply = &HB084
 
+        'Stall
+        Stall_Open_ToOther = &H30B8
+        Stall_Open_Reply = &HB0B1
+        Stall_Data = &HB0BA
+        Stall_Name = &H30BB
+        Stall_Items = &HB0B3
+        Stall_Join = &H30B7
+        Stall_Close_Owner_Other = &H30B9
+        Stall_Close_Owner = &HB0B2
+        Stall_Close_Visitor = &HB0B5
 
+        'Exit
 		[Exit] = &HB005
 		Exit2 = &H300A
 

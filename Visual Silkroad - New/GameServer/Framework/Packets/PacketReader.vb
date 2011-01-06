@@ -49,11 +49,8 @@ Namespace GameServer
         End Function
 
         Public Function UString(ByVal len As Integer) As String
-            Dim builder As New StringBuilder()
-            For Each ch As Char In Me.br.ReadChars(len)
-                builder.Append(ch.ToString())
-            Next ch
-            Return builder.ToString()
+            Dim Bytes As Byte() = Me.ByteArray(len * 2)
+            Return System.Text.Encoding.Unicode.GetString(Bytes)
         End Function
 
         Public Function Word() As UShort

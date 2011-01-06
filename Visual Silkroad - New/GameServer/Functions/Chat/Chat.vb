@@ -18,9 +18,11 @@
 
                 Case ChatModes.Party
                 Case ChatModes.Guild
-
                 Case ChatModes.Notice
                     OnNoticeChat(Packet, Index_)
+
+                Case ChatModes.Stall
+
                 Case ChatModes.Union
                 Case ChatModes.Academy
 
@@ -62,8 +64,7 @@
             Dim senderindex As Integer = -1
 
             Dim messagelength As UInt16 = Packet.Word
-            Dim byte_message As Byte() = Packet.ByteArray(messagelength * 2)
-            Dim message As String = System.Text.Encoding.Unicode.GetString(byte_message)
+            Dim message As String = Packet.UString(messagelength)
 
             For i = 0 To Server.OnlineClient - 1
                 If PlayerData(i) IsNot Nothing Then
@@ -216,6 +217,7 @@
         Guild = &H5
         Globals = &H6
         Notice = &H7
+        Stall = &H9
         Union = &HB
         Academy = &H10
     End Enum

@@ -251,6 +251,7 @@
                 If PlayerData(Other_Index) IsNot Nothing Then
                     If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
                         Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                        PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
                     End If
                 End If
 
@@ -275,6 +276,26 @@
             PlayerData(Index_).UsedItem = UseItemTypes.None
             PlayerData(Index_).UsedItemParameter = 0
             PlayerData(Index_).PickUpId = 0
+
+            PlayerData(Index_).InExchange = False
+            PlayerData(Index_).ExchangeID = 0
+
+            If PlayerData(Index_).InStall = True Then
+
+            End If
+
+            PlayerData(Index_).InStall = False
+            PlayerData(Index_).StallID = 0
+
+
+        End Sub
+
+        Public Sub CheckStall(ByVal Index_ As Integer)
+            For i = 0 To Stalls.Count - 1
+                If Stalls(i).OwnerID = PlayerData(Index_).UniqueId Then
+                    Stall_Close_Own(Index_)
+                End If
+            Next
         End Sub
     End Module
 End Namespace

@@ -71,7 +71,7 @@
 
                 PlayerData(Index_).Position = ToPos
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
 
                 PlayerMoveTimer(Index_).Interval = 200
@@ -140,12 +140,14 @@
                                 PlayerData(refindex).SpawnedPlayers.Add(Index_)
 
                                 LinkPlayerToGuild(Index_)
+                                LinkPlayerToStall(Index_, refindex)
                             End If
                             If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
                                 Server.Send(CreateSpawnPacket(refindex), Index_)
                                 PlayerData(Index_).SpawnedPlayers.Add(refindex)
 
                                 LinkPlayerToGuild(Index_)
+                                LinkPlayerToStall(refindex, Index_)
                             End If
 
                         End If

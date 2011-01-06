@@ -12,7 +12,7 @@
                     If IsSpawned(RefRespawns(i).SpotID) = False Then
                         If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= ServerSpawnsPerSec Then
                             If Random.Next(0, 7) = 0 Then
-                                ReSpawnMob(RefRespawns(i).SpotID)
+                                ReSpawnMob(i)
                             End If
                         Else
                             Debug.Print("CountPerSec overflow: " & GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector))
@@ -34,17 +34,21 @@
 
 
         Public Sub ReSpawnMob(ByVal SpotIndex As Integer)
-            Dim obj_ As Object_ = GetObjectById(RefRespawns(SpotIndex).Pk2ID)
-            Dim re As ReSpawn_ = RefRespawns(SpotIndex)
+            Try
+                Dim re = RefRespawns(SpotIndex)
+                Dim obj_ As Object_ = GetObjectById(RefRespawns(SpotIndex).Pk2ID)
 
-            Select Case obj_.Type
-                Case Object_.Type_.Mob_Normal
-                    SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, SpotIndex)
-                Case Object_.Type_.Mob_Cave
-                    SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, SpotIndex)
-                Case Object_.Type_.Npc
-                    SpawnNPC(RefRespawns(SpotIndex).Pk2ID, RefRespawns(SpotIndex).Position, RefRespawns(SpotIndex).Angle)
-            End Select
+                Select Case obj_.Type
+                    Case Object_.Type_.Mob_Normal
+                        SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, SpotIndex)
+                    Case Object_.Type_.Mob_Cave
+                        SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, SpotIndex)
+                    Case Object_.Type_.Npc
+                        SpawnNPC(RefRespawns(SpotIndex).Pk2ID, RefRespawns(SpotIndex).Position, RefRespawns(SpotIndex).Angle)
+                End Select
+            Catch ex As Exception
+
+            End Try
         End Sub
 
         Public Sub ReSpawnUnique(ByVal UniqueListID As Integer)

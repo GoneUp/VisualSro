@@ -1,7 +1,7 @@
 ﻿Imports System.Net, System.Net.Sockets
 Module Main
 
-    Public s(125) As Socket
+    Public s(100) As Socket
     Public Rev(10000) As Threading.Thread
     Public GameServer(10000) As Boolean
     Public Key(10000) As UInt32
@@ -19,7 +19,7 @@ Module Main
             For b = 0 To s.Length - 1
                 s(b) = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
                 Rev(b) = New Threading.Thread(AddressOf ReceiveData)
-                s(b).Connect(New IPEndPoint(IPAddress.Parse(ip1), 15779))
+                s(b).Connect(New IPEndPoint(IPAddress.Parse(ip2), 15779))
                 Rev(b).Start(b)
                 Pos(b) = New Position
             Next

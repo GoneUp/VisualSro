@@ -52,7 +52,7 @@ Namespace LoginServer
 
         Public Shared Sub CheckUserPings() Handles PingTimer.Elapsed
             PingTimer.Stop()
-            Server.OnlineClient = 0
+            Dim Count As Integer = 0
 
             For i = 0 To Server.MaxClients
                 Dim socket As Socket = GetSocket(i)
@@ -61,12 +61,15 @@ Namespace LoginServer
                         If socket.Connected = True Then
                             Server.Dissconnect(i)
                         End If
+                    Else
+                        Count += 1
                     End If
-
-                    Server.OnlineClient += 1
                 End If
             Next
-            PingTimer.Interval = 60000
+
+            Server.OnlineClient = Count
+
+            PingTimer.Interval = 10000
             PingTimer.Start()
         End Sub
     End Class

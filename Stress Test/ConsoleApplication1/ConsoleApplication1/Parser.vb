@@ -49,7 +49,7 @@
         writer.String(name)
         writer.Word(pass.Length)
         writer.String(pass)
-        writer.Word(3)
+        writer.Word(4) '3 = local - 4 = remote
         Send(writer.GetBytes, Index_)
     End Sub
 

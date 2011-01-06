@@ -76,6 +76,44 @@
 
 
         Public Sub OnSellItem(ByVal packet As PacketReader, ByVal index_ As Integer)
+            Dim slot As Byte = packet.Byte
+            Dim amout As UShort = packet.Word
+            Dim UniqueID As UInt32 = packet.DWord
+            Dim Gold As ULong = 0
+
+            If Inventorys(index_).UserItems(slot).Pk2Id <> 0 Then
+                Dim Item As cItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
+
+                Select Case Item.CLASS_A
+                    Case 1
+                        Gold = Item.SELL_PRICE
+                    Case 2
+                        Gold = Item.SELL_PRICE
+                    Case 3
+                        Gold = Item.SELL_PRICE * Inventorys(index_).UserItems(slot).Amount
+                End Select
+
+                Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))
+                UpdateItem(Inventorys(index_).UserItems(slot))
+
+                PlayerData(index_).Gold += Gold
+                UpdateGold(index_)
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.ItemMove)
+                writer.Byte(1)
+                writer.Byte(9)
+                writer.Byte(slot)
+                writer.Word(amout)
+                writer.DWord(UniqueID)
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, index_)
+            End If
+        End Sub
+
+        Public Sub BuyBack(ByVal packet As PacketReader, ByVal index_ As Integer)
+            Dim UnqiueID As UInt32 = packet.DWord
+            Dim BuyBackSlot As Byte = packet.Byte
 
 
 

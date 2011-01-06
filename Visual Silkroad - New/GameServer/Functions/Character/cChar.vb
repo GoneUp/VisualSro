@@ -74,6 +74,9 @@
     Public InExchangeWith As Integer = -1
     Public ExchangeID As Integer = -1
 
+    Public InStall As Boolean
+    Public StallID As UInteger = 0
+
     Public PickUpId As UInteger = 0
     Public Attacking As Boolean = False
     Public AttackedId As UInt32 = 0

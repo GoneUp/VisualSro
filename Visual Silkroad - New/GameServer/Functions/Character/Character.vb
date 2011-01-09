@@ -211,10 +211,10 @@
                 GameDB.Chars(NewCharacterIndex).CMP = 200
                 GameDB.Chars(NewCharacterIndex).Model = model
                 GameDB.Chars(NewCharacterIndex).Volume = volume
-                GameDB.Chars(NewCharacterIndex).Level = PlayerStartLevel
-                GameDB.Chars(NewCharacterIndex).Gold = PlayerStartGold
-                GameDB.Chars(NewCharacterIndex).SkillPoints = PlayerStartSkillPoints
-                GameDB.Chars(NewCharacterIndex).GM = PlayerStartGM
+                GameDB.Chars(NewCharacterIndex).Level = Settings.PlayerStartLevel
+                GameDB.Chars(NewCharacterIndex).Gold = Settings.PlayerStartGold
+                GameDB.Chars(NewCharacterIndex).SkillPoints = Settings.PlayerStartSkillPoints
+                GameDB.Chars(NewCharacterIndex).GM = Settings.PlayerStartGM
 
                 GameDB.Chars(NewCharacterIndex).WalkSpeed = 16
                 GameDB.Chars(NewCharacterIndex).RunSpeed = 50
@@ -223,10 +223,10 @@
                 GameDB.Chars(NewCharacterIndex).Intelligence = 20
                 GameDB.Chars(NewCharacterIndex).PVP = 0
                 GameDB.Chars(NewCharacterIndex).MaxSlots = 45
-                GameDB.Chars(NewCharacterIndex).Position = PlayerStartPos
-                GameDB.Chars(NewCharacterIndex).Position_Dead = PlayerStartReturnPos
-                GameDB.Chars(NewCharacterIndex).Position_Recall = PlayerStartReturnPos
-                GameDB.Chars(NewCharacterIndex).Position_Return = PlayerStartReturnPos
+                GameDB.Chars(NewCharacterIndex).Position = Settings.PlayerStartPos
+                GameDB.Chars(NewCharacterIndex).Position_Dead = Settings.PlayerStartReturnPos
+                GameDB.Chars(NewCharacterIndex).Position_Recall = Settings.PlayerStartReturnPos
+                GameDB.Chars(NewCharacterIndex).Position_Return = Settings.PlayerStartReturnPos
 
                 Dim magdefmin As Double = 3.0
                 Dim phydefmin As Double = 6.0
@@ -260,44 +260,44 @@
 
                     Dim mastery As New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 257
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 258
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 259
                     AddMasteryToDB(mastery)
 
                     '273 - 276
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 273
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 274
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 275
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 276
                     AddMasteryToDB(mastery)
 
@@ -308,37 +308,37 @@
                     '513 - 518
                     Dim mastery As New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 513
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 514
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 515
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 516
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 517
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
                     mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
-                    mastery.Level = PlayerStartMasteryLevel
+                    mastery.Level = Settings.PlayerStartMasteryLevel
                     mastery.MasteryID = 518
                     AddMasteryToDB(mastery)
                 End If

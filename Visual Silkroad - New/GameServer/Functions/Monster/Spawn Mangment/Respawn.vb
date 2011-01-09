@@ -10,7 +10,7 @@
 
                 For i = 0 To RefRespawns.Count - 1
                     If IsSpawned(RefRespawns(i).SpotID) = False Then
-                        If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= ServerSpawnsPerSec Then
+                        If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= Settings.ServerSpawnsPerSec Then
                             If Random.Next(0, 7) = 0 Then
                                 ReSpawnMob(i)
                             End If

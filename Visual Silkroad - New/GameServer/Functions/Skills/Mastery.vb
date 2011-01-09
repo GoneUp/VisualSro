@@ -12,7 +12,7 @@
             Next
             If PlayerData(index_).Model >= 1907 And PlayerData(index_).Model <= 1932 Then
                 'Chinese Char
-                If masterycount < ServerMasteryCap Then
+                If masterycount < Settings.ServerMasteryCap Then
                     'Free mastery
 
                     For i = 0 To GameDB.Masterys.Length - 1
@@ -46,7 +46,7 @@
                             Exit For
                         End If
                     Next
-                ElseIf masterycount >= ServerMasteryCap Then
+                ElseIf masterycount >= Settings.ServerMasteryCap Then
                     writer.Create(ServerOpcodes.Mastery_Up)
                     writer.Byte(2)
                     writer.Byte(4)

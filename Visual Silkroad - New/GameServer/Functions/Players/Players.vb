@@ -186,7 +186,7 @@
         End Function
 
         Public Sub SpawnMeAtMovement(ByVal Index As Integer, ByVal ToPos As Position)
-            Dim range As Integer = ServerRange
+            Dim range As Integer = Settings.ServerRange
 
             For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)

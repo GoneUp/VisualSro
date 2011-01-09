@@ -83,7 +83,7 @@
 
                     Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
 
-                    If Log_GM Then
+                    If Settings.Log_GM Then
                         Log.WriteGameLog(index_, "GM", "Item_Create", String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus))
                         Exit For
                     End If
@@ -189,7 +189,7 @@
                 End If
             Next i
 
-            If Log_GM Then
+            If Settings.Log_GM Then
                 Log.WriteGameLog(index_, "GM", "Ban", String.Format("Banned User:" & Name))
             End If
 
@@ -232,7 +232,7 @@
                     SpawnNPC(objectid, PlayerData(Index_).Position, 0)
             End Select
 
-            If Log_GM Then
+            If Settings.Log_GM Then
                 Log.WriteGameLog(Index_, "GM", "Monster_Spawn", String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.Name, type))
             End If
         End Sub

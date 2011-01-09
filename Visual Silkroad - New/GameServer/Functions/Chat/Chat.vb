@@ -1,8 +1,6 @@
 ﻿Namespace GameServer.Functions
     Module Chat
         Public Sub OnChat(ByVal Packet As PacketReader, ByVal Index_ As Integer)
-
-
             Dim tag As Byte = Packet.Byte
 
 
@@ -22,6 +20,7 @@
                     OnNoticeChat(Packet, Index_)
 
                 Case ChatModes.Stall
+                    Stall_Chat(Packet, Index_)
 
                 Case ChatModes.Union
                 Case ChatModes.Academy
@@ -50,7 +49,7 @@
                 writer.UString(message)
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
 
-                If Log_Chat Then
+                If Settings.Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "Public", "Message: " & message)
                 End If
             End If
@@ -94,7 +93,7 @@
 
                 Server.Send(writer.GetBytes, senderindex)
 
-                If Log_Chat Then
+                If Settings.Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "Whisper", String.Format("Sender: {0} Message: {1}", sender, message))
                 End If
             Else
@@ -127,8 +126,7 @@
             If PlayerData(Index_).GM = True Then
                 Dim counter As Byte = Packet.Byte
                 Dim messagelength As UInt16 = Packet.Word
-                Dim bmessage As Byte() = Packet.ByteArray(messagelength * 2)
-                Dim message As String = System.Text.Encoding.Unicode.GetString(bmessage)
+                Dim message As String = Packet.UString(messagelength)
 
                 Dim writer As New PacketWriter 'Reply to sender
                 writer.Create(ServerOpcodes.Chat_Accept)
@@ -146,7 +144,7 @@
 
                 [Mod].CheckForCoustum(message, Index_)
 
-                If Log_Chat Then
+                If Settings.Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "GM", "Message: " & message)
                 End If
             End If
@@ -157,12 +155,11 @@
             If PlayerData(Index_).GM = True Then
                 Dim counter As Byte = packet.Byte
                 Dim messagelength As UInt16 = packet.Word
-                Dim bmessage As Byte() = packet.ByteArray(messagelength * 2)
-                Dim message As String = System.Text.Encoding.Unicode.GetString(bmessage)
+                Dim message As String = packet.UString(messagelength)
 
                 SendNotice(message)
 
-                If Log_Chat Then
+                If Settings.Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "Notice", "Message: " & message)
                 End If
 
@@ -187,7 +184,7 @@
             writer.UString(Message)
             Server.SendToAllIngame(writer.GetBytes)
 
-            If Log_Chat Then
+            If Settings.Log_Chat Then
                 Log.WriteGameLog(Index_, "Chat", "Global", "Message: " & Message)
             End If
         End Sub

@@ -190,7 +190,7 @@
             Select Case Model_Name
                 Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY", _
                  "STORE_CH_GATE", "NPC_CH_FERRY", "NPC_CH_FERRY2"
-                    writer.Word(ServerTaxRate)
+                    writer.Word(Settings.ServerTaxRate)
             End Select
         End Function
 

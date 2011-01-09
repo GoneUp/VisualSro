@@ -12,6 +12,7 @@
             If PlayerData(Index_).Busy = False And PlayerData(Index_).InStall = False Then
                 PlayerData(Index_).InStall = True
                 PlayerData(Index_).StallID = GetStallId()
+                PlayerData(Index_).StallOwner = True
                 PlayerData(Index_).Busy = True
 
                 Dim tmp As New cStall
@@ -44,12 +45,16 @@
             Select Case tag
                 Case 1
                     'change Price
+                    Stall_ChangePrice(packet, Index_)
                 Case 2
                     'Additem
                     Stall_AddItem(packet, Index_)
                 Case 3
                     'REmove
                     Stall_RemoveItem(packet, Index_)
+                Case 5
+                    'Open and Close
+                    Stall_ChangeState(packet, Index_)
                 Case 6
                     'Welcome Message
                     Stall_ChangeWelcomeMessage(packet, Index_)
@@ -123,7 +128,7 @@
                     Stalls(index).Items(ToSlot).Gold = Gold
 
 
-                    Stall_SendItemsOwn(index, Index_)
+                    Stall_SendItemsOwn(index, Index_, 2)
                     Server.SendToStallSession(Stall_SendItemsOther(index, index), PlayerData(Index_).StallID, False)
                 End If
             End If
@@ -140,13 +145,13 @@
                     Stalls(index).Items(Slot).Slot = 0
                     Stalls(index).Items(Slot).Gold = 0
 
-                    Stall_SendItemsOwn(index, Index_)
+                    Stall_SendItemsOwn(index, Index_, 3)
                     Server.SendToStallSession(Stall_SendItemsOther(index, index), PlayerData(Index_).StallID, False)
                 End If
             End If
         End Sub
 
-        Public Sub ChangeState(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub Stall_ChangeState(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim State As Byte = packet.Byte
             Dim Options As UInt16 = packet.Word
 
@@ -179,6 +184,119 @@
             End If
         End Sub
 
+        Public Sub Stall_ChangePrice(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim slot As Byte = packet.Byte
+            Dim amout As UShort = packet.Word
+            Dim price As ULong = packet.QWord
+            Dim options As UShort = packet.Word
+
+            If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And PlayerData(Index_).StallOwner = True Then
+                Dim Stall_index As Integer = GetStallIndex(PlayerData(Index_).StallID)
+
+                If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then
+                    Stalls(Stall_index).Items(slot).Gold = price
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Stall_Data)
+                    writer.Byte(1)
+                    writer.Byte(1)
+                    writer.Byte(slot)
+                    writer.Word(amout)
+                    writer.QWord(price)
+                    writer.Word(options)
+                    Server.SendToStallSession(writer.GetBytes, Stalls(Stall_index).StallID, True)
+                End If
+            End If
+        End Sub
+
+        Public Sub Stall_Buy(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim slot As Byte = packet.Byte
+
+            If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And PlayerData(Index_).StallOwner = False Then
+                Dim Stall_index As Integer = GetStallIndex(PlayerData(Index_).StallID)
+
+                If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then
+                    If CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 Then
+                        PlayerData(Index_).Gold -= Stalls(Stall_index).Items(slot).Gold
+                        UpdateGold(Index_)
+
+                        PlayerData(Stalls(Stall_index).OwnerIndex).Gold += Stalls(Stall_index).Items(slot).Gold
+                        UpdateGold(Stalls(Stall_index).OwnerIndex)
+
+                        Dim From_item As cInvItem = Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot)
+                        Dim To_Slot As Byte = GetFreeItemSlot(Index_)
+                        Dim To_item As cInvItem = Inventorys(Index_).UserItems(To_Slot)
+
+                        'Overwrite
+                        To_item.Pk2Id = From_item.Pk2Id
+                        To_item.Durability = From_item.Durability
+                        To_item.Plus = From_item.Plus
+                        To_item.Amount = From_item.Amount
+                        To_item.Blues = From_item.Blues
+                        To_item.Mod_1 = From_item.Mod_1
+                        To_item.Mod_2 = From_item.Mod_2
+                        To_item.Mod_3 = From_item.Mod_3
+                        To_item.Mod_4 = From_item.Mod_4
+                        To_item.Mod_5 = From_item.Mod_5
+                        To_item.Mod_6 = From_item.Mod_6
+                        To_item.Mod_7 = From_item.Mod_7
+                        To_item.Mod_8 = From_item.Mod_8
+
+                        'Add to new...
+                        Inventorys(Index_).UserItems(To_item.Slot) = To_item
+                        UpdateItem(To_item)
+
+                        'Remove...
+                        DeleteItemFromDB(Stalls(Stall_index).Items(slot).Slot, Stalls(Stall_index).OwnerIndex)
+                        Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot) = ClearItem(From_item)
+
+                        Stalls(Stall_index).Items(slot).Gold = 0
+                        Stalls(Stall_index).Items(slot).Slot = 0
+
+                        'Packets..
+                        Dim writer As New PacketWriter
+                        writer.Create(ServerOpcodes.Stall_Buy)
+                        writer.Byte(1)
+                        writer.Byte(slot)
+                        Server.Send(writer.GetBytes, Index_)
+
+                        writer.Create(ServerOpcodes.Stall_Message)
+                        writer.Byte(3)
+                        writer.Byte(slot)
+                        writer.Word(PlayerData(Index_).CharacterName.Length)
+                        writer.String(PlayerData(Index_).CharacterName)
+                        writer.Byte(&HFF)
+                        Server.SendToStallSession(writer.GetBytes, Stalls(Stall_index).StallID, True)
+                    End If
+                End If
+            End If
+        End Sub
+
+        Public Sub Stall_Chat(ByVal packet As PacketReader, ByVal Index_ As Integer)
+
+            If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 Then
+                Dim counter As Byte = packet.Byte
+                Dim messagelength As UInt16 = packet.Word
+                Dim message As String = packet.UString(messagelength)
+
+                Dim writer As New PacketWriter 'Reply to sender
+                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Byte(1)
+                writer.Byte(ChatModes.Stall)
+                writer.Byte(counter)
+                Server.Send(writer.GetBytes, Index_)
+
+                writer.Create(ServerOpcodes.Chat)
+                writer.Byte(ChatModes.Stall)
+                writer.Word(PlayerData(Index_).CharacterName.Length)
+                writer.String(PlayerData(Index_).CharacterName)
+                writer.Word(messagelength)
+                writer.UString(message)
+                Server.SendToStallSession(writer.GetBytes, PlayerData(Index_).StallID, True)
+            End If
+        End Sub
+
+
         Public Sub Stall_Open_Other(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ToUniqueID As UInt32 = packet.DWord
 
@@ -186,14 +304,18 @@
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).UniqueId = ToUniqueID Then
                         Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.Stall_Join)
+                        writer.Create(ServerOpcodes.Stall_Message)
                         writer.Byte(2)
                         writer.DWord(PlayerData(Index_).UniqueId)
                         Server.SendToStallSession(writer.GetBytes, PlayerData(i).StallID, True)
 
                         Dim Stall_index As Integer = GetStallIndex(PlayerData(i).StallID)
                         Stalls(Stall_index).Visitors.Add(Index_)
+
                         PlayerData(Index_).Busy = True
+                        PlayerData(Index_).InStall = True
+                        PlayerData(Index_).StallID = Stalls(Stall_index).StallID
+                        PlayerData(Index_).StallOwner = False
 
 
                         Server.Send(Stall_SendItemsOther(Stall_index, Index_), Index_)
@@ -222,6 +344,7 @@
                 PlayerData(Index_).Busy = False
                 PlayerData(Index_).StallID = 0
                 PlayerData(Index_).InStall = False
+                PlayerData(Index_).StallOwner = False
             End If
         End Sub
 
@@ -231,7 +354,7 @@
                 If Stalls(i).Visitors.Contains(Index_) Then
                     Stalls(i).Visitors.Remove(Index_)
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Stall_Join)
+                    writer.Create(ServerOpcodes.Stall_Message)
                     writer.Byte(1)
                     writer.DWord(PlayerData(Index_).UniqueId)
                     Server.SendToStallSession(writer.GetBytes, PlayerData(i).StallID, True)
@@ -239,23 +362,27 @@
                     writer.Create(ServerOpcodes.Stall_Close_Visitor)
                     writer.Byte(1)
                     Server.Send(writer.GetBytes, Index_)
+
+                    PlayerData(Index_).Busy = False
+                    PlayerData(Index_).StallID = 0
+                    PlayerData(Index_).InStall = False
+                    PlayerData(Index_).StallOwner = False
                 End If
             Next
         End Sub
 
 
-        Public Sub Stall_SendItemsOwn(ByVal Stall_Index As Integer, ByVal Index_ As Integer)
+        Public Sub Stall_SendItemsOwn(ByVal Stall_Index As Integer, ByVal Index_ As Integer, ByVal Mode As Byte)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Stall_Data)
             writer.Byte(1)
-            writer.Byte(2)
-            writer.Byte(0)
+            writer.Byte(Mode)
+            writer.Word(0)
 
             For i = 0 To Stalls(Stall_Index).Items.Count - 1
                 If Stalls(Stall_Index).Items(i).Slot <> 0 Then
                     Dim item As cInvItem = Inventorys(Index_).UserItems(Stalls(Stall_Index).Items(i).Slot)
                     Dim refitem As cItem = GetItemByID(item.Pk2Id)
-                    writer.Byte(0)
                     writer.Byte(i) 'slot
                     AddItemDataToPacket(item, writer)
                     writer.Byte(Stalls(Stall_Index).Items(i).Slot)
@@ -288,7 +415,6 @@
                     Dim Slot As Byte = Stalls(Stall_Index).Items(i).Slot
                     Dim item As cInvItem = Inventorys(Stalls(Stall_Index).OwnerIndex).UserItems(Slot)
                     Dim refitem As cItem = GetItemByID(item.Pk2Id)
-                    writer.Byte(0)
                     writer.Byte(i) 'slot
                     AddItemDataToPacket(item, writer)
                     writer.Byte(Stalls(Stall_Index).Items(i).Slot)

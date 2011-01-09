@@ -76,6 +76,7 @@
 
     Public InStall As Boolean
     Public StallID As UInteger = 0
+    Public StallOwner As Boolean
 
     Public PickUpId As UInteger = 0
     Public Attacking As Boolean = False

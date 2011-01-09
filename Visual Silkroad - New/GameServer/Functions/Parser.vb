@@ -151,6 +151,9 @@ Namespace GameServer
                     Case ClientOpcodes.Stall_Data
                         Functions.Stall_Data(packet, Index_)
 
+                    Case ClientOpcodes.Stall_Buy
+                        Functions.Stall_Buy(packet, Index_)
+
                     Case ClientOpcodes.Stall_Close_Own
                         Functions.Stall_Close_Own(Index_)
 

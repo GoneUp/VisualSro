@@ -62,6 +62,7 @@
         Stall_Open = &H70B1
         Stall_Close_Own = &H70B2
         Stall_Select = &H70B3
+        Stall_Buy = &H70B4
         Stall_Close_Visitor = &H70B5
         Stall_Data = &H70BA
 
@@ -169,7 +170,8 @@
         Stall_Data = &HB0BA
         Stall_Name = &H30BB
         Stall_Items = &HB0B3
-        Stall_Join = &H30B7
+        Stall_Buy = &HB0B4
+        Stall_Message = &H30B7
         Stall_Close_Owner_Other = &H30B9
         Stall_Close_Owner = &HB0B2
         Stall_Close_Visitor = &HB0B5

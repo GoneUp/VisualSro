@@ -12,7 +12,7 @@
                     SendUniqueKill(MobList(MobIndex).Pk2ID, PlayerData(tmp_).CharacterName)
                 End If
 
-                If ModGeneral And ModDamage Then
+                If Settings.ModGeneral And Settings.ModDamage Then
                     [Mod].SendDamageInfo(MobIndex)
                 End If
             End If
@@ -87,8 +87,8 @@
                     Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 100))
                 End If
 
-                Dim EXP As Long = ((ref_.Exp * GetExpMultiplier(mob_.Mob_Type)) * ServerXPRate * Percent) * Balance
-                Dim SP As Long = (ref_.Exp * ServerSPRate * Percent)
+                Dim EXP As Long = ((ref_.Exp * GetExpMultiplier(mob_.Mob_Type)) * Settings.ServerXPRate * Percent) * Balance
+                Dim SP As Long = (ref_.Exp * Settings.ServerSPRate * Percent)
 
                 GetXP(EXP, SP, Index_, mob_.UniqueID)
             Next

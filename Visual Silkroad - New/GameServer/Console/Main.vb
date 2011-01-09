@@ -8,7 +8,7 @@ Namespace GameServer
 
         Public Shared TheardDB As New Thread(AddressOf GameServer.GameDB.UpdateData)
         Public Shared TheardLoad As New Thread(AddressOf SilkroadData.DumpDataFiles)
-        Public Shared TheardSettings As New Thread(AddressOf LoadSettings)
+        Public Shared TheardSettings As New Thread(AddressOf Settings.LoadSettings)
         Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
         Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
@@ -61,7 +61,7 @@ read:
         End Sub
 
         Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-            If Log_Detail Then
+            If Settings.Log_Detail Then
                 GameServer.Log.WriteSystemLog("Client Connected : " & ip)
             End If
 

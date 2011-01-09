@@ -128,7 +128,7 @@
         End Sub
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try
-                Dim range As Integer = ServerRange
+                Dim range As Integer = Settings.ServerRange
                 ObjectDeSpawnCheck(Index_)
 
                 '=============Players============
@@ -248,7 +248,7 @@
 
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            If CalculateDistance(Pos_1, Pos_2) <= ServerRange Then
+            If CalculateDistance(Pos_1, Pos_2) <= Settings.ServerRange Then
                 Return True
             Else
                 Return False

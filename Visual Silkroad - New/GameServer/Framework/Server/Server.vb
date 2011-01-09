@@ -131,7 +131,7 @@ Namespace GameServer
                 End If
 
             Catch ex As Exception
-                If Log_Detail Then
+                If Settings.Log_Detail Then
                     RaiseEvent OnServerError(ex, index)
                 End If
             End Try
@@ -170,7 +170,7 @@ Namespace GameServer
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     Dim distance As Long = CalculateDistance(Position, player.Position) 'Calculate Distance
-                    If distance < ServerRange Then
+                    If distance < Settings.ServerRange Then
                         'In Rage 
                         If player.Ingame = True Then
                             Send(buff, i)
@@ -187,7 +187,7 @@ Namespace GameServer
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) Then
                     Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position) 'Calculate Distance
-                    If distance < ServerRange Then
+                    If distance < Settings.ServerRange Then
                         'In Rage 
                         If player.Ingame = True Then
                             Send(buff, i)

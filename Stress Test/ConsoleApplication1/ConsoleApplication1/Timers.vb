@@ -35,7 +35,7 @@ Module Timers
             PingTimer(Index).Stop()
 
             If s(Index).Connected Then
-                SendPing(Index)
+                Parser.SendPing(Index)
             End If
 
 

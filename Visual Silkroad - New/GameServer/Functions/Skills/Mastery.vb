@@ -109,8 +109,9 @@
             Dim SkillID As UInteger = Packet.DWord
 
             Dim _skill As Skill_ = GetSkillById(SkillID)
+            Dim _refmastery As cMastery = GetMasteryByID(_skill.MasteryID, Index_)
 
-            If PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 Then
+            If PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 And CheckIfUserOwnSkill(SkillID, Index_) And _skill.MasteryLevel >= _refmastery.Level Then
                 Dim skill As New cSkill
                 skill.OwnerID = PlayerData(Index_).CharacterId
                 skill.SkillID = SkillID
@@ -125,7 +126,7 @@
                 writer.DWord(SkillID)
                 Server.Send(writer.GetBytes, Index_)
             Else
-                'Not enough SP
+                'Not enough SP or other Errors
 
             End If
         End Sub

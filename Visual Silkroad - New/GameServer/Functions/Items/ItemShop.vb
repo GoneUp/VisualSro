@@ -1,6 +1,11 @@
 ﻿Namespace GameServer.Functions
     Module ItemShop
         Public Sub OnBuyItem(ByVal packet As PacketReader, ByVal index_ As Integer)
+            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
+                Exit Sub
+            End If
+
+
             Dim shopline As Byte = packet.Byte
             Dim itemline As Byte = packet.Byte
             Dim amout As UShort = packet.Word
@@ -76,6 +81,11 @@
 
 
         Public Sub OnSellItem(ByVal packet As PacketReader, ByVal index_ As Integer)
+            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
+                Exit Sub
+            End If
+
+
             Dim slot As Byte = packet.Byte
             Dim amout As UShort = packet.Word
             Dim UniqueID As UInt32 = packet.DWord

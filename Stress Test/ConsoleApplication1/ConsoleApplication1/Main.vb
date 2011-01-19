@@ -1,7 +1,7 @@
 ﻿Imports System.Net, System.Net.Sockets
 Module Main
 
-    Public s(100) As Socket
+    Public s(1) As Socket
     Public Rev(10000) As Threading.Thread
     Public GameServer(10000) As Boolean
     Public Key(10000) As UInt32
@@ -9,6 +9,7 @@ Module Main
 
     Dim ip1 As String = "127.0.0.1"
     Dim ip2 As String = "78.111.78.27"
+    Dim ip3 As String = "87.247.106.103"
 
     Sub Main()
         Dim b
@@ -19,7 +20,7 @@ Module Main
             For b = 0 To s.Length - 1
                 s(b) = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
                 Rev(b) = New Threading.Thread(AddressOf ReceiveData)
-                s(b).Connect(New IPEndPoint(IPAddress.Parse(ip2), 15779))
+                s(b).Connect(New IPEndPoint(IPAddress.Parse(ip3), 15779))
                 Rev(b).Start(b)
                 Pos(b) = New Position
             Next
@@ -51,7 +52,7 @@ Module Main
 
             Dim packet As New PacketReader(newbuff)
 
-            Parser.Parse(packet, index_)
+            Parser2.Parse(packet, index_)
         Loop
 
 

@@ -31,14 +31,13 @@
                     Console.WriteLine("[INVENTORY][TAG: " & type & "]")
             End Select
 
-            'Inventorys(index_).ReOrderItems(index_)
         End Sub
         Public Sub OnNormalMove(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim Old_Slot As Byte = packet.Byte
             Dim New_Slot As Byte = packet.Byte
             Dim amout As UInt16 = packet.Word
 
-            If PlayerData(index_).InExchange = True Then
+            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
                 Exit Sub
             End If
 
@@ -217,6 +216,11 @@
         End Sub
 
         Public Sub OnDropItem(ByVal packet As PacketReader, ByVal index_ As Integer)
+            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
+                Exit Sub
+            End If
+
+
             Dim slot As Byte = packet.Byte
             Dim ref_item As cItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
 
@@ -236,6 +240,11 @@
         End Sub
 
         Public Sub OnDropGold(ByVal packet As PacketReader, ByVal index_ As Integer)
+            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
+                Exit Sub
+            End If
+
+
             Dim amout As UInt64 = packet.QWord
 
             If CLng(PlayerData(index_).Gold) - amout >= 0 Then

@@ -30,52 +30,57 @@
         Public Sub OnMoveUser(ByVal Index_ As Integer, ByVal ToPos As Position)
             Try
                 Dim Distance As Single = CalculateDistance2(PlayerData(Index_).Position, ToPos)
-                Dim Time As Single
-                Select Case PlayerData(Index_).MovementType
-                    Case MoveType_.Walk
-                        Time = Distance / PlayerData(Index_).WalkSpeed
-                    Case MoveType_.Run
-                        Time = Distance / PlayerData(Index_).RunSpeed
-                    Case MoveType_.Berserk
-                        Time = Distance / PlayerData(Index_).BerserkSpeed
-                End Select
-                Debug.Print("Distance: " & Distance & " Time: " & Time)
+                If Distance < 100000 Then
 
-                If Time > 0 Then
-                    PlayerData(Index_).Walking = True
-                    PlayerData(Index_).Position_FromPos = PlayerData(Index_).Position
-                    PlayerData(Index_).Position_ToPos = ToPos
-                    PlayerData(Index_).WalkStart = Date.Now
-                    PlayerData(Index_).WalkEnd = Date.Now.AddSeconds(Time)
-                Else
-                    Debug.Print("Move ERRRR")
-                    Exit Sub
+                    Dim Time As Single
+                    Select Case PlayerData(Index_).MovementType
+                        Case MoveType_.Walk
+                            Time = Distance / PlayerData(Index_).WalkSpeed
+                        Case MoveType_.Run
+                            Time = Distance / PlayerData(Index_).RunSpeed
+                        Case MoveType_.Berserk
+                            Time = Distance / PlayerData(Index_).BerserkSpeed
+                    End Select
+                    Debug.Print("Distance: " & Distance & " Time: " & Time)
+
+                    If Time > 0 Then
+                        PlayerData(Index_).Walking = True
+                        PlayerData(Index_).Position_FromPos = PlayerData(Index_).Position
+                        PlayerData(Index_).Position_ToPos = ToPos
+                        PlayerData(Index_).WalkStart = Date.Now
+                        PlayerData(Index_).WalkEnd = Date.Now.AddSeconds(Time)
+                    Else
+                        Debug.Print("Move ERRRR")
+                        Exit Sub
+                    End If
+
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Movement)
+                    writer.DWord(PlayerData(Index_).UniqueId)
+                    writer.Byte(1) 'destination
+                    writer.Byte(ToPos.XSector)
+                    writer.Byte(ToPos.YSector)
+                    writer.Byte(BitConverter.GetBytes(CShort(ToPos.X)))
+                    writer.Byte(BitConverter.GetBytes(CShort(ToPos.Z)))
+                    writer.Byte(BitConverter.GetBytes(CShort(ToPos.Y)))
+                    writer.Byte(0) '1= source
+                    'writer.Byte(PlayerData(Index_).Position.XSector)
+                    'writer.Byte(PlayerData(Index_).Position.YSector)
+                    'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X)))
+                    'writer.Float(PlayerData(Index_).Position.Z)
+                    'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
+
+                    PlayerData(Index_).Position = ToPos
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                    Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+
+
+                    PlayerMoveTimer(Index_).Interval = 200
+                    PlayerMoveTimer(Index_).Start()
+
                 End If
 
-
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Movement)
-                writer.DWord(PlayerData(Index_).UniqueId)
-                writer.Byte(1) 'destination
-                writer.Byte(ToPos.XSector)
-                writer.Byte(ToPos.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(ToPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Y)))
-                writer.Byte(0) '1= source
-                'writer.Byte(PlayerData(Index_).Position.XSector)
-                'writer.Byte(PlayerData(Index_).Position.YSector)
-                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X)))
-                'writer.Float(PlayerData(Index_).Position.Z)
-                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
-
-                PlayerData(Index_).Position = ToPos
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
-
-
-                PlayerMoveTimer(Index_).Interval = 200
-                PlayerMoveTimer(Index_).Start()
             Catch ex As Exception
                 Console.WriteLine("OnMoveUser::error...")
                 Debug.Write(ex)

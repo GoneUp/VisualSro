@@ -186,13 +186,13 @@
 
         End Sub
 
-        Private Function CheckForTax(ByVal Model_Name As String, ByVal writer As PacketWriter)
+        Private Sub CheckForTax(ByVal Model_Name As String, ByVal writer As PacketWriter)
             Select Case Model_Name
                 Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY", _
                  "STORE_CH_GATE", "NPC_CH_FERRY", "NPC_CH_FERRY2"
                     writer.Word(Settings.ServerTaxRate)
             End Select
-        End Function
+        End Sub
 
 
     End Module

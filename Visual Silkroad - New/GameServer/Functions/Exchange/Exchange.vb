@@ -379,6 +379,7 @@
                     Return r
                 End If
             Next
+            Return -1
         End Function
     End Module
 End Namespace

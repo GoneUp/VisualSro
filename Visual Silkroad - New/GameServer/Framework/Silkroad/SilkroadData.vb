@@ -295,6 +295,10 @@
             Dim lines As String() = IO.File.ReadAllLines(path)
 
             For i As Integer = 0 To lines.Length - 1
+                If My.Computer.Info.OSFullName.Contains("x64") = False Then
+                    lines(i) = lines(i).Replace(".", ",")
+                End If
+
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New Skill_()
                 tmp.Id = Convert.ToUInt32(tmpString(1))
@@ -438,6 +442,10 @@
         Private Sub DumpObjectFile(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
+                If My.Computer.Info.OSFullName.Contains("x64") = False Then
+                    lines(i) = lines(i).Replace(".", ",")
+                End If
+
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New Object_()
                 tmp.Pk2ID = Convert.ToUInt32(tmpString(1))

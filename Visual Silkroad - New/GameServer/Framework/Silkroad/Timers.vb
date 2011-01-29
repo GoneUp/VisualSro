@@ -356,7 +356,7 @@ Namespace GameServer
                                 'PlayerData(Index).Position.XSector = GetXSec(PlayerData(Index).Position.X)
                                 'PlayerData(Index).Position.YSector = GetYSec(PlayerData(Index).Position.Y)
 
-                                SendPm(Index, "X: " & CStr(GetRealX(PlayerData(Index).Position.XSector, PlayerData(Index).Position.X)) & " Y:" & GetRealY(PlayerData(Index).Position.YSector, PlayerData(Index).Position.Y), "[TMP]")
+                                'SendPm(Index, "X: " & CStr(GetRealX(PlayerData(Index).Position.XSector, PlayerData(Index).Position.X)) & " Y:" & GetRealY(PlayerData(Index).Position.YSector, PlayerData(Index).Position.Y), "[TMP]")
                                 ObjectSpawnCheck(Index)
                             End If
 

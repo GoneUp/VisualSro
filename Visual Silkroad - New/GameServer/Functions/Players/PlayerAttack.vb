@@ -12,7 +12,7 @@
                 Select Case packet.Byte
                     Case 1
                         'Normal Attack
-                        packet.Byte()
+                        packet.Skip(1)
                         Dim ObjectID As UInt32 = packet.DWord
                         If PlayerData(Index_).Attacking = False Then
                             For i = 0 To MobList.Count - 1
@@ -25,7 +25,7 @@
                         End If
                     Case 2
                         'Pickup
-                        packet.Byte()
+                        packet.Skip(1)
                         Dim ObjectID As UInt32 = packet.DWord
 
                         For i = 0 To ItemList.Count - 1
@@ -306,6 +306,7 @@
                 If MobList(i).UniqueID = PlayerData(Index_).AttackedId Then
                     MobListIndex = i
                     AttObject = GetObjectById(MobList(i).Pk2ID)
+                    Exit For
                 End If
             Next
 
@@ -448,13 +449,13 @@
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Private Function SendAttackEnd(ByVal Index_ As Integer)
+        Private Sub SendAttackEnd(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Reply)
             writer.Byte(2)
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)
-        End Function
+        End Sub
 
         Private Function GetCritical() As Boolean
             If Math.Round(Rnd() * 5) = 5 Then

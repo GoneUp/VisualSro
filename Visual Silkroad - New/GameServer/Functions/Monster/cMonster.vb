@@ -21,6 +21,21 @@
     Public DeathRemoveTime As Date
 
     Public DamageFromPlayer As New List(Of cDamageDone)
+
+    Public IsAttacking As Boolean = False
+    Public AttackingId As UInteger
+    Public UsingSkillId As UInteger
+    Public LastSkillId As UInteger
+
+    Function GetsAttacked() As Boolean
+        For i = 0 To Me.DamageFromPlayer.Count - 1
+            If Me.DamageFromPlayer(i).Attacking = True Then
+                Return True
+            End If
+        Next
+        Return False
+    End Function
+
 End Class
 
 ''' <summary>
@@ -30,4 +45,5 @@ End Class
 Public Class cDamageDone
     Public PlayerIndex As Integer
     Public Damage As ULong
+    Public Attacking As Boolean = False
 End Class

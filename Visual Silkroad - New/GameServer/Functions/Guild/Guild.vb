@@ -88,6 +88,7 @@
                     Next
                 End If
             Next
+            Return New cGuild.GuildMember_
         End Function
 
 

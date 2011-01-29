@@ -141,7 +141,7 @@
                     Return i
                 End If
             Next
-
+            Throw New Exception("Server couldn't be found! ID: " & id)
         End Function
     End Module
 End Namespace

@@ -500,7 +500,7 @@
             Return OldItem
         End Function
 
-        Public Function AddItemDataToPacket(ByVal _item As cInvItem, ByVal writer As PacketWriter)
+        Public Sub AddItemDataToPacket(ByVal _item As cInvItem, ByVal writer As PacketWriter)
             Dim refitem As cItem = GetItemByID(_item.Pk2Id)
             writer.DWord(_item.Pk2Id)
 
@@ -549,8 +549,7 @@
                 Case 3 'etc
                     writer.Word(_item.Amount)
             End Select
-
-        End Function
+        End Sub
 
         Public Sub OnItemMoveError(ByVal Index_ As Integer, ByVal Byte1 As Byte, ByVal Byte2 As Byte)
             Dim writer As New PacketWriter

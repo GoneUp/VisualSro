@@ -47,6 +47,8 @@
                     GetHotkeyData()
                     GetGuildData()
                     First = True
+                Else
+                    Debug.Print("Updating from MySQL")
                 End If
 
                 GetUserData()
@@ -171,6 +173,21 @@
                     AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
                     AllItems(i).Amount = CUShort(tmp.Tables(0).Rows(i).ItemArray(5))
                     AllItems(i).Durability = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
+
+                    AllItems(i).PerDurability = CByte(tmp.Tables(0).Rows(i).ItemArray(8))
+                    AllItems(i).PerPhyRef = CByte(tmp.Tables(0).Rows(i).ItemArray(9))
+                    AllItems(i).PerMagRef = CByte(tmp.Tables(0).Rows(i).ItemArray(10))
+                    AllItems(i).PerPhyAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(11))
+                    AllItems(i).PerMagAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
+                    AllItems(i).PerPhyDef = CByte(tmp.Tables(0).Rows(i).ItemArray(13))
+                    AllItems(i).PerMagDef = CByte(tmp.Tables(0).Rows(i).ItemArray(14))
+                    AllItems(i).PerBlock = CByte(tmp.Tables(0).Rows(i).ItemArray(15))
+                    AllItems(i).PerCritical = CByte(tmp.Tables(0).Rows(i).ItemArray(16))
+                    AllItems(i).PerAttackRate = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
+                    AllItems(i).PerParryRate = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
+                    AllItems(i).PerPhyAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(19))
+                    AllItems(i).PerMagAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(20))
+
                 Next
             Else
                 ReDim AllItems(0)
@@ -365,7 +382,7 @@
             For i = 0 To (AllItems.Length - 1)
                 If AllItems(i) IsNot Nothing Then
                     If AllItems(i).OwnerCharID = [char].CharacterId Then
-                        Dim item As cInvItem = AllItems(i)
+                        'Dim item As cInvItem = AllItems(i)
                         inventory.UserItems(AllItems(i).Slot) = AllItems(i)
                     End If
                 End If
@@ -415,3 +432,18 @@
 
     End Module
 End Namespace
+
+'WhiteStat Indexes:
+'PerDurability:8
+'PerPhyRef:9
+'PerMagRef:10
+'PerPhyAtk:11
+'PerMagAtk:12
+'PerPhyDef:13
+'PerMagDef:14
+'PerBlock:15
+'PerCritical:16
+'PerAttackRate:17
+'PerParryRate:18
+'PerPhyAbs:19
+'PerMagAbs:20

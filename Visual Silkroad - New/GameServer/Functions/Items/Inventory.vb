@@ -470,14 +470,21 @@
             tmp_.Amount = From_item.Amount
             tmp_.Durability = From_item.Durability
             tmp_.Blues = From_item.Blues
-            tmp_.Mod_1 = From_item.Mod_1
-            tmp_.Mod_2 = From_item.Mod_2
-            tmp_.Mod_3 = From_item.Mod_3
-            tmp_.Mod_4 = From_item.Mod_4
-            tmp_.Mod_5 = From_item.Mod_5
-            tmp_.Mod_6 = From_item.Mod_6
-            tmp_.Mod_7 = From_item.Mod_7
-            tmp_.Mod_8 = From_item.Mod_8
+
+            'WhiteStats
+            tmp_.PerDurability = From_item.PerDurability
+            tmp_.PerPhyRef = From_item.PerPhyRef
+            tmp_.PerMagRef = From_item.PerMagRef
+            tmp_.PerPhyAtk = From_item.PerPhyAtk
+            tmp_.PerMagAtk = From_item.PerMagAtk
+            tmp_.PerPhyDef = From_item.PerPhyDef
+            tmp_.PerMagDef = From_item.PerMagDef
+            tmp_.PerBlock = From_item.PerBlock
+            tmp_.PerCritical = From_item.PerCritical
+            tmp_.PerAttackRate = From_item.PerAttackRate
+            tmp_.PerParryRate = From_item.PerParryRate
+            tmp_.PerPhyAbs = From_item.PerPhyAbs
+            tmp_.PerMagAbs = From_item.PerMagAbs
 
             Return tmp_
         End Function
@@ -487,14 +494,20 @@
             OldItem.Amount = 0
             OldItem.Plus = 0
             OldItem.Durability = 30
-            OldItem.Mod_1 = 0
-            OldItem.Mod_2 = 0
-            OldItem.Mod_3 = 0
-            OldItem.Mod_4 = 0
-            OldItem.Mod_5 = 0
-            OldItem.Mod_6 = 0
-            OldItem.Mod_7 = 0
-            OldItem.Mod_8 = 0
+            OldItem.PerDurability = 0
+            OldItem.PerPhyRef = 0
+            OldItem.PerMagRef = 0
+            OldItem.PerPhyAtk = 0
+            OldItem.PerMagAtk = 0
+            OldItem.PerPhyDef = 0
+            OldItem.PerMagDef = 0
+            OldItem.PerBlock = 0
+            OldItem.PerCritical = 0
+            OldItem.PerAttackRate = 0
+            OldItem.PerParryRate = 0
+            OldItem.PerPhyAbs = 0
+            OldItem.PerMagAbs = 0
+   
             OldItem.Blues = Nothing
 
             Return OldItem
@@ -507,14 +520,7 @@
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
                     writer.Byte(_item.Plus)
-                    writer.Byte(_item.Mod_1)
-                    writer.Byte(_item.Mod_2)
-                    writer.Byte(_item.Mod_3)
-                    writer.Byte(_item.Mod_4)
-                    writer.Byte(_item.Mod_5)
-                    writer.Byte(_item.Mod_6)
-                    writer.Byte(_item.Mod_7)
-                    writer.Byte(_item.Mod_8)
+                    writer.QWord(_item.GetWhiteStats)
                     writer.DWord(_item.Durability)
 
                     writer.Byte(_item.Blues.Count)

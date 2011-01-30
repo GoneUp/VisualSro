@@ -12,7 +12,7 @@ Namespace GameServer
         Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
         Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
-
+        <DebuggerStepThrough()> _
         Shared Sub Main()
             AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
             AddHandler Server.OnClientDisconnect, AddressOf Program.Server_OnClientDisconnect
@@ -33,8 +33,8 @@ Namespace GameServer
 
             GameServer.Log.WriteSystemLog("Connecting Database.")
 
-            DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
-            Server.Ip = "78.111.78.27"
+            DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "")
+            Server.Ip = "0.0.0.0"
             Server.Port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0

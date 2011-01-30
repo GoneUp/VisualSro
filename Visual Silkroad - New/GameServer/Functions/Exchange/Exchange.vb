@@ -241,14 +241,19 @@
                     To_item.Plus = From_item.Plus
                     To_item.Amount = From_item.Amount
                     To_item.Blues = From_item.Blues
-                    To_item.Mod_1 = From_item.Mod_1
-                    To_item.Mod_2 = From_item.Mod_2
-                    To_item.Mod_3 = From_item.Mod_3
-                    To_item.Mod_4 = From_item.Mod_4
-                    To_item.Mod_5 = From_item.Mod_5
-                    To_item.Mod_6 = From_item.Mod_6
-                    To_item.Mod_7 = From_item.Mod_7
-                    To_item.Mod_8 = From_item.Mod_8
+                    To_item.PerDurability = From_item.PerDurability
+                    To_item.PerPhyRef = From_item.PerPhyRef
+                    To_item.PerMagRef = From_item.PerMagRef
+                    To_item.PerPhyAtk = From_item.PerPhyAtk
+                    To_item.PerMagAtk = From_item.PerMagAtk
+                    To_item.PerPhyDef = From_item.PerPhyDef
+                    To_item.PerMagDef = From_item.PerMagDef
+                    To_item.PerBlock = From_item.PerBlock
+                    To_item.PerCritical = From_item.PerCritical
+                    To_item.PerAttackRate = From_item.PerAttackRate
+                    To_item.PerParryRate = From_item.PerParryRate
+                    To_item.PerPhyAbs = From_item.PerPhyAbs
+                    To_item.PerMagAbs = From_item.PerMagAbs
 
                     'Add to new...
                     Inventorys(tmp_ex.Player2Index).UserItems(To_item.Slot) = To_item
@@ -278,14 +283,19 @@
                     To_item.Plus = From_item.Plus
                     To_item.Amount = From_item.Amount
                     To_item.Blues = From_item.Blues
-                    To_item.Mod_1 = From_item.Mod_1
-                    To_item.Mod_2 = From_item.Mod_2
-                    To_item.Mod_3 = From_item.Mod_3
-                    To_item.Mod_4 = From_item.Mod_4
-                    To_item.Mod_5 = From_item.Mod_5
-                    To_item.Mod_6 = From_item.Mod_6
-                    To_item.Mod_7 = From_item.Mod_7
-                    To_item.Mod_8 = From_item.Mod_8
+                    To_item.PerDurability = From_item.PerDurability
+                    To_item.PerPhyRef = From_item.PerPhyRef
+                    To_item.PerMagRef = From_item.PerMagRef
+                    To_item.PerPhyAtk = From_item.PerPhyAtk
+                    To_item.PerMagAtk = From_item.PerMagAtk
+                    To_item.PerPhyDef = From_item.PerPhyDef
+                    To_item.PerMagDef = From_item.PerMagDef
+                    To_item.PerBlock = From_item.PerBlock
+                    To_item.PerCritical = From_item.PerCritical
+                    To_item.PerAttackRate = From_item.PerAttackRate
+                    To_item.PerParryRate = From_item.PerParryRate
+                    To_item.PerPhyAbs = From_item.PerPhyAbs
+                    To_item.PerMagAbs = From_item.PerMagAbs
 
                     Inventorys(tmp_ex.Player1Index).UserItems(To_item.Slot) = To_item
                     UpdateItem(To_item)

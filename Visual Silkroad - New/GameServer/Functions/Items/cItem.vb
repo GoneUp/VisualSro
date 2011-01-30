@@ -103,14 +103,65 @@ Public Class cInvItem
     Public Plus As Byte = 0
     Public DatabaseID As UInteger = 0
 
-    Public Mod_1 As Byte
-    Public Mod_2 As Byte
-    Public Mod_3 As Byte
-    Public Mod_4 As Byte
-    Public Mod_5 As Byte
-    Public Mod_6 As Byte
-    Public Mod_7 As Byte
-    Public Mod_8 As Byte
+    Public PerDurability As Byte
+    Public PerPhyRef As Byte
+    Public PerMagRef As Byte
+    Public PerPhyAtk As Byte
+    Public PerMagAtk As Byte
+    Public PerPhyDef As Byte
+    Public PerMagDef As Byte
+    Public PerBlock As Byte
+    Public PerCritical As Byte
+    Public PerAttackRate As Byte
+    Public PerParryRate As Byte
+    Public PerPhyAbs As Byte
+    Public PerMagAbs As Byte
+
+    Public Function GetWhiteStats() As ULong
+        Dim ws As ULong = 0
+
+        If Pk2Id <> 0 Then
+            Dim item As cItem = GameServer.GetItemByID(Pk2Id)
+            If item.CLASS_A = 1 Then
+                Select Case item.CLASS_B
+                    Case 1, 2, 3, 9, 10, 11 'Equipment
+
+                        ws += Math.Round(31 * PerDurability / 100)
+                        ws += Math.Round(31 * PerPhyRef / 100) * 32
+                        ws += Math.Round(31 * PerMagRef / 100) * 1024
+                        ws += Math.Round(31 * PerPhyDef / 100) * 32768
+                        ws += Math.Round(31 * PerMagDef / 100) * 1048576
+                        ws += Math.Round(31 * PerParryRate / 100) * 33554432
+
+                    Case 4 'Shield
+
+                        ws += Math.Round(31 * PerDurability / 100)
+                        ws += Math.Round(31 * PerPhyRef / 100) * 32
+                        ws += Math.Round(31 * PerMagRef / 100) * 1024
+                        ws += Math.Round(31 * PerBlock / 100) * 32768
+                        ws += Math.Round(31 * PerPhyDef / 100) * 1048576
+                        ws += Math.Round(31 * PerMagDef / 100) * 33554432
+
+                    Case 6 'Weapon
+
+                        ws += Math.Round(31 * PerDurability / 100)
+                        ws += Math.Round(31 * PerPhyRef / 100) * 32
+                        ws += Math.Round(31 * PerMagRef / 100) * 1024
+                        ws += Math.Round(31 * PerAttackRate / 100) * 32768
+                        ws += Math.Round(31 * PerPhyAtk / 100) * 1048576
+                        ws += Math.Round(31 * PerMagAtk / 100) * 33554432
+                        ws += Math.Round(31 * PerCritical / 100) * 1073741824
+
+                    Case 5, 12 'Accessory
+
+                        ws += Math.Round(31 * PerPhyAbs / 100)
+                        ws += Math.Round(31 * PerMagAbs / 100) * 32
+
+                End Select
+            End If
+        End If
+        Return ws
+    End Function
 
     Public Locked As Boolean
 

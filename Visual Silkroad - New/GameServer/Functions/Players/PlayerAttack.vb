@@ -12,7 +12,7 @@
                 Select Case packet.Byte
                     Case 1
                         'Normal Attack
-                        packet.Skip(1)
+                        packet.Skip(2)
                         Dim ObjectID As UInt32 = packet.DWord
                         If PlayerData(Index_).Attacking = False Then
                             For i = 0 To MobList.Count - 1
@@ -179,7 +179,7 @@
 
                 For i = 0 To NumberAttack - 1
                     Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, AttackType)
-                    Dim Crit As Byte = GetCritical()
+                    Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
                         Damage = Damage * 2
@@ -326,7 +326,7 @@
 
                 For i = 0 To RefSkill.NumberOfAttacks - 1
                     Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, RefSkill.Id)
-                    Dim Crit As Byte = GetCritical()
+                    Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
                         Damage = Damage * 2
@@ -457,7 +457,7 @@
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Private Function GetCritical() As Boolean
+        Public Function Attack_GetCritical() As Boolean
             If Math.Round(Rnd() * 5) = 5 Then
                 Return True
             Else

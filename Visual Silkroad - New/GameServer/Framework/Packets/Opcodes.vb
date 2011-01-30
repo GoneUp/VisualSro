@@ -122,6 +122,10 @@
         Guild_Info = &H3101
         Guild_Link = &H30FF
 
+        'Die
+        Die_1 = &H3011
+        Die_2 = &H30D2
+
         'Items
         ItemUse = &HB04C
         ItemUseOtherPlayer = &H305C

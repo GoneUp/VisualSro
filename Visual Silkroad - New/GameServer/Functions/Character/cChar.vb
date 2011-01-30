@@ -40,6 +40,7 @@
     Public HelperIcon As Byte
     Public ActionFlag As Byte
     Public Busy As Boolean
+    Public Death As Boolean
 
     Public UsedItem As UseItemTypes
     Public UsedItemParameter As Integer
@@ -100,8 +101,8 @@
 
 
     Sub SetCharGroundStats()
-        HP = (Math.Pow(1.02, Me.Level - 1) * Me.Strength * 10)
-        MP = (Math.Pow(1.02, Me.Level - 1) * Me.Intelligence * 10)
+        HP = (200 + (Me.Strength - 20 * 10))
+        MP = (200 + (Me.Intelligence - 20 * 10))
 
         Hit = Math.Round(Me.Level + 10)
         Parry = Math.Round(Me.Level + 10)

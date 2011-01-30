@@ -28,7 +28,7 @@
 
             Select Case BuyItem.CLASS_A
                 Case 1
-                    Price = BuyItem.SHOP_PRICE
+                    Price = BuyItem.SHOP_PRICE * amout
                 Case 2
 
                 Case 3

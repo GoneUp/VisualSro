@@ -259,5 +259,29 @@
             writer.QWord(status)
             Server.Send(writer.GetBytes, Index_)
         End Sub
+
+        Public Sub KillPlayer(ByVal Index_ As Integer)
+            UpdateState(8, 0, Index_)
+            UpdateState(0, 2, Index_)
+            Die_1(Index_)
+            Die_2(Index_)
+
+            PlayerData(Index_).CHP = 0
+            UpdateHP(Index_)
+        End Sub
+
+        Private Sub Die_1(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Die_1)
+            writer.Byte(4)
+            Server.Send(writer.GetBytes, Index_)
+        End Sub
+
+        Private Sub Die_2(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Die_2)
+            writer.DWord(0)
+            Server.Send(writer.GetBytes, Index_)
+        End Sub
     End Module
 End Namespace

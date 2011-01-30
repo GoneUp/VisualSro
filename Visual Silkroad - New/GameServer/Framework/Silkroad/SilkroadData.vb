@@ -396,10 +396,12 @@
             Public Level As Byte
             Public Hp As UInteger
             Public InvSize As Byte
+
             Public PhyDef As UShort
             Public MagDef As UShort
             Public HitRatio As Byte
             Public ParryRatio As Byte
+
             Public Exp As ULong
             Public Skill1 As UInteger
             Public Skill2 As UInteger

@@ -215,6 +215,7 @@
 
         Structure cLevelData
             Public Level As Byte
+            Public Base As UInteger
             Public Experience As ULong
             Public SkillPoints As ULong
         End Structure
@@ -227,12 +228,13 @@
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim level As New cLevelData
-                level.Level = CByte(tmpString(0))
-                level.Experience = CULng(tmpString(1))
+                level.Level = tmpString(0)
+                level.Base = tmpString(1)
+                level.Experience = tmpString(2)
                 If level.Level = 1 Then
                     level.SkillPoints = 0
                 Else
-                    level.SkillPoints = CULng(tmpString(2))
+                    level.SkillPoints = tmpString(3)
                 End If
 
                 RefLevelData.Add(level)
@@ -872,5 +874,8 @@
             Next
             Return -1
         End Function
+
+
+
     End Module
 End Namespace

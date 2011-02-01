@@ -101,8 +101,8 @@
 
 
     Sub SetCharGroundStats()
-        HP = (200 + (Me.Strength - 20 * 10))
-        MP = (200 + (Me.Intelligence - 20 * 10))
+        HP = (GameServer.GetLevelDataByLevel(Level).Base + (Me.Strength - 20 * 10))
+        MP = (GameServer.GetLevelDataByLevel(Level).Base + (Me.Intelligence - 20 * 10))
 
         Hit = Math.Round(Me.Level + 10)
         Parry = Math.Round(Me.Level + 10)
@@ -111,7 +111,6 @@
         Me.WalkSpeed = 15
         Me.RunSpeed = Me.Level + 49
         Me.BerserkSpeed = Me.RunSpeed * 2
-
 
         MinPhy = GameServer.Functions.GetMinPhy(Me.Strength)
         MaxPhy = GameServer.Functions.GetMaxPhy(Me.Strength, Level)

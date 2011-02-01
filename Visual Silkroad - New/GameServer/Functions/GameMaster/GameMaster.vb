@@ -59,7 +59,6 @@
                         temp_item.Plus = plus
                         temp_item.Durability = refitem.MAX_DURA
                         temp_item.Blues = New List(Of cInvItem.sBlue)
-
                     ElseIf refitem.CLASS_A = 2 Then
                         'Pet
 

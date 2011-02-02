@@ -40,8 +40,8 @@ Namespace GameServer
             Server.OnlineClient = 0
             GameServer.Log.WriteSystemLog("Connected. Loading Data now.")
 
-            TheardDB.Start()
             TheardLoad.Start()
+            TheardDB.Start()
             TheardSettings.Start()
             TheardTimer.Start(1500)
             GameServer.Log.WriteSystemLog("Data Loaded. Starting Server.")

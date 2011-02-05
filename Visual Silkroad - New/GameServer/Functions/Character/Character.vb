@@ -362,7 +362,7 @@
                 Dim item As New cInvItem
                 item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(1)
-                item.Plus = Math.Round(Rnd() * 3, 0)
+                item.Plus = 0 'Math.Round(Rnd() * 3, 0)
                 item.Amount = 0
                 item.Slot = 1
                 UpdateItem(item)
@@ -370,7 +370,7 @@
                 item = New cInvItem
                 item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(2)
-                item.Plus = Math.Round(Rnd() * 3, 0)
+                item.Plus = 0 'Math.Round(Rnd() * 3, 0)
                 item.Amount = 0
                 item.Slot = 4
                 UpdateItem(item)
@@ -378,7 +378,7 @@
                 item = New cInvItem
                 item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(3)
-                item.Plus = Math.Round(Rnd() * 3, 0)
+                item.Plus = 0 'Math.Round(Rnd() * 3, 0)
                 item.Amount = 0
                 item.Slot = 5
                 UpdateItem(item)
@@ -386,7 +386,7 @@
                 item = New cInvItem
                 item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
                 item.Pk2Id = _items(4)
-                item.Plus = Math.Round(Rnd() * 5, 0)
+                item.Plus = 0 'Math.Round(Rnd() * 5, 0)
                 item.Amount = 0
                 item.Slot = 6
                 UpdateItem(item)
@@ -395,7 +395,7 @@
                     item = New cInvItem
                     item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
                     item.Pk2Id = 251
-                    item.Plus = Math.Round(Rnd() * 9, 0)
+                    item.Plus = 0 'Math.Round(Rnd() * 9, 0)
                     item.Amount = 0
                     item.Slot = 7
                     UpdateItem(item)
@@ -413,7 +413,7 @@
                     item = New cInvItem
                     item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
                     item.Pk2Id = 10738
-                    item.Plus = Math.Round(Rnd() * 9, 0)
+                    item.Plus = 0 'Math.Round(Rnd() * 9, 0)
                     item.Amount = 0
                     item.Slot = 7
                     UpdateItem(item)

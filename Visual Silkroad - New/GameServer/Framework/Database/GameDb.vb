@@ -52,6 +52,7 @@
                 End If
 
                 GetUserData()
+                GetItemData()
                 GameDbUpdate.Start()
 
             Catch ex As Exception

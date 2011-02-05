@@ -459,7 +459,6 @@
             Next
         End Function
 
-
         Function FillItem(ByVal From_item As cInvItem) As cInvItem
             Dim tmp_ As New cInvItem
             tmp_.DatabaseID = From_item.DatabaseID

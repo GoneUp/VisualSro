@@ -51,37 +51,47 @@ Public Class cItem
     Public PHYSDEF_INC As Double
     Public MIN_PARRY As Single
     Public MAX_PARRY As Single
-    Public MIN_ABSORB As Double
-    Public MAX_ABSORB As Double
-    Public ABSORB_INC As Double
+
+    Public MIN_PHYS_ABSORB As Double
+    Public MAX_PHYS_ABSORB As Double
+    Public PHYS_ABSORB_INC As Double
+
+    Public MIN_MAG_ABSORB As Double
+    Public MAX_MAG_ABSORB As Double
+    Public MAG_ABSORB_INC As Double
+
     Public MIN_BLOCK As Single
     Public MAX_BLOCK As Single
-    Public MAGDEF_MIN As Double
-    Public MAGDEF_MAX As Double
+    Public MIN_MAGDEF As Double
+    Public MAX_MAGDEF As Double
     Public MAGDEF_INC As Double
-    Public MIN_APHYS_REINFORCE As Single
-    Public MAX_APHYS_REINFORCE As Single
-    Public MIN_AMAG_REINFORCE As Single
-    Public MAX_AMAG_REINFORCE As Single
+    Public MIN_PHYS_REINFORCE As Single
+    Public MAX_PHYS_REINFORCE As Single
+    Public MIN_MAG_REINFORCE As Single
+    Public MAX_MAG_REINFORCE As Single
     Public ATTACK_DISTANCE As Single
-    Public MIN_LPHYATK As Double
-    Public MAX_LPHYATK As Double
-    Public MIN_HPHYATK As Double
-    Public MAX_HPHYATK As Double
+
+    Public MIN_FROM_PHYATK As Double
+    Public MAX_FROM_PHYATK As Double
+    Public MIN_TO_PHYATK As Double
+    Public MAX_TO_PHYATK As Double
     Public PHYATK_INC As Double
-    Public MIN_LMAGATK As Double
-    Public MAX_LMAGATK As Double
-    Public MIN_HMAGATK As Double
-    Public MAX_HMAGATK As Double
+
+    Public MIN_FROM_MAGATK As Double
+    Public MAX_FROM_MAGATK As Double
+    Public MIN_TO_MAGATK As Double
+    Public MAX_TO_MAGATK As Double
     Public MAGATK_INC As Double
-    Public MIN_LPHYS_REINFORCE As Single
-    Public MAX_LPHYS_REINFORCE As Single
-    Public MIN_HPHYS_REINFORCE As Single
-    Public MAX_HPHYS_REINFORCE As Single
-    Public MIN_LMAG_REINFORCE As Single
-    Public MAX_LMAG_REINFORCE As Single
-    Public MIN_HMAG_REINFORCE As Single
-    Public MAX_HMAG_REINFORCE As Single
+
+    Public MIN_FROM_PHYS_REINFORCE As Single
+    Public MAX_FROM_PHYS_REINFORCE As Single
+    Public MIN_TO_PHYS_REINFORCE As Single
+    Public MAX_TO_PHYS_REINFORCE As Single
+    Public MIN_FROM_MAG_REINFORCE As Single
+    Public MAX_FROM_MAG_REINFORCE As Single
+    Public MIN_TO_MAG_REINFORCE As Single
+    Public MAX_TO_MAG_REINFORCE As Single
+
     Public MIN_ATTACK_RATING As Single
     Public MAX_ATTACK_RATING As Single
     Public MIN_CRITICAL As Single

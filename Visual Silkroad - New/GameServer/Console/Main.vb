@@ -8,7 +8,6 @@ Namespace GameServer
 
         Public Shared TheardDB As New Thread(AddressOf GameServer.GameDB.UpdateData)
         Public Shared TheardLoad As New Thread(AddressOf SilkroadData.DumpDataFiles)
-        Public Shared TheardSettings As New Thread(AddressOf Settings.LoadSettings)
         Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
         Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
@@ -31,24 +30,25 @@ Namespace GameServer
             Console.Clear()
             Console.Title = "GAMESERVER ALPHA"
 
-            GameServer.Log.WriteSystemLog("Connecting Database.")
+            Settings.LoadSettings()
+            Settings.SetToServer()
 
-            DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "")
+            Log.WriteSystemLog("Connecting Database.")
+            DataBase.Connect()
             Server.Ip = "0.0.0.0"
             Server.Port = 15780
             Server.MaxClients = 1500
             Server.OnlineClient = 0
-            GameServer.Log.WriteSystemLog("Connected. Loading Data now.")
+            Log.WriteSystemLog("Connected. Loading Data now.")
 
             TheardLoad.Start()
             TheardDB.Start()
-            TheardSettings.Start()
             TheardTimer.Start(1500)
-            GameServer.Log.WriteSystemLog("Data Loaded. Starting Server.")
+            Log.WriteSystemLog("Data Loaded. Starting Server.")
 
             TheardServer.Start()
 
-            GameServer.Log.WriteSystemLog("Inital Loding complete!")
+            Log.WriteSystemLog("Inital Loding complete!")
 
 
 read:

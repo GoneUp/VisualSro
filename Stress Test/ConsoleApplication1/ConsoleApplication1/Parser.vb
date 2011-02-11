@@ -8,6 +8,7 @@
         Select Case opcode
             Case ServerOpcodes.Handshake
                 If GameServer(Index_) = False Then
+                    Console.WriteLine("Handshake: " & Index_)
                     SendLogin(Index_)
 
                     PingTimer(Index_).Interval = 5000

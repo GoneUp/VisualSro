@@ -63,9 +63,18 @@
             writer.Byte(1) 'destination
             writer.Byte(ToPos.XSector)
             writer.Byte(ToPos.YSector)
-            writer.Word(CUInt(ToPos.X))
-            writer.Word(0)
-            writer.Word(CUInt(ToPos.Y))
+
+            If IsInCave(ToPos) = False Then
+                writer.Byte(BitConverter.GetBytes(CShort(ToPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Y)))
+            Else
+                'In Cave
+                writer.Byte(BitConverter.GetBytes(CInt(ToPos.X)))
+                writer.Byte(BitConverter.GetBytes(CInt(ToPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
+            End If
+
             writer.Byte(0) '1= source
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(MobListIndex).UniqueID)
@@ -87,8 +96,8 @@
                     Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 100))
                 End If
 
-                Dim EXP As Long = ((ref_.Exp * GetExpMultiplier(mob_.Mob_Type)) * Settings.ServerXPRate * Percent) * Balance
-                Dim SP As Long = (ref_.Exp * Settings.ServerSPRate * Percent)
+                Dim EXP As Long = ((ref_.Exp * GetExpMultiplier(mob_.Mob_Type)) * Settings.Server_XPRate * Percent) * Balance
+                Dim SP As Long = (ref_.Exp * Settings.Server_SPRate * Percent)
 
                 GetXP(EXP, SP, Index_, mob_.UniqueID)
             Next

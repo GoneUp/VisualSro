@@ -25,3 +25,12 @@ C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\Conso
 C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.Resources.resources
 C:\Users\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.vbproj.GenerateResource.Cache
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.xml
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ResolveAssemblyReference.cache
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.Resources.resources
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.vbproj.GenerateResource.Cache
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.xml

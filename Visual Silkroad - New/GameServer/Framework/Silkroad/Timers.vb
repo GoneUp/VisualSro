@@ -249,7 +249,7 @@ Namespace GameServer
                             Dim dist As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_Spawn)
                             Dim mob_ = MobList(i)
 
-                            If dist < Settings.ServerRange Then
+                            If dist < Settings.Server_Range Then
                                 Dim ToX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X) + random.Next(-15, +10)
                                 Dim ToY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y) + random.Next(-10, +15)
 

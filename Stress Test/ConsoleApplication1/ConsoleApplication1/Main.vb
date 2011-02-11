@@ -1,7 +1,7 @@
 ﻿Imports System.Net, System.Net.Sockets
 Module Main
 
-    Public s(1) As Socket
+    Public s(500) As Socket
     Public Rev(10000) As Threading.Thread
     Public GameServer(10000) As Boolean
     Public Key(10000) As UInt32
@@ -9,7 +9,7 @@ Module Main
 
     Dim ip1 As String = "127.0.0.1"
     Dim ip2 As String = "78.111.78.27"
-    Dim ip3 As String = "87.247.106.103"
+    Dim ip3 As String = "85.214.227.25"
 
     Sub Main()
         Dim b

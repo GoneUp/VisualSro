@@ -9,10 +9,13 @@ Namespace GameServer
         Private Shared Connection As MySqlConnection
         Private Shared ConnectionString As String
         Private Shared da As MySqlDataAdapter
-        Private Shared gets As String
-        Private Shared getsDb As Double
-        Private Shared getsInt As Integer
         Private Shared Query As New List(Of String)
+
+        Public Shared DB_IP As String
+        Public Shared DB_PORT As UShort
+        Public Shared DB_DATABASE As String
+        Public Shared DB_USERNAME As String
+        Public Shared DB_PASSWORD As String
 
         Public Shared Event OnConnectedToDatabase As dConnected
         Public Shared Event OnDatabaseError As dError
@@ -21,14 +24,14 @@ Namespace GameServer
         Public Delegate Sub dError(ByVal ex As Exception, ByVal command As String)
 
 #Region "Connect"
-        Public Shared Sub Connect(ByVal ip As String, ByVal port As Integer, ByVal database As String, ByVal username As String, ByVal password As String)
-            If connection IsNot Nothing Then
-                connection.Close()
+        Public Shared Sub Connect()
+            If Connection IsNot Nothing Then
+                Connection.Close()
             End If
-            ConnectionString = String.Format("server={0};port={4} ;user id={1}; password={2}; database={3}; pooling=false;", New Object() {ip, username, password, database, port})
+            ConnectionString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; pooling=false;", DB_IP, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE)
             Try
-                connection = New MySqlConnection(ConnectionString)
-                connection.Open()
+                Connection = New MySqlConnection(ConnectionString)
+                Connection.Open()
                 RaiseEvent OnConnectedToDatabase()
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception, ConnectionString)

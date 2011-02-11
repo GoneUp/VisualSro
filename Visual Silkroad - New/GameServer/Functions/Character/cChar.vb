@@ -48,7 +48,7 @@
     Public HelperIcon As Byte
     Public ActionFlag As Byte
     Public Busy As Boolean
-    Public Death As Boolean
+    Public Alive As Boolean = True
 
     Public UsedItem As UseItemTypes
     Public UsedItemParameter As Integer

@@ -11,7 +11,7 @@
         Public RefMallItems As New List(Of MallPackage_)
         Public RefReversePoints As New List(Of ReversePoint_)
         Public RefTeleportPoints As New List(Of TeleportPoint_)
-        Public RefSafeZone As New List(Of SafeZone_)
+        Public RefSpecialZones As New List(Of SpecialSector_)
         Public RefRespawns As New List(Of Functions.ReSpawn_)
         Public RefRespawnsUnique As New List(Of Functions.ReSpawnUnique_)
         Public RefUniques As New List(Of UInteger)
@@ -53,8 +53,8 @@
                 DumpTeleportData(base_path & "data\teleportdata.txt", base_path & "data\teleportlink.txt")
                 Log.WriteSystemLog("Loaded " & RefTeleportPoints.Count & " Teleport-Points.")
 
-                DumpSafeZoneFile(base_path & "\data\safezone.txt")
-                Log.WriteSystemLog("Loaded " & RefSafeZone.Count & " SafeZone-Sectors.")
+                DumpSpecialSectorFile(base_path & "\data\special_sectors.txt")
+                Log.WriteSystemLog("Loaded " & RefSpecialZones.Count & " Speical_Sectors.")
 
                 DumpNpcChatFile(base_path & "\data\npcchatid.txt")
 
@@ -681,34 +681,48 @@
         End Function
 
 
-        Public Structure SafeZone_
+        Public Structure SpecialSector_
+            Public Type As SpecialSector_Types
             Public XSec As Byte
             Public YSec As Byte
         End Structure
+        Enum SpecialSector_Types
+            Safe_Zone = 1
+            Cave_Zone = 2
+        End Enum
 
-        Public Sub DumpSafeZoneFile(ByVal path As String)
+        Public Sub DumpSpecialSectorFile(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                    Dim tmp As New SafeZone_
+                    Dim tmp As New SpecialSector_
 
                     tmp.XSec = tmpString(0)
                     tmp.YSec = tmpString(1)
+                    tmp.Type = tmpString(2)
 
-                    RefSafeZone.Add(tmp)
+                    RefSpecialZones.Add(tmp)
                 End If
             Next i
         End Sub
         Public Function IsInSaveZone(ByVal Pos As Position) As Boolean
-            For i = 0 To RefSafeZone.Count - 1
-                If RefSafeZone(i).XSec = Pos.XSector And RefSafeZone(i).YSec = Pos.YSector Then
+            For i = 0 To RefSpecialZones.Count - 1
+                If RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And RefSpecialZones(i).Type = SpecialSector_Types.Safe_Zone Then
                     Return True
                 End If
             Next
             Return False
         End Function
 
+        Public Function IsInCave(ByVal Pos As Position) As Boolean
+            For i = 0 To RefSpecialZones.Count - 1
+                If RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And RefSpecialZones(i).Type = SpecialSector_Types.Cave_Zone Then
+                    Return True
+                End If
+            Next
+            Return False
+        End Function
 
         Public Sub DumpUniqueFile(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)

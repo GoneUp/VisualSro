@@ -170,7 +170,7 @@ Namespace GameServer
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     Dim distance As Long = CalculateDistance(Position, player.Position) 'Calculate Distance
-                    If distance < Settings.ServerRange Then
+                    If distance < Settings.Server_Range Then
                         'In Rage 
                         If player.Ingame = True Then
                             Send(buff, i)
@@ -187,7 +187,7 @@ Namespace GameServer
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) Then
                     Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position) 'Calculate Distance
-                    If distance < Settings.ServerRange Then
+                    If distance < Settings.Server_Range Then
                         'In Rage 
                         If player.Ingame = True Then
                             Send(buff, i)

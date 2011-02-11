@@ -188,7 +188,6 @@
                     AllItems(i).PerParryRate = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
                     AllItems(i).PerPhyAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(19))
                     AllItems(i).PerMagAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(20))
-
                 Next
             Else
                 ReDim AllItems(0)

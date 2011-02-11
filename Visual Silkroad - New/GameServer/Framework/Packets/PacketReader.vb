@@ -26,6 +26,10 @@ Namespace GameServer
             Return Me.br.ReadUInt32()
         End Function
 
+        Public Function DWordInt() As Integer
+            Return Me.br.ReadInt32()
+        End Function
+
         Public Function Float() As Single
             Return Me.br.ReadSingle()
         End Function

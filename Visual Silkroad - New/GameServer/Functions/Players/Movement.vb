@@ -13,9 +13,17 @@
                 Dim to_pos As New Position
                 to_pos.XSector = packet.Byte
                 to_pos.YSector = packet.Byte
-                to_pos.X = packet.WordInt
-                to_pos.Z = packet.WordInt
-                to_pos.Y = packet.WordInt
+
+                If IsInCave(to_pos) = False Then
+                    to_pos.X = packet.WordInt
+                    to_pos.Z = packet.WordInt
+                    to_pos.Y = packet.WordInt
+                Else
+                    'In Cave
+                    to_pos.X = packet.DWordInt
+                    to_pos.Z = packet.DWordInt
+                    to_pos.Y = packet.DWordInt
+                End If
 
                 'Dim x = PlayerData(Index_).Position.X - to_pos.X
                 'Dim y = PlayerData(Index_).Position.Y - to_pos.Y
@@ -61,9 +69,18 @@
                     writer.Byte(1) 'destination
                     writer.Byte(ToPos.XSector)
                     writer.Byte(ToPos.YSector)
-                    writer.Byte(BitConverter.GetBytes(CShort(ToPos.X)))
-                    writer.Byte(BitConverter.GetBytes(CShort(ToPos.Z)))
-                    writer.Byte(BitConverter.GetBytes(CShort(ToPos.Y)))
+
+                    If IsInCave(ToPos) = False Then
+                        writer.Byte(BitConverter.GetBytes(CShort(ToPos.X)))
+                        writer.Byte(BitConverter.GetBytes(CShort(ToPos.Z)))
+                        writer.Byte(BitConverter.GetBytes(CShort(ToPos.Y)))
+                    Else
+                        'In Cave
+                        writer.Byte(BitConverter.GetBytes(CInt(ToPos.X)))
+                        writer.Byte(BitConverter.GetBytes(CInt(ToPos.Z)))
+                        writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
+                    End If
+
                     writer.Byte(0) '1= source
                     'writer.Byte(PlayerData(Index_).Position.XSector)
                     'writer.Byte(PlayerData(Index_).Position.YSector)
@@ -133,7 +150,7 @@
         End Sub
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try
-                Dim range As Integer = Settings.ServerRange
+                Dim range As Integer = Settings.Server_Range
                 ObjectDeSpawnCheck(Index_)
 
                 '=============Players============
@@ -253,7 +270,7 @@
 
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            If CalculateDistance(Pos_1, Pos_2) <= Settings.ServerRange Then
+            If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then
                 Return True
             Else
                 Return False

@@ -154,7 +154,7 @@
 
                 If PlayerData(index_).Experience >= lvldata.Experience Then
                     'New Level   
-                    If Settings.ServerLevelCap >= PlayerData(index_).Level + 1 Then
+                    If Settings.Server_LevelCap >= PlayerData(index_).Level + 1 Then
                         PlayerData(index_).Level += 1
                         PlayerData(index_).Experience -= lvldata.Experience
                         NewLevel = True

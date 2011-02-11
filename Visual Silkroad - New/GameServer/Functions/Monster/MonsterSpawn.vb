@@ -80,7 +80,7 @@
             MobList.Add(tmp)
 
             Dim MyIndex As UInteger = MobList.IndexOf(tmp)
-            Dim range As Integer = Settings.ServerRange
+            Dim range As Integer = Settings.Server_Range
 
             For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)

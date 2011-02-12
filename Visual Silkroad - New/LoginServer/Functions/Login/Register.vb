@@ -38,7 +38,7 @@
                 End If
             Next
 
-            If Count >= MaxRegistersPerDay Then
+            If Count >= Max_RegistersPerDay Then
                 Return False
             End If
 

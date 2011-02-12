@@ -43,7 +43,7 @@ Namespace GameServer
             Log.WriteSystemLog("Data Loaded. Starting Server.")
 
             TheardServer.Start()
-            Log.WriteSystemLog("Inital Loding complete!")
+            Log.WriteSystemLog("Inital Loading complete!")
 
 
 read:

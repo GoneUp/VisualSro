@@ -90,7 +90,8 @@
     <Compile Include="Framework\Database\Database.vb" />
     <Compile Include="Framework\Packets\PacketReader.vb" />
     <Compile Include="Framework\Packets\PacketWriter.vb" />
-    <Compile Include="Framework\Server\Settings.vb" />
+    <Compile Include="Framework\Settings\cINI.vb" />
+    <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Login\Ban.vb" />
     <Compile Include="Functions\Login\Register.vb" />
     <Compile Include="Functions\Parser.vb" />

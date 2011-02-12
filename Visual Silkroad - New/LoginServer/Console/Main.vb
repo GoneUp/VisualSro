@@ -26,17 +26,19 @@ Namespace LoginServer
             Console.Clear()
             Console.Title = "LOGINSERVER ALPHA"
             Log.WriteSystemLog("Starting Server")
-            DataBase.Connect("127.0.0.1", 3306, "visualsro", "root", "sremu")
-            Server.ip = "78.111.78.27"
-            Server.Port = 15779 'Loginserver
-            Server.MaxClients = 1500
-            Server.OnlineClient = 0
-            Server.Start()
 
-            LoginDb.UpdateData()
+            Log.WriteSystemLog("Loading Settings.")
             Settings.LoadSettings()
-            DataBase.DatabaseTimer.Interval = 30000
-            DataBase.DatabaseTimer.Start()
+            Settings.SetToServer()
+
+            Log.WriteSystemLog("Loaded Settings. Conneting Database.")
+            DataBase.Connect()
+
+            Log.WriteSystemLog("Connected Database. Starting Server now.")
+            LoginDb.UpdateData()
+
+            Server.Start()
+            Log.WriteSystemLog("Inital Loading complete!")
 
 read:
             Dim msg As String = Console.ReadLine()
@@ -50,10 +52,10 @@ read:
             Log.WriteSystemLog("Client Connected : " & ip)
             Server.OnlineClient += 1
 
-            Dim pack As New LoginServer.PacketWriter
-            pack.Create(ServerOpcodes.Handshake)
-            pack.Byte(1)
-            LoginServer.Server.Send(pack.GetBytes, index)
+            Dim writer As New LoginServer.PacketWriter
+            writer.Create(ServerOpcodes.Handshake)
+            writer.Byte(1)
+            Server.Send(writer.GetBytes, index)
 
         End Sub
 

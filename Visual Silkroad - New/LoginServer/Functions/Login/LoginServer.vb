@@ -130,7 +130,7 @@
             If UserIndex = -1 Then
                 'User exestiert nicht == We register a User
 
-                If Settings.AutoRegister = True Then
+                If Settings.Auto_Register = True Then
                     If CheckIfUserCanRegister(ClientList.GetSocket(Index_).RemoteEndPoint.ToString) = True Then
                         RegisterUser(ID, Pw, Index_)
                         Dim reason As String = String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw)
@@ -146,7 +146,7 @@
                         writer.DWord(0) 'unknwon
                         writer.Word(0) 'unknwon
                     Else
-                        Dim reason As String = String.Format("You can only register {0} a day!", MaxRegistersPerDay)
+                        Dim reason As String = String.Format("You can only register {0} a day!", Max_RegistersPerDay)
                         writer.Byte(2) 'failed
                         writer.Byte(2) 'gebannt
                         writer.Byte(1) 'unknown
@@ -161,7 +161,7 @@
                     End If
 
 
-                ElseIf AutoRegister = False Then
+                ElseIf Auto_Register = False Then
                     'Normal Fail
                     writer.Byte(2) 'login failed
                     writer.Byte(1)
@@ -204,11 +204,11 @@
 
                     writer.Byte(2) 'login failed
                     writer.Byte(1)
-                    writer.DWord(MaxFailedLogins) 'Max Failed Logins
+                    writer.DWord(Max_FailedLogins) 'Max Failed Logins
                     writer.DWord(user.FailedLogins) 'number of falied logins
                     Server.Send(writer.GetBytes, Index_)
 
-                    If user.FailedLogins >= MaxFailedLogins Then
+                    If user.FailedLogins >= Max_FailedLogins Then
                         user.FailedLogins = 0
                         Users(UserIndex) = user
 

@@ -223,7 +223,7 @@
                 GameDB.Chars(NewCharacterIndex).Intelligence = 20
                 GameDB.Chars(NewCharacterIndex).PVP = 0
                 GameDB.Chars(NewCharacterIndex).MaxSlots = 45
-                GameDB.Chars(NewCharacterIndex).Position = Settings.Player_StartPos
+                GameDB.Chars(NewCharacterIndex).Position = Settings.Player_StartPos_Ch
                 GameDB.Chars(NewCharacterIndex).Position_Dead = Settings.Player_StartReturnPos
                 GameDB.Chars(NewCharacterIndex).Position_Recall = Settings.Player_StartReturnPos
                 GameDB.Chars(NewCharacterIndex).Position_Return = Settings.Player_StartReturnPos

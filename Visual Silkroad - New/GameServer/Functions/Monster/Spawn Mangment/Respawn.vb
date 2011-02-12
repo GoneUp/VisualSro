@@ -9,7 +9,7 @@
                 Dim Random As New Random
 
                 For i = 0 To RefRespawns.Count - 1
-                    If IsSpawned(RefRespawns(i).SpotID) = False Then
+                    If GetSpawnCount(RefRespawns(i).SpotID) < Settings.Server_SpawnRate Then
                         If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= Settings.Server_SpawnsPerSec Then
                             If Random.Next(0, 7) = 0 Then
                                 ReSpawnMob(i)
@@ -75,13 +75,14 @@
         End Sub
 
 #Region "Helper Functions"
-        Private Function IsSpawned(ByVal SpotID As Long) As Boolean
+        Private Function GetSpawnCount(ByVal SpotID As Long) As Integer
+            Dim Count As Integer = 0
             For i = 0 To MobList.Count - 1
                 If MobList(i).SpotID = SpotID Then
-                    Return True
+                    Count += 1
                 End If
             Next
-            Return False
+            Return Count
         End Function
 
         Private Function IsUniqueSpawned(ByVal Pk2ID As UInteger) As Boolean

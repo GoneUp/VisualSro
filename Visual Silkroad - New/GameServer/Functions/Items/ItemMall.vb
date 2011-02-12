@@ -61,6 +61,8 @@
                     writer.Byte(slot)
                     writer.Word(1)
                     Server.Send(writer.GetBytes, index_)
+
+                    Log.WriteGameLog(index_, "Item_Mall", "Buy", String.Format("Item: {0}, Amout {1}, Payed: {2}", _Refitem.ITEM_TYPE_NAME, item.Amount, RefObject.Price))
                 Else
                     writer.Create(ServerOpcodes.ItemMove)
                     writer.Byte(2)

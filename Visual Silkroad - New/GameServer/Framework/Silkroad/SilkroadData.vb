@@ -16,6 +16,7 @@
         Public RefRespawnsUnique As New List(Of Functions.ReSpawnUnique_)
         Public RefUniques As New List(Of UInteger)
         Public RefAbuseList As New List(Of String)
+        Public RefCaveTeleporter As New List(Of CaveTeleporter_)
 
         Public base_path As String = System.AppDomain.CurrentDomain.BaseDirectory
 
@@ -61,6 +62,9 @@
                 DumpAbuseListFile(base_path & "\data\abuselist.txt")
 
                 DumpShopDataFile()
+
+                DumpCaveTeleporterFile(base_path & "\data\cave_teleport.txt")
+                Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
                 Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
                 Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
@@ -769,7 +773,7 @@
         Public Sub DumpAbuseListFile(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
-                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+                If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                     RefAbuseList.Add(lines(i))
                 End If
             Next i
@@ -908,6 +912,29 @@
         End Function
 
 
+        Public Structure CaveTeleporter_
+            Public FromPosition As Position
+            Public Range As Integer
+            Public ToTeleporterID As Integer
+        End Structure
 
+
+        Public Sub DumpCaveTeleporterFile(ByVal path As String)
+            Dim lines As String() = IO.File.ReadAllLines(path)
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False And lines(i) <> "" Then
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                    Dim tmp As New CaveTeleporter_
+                    tmp.FromPosition.XSector = tmpString(0)
+                    tmp.FromPosition.YSector = tmpString(1)
+                    tmp.FromPosition.X = tmpString(2)
+                    tmp.FromPosition.Z = tmpString(3)
+                    tmp.FromPosition.Y = tmpString(4)
+                    tmp.Range = tmpString(5)
+                    tmp.ToTeleporterID = tmpString(6)
+                    RefCaveTeleporter.Add(tmp)
+                End If
+            Next i
+        End Sub
     End Module
 End Namespace

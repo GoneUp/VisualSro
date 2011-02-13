@@ -158,8 +158,10 @@
 
         Public Function CheckIfUserOwnSkill(ByVal SkillID As UInteger, ByVal Index_ As Integer) As Boolean
             For i = 0 To GameDB.Skills.Length - 1
-                If GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Skills(i).SkillID = SkillID Then
-                    Return True
+                If GameDB.Skills(i) IsNot Nothing Then
+                    If GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Skills(i).SkillID = SkillID Then
+                        Return True
+                    End If
                 End If
             Next
             Return False

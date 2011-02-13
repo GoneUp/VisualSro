@@ -82,20 +82,16 @@
                     End If
 
                     writer.Byte(0) '1= source
-                    'writer.Byte(PlayerData(Index_).Position.XSector)
-                    'writer.Byte(PlayerData(Index_).Position.YSector)
-                    'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X)))
-                    'writer.Float(PlayerData(Index_).Position.Z)
-                    'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
+          
 
                     PlayerData(Index_).Position = ToPos
                     DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                     Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
+                    CheckForCaveTeleporter(Index_)
 
                     PlayerMoveTimer(Index_).Interval = 200
                     PlayerMoveTimer(Index_).Start()
-
                 End If
 
             Catch ex As Exception
@@ -268,6 +264,32 @@
             End Try
         End Sub
 
+        Public Sub CheckForCaveTeleporter(ByVal Index_ As Integer)
+            For i = 0 To RefCaveTeleporter.Count - 1
+                If CheckSectors(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) Then
+                    Debug.Print(CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition))
+                    If CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <= RefCaveTeleporter(i).Range Then
+                        'In Range --> Teleport
+                        Dim Point_ As TeleportPoint_ = GetTeleportPoint(RefCaveTeleporter(i).ToTeleporterID)
+
+                        If PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
+                            'Level too low
+
+
+                        ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
+                            'Level too high
+
+                        Else
+                            PlayerData(Index_).Busy = True
+                            PlayerData(Index_).Position = Point_.ToPos
+
+                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                            OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                        End If
+                    End If
+                End If
+            Next
+        End Sub
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
             If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then

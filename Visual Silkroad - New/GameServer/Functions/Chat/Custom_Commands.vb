@@ -127,6 +127,59 @@
                         Next
                     End If
 
+                Case "\\dmakeitem"
+                    Dim pk2id As UInteger = tmp(1)
+                    Dim plus As Byte = tmp(2)  'Or Count
+
+                    For i = 13 To Functions.PlayerData(Index_).MaxSlots - 1
+                        If Functions.Inventorys(Index_).UserItems(i).Pk2Id = 0 Then
+                            Dim temp_item As cInvItem = Functions.Inventorys(Index_).UserItems(i)
+                            temp_item.Pk2Id = pk2id
+                            temp_item.OwnerCharID = Functions.PlayerData(Index_).CharacterId
+
+
+                            Dim refitem As cItem = GetItemByID(pk2id)
+                            If refitem.CLASS_A = 1 Then
+                                'Equip
+                                temp_item.Plus = plus
+                                temp_item.Durability = refitem.MAX_DURA
+                                temp_item.Blues = New List(Of cInvItem.sBlue)
+
+                                temp_item.PerDurability = tmp(3)
+                                temp_item.PerPhyRef = tmp(4)
+                                temp_item.PerMagRef = tmp(5)
+                                temp_item.PerAttackRate = tmp(6)
+                                temp_item.PerPhyAtk = tmp(7)
+                                temp_item.PerMagAtk = tmp(8)
+                                temp_item.PerCritical = tmp(9)
+                            ElseIf refitem.CLASS_A = 2 Then
+                                'Pet
+
+                            ElseIf refitem.CLASS_A = 3 Then
+                                'Etc
+                                temp_item.Amount = plus
+                            End If
+
+                            Functions.Inventorys(Index_).UserItems(i) = temp_item
+                            Functions.UpdateItem(Functions.Inventorys(Index_).UserItems(i)) 'SAVE IT
+
+                            writer.Create(ServerOpcodes.ItemMove)
+                            writer.Byte(1)
+                            writer.Byte(6) 'type = new item
+                            writer.Byte(Functions.Inventorys(Index_).UserItems(i).Slot)
+
+                            Functions.AddItemDataToPacket(Functions.Inventorys(Index_).UserItems(i), writer)
+
+                            Server.Send(writer.GetBytes, Index_)
+
+                            Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
+
+                            If Settings.Log_GM Then
+                                Log.WriteGameLog(Index_, "GM", "Item_Create", String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus))
+                                Exit For
+                            End If
+                        End If
+                    Next
             End Select
 
 

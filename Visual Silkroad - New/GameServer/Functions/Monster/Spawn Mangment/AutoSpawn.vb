@@ -30,7 +30,6 @@
                     tmp.SpotID = i
                     tmp.Position = pos
 
-
                     Select Case obj_.Type
                         Case Object_.Type_.Mob_Normal
                             SpawnMob(Pk2ID, GetRadomMobType, pos, 0, i)

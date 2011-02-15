@@ -274,11 +274,15 @@
 
                         If PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
                             'Level too low
-
-
+                            Dim writer As New PacketWriter
+                            writer.Create(ServerOpcodes.Teleport_Start)
+                            writer.Byte(2)
+                            writer.Byte(&H15)
+                            writer.Byte(&H1C)
+                            Server.Send(writer.GetBytes, Index_)
                         ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
                             'Level too high
-
+                            SendNotice("Cannot Teleport because your Level is too high.", Index_)
                         Else
                             PlayerData(Index_).Busy = True
                             PlayerData(Index_).Position = Point_.ToPos

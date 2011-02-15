@@ -48,7 +48,7 @@
                     GetGuildData()
                     First = True
                 Else
-                    Debug.Print("Updating from MySQL")
+                    'Debug.Print("Updating from MySQL") Nervend..
                 End If
 
                 GetUserData()

@@ -452,6 +452,7 @@
                 Mob_Cave = 4
                 COS = 5
                 Mob_Unique = 6
+                Mob_Quest = 7
             End Enum
         End Class
 
@@ -503,6 +504,10 @@
                     Case "MOB"
                         If selector(1) = "TQ" Or selector(1) = "DH" Then
                             tmp.Type = Object_.Type_.Mob_Cave
+
+                        ElseIf selector(1) = "QT" Then
+                            tmp.Type = Object_.Type_.Mob_Quest
+
                         ElseIf IsUnique(tmp.Pk2ID) Then
                             tmp.Type = Object_.Type_.Mob_Unique
                         Else
@@ -660,7 +665,7 @@
                     Dim link_lines As String() = IO.File.ReadAllLines(Path_Link)
                     For b As Integer = 0 To link_lines.Length - 1
                         Dim tmpString2 As String() = link_lines(b).Split(ControlChars.Tab)
-                        If tmpString2(1) = obj.Number Then
+                        If tmpString2(2) = obj.Number Then
                             obj.Cost = tmpString2(3)
                             obj.MinLevel = tmpString2(7)
                             obj.MaxLevel = tmpString2(8)

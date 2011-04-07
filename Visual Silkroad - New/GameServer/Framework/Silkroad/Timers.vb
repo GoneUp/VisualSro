@@ -253,7 +253,7 @@ Namespace GameServer
                         Dim Mob_ = MobList(i)
 
 
-                        If Mob_.Death = False And Mob_.Walking = False And obj.WalkSpeed > 0 Then
+                        If Mob_.Death = False And Mob_.Walking = False And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
                             Dim dist As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
                             If dist < Settings.Server_Range Then
@@ -278,7 +278,7 @@ Namespace GameServer
                             End If
 
 
-                        ElseIf MobList(i).Walking = True And obj.WalkSpeed > 0 Then
+                        ElseIf MobList(i).Walking = True And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
                             Dim wert As Integer = Date.Compare(MobList(i).WalkEnd, Date.Now)
                             If wert = -1 Then
                                 'Abgelaufen
@@ -307,6 +307,13 @@ Namespace GameServer
                                     MobList(i).Position.YSector = GetYSec(MobList(i).Position.Y)
                                 End If
                             End If
+                        ElseIf Mob_.GetsAttacked = True Then
+                            'Attack back...
+                            If Mob_.IsAttacking = False Then
+                                MonsterAttackPlayer(i, MobGetPlayerWithMostDamage(i, True))
+                            End If
+
+
                         End If
                     End If
                 Next

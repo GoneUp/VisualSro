@@ -528,6 +528,8 @@
                         writer.DWord(_item.Blues(i).Amount)
                     Next
 
+                    writer.Word(1)
+                    writer.Word(2)
                 Case 2 'Pets
                     If refitem.CLASS_B = 1 Then
                         Dim name As String = "Test"

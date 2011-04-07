@@ -16,6 +16,7 @@
         Public Auto_Register As Boolean = False
         Public Max_FailedLogins As Integer = 5
         Public Max_RegistersPerDay As Integer = 3
+        Public Server_CurrectVersion = 0
 
         Public Log_Connect As Boolean = False
         Public Log_Register As Boolean = False
@@ -35,6 +36,7 @@
             Auto_Register = CBool(File.Read("SERVER", "Auto_Register", "0"))
             Max_FailedLogins = File.Read("SERVER", "Max_FailedLogins", "5")
             Max_RegistersPerDay = File.Read("SERVER", "Max_RegistersPerDay", "3")
+            Server_CurrectVersion = File.Read("SERVER", "Server_CurrectVersion", "0")
 
             Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
             Log_Login = CBool(File.Read("LOG", "Login", "0"))

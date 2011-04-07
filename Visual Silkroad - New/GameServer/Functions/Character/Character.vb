@@ -557,7 +557,7 @@
             Next
 
 
-            writer.Byte(4)  ' Avatar Item Max
+            writer.Byte(5)  ' Avatar Item Max
             writer.Byte(0)  ' Amount of Avatars
 
             writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
@@ -682,7 +682,7 @@
             writer.Word(1)  'unknown
             writer.Word(1)
             writer.Byte(0)
-            writer.Byte(0)
+            writer.Byte(1)
 
 
             Server.Send(writer.GetBytes, Index_)

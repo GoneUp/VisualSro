@@ -30,22 +30,52 @@
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&H2005)
-            'Server.Send(writer.GetBytes, index) '2005
-
+            Server.Send(writer.GetBytes, index)
 
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(0) 'Data
+            writer.Word(1)
+            writer.Byte(1)
+            writer.Byte(8)
+            writer.Byte(&HA)
+            writer.DWord(5)
+            writer.Byte(2)
+            Server.Send(writer.GetBytes, index)
 
+            '====================================
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(1) 'Header Byte
+            writer.Word(1) '1 Data Packet
+            writer.Word(&H6005)
+            Server.Send(writer.GetBytes, index)
 
-            LoginServer.Server.Send(New Byte() {5, 0, 13, 96, 0, 0, 1, 1, 0, 5, 32, _
-                                                11, 0, 13, 96, 0, 0, 0, 1, 0, 1, 9, 10, 5, 0, 0, 0, 2, _
-                                                5, 0, 13, 96, 0, 0, 1, 1, 0, 5, 96, _
-                                                6, 0, 13, 96, 0, 0, 0, 3, 0, 2, 0, 2, _
-                                                5, 0, 13, 96, 0, 0, 1, 1, 0, 0, 161, _
-                                                2, 0, 13, 96, 0, 0, 0, 1}, index)
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(0) 'Data
+            writer.Word(3)
+            writer.Word(2)
+            writer.Byte(2)
+            Server.Send(writer.GetBytes, index)
+
+            '====================================
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(1) 'Header Byte
+            writer.Word(1) '1 Data Packet
+            writer.Word(&HA100)
+            Server.Send(writer.GetBytes, index)
+
+            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Byte(0) 'Data
+            writer.Byte(1)
+            Server.Send(writer.GetBytes, index)
+
             '2005
             '6005
             'A100
+
+            '05 00 0D 60 00 00 01 01 00 05 60 
+            '06 00 0D 60 00 00 00  03 00 02 00 02 
+            '05 00 0D 60 00 00 01 01 00 00 A1 
+            '02 00 0D 60 00 00 00 01                                  
 
         End Sub
 

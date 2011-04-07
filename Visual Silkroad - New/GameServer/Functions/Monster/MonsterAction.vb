@@ -6,7 +6,7 @@
             MobList(MobIndex).DeathRemoveTime = Date.Now.AddSeconds(5)
             UpdateState(0, 2, 0, MobIndex)
 
-            Dim tmp_ As Integer = GetPlayerWithMostDamage(MobIndex)
+            Dim tmp_ As Integer = MobGetPlayerWithMostDamage(MobIndex)
             If tmp_ >= 0 Then
                 If MobList(MobIndex).Mob_Type = 3 Then
                     SendUniqueKill(MobList(MobIndex).Pk2ID, PlayerData(tmp_).CharacterName)
@@ -18,13 +18,30 @@
             End If
         End Sub
 
-        Private Function GetPlayerWithMostDamage(ByVal MobIndex As Integer)
+        Public Function MobGetPlayerWithMostDamage(ByVal MobIndex As Integer)
             Dim MostIndex As Integer = -1
             Dim MostDamage As UInteger
-            For i = 0 To MobList(MobIndex).DamageFromPlayer.Count - 1
-                If MobList(MobIndex).DamageFromPlayer(i).Damage > MostDamage Then
-                    MostDamage = MobList(MobIndex).DamageFromPlayer(i).Damage
-                    MostIndex = MobList(MobIndex).DamageFromPlayer(i).PlayerIndex
+            Dim Mob_ As cMonster = MobList(MobIndex)
+
+            For i = 0 To Mob_.DamageFromPlayer.Count - 1
+                If Mob_.DamageFromPlayer(i).Damage > MostDamage Then
+                    MostDamage = Mob_.DamageFromPlayer(i).Damage
+                    MostIndex = Mob_.DamageFromPlayer(i).PlayerIndex
+                End If
+            Next
+            Return MostIndex
+        End Function
+
+
+        Public Function MobGetPlayerWithMostDamage(ByVal MobIndex As Integer, ByVal Attacking As Boolean)
+            Dim MostIndex As Integer = -1
+            Dim MostDamage As UInteger
+            Dim Mob_ As cMonster = MobList(MobIndex)
+
+            For i = 0 To Mob_.DamageFromPlayer.Count - 1
+                If Mob_.DamageFromPlayer(i).Damage > MostDamage Then
+                    MostDamage = Mob_.DamageFromPlayer(i).Damage
+                    MostIndex = Mob_.DamageFromPlayer(i).PlayerIndex
                 End If
             Next
             Return MostIndex

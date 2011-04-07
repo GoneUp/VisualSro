@@ -4,7 +4,7 @@
 
     'C --> S
 
-    Enum ClientOpcodes
+    Enum ClientOpcodes As UShort
         Handshake = &H9000
         PatchReq = &H6100
         InfoReq = &H2001 'cleint whoami
@@ -14,11 +14,11 @@
         ServerListReq = &H6101
         Login = &H6102
 
-      End Enum
+    End Enum
 
     'S --> C
 
-    Enum ServerOpcodes
+    Enum ServerOpcodes As UShort
 
         Handshake = &H5000
         ServerInfo = &H2001 'Gateway

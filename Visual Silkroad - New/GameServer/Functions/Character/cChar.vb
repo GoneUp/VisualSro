@@ -46,7 +46,7 @@
     Public Deleted As Boolean
     Public DeletionTime As DateTime
     Public HelperIcon As Byte
-    Public ActionFlag As Byte
+    Public ActionFlag As Byte '0x00 = standing, 0x02 = walking, 0x03 = running, 0x04 = sitting
     Public Busy As Boolean
     Public Alive As Boolean = True
 
@@ -337,6 +337,7 @@ End Enum
 Public Enum AttackType_
     Normal = 0
     Skill = 1
+    Buff = 2
 End Enum
 
 Public Enum MoveType_
@@ -347,6 +348,7 @@ End Enum
 
 Public Structure cBuff
     Public OwnerID As UInteger
+    Public OverID As UInteger
     Public DurationStart As DateTime
     Public DurationEnd As DateTime
 

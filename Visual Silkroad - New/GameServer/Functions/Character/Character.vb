@@ -203,8 +203,8 @@
                 GameDB.Chars(NewCharacterIndex) = New [cChar]
                 GameDB.Chars(NewCharacterIndex).AccountID = ClientList.CharListing(Index_).LoginInformation.Id
                 GameDB.Chars(NewCharacterIndex).CharacterName = nick
-                GameDB.Chars(NewCharacterIndex).CharacterId = GameDB.GetUnqiueID
-                GameDB.Chars(NewCharacterIndex).UniqueId = GameDB.Chars(NewCharacterIndex).CharacterId
+                GameDB.Chars(NewCharacterIndex).CharacterId = Id_Gen.GetNewCharID
+                GameDB.Chars(NewCharacterIndex).UniqueId = Id_Gen.GetUnqiueID
                 GameDB.Chars(NewCharacterIndex).HP = 200
                 GameDB.Chars(NewCharacterIndex).MP = 200
                 GameDB.Chars(NewCharacterIndex).CHP = 200
@@ -223,11 +223,14 @@
                 GameDB.Chars(NewCharacterIndex).Intelligence = 20
                 GameDB.Chars(NewCharacterIndex).PVP = 0
                 GameDB.Chars(NewCharacterIndex).MaxSlots = 45
-                GameDB.Chars(NewCharacterIndex).Position = Settings.Player_StartPos_Ch
                 GameDB.Chars(NewCharacterIndex).Position_Dead = Settings.Player_StartReturnPos
                 GameDB.Chars(NewCharacterIndex).Position_Recall = Settings.Player_StartReturnPos
                 GameDB.Chars(NewCharacterIndex).Position_Return = Settings.Player_StartReturnPos
-
+                If model >= 1907 And model <= 1932 Then
+                    GameDB.Chars(NewCharacterIndex).Position = Settings.Player_StartPos_Ch
+                ElseIf model >= 14717 And model <= 14743 Then
+                    GameDB.Chars(NewCharacterIndex).Position = Settings.Player_StartPos_Eu
+                End If
                 Dim magdefmin As Double = 3.0
                 Dim phydefmin As Double = 6.0
                 Dim phyatkmin As UShort = 6
@@ -438,7 +441,7 @@
                 'Finish
                 writer.Byte(1) 'success
                 Server.Send(writer.GetBytes, Index_)
-            End If
+                End If
         End Sub
         Public Sub UpdateItem(ByVal item As cInvItem)
             For i = 0 To GameDB.AllItems.Count - 1
@@ -668,7 +671,7 @@
             writer.Byte(chari.Pot_MP_Slot)  ' MP Slot
             writer.Byte(chari.Pot_MP_Value)  ' MP Value
             writer.Byte(chari.Pot_Abormal_Slot)  ' Abnormal Slot
-            writer.Byte(chari.Pot_HP_Value)  ' Abnormal Value
+            writer.Byte(chari.Pot_Abormal_Value)  ' Abnormal Value
             writer.Byte(chari.Pot_Delay)  ' Potion Delay
 
 
@@ -679,7 +682,7 @@
             writer.Word(1)  'unknown
             writer.Word(1)
             writer.Byte(0)
-            writer.Byte(2)
+            writer.Byte(0)
 
 
             Server.Send(writer.GetBytes, Index_)

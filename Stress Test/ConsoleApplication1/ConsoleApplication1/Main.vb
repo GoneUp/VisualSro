@@ -20,7 +20,7 @@ Module Main
             For b = 0 To s.Length - 1
                 s(b) = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
                 Rev(b) = New Threading.Thread(AddressOf ReceiveData)
-                s(b).Connect(New IPEndPoint(IPAddress.Parse(ip3), 15779))
+                s(b).Connect(New IPEndPoint(IPAddress.Parse(ip1), 15779))
                 Rev(b).Start(b)
                 Pos(b) = New Position
             Next
@@ -52,7 +52,7 @@ Module Main
 
             Dim packet As New PacketReader(newbuff)
 
-            Parser2.Parse(packet, index_)
+            Parser.Parse(packet, index_)
         Loop
 
 

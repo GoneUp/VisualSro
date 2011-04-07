@@ -71,7 +71,6 @@
             writer.Byte(Type)
             writer.Byte(State)
             Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
-            PlayerData(Index_).ActionFlag = State
         End Sub
 
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer, ByVal MobListIndex As UInteger)

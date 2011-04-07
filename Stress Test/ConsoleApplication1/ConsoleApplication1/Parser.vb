@@ -40,8 +40,9 @@
     End Sub
 
     Sub SendLogin(ByVal Index_ As Integer)
+        Dim Rand As New Random
         Dim name As String = "stress" & Index_
-        Dim pass As String = "stress" & Index_
+        Dim pass As String = "stress" & Index_ & 100
 
         Dim writer As New PacketWriter
         writer.Create(&H6102)
@@ -80,7 +81,7 @@
             Rev(index_) = New Threading.Thread(AddressOf ReceiveData)
             Rev(index_).Start(index_)
         Else
-            Threading.Thread.Sleep(20000)
+            Threading.Thread.Sleep(5000)
             SendLogin(index_)
         End If
     End Sub

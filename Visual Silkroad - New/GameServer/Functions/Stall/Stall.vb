@@ -458,7 +458,7 @@
         End Function
 
 
-        Private Function GetStallIndex(ByVal StallId As UInt32) As Integer
+        Public Function GetStallIndex(ByVal StallId As UInt32) As Integer
             For i = 0 To Stalls.Count - 1
                 If Stalls(i).StallID = StallId Then
                     Return i

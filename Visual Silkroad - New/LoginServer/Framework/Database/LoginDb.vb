@@ -55,11 +55,11 @@
                 Dim tmp_server As New Server_
                 tmp_server.ServerId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmp_server.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                tmp_server.AcUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_server.MaxUs = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                tmp_server.AcUs = CUShort(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmp_server.MaxUs = CUShort(tmp.Tables(0).Rows(i).ItemArray(3))
                 tmp_server.State = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
                 tmp_server.IP = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
-                tmp_server.Port = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
+                tmp_server.Port = CUShort(tmp.Tables(0).Rows(i).ItemArray(6))
 
                 Servers.Add(tmp_server)
             Next
@@ -135,10 +135,10 @@
 
 
 
-        Public Function GetServerIndexById(ByVal id As Integer)
+        Public Function GetServerIndexById(ByVal id As Integer) As UShort
             For i = 0 To Servers.Count - 1
                 If Servers(i).ServerId = id Then
-                    Return i
+                    Return Convert.ToUInt16(i)
                 End If
             Next
             Throw New Exception("Server couldn't be found! ID: " & id)

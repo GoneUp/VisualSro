@@ -95,7 +95,7 @@
             End If
         End Sub
 
-        Public Sub MonsterAttackHorse(ByVal MobIndex As Integer, ByVal Index_ As Integer)
+        Public Sub MonsterAttackObject(ByVal MobIndex As Integer, ByVal OtherUniqueID As Integer)
 
 
         End Sub
@@ -227,5 +227,55 @@
 
             Return 0
         End Function
+
+
+
+        Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobListIndex As UInteger, ByVal PlayerIsAttacking As Boolean)
+            Dim found As Boolean = False
+
+            'Search for an exits Entery
+            For i = 0 To MobList(MobListIndex).DamageFromPlayer.Count - 1
+                If MobList(MobListIndex).DamageFromPlayer(i).PlayerIndex = Index_ Then
+                    found = True
+                    MobList(MobListIndex).DamageFromPlayer(i).Damage += Damage
+                    MobList(MobListIndex).DamageFromPlayer(i).Attacking = PlayerIsAttacking
+                    Exit For
+                End If
+            Next
+
+            If found = False Then
+                'Then we must add
+                Dim tmp As New cDamageDone
+                tmp.PlayerIndex = Index_
+                tmp.Damage = Damage
+                tmp.Attacking = PlayerIsAttacking
+                MobList(MobListIndex).DamageFromPlayer.Add(tmp)
+            End If
+        End Sub
+
+        Public Sub MobSetAttackingFromPlayer(ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal PlayerIsAttacking As Boolean)
+            Dim found As Boolean = False
+            Dim MobListIndex As Integer = GetMobIndex(MobUniqueID)
+
+            If MobListIndex <> -1 Then
+                'Search for an exits Entery
+                For i = 0 To MobList(MobListIndex).DamageFromPlayer.Count - 1
+                    If MobList(MobListIndex).DamageFromPlayer(i).PlayerIndex = Index_ Then
+                        found = True
+                        MobList(MobListIndex).DamageFromPlayer(i).Attacking = PlayerIsAttacking
+                        Exit For
+                    End If
+                Next
+
+                If found = False Then
+                    'Then we must add
+                    Dim tmp As New cDamageDone
+                    tmp.PlayerIndex = Index_
+                    tmp.Damage = 0
+                    tmp.Attacking = PlayerIsAttacking
+                    MobList(MobListIndex).DamageFromPlayer.Add(tmp)
+                End If
+            End If
+        End Sub
     End Module
 End Namespace

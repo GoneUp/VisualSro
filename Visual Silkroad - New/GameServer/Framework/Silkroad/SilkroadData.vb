@@ -281,6 +281,7 @@
             Public RequiredSp As ULong
             Public RequiredMp As UShort
             Public CastTime As Byte
+            Public Time As UInteger
             Public PwrPercent As Integer
             Public PwrMin As Integer
             Public PwrMax As Integer

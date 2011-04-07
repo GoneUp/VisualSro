@@ -37,7 +37,7 @@ Namespace LoginServer
         Public Function GetBytes() As Byte()
             Dim buffer(0) As Byte
             Me.ms.Position = 0L
-            Dim num As UShort = (bw.BaseStream.Length - 6)
+            Dim num As UShort = CUShort((bw.BaseStream.Length - 6))
             Me.bw.Write(num)
             Me.bw.Close()
             buffer = Me.ms.ToArray()

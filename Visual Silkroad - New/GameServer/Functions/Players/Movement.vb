@@ -156,16 +156,10 @@
                             If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
                                 Server.Send(CreateSpawnPacket(Index_), refindex)
                                 PlayerData(refindex).SpawnedPlayers.Add(Index_)
-
-                                LinkPlayerToGuild(Index_)
-                                LinkPlayerToStall(Index_, refindex)
                             End If
                             If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
                                 Server.Send(CreateSpawnPacket(refindex), Index_)
                                 PlayerData(Index_).SpawnedPlayers.Add(refindex)
-
-                                LinkPlayerToGuild(Index_)
-                                LinkPlayerToStall(refindex, Index_)
                             End If
 
                         End If

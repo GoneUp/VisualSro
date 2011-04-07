@@ -66,6 +66,7 @@ Namespace GameServer
                 PlayerAttackTimer(Index).Stop()
                 PlayerData(Index).Busy = False
                 PlayerData(Index).Attacking = False
+                MobSetAttackingFromPlayer(Index, PlayerData(Index).AttackedId, False)
 
                 If PlayerData(Index).AttackedId <> 0 Then
                     Dim MobListIndex As Integer
@@ -74,13 +75,20 @@ Namespace GameServer
                             MobListIndex = i
                         End If
                     Next
+
                     Dim mob_ As cMonster = MobList(MobListIndex)
+
                     If mob_.Death = False Then
                         If PlayerData(Index).AttackType = AttackType_.Normal Then
                             PlayerAttackNormal(Index, MobListIndex)
                         ElseIf PlayerData(Index).AttackType = AttackType_.Skill Then
                             PlayerAttackEndSkill(Index)
                         End If
+                    End If
+
+                Else
+                    If PlayerData(Index).AttackType = AttackType_.Buff Then
+                        PlayerBuff_End(Index)
                     End If
                 End If
 
@@ -242,16 +250,15 @@ Namespace GameServer
                 For i = 0 To MobList.Count - 1
                     If i < MobList.Count Then
                         Dim obj As Object_ = GetObjectById(MobList(i).Pk2ID)
-                        Dim mob = MobList(i)
+                        Dim Mob_ = MobList(i)
 
 
-                        If MobList(i).Death = False And MobList(i).Walking = False And obj.WalkSpeed > 0 Then
-                            Dim dist As Single = CalculateDistance(MobList(i).Position, MobList(i).Position_Spawn)
-                            Dim mob_ = MobList(i)
+                        If Mob_.Death = False And Mob_.Walking = False And obj.WalkSpeed > 0 Then
+                            Dim dist As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
                             If dist < Settings.Server_Range Then
-                                Dim ToX As Single = GetRealX(MobList(i).Position.XSector, MobList(i).Position.X) + random.Next(-15, +10)
-                                Dim ToY As Single = GetRealY(MobList(i).Position.YSector, MobList(i).Position.Y) + random.Next(-10, +15)
+                                Dim ToX As Single = GetRealX(Mob_.Position.XSector, Mob_.Position.X) + random.Next(-15, +10)
+                                Dim ToY As Single = GetRealY(Mob_.Position.YSector, Mob_.Position.Y) + random.Next(-10, +15)
 
                                 Dim ToPos As New Position
                                 ToPos.XSector = GetXSec(ToX)
@@ -260,7 +267,7 @@ Namespace GameServer
                                 ToPos.Z = MobList(i).Position.Z
                                 ToPos.Y = GetYOffset(ToY)
 
-                                If ToPos.X = mob.Position.X And ToPos.Y = mob.Position.Y Then
+                                If ToPos.X = Mob_.Position.X And ToPos.Y = Mob_.Position.Y Then
                                     ToPos.X += 1
                                 End If
 

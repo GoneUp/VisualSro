@@ -60,7 +60,7 @@
         Public Sub SpawnNPC(ByVal ItemId As UInteger, ByVal Position As Position, ByVal Angle As UInt16)
             Dim npc_ As Object_ = GetObjectById(ItemId)
             Dim toadd As New cNPC
-            toadd.UniqueID = GameDB.GetUnqiueID
+            toadd.UniqueID = Id_Gen.GetUnqiueID
             toadd.Pk2ID = npc_.Pk2ID
             toadd.Angle = Angle
             If npc_.Type = Object_.Type_.Npc Then

@@ -36,7 +36,7 @@
 
         Public Sub DropItem(ByVal Item As cInvItem, ByVal Position As Position)
             Dim tmp_ As New cItemDrop
-            tmp_.UniqueID = GameDB.GetUnqiueID
+            tmp_.UniqueID = Id_Gen.GetUnqiueID
             tmp_.DroppedBy = Item.OwnerCharID
             tmp_.Position = Position
             tmp_.Item = FillItem(Item)

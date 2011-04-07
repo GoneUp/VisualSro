@@ -50,9 +50,9 @@
                 End If
             Next
 
-            writer.Byte(4) 'avatar start
+            writer.Byte(4) 'Avatar Slots
             writer.Byte(0) '0 avatars fro now
-            writer.Byte(0)
+            writer.Byte(0) 'Duplicate List
 
             writer.DWord(chari.UniqueId)
             writer.Byte(chari.Position.XSector)
@@ -63,7 +63,12 @@
 
             writer.Word(chari.Angle)
             writer.Byte(0) 'dest
-            writer.Byte(chari.MovementType) 'walk run flag
+            If chari.MovementType = MoveType_.Walk Then
+                writer.Byte(0) 'Walking
+            ElseIf chari.MovementType = MoveType_.Run Then
+                writer.Byte(1) 'Running
+            End If
+
 
             writer.Byte(0) 'dest
             writer.Word(chari.Angle)
@@ -80,18 +85,60 @@
             writer.Word(chari.CharacterName.Length)
             writer.String(chari.CharacterName)
 
-            writer.Byte(0) 'job lvl
+            writer.Byte(0) 'Unknown
             writer.Byte(1) 'job type
-            writer.DWord(0) 'trader exp
-            writer.DWord(0) 'theif exp
-            writer.DWord(0) 'hunter exp
-            writer.DWord(0)
-            writer.DWord(0)
-            writer.DWord(0)
-            writer.DWord(0)
+            writer.Byte(0) 'Job Level
+            writer.Byte(0) 'PK Flag
+            writer.Byte(0) 'Transport
+            writer.Byte(0) 'Unknown
+            ' writer.DWord(0) IF Transportflag = 1
+            If chari.InStall = True Then
+                writer.Byte(4) 'Stall Flag
+            Else
+                writer.Byte(0)
+            End If
+            writer.Byte(0) 'Unknwon
+
+
+            If chari.InGuild = True Then
+                Dim guild As cGuild = GameDB.GetGuildWithGuildID(chari.GuildID)
+                Dim member As cGuild.GuildMember_ = GetMember(chari.GuildID, chari.CharacterId)
+
+                writer.Word(guild.Name.Length)
+                writer.String(guild.Name)
+                writer.DWord(guild.GuildID)
+                writer.Word(member.GrantName.Length)
+                writer.String(member.GrantName)
+
+                writer.DWord(0) 'guild emblem id
+                writer.DWord(0) 'union id
+                writer.DWord(0) 'union emblem id
+            Else
+
+                writer.Word(0)
+                writer.DWord(0)
+                writer.Word(0)
+
+                writer.DWord(0) 'guild emblem id
+                writer.DWord(0) 'union id
+                writer.DWord(0) 'union emblem id
+            End If
+
+            writer.Byte(0) 'guildwar falg
+            writer.Byte(0) 'FW Role
+
+            If chari.InStall = True Then
+                Dim Stall_Index As Integer = GetStallIndex(chari.StallID)
+
+                writer.Word(Stalls(Index).StallName.Length)
+                writer.UString(Stalls(Index).StallName)
+                writer.DWord(0) 'Stall Dekoration ID
+            End If
+
+
             writer.Byte(0)
             writer.Byte(chari.PVP)
-            writer.Byte(1)
+            writer.Byte(4)
 
             Return writer.GetBytes
         End Function

@@ -1,7 +1,7 @@
 ﻿Namespace GameServer.Functions
     Module PlayerAttack
 
-        Dim Random As New Random
+        Public Rand As New Random
 
         Public Sub OnPlayerAttack(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim found As Boolean = False
@@ -37,19 +37,11 @@
                         Dim skillid As UInteger = packet.DWord
                         Dim type As Byte = packet.Byte() 'Type = 1--> Monster Attack --- Type = 0 --> Buff
 
-                        If type = 1 Then
-                            Dim ObjectID As UInt32 = packet.DWord
+                        Select Case type
+                            Case 1
+                                Dim ObjectID As UInt32 = packet.DWord
 
-                            If PlayerData(Index_).Attacking = False Then
-                                For i = 0 To MobList.Count - 1
-                                    If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
-                                        PlayerAttackBeginSkill(skillid, Index_, i)
-                                        found = True
-                                        Exit For
-                                    End If
-                                Next
-                            Else
-                                If PlayerData(Index_).AttackType = AttackType_.Normal Then
+                                If PlayerData(Index_).Attacking = False Then
                                     For i = 0 To MobList.Count - 1
                                         If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
                                             PlayerAttackBeginSkill(skillid, Index_, i)
@@ -57,12 +49,25 @@
                                             Exit For
                                         End If
                                     Next
+                                Else
+                                    If PlayerData(Index_).AttackType = AttackType_.Normal Then
+                                        For i = 0 To MobList.Count - 1
+                                            If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
+                                                PlayerAttackBeginSkill(skillid, Index_, i)
+                                                found = True
+                                                Exit For
+                                            End If
+                                        Next
+                                    End If
                                 End If
-                            End If
-                        End If
+                            Case 0
+                                PlayerBuff_Beginn(skillid, Index_)
 
 
+                        End Select
                 End Select
+
+
 
 
                 If found = False Then
@@ -80,6 +85,7 @@
                 writer.Byte(0)
                 Server.Send(writer.GetBytes, Index_)
 
+                MobSetAttackingFromPlayer(Index_, PlayerData(Index_).AttackedId, False)
                 PlayerData(Index_).Attacking = False
                 PlayerData(Index_).Busy = False
                 PlayerData(Index_).AttackedId = 0
@@ -167,7 +173,7 @@
 
             writer.DWord(AttackType)
             writer.DWord(PlayerData(Index_).UniqueId)
-            writer.DWord(CUInt(Random.Next(1000, 10000) + PlayerData(Index_).UniqueId))
+            writer.DWord(CUInt(Rand.Next(1000, 10000) + PlayerData(Index_).UniqueId))
             writer.DWord(MobList(MobListIndex).UniqueID)
 
             writer.Byte(1)
@@ -188,11 +194,11 @@
 
                     If CLng(MobList(MobListIndex).HP_Cur) - Damage > 0 Then
                         MobList(MobListIndex).HP_Cur -= Damage
-                        AddDamageFromPlayer(Damage, Index_, MobListIndex)
+                        MobAddDamageFromPlayer(Damage, Index_, MobListIndex, True)
                     ElseIf CLng(MobList(MobListIndex).HP_Cur) - Damage <= 0 Then
                         'Dead
                         afterstate = &H80
-                        AddDamageFromPlayer(MobList(MobListIndex).HP_Cur, Index_, MobListIndex) 'Done the last Damage
+                        MobAddDamageFromPlayer(MobList(MobListIndex).HP_Cur, Index_, MobListIndex, False) 'Done the last Damage
                         MobList(MobListIndex).HP_Cur = 0
                     End If
 
@@ -209,7 +215,7 @@
                 GetEXPFromMob(MobList(MobListIndex))
 
                 KillMob(MobListIndex)
-                SendAttackEnd(Index_)
+                Attack_SendAttackEnd(Index_)
 
                 PlayerData(Index_).Attacking = False
                 PlayerData(Index_).Busy = False
@@ -247,7 +253,7 @@
 
             If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 Then
                 'Not enough MP
-                SendNotEnoughMP(Index_)
+                Attack_SendNotEnoughMP(Index_)
                 Exit Sub
             Else
                 PlayerData(Index_).CMP -= RefSkill.RequiredMp
@@ -258,8 +264,8 @@
             PlayerData(Index_).Attacking = True
             PlayerData(Index_).UsingSkillId = SkillID
             PlayerData(Index_).AttackType = AttackType_.Skill
-            PlayerData(Index_).SkillOverId = Random.Next(1000, 10000) + PlayerData(Index_).UniqueId
-
+            PlayerData(Index_).SkillOverId = Id_Gen.GetSkillOverId
+            MobSetAttackingFromPlayer(Index_, MobList(MobIndex).UniqueID, True)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Reply)
@@ -335,11 +341,11 @@
 
                     If CLng(MobList(MobListIndex).HP_Cur) - Damage > 0 Then
                         MobList(MobListIndex).HP_Cur -= Damage
-                        AddDamageFromPlayer(Damage, Index_, MobListIndex)
+                        MobAddDamageFromPlayer(Damage, Index_, MobListIndex, False)
                     ElseIf CLng(MobList(MobListIndex).HP_Cur) - Damage <= 0 Then
                         'Dead
                         afterstate = &H80
-                        AddDamageFromPlayer(MobList(MobListIndex).HP_Cur, Index_, MobListIndex)
+                        MobAddDamageFromPlayer(MobList(MobListIndex).HP_Cur, Index_, MobListIndex, False)
                         MobList(MobListIndex).HP_Cur = 0
                     End If
 
@@ -356,7 +362,7 @@
                 GetEXPFromMob(MobList(MobListIndex))
 
                 KillMob(MobListIndex)
-                SendAttackEnd(Index_)
+                Attack_SendAttackEnd(Index_)
 
                 PlayerData(Index_).Attacking = False
                 PlayerData(Index_).Busy = False
@@ -433,7 +439,7 @@
             Return FinalDamage
         End Function
 
-        Private Sub SendNotEnoughMP(ByVal Index_ As Integer)
+        Public Sub Attack_SendNotEnoughMP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Reply)
             writer.Byte(3)
@@ -449,7 +455,7 @@
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Private Sub SendAttackEnd(ByVal Index_ As Integer)
+        Public Sub Attack_SendAttackEnd(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Reply)
             writer.Byte(2)
@@ -465,26 +471,5 @@
             End If
         End Function
 
-        Public Sub AddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobListIndex As UInteger)
-            Dim found As Boolean = False
-            Dim d = MobList(MobListIndex)
-
-            'Search for an exits Entery
-            For i = 0 To MobList(MobListIndex).DamageFromPlayer.Count - 1
-                If MobList(MobListIndex).DamageFromPlayer(i).PlayerIndex = Index_ Then
-                    found = True
-                    MobList(MobListIndex).DamageFromPlayer(i).Damage += Damage
-                    Exit For
-                End If
-            Next
-
-            If found = False Then
-                'Then we must add
-                Dim tmp As New cDamageDone
-                tmp.PlayerIndex = Index_
-                tmp.Damage = Damage
-                MobList(MobListIndex).DamageFromPlayer.Add(tmp)
-            End If
-        End Sub
     End Module
 End Namespace

@@ -24,9 +24,6 @@
         Public Guilds As New List(Of cGuild)
 
         Private First As Boolean = False
-        Public UniqueIdCounter As UInteger = 1
-
-
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
             Try
@@ -150,7 +147,7 @@
                     Chars(i).Pot_Abormal_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(44))
                     Chars(i).Pot_Delay = CByte(tmp.Tables(0).Rows(i).ItemArray(45))
 
-                    Chars(i).UniqueId = GetUnqiueID()
+                    Chars(i).UniqueId = Id_Gen.GetUnqiueID()
                 Next
 
             Else
@@ -398,17 +395,6 @@
                 End If
             Next
             Return free
-        End Function
-
-        Public Function GetUnqiueID() As UInteger
-            Dim toreturn As UInteger = UniqueIdCounter
-            If UniqueIdCounter < UInteger.MaxValue Then
-                UniqueIdCounter += 1
-            ElseIf UniqueIdCounter = UInteger.MaxValue Then
-                UniqueIdCounter = 0
-            End If
-
-            Return toreturn
         End Function
 
         Public Function GetGuildWithGuildID(ByVal GuildID As UInteger) As cGuild

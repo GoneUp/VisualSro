@@ -111,9 +111,15 @@
 
             writer.Byte(0)
 
-            LoginServer.Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, index)
 
+            Dim txt = "Hello"
 
+            writer.Create(ServerOpcodes.LoginAuthInfo)
+            writer.Byte(4) 'failed
+            writer.Word(txt.Length)
+            writer.String(txt) 'grund
+            'Server.Send(writer.GetBytes, index)
         End Sub
 
         Public Sub HandleLogin(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)

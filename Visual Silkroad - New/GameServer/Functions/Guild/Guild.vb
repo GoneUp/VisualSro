@@ -38,7 +38,7 @@
                         writer.Byte(&HA)
                         writer.Byte(char_.Level)
                         writer.DWord(guild.Member(i).DonantedGP)
-                        writer.DWord(1)
+                        writer.DWord(0)
                     End If
 
                     writer.DWord(0)
@@ -48,12 +48,24 @@
                     writer.Word(guild.Member(i).GrantName.Length)
                     writer.String(guild.Member(i).GrantName)
                     writer.DWord(char_.Model)
-                    writer.Word(2)
+                    writer.Word(0)
                 Next
 
+                writer.Byte(0)
 
                 Server.Send(writer.GetBytes, Index_)
             End If
+
+            'SendGuildLogOn(Index_)
+        End Sub
+
+        Public Sub SendGuildLogOn(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Guild_Logon)
+            writer.Byte(6)
+            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.Word(2)
+            Server.Send(writer.GetBytes, Index_)
         End Sub
 
         Public Sub LinkPlayerToGuild(ByVal Index_ As Integer)
@@ -69,8 +81,8 @@
                 writer.String(guild.Name)
                 writer.Word(member.GrantName.Length)
                 writer.String(member.GrantName)
-                writer.DWord(1)
-                writer.DWord(1)
+                writer.DWord(0)
+                writer.DWord(0)
                 writer.DWord(0)
                 writer.Byte(1)
                 writer.Byte(1)
@@ -78,7 +90,7 @@
             End If
         End Sub
 
-        Private Function GetMember(ByVal GuildID As UInteger, ByVal CharID As UInteger) As cGuild.GuildMember_
+        Public Function GetMember(ByVal GuildID As UInteger, ByVal CharID As UInteger) As cGuild.GuildMember_
             For i = 0 To GameDB.Guilds.Count - 1
                 If GameDB.Guilds(i).GuildID = GuildID Then
                     For m = 0 To GameDB.Guilds(i).Member.Count - 1

@@ -50,6 +50,8 @@ Module Log
         ElseIf msg = "/snow" Then
             GameServer.Functions.OnSetWeather(3, 75, 1)
 
+        ElseIf msg = "/count" Then
+            GameServer.Log.WriteSystemLog(String.Format("Count:{0}!", GameServer.Server.OnlineClient))
         End If
 
 

@@ -121,6 +121,7 @@
         'Guild
         Guild_Info = &H3101
         Guild_Link = &H30FF
+        Guild_Logon = &H38F5
 
         'Die
         Die_1 = &H3011

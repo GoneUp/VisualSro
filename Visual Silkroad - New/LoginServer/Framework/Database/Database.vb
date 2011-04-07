@@ -10,6 +10,8 @@ Namespace LoginServer
         Private Shared ConnectionString As String
         Private Shared da As MySqlDataAdapter
         Private Shared Query As New List(Of String)
+        Private Shared Blocked As Boolean
+        Private Shared BlockCount As UShort
 
         Public Shared DB_IP As String
         Public Shared DB_PORT As UShort
@@ -107,9 +109,19 @@ Namespace LoginServer
 
 #Region "Insert/update"
         Public Shared Sub InsertData(ByVal command As String)
-            Dim command2 As New MySqlCommand(command, connection)
             Try
-                command2.ExecuteNonQuery()
+                Select Case Blocked
+                    Case False
+                        Blocked = True
+                        Dim command2 As New MySqlCommand(command, Connection)
+                        command2.ExecuteNonQuery()
+                        Blocked = False
+                    Case True
+                        InsertData(command, True)
+                        Console.WriteLine("Conn Blocked! " & BlockCount)
+                        BlockCount += 1
+                End Select
+
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception, command)
             End Try

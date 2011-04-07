@@ -242,7 +242,7 @@
 
             For i = 0 To MobList.Count - 1
                 If MobList(i).UniqueID = unique_Id Then
-                    AddDamageFromPlayer(MobList(i).HP_Cur, Index_, i)
+                    MobAddDamageFromPlayer(MobList(i).HP_Cur, Index_, i, False)
                     GetEXPFromMob(MobList(i))
                     KillMob(i)
                 End If

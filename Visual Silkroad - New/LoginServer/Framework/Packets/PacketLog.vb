@@ -3,7 +3,7 @@
 
         Public Sub LogPacket(ByVal buffer As Byte(), ByVal FromServer As Boolean)
             Try
-                Dim length As UInteger = BitConverter.ToUInt16(buffer, 0)
+                Dim length As Integer = BitConverter.ToUInt16(buffer, 0)
                 Dim op As UInteger = BitConverter.ToUInt16(buffer, 2)
 
 

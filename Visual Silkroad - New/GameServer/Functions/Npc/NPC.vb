@@ -159,13 +159,15 @@
                 'Level too low
                 writer.Byte(2)
                 writer.Byte(&H15)
-                'Server.Send(writer.GetBytes, Index_)
+                writer.Byte(&H1C)
+                Server.Send(writer.GetBytes, Index_)
 
             ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
                 'Level too high
                 writer.Byte(2)
                 writer.Byte(&H16)
-                'Server.Send(writer.GetBytes, Index_)
+                writer.Byte(&H1C)
+                Server.Send(writer.GetBytes, Index_)
 
             Else
                 PlayerData(Index_).Busy = True

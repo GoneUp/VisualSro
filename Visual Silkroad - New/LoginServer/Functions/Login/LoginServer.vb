@@ -3,12 +3,14 @@
 
 
         Public Sub ClientInfo(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
-            Dim locale As Byte = packet.Byte
-            Dim clientname As String = packet.String(packet.Word)
-            Dim version As UInt32 = packet.DWord
+            ClientList.SessionInfo(Index_).Locale = packet.Byte
+            ClientList.SessionInfo(Index_).ClientName = packet.String(packet.Word)
+            ClientList.SessionInfo(Index_).Version = packet.DWord
 
             If Log_Connect Then
-                Log.WriteGameLog(Index_, "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", locale, clientname, version))
+                With ClientList.SessionInfo(Index_)
+                    Log.WriteGameLog(Index_, "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", .Locale, .ClientName, .Version))
+                End With
             End If
         End Sub
 
@@ -22,7 +24,7 @@
             LoginServer.Server.Send(writer.GetBytes, index)
         End Sub
 
-        Public Sub SendPatchInfo(ByVal index As Integer)
+        Public Sub SendPatchInfo(ByVal Index_ As Integer)
 
             'Note: Patch Info for Rsro
             Dim writer As New LoginServer.PacketWriter
@@ -30,7 +32,7 @@
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&H2005)
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(0) 'Data
@@ -40,33 +42,48 @@
             writer.Byte(&HA)
             writer.DWord(5)
             writer.Byte(2)
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
             '====================================
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&H6005)
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(0) 'Data
             writer.Word(3)
             writer.Word(2)
             writer.Byte(2)
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
             '====================================
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&HA100)
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(0) 'Data
-            writer.Byte(1)
-            Server.Send(writer.GetBytes, index)
+
+            Dim i = Settings.Server_CurrectVersion
+            If ClientList.SessionInfo(Index_).Version = Settings.Server_CurrectVersion Then
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, Index_)
+            ElseIf ClientList.SessionInfo(Index_).Version > Settings.Server_CurrectVersion Then
+                'Client too new 
+                writer.Byte(2)
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, Index_)
+            ElseIf ClientList.SessionInfo(Index_).Version < Settings.Server_CurrectVersion Then
+                'Client too old 
+                writer.Byte(2)
+                writer.Byte(4)
+                Server.Send(writer.GetBytes, Index_)
+            End If
+
 
             '2005
             '6005
@@ -79,14 +96,14 @@
 
         End Sub
 
-        Public Sub SendLauncherInfo(ByVal index As Integer)
+        Public Sub SendLauncherInfo(ByVal Index_ As Integer)
 
             Dim writer As New LoginServer.PacketWriter
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&HA104)
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
 
 
@@ -111,12 +128,12 @@
             Next
 
 
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
 
         End Sub
 
-        Public Sub SendServerList(ByVal index As Integer)
+        Public Sub SendServerList(ByVal Index_ As Integer)
 
             Dim NameServer As String = "SRO_Russia_Official"
             Dim writer As New PacketWriter
@@ -141,7 +158,7 @@
 
             writer.Byte(0)
 
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
 
             Dim txt = "Hello"
 

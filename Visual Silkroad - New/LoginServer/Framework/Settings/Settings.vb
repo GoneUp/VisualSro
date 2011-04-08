@@ -16,7 +16,7 @@
         Public Auto_Register As Boolean = False
         Public Max_FailedLogins As Integer = 5
         Public Max_RegistersPerDay As Integer = 3
-        Public Server_CurrectVersion = 0
+        Public Server_CurrectVersion As UInteger = 0
 
         Public Log_Connect As Boolean = False
         Public Log_Register As Boolean = False

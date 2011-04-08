@@ -4,12 +4,15 @@ Namespace LoginServer
     Public Class ClientList
         Public Shared List(1500) As Socket
         Public Shared LastPingTime(1500) As DateTime
+        Public Shared SessionInfo(1500) As _SessionInfo
         Public Shared WithEvents PingTimer As New Timer
 
         Public Shared Sub Add(ByVal sock As Socket)
             For i As Integer = 0 To List.Length - 1
                 If List(i) Is Nothing Then
                     List(i) = sock
+                    LastPingTime(i) = New DateTime
+                    SessionInfo(i) = New _SessionInfo
                     Return
                 End If
             Next i
@@ -18,6 +21,8 @@ Namespace LoginServer
         Public Shared Sub Delete(ByVal index As Integer)
             If List(index) IsNot Nothing Then
                 List(index) = Nothing
+                LastPingTime(index) = Nothing
+                SessionInfo(index) = Nothing
             End If
         End Sub
 
@@ -43,7 +48,7 @@ Namespace LoginServer
         End Function
 
         Public Shared Sub SetupClientList(ByVal MaxUser As Integer)
-            ReDim List(MaxUser), ClientList.LastPingTime(MaxUser)
+            ReDim List(MaxUser), ClientList.LastPingTime(MaxUser), SessionInfo(MaxUser)
 
             PingTimer.Interval = 60000
             PingTimer.Start()
@@ -59,7 +64,7 @@ Namespace LoginServer
                 If socket IsNot Nothing Then
                     If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
                         If socket.Connected = True Then
-                            Server.Dissconnect(i)
+                            ' Server.Dissconnect(i)
                         End If
                     Else
                         Count += 1
@@ -72,6 +77,13 @@ Namespace LoginServer
             PingTimer.Interval = 10000
             PingTimer.Start()
         End Sub
+
+    End Class
+
+    Public Class _SessionInfo
+        Public Version As UInt32
+        Public ClientName As String
+        Public Locale As Byte
     End Class
 End Namespace
 

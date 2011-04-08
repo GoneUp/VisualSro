@@ -64,34 +64,35 @@ Namespace GameServer
                 Next
 
                 PlayerAttackTimer(Index).Stop()
-                PlayerData(Index).Busy = False
-                PlayerData(Index).Attacking = False
-                MobSetAttackingFromPlayer(Index, PlayerData(Index).AttackedId, False)
+                If Index <> -1 And PlayerData(Index) IsNot Nothing Then
+                    PlayerData(Index).Busy = False
+                    PlayerData(Index).Attacking = False
+                    MobSetAttackingFromPlayer(Index, PlayerData(Index).AttackedId, False)
 
-                If PlayerData(Index).AttackedId <> 0 Then
-                    Dim MobListIndex As Integer
-                    For i = 0 To MobList.Count - 1
-                        If MobList(i).UniqueID = PlayerData(Index).AttackedId Then
-                            MobListIndex = i
+                    If PlayerData(Index).AttackedId <> 0 Then
+                        Dim MobListIndex As Integer
+                        For i = 0 To MobList.Count - 1
+                            If MobList(i).UniqueID = PlayerData(Index).AttackedId Then
+                                MobListIndex = i
+                            End If
+                        Next
+
+                        Dim mob_ As cMonster = MobList(MobListIndex)
+
+                        If mob_.Death = False Then
+                            If PlayerData(Index).AttackType = AttackType_.Normal Then
+                                PlayerAttackNormal(Index, MobListIndex)
+                            ElseIf PlayerData(Index).AttackType = AttackType_.Skill Then
+                                PlayerAttackEndSkill(Index)
+                            End If
                         End If
-                    Next
 
-                    Dim mob_ As cMonster = MobList(MobListIndex)
-
-                    If mob_.Death = False Then
-                        If PlayerData(Index).AttackType = AttackType_.Normal Then
-                            PlayerAttackNormal(Index, MobListIndex)
-                        ElseIf PlayerData(Index).AttackType = AttackType_.Skill Then
-                            PlayerAttackEndSkill(Index)
+                    Else
+                        If PlayerData(Index).AttackType = AttackType_.Buff Then
+                            PlayerBuff_End(Index)
                         End If
-                    End If
-
-                Else
-                    If PlayerData(Index).AttackType = AttackType_.Buff Then
-                        PlayerBuff_End(Index)
                     End If
                 End If
-
 
 
 
@@ -227,6 +228,11 @@ Namespace GameServer
                             End If
                         ElseIf IsInSaveZone(MobList(i).Position) Then
                             RemoveMob(i)
+                        ElseIf mob_.GetsAttacked = True Then
+                            'Attack back...
+                            If mob_.IsAttacking = False Then
+                                MonsterAttackPlayer(i, MobGetPlayerWithMostDamage(i, True))
+                            End If
                         End If
                     End If
                 Next
@@ -307,13 +313,6 @@ Namespace GameServer
                                     MobList(i).Position.YSector = GetYSec(MobList(i).Position.Y)
                                 End If
                             End If
-                        ElseIf Mob_.GetsAttacked = True Then
-                            'Attack back...
-                            If Mob_.IsAttacking = False Then
-                                MonsterAttackPlayer(i, MobGetPlayerWithMostDamage(i, True))
-                            End If
-
-
                         End If
                     End If
                 Next
@@ -323,6 +322,7 @@ Namespace GameServer
                 MonsterMovement.Start()
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '
+                MonsterMovement.Start()
             End Try
 
         End Sub

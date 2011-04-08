@@ -24,15 +24,23 @@
 
 
         Public Sub MonsterAttackPlayer(ByVal MobIndex As Integer, ByVal Index_ As Integer)
-            MobList(MobIndex).AttackingId = PlayerData(Index_).UniqueId
-            MobList(MobIndex).UsingSkillId = Monster_GetNextSkill(MobList(MobIndex).UsingSkillId, MobList(MobIndex).Pk2ID)
+            If MobList(MobIndex) Is Nothing Then
+                Exit Sub
+            End If
+
+            Dim Mob_ As cMonster = MobList(MobIndex)
+
+            Mob_.AttackingId = PlayerData(Index_).UniqueId
+            Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
+            ' Dim i = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
 
             Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
             Dim RefWeapon As New cItem
             Dim AttObject As Object_ = GetObjectById(PlayerData(Index_).Model)
-            Dim RefSkill As Skill_ = GetSkillById(MobList(MobIndex).UsingSkillId)
+            Dim RefMonster As Object_ = GetObjectById(Mob_.Pk2ID)
+            Dim RefSkill As Skill_ = GetSkillById(Mob_.UsingSkillId)
 
-            Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, MobList(MobIndex).Position)
+            Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
             If Distance >= (RefSkill.Distance) Then
                 MoveMob(MobIndex, PlayerData(Index_).Position)
                 Exit Sub
@@ -40,11 +48,11 @@
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Reply)
-            writer.Byte(1)
-            writer.Byte(1)
-            Server.Send(writer.GetBytes, Index_)
-
+            ' writer.Create(ServerOpcodes.Attack_Reply)
+            ' writer.Byte(1)
+            ' writer.Byte(1)
+            'Server.Send(writer.GetBytes, Index_)
+            UpdateState(1, 3, Index_, MobIndex)
 
             writer.Create(ServerOpcodes.Attack_Main)
             writer.Byte(1)
@@ -52,8 +60,8 @@
             writer.Byte(&H30)
 
             writer.DWord(AttackType)
-            writer.DWord(MobList(MobIndex).UniqueID)
-            writer.DWord(CUInt(Random.Next(1000, 10000) + MobList(MobIndex).UniqueID))
+            writer.DWord(Mob_.UniqueID)
+            writer.DWord(Id_Gen.GetSkillOverId)
             writer.DWord(PlayerData(Index_).UniqueId)
 
             writer.Byte(1)
@@ -64,7 +72,7 @@
                 writer.DWord(PlayerData(Index_).UniqueId)
 
                 For i = 0 To NumberAttack - 1
-                    Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, AttackType)
+                    Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Id)
                     Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
@@ -87,11 +95,13 @@
                     writer.Word(0)
                 Next
             Next
-            Server.SendIfMobIsSpawned(writer.GetBytes, MobList(MobIndex).UniqueID)
+            Server.SendIfMobIsSpawned(writer.GetBytes, Mob_.UniqueID)
 
 
             If afterstate = &H80 Then
                 KillPlayer(Index_)
+            Else
+                UpdateHP(Index_)
             End If
         End Sub
 

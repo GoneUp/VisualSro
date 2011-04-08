@@ -159,14 +159,6 @@
             writer.Byte(0)
 
             Server.Send(writer.GetBytes, Index_)
-
-            Dim txt = "Hello"
-
-            writer.Create(ServerOpcodes.LoginAuthInfo)
-            writer.Byte(4) 'failed
-            writer.Word(txt.Length)
-            writer.String(txt) 'grund
-            'Server.Send(writer.GetBytes, index)
         End Sub
 
         Public Sub HandleLogin(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
@@ -186,31 +178,9 @@
                 If Settings.Auto_Register = True Then
                     If CheckIfUserCanRegister(ClientList.GetSocket(Index_).RemoteEndPoint.ToString) = True Then
                         RegisterUser(ID, Pw, Index_)
-                        Dim reason As String = String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw)
-                        writer.Byte(2) 'failed
-                        writer.Byte(2) 'gebannt
-                        writer.Byte(1) 'unknown
-                        writer.Word(reason.Length)
-                        writer.String(reason) 'grund
-                        writer.Word(2015) 'jahr
-                        writer.Word(12) 'monat
-                        writer.Word(12) 'tag
-                        writer.DWord(0) 'unknwon
-                        writer.DWord(0) 'unknwon
-                        writer.Word(0) 'unknwon
+                        Login_WriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw), Index_)
                     Else
-                        Dim reason As String = String.Format("You can only register {0} a day!", Max_RegistersPerDay)
-                        writer.Byte(2) 'failed
-                        writer.Byte(2) 'gebannt
-                        writer.Byte(1) 'unknown
-                        writer.Word(reason.Length)
-                        writer.String(reason) 'grund
-                        writer.Word(3000) 'jahr
-                        writer.Word(12) 'monat
-                        writer.Word(12) 'tag
-                        writer.DWord(0) 'unknwon
-                        writer.DWord(0) 'unknwon
-                        writer.Word(0) 'unknwon
+                        Login_WriteSpecialText(String.Format("You can only register {0} Accounts a day!", Max_RegistersPerDay), Index_)
                     End If
 
 
@@ -224,9 +194,9 @@
                     writer.Byte(1) 'number of falied logins
                     writer.Word(0)
                     writer.Byte(0)
+                    Server.Send(writer.GetBytes, Index_)
                 End If
 
-                Server.Send(writer.GetBytes, Index_)
             Else
                 CheckBannTime(UserIndex)
 

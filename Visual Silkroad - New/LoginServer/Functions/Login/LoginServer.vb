@@ -113,10 +113,10 @@
 
             For i = 0 To LoginDb.News.Count - 1
                 writer.Word(LoginDb.News(i).Title.Length)
-                writer.String(LoginDb.News(i).Title.Length)
+                writer.String(LoginDb.News(i).Title)
 
                 writer.Word(LoginDb.News(i).Text.Length)
-                writer.String(LoginDb.News(i).Text.Length)
+                writer.String(LoginDb.News(i).Text)
 
                 writer.Word(LoginDb.News(i).Time.Year) 'jahr
                 writer.Word(LoginDb.News(i).Time.Month)

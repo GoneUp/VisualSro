@@ -124,7 +124,7 @@
             Dim FinalDamage As UInteger
             Dim Balance As Double
             If (CSng(Mob.Level) - PlayerData(Index_).Level) > -10 Then
-                Balance = (1 + (CSng(Mob.Level) - PlayerData(Index_).Level) / 10)
+                Balance = (1 + (CSng(Mob.Level) - PlayerData(Index_).Level) / 100)
             Else
                 Balance = 0.01
             End If
@@ -133,8 +133,8 @@
             Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + PlayerData(Index_).PhyAbs) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
-                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + PlayerData(Index_).PhyAbs) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 1000)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
+                DamageMax = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 1000)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
             ElseIf RefSkill.Type = TypeTable.Mag Then
                 'UNUSED FOR NOW
                 '  DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)

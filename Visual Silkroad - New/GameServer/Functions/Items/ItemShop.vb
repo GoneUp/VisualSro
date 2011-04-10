@@ -30,7 +30,7 @@
                 Case 1
                     Price = BuyItem.SHOP_PRICE * amout
                 Case 2
-
+                    Price = BuyItem.SHOP_PRICE * amout
                 Case 3
                     Price = BuyItem.SHOP_PRICE * amout
             End Select

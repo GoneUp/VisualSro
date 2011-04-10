@@ -976,8 +976,10 @@
                             Select Case tmp2(1)
                                 Case "MOB"
                                     For b = 0 To RefObjects.Count - 1
-                                        If RefObjects(b).InternalName = tmpString(2) Then
+                                        Dim r = RefObjects(b)
+                                        If RefObjects(b).InternalName = tmpString(1) Then
                                             RefObjects(b).RealName = tmpString(8)
+                                            Exit For
                                         End If
                                     Next
 

@@ -110,8 +110,10 @@
 
 
     Sub SetCharGroundStats()
-        HP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Strength - 20) * 10
-        MP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Intelligence - 20) * 10
+        'HP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Strength - 20) * 10
+        'MP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Intelligence - 20) * 10
+        HP = (Math.Pow(1.02, Me.Level - 1) * Me.Strength * 10)
+        MP = (Math.Pow(1.02, Me.Level - 1) * Me.Intelligence * 10)
 
         Hit = Math.Round(Me.Level + 10)
         Parry = Math.Round(Me.Level + 10)

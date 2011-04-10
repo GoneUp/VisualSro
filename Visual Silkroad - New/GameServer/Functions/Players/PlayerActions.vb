@@ -209,12 +209,20 @@
         Public Sub OnSelectObject(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ObjectID As UInteger = packet.DWord
             PlayerData(Index_).LastSelected = ObjectID
+
             Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Target)
+
+            If ObjectID = PlayerData(Index_).UniqueId Then
+                writer.Byte(1) 'Sucess
+                writer.DWord(PlayerData(Index_).UniqueId)
+                Server.Send(writer.GetBytes, Index_)
+                Exit Sub
+            End If
 
             For i = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).UniqueId = ObjectID Then
-                        writer.Create(ServerOpcodes.Target)
                         writer.Byte(1) 'Sucess
                         writer.DWord(PlayerData(i).UniqueId)
                         writer.Byte(1) 'unknown
@@ -229,7 +237,6 @@
             For i = 0 To MobList.Count - 1
                 If MobList(i).UniqueID = ObjectID Then
                     Dim mob = MobList(i)
-                    writer.Create(ServerOpcodes.Target)
                     writer.Byte(1) 'Sucess
                     writer.DWord(MobList(i).UniqueID)
                     writer.Byte(1) 'unknown

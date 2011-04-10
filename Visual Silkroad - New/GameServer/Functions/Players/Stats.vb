@@ -178,18 +178,19 @@
                 End If
             Loop
 
+            Dim Gained_SP As UInteger = Math.Truncate(sp / 400)
+            Dim Gained_SPX As UInteger = sp - (Gained_SP * 400)
 
-            PlayerData(index_).SkillPointBar += sp
-            Do While PlayerData(index_).SkillPointBar >= 400
-                If PlayerData(index_).SkillPoints + 1 > UInt32.MaxValue = False Then
-                    PlayerData(index_).SkillPoints += 1
-                Else
-                    Log.WriteSystemLog("SP1 OVERFLOW. Index: " & index_)
-                    Exit Sub
-                End If
+            'Error Prevention
+            If PlayerData(index_).SkillPoints + Gained_SP >= UInteger.MaxValue Or PlayerData(index_).SkillPointBar + Gained_SPX >= UInteger.MaxValue Then
+                Log.WriteSystemLog("SP OVERFLOW. Index: " & index_)
+                Exit Sub
+            End If
 
-                PlayerData(index_).SkillPointBar -= 400
-            Loop
+
+            PlayerData(index_).SkillPoints += Gained_SP
+            PlayerData(index_).SkillPointBar += Gained_SPX
+      
 
 
             Dim writer As New PacketWriter
@@ -211,6 +212,7 @@
 
             Server.Send(writer.GetBytes, index_)
 
+            UpdateSP(index_)
             DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'", PlayerData(index_).Level, PlayerData(index_).Experience, PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 

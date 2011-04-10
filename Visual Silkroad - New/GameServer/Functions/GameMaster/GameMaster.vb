@@ -45,49 +45,47 @@
         Public Sub OnGmCreateItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim pk2id As UInteger = packet.DWord
             Dim plus As Byte = packet.Byte  'Or Count
-          
-            For i = 13 To PlayerData(index_).MaxSlots - 1
-                If Inventorys(index_).UserItems(i).Pk2Id = 0 Then
-                    Dim temp_item As cInvItem = Inventorys(index_).UserItems(i)
-                    temp_item.Pk2Id = pk2id
-                    temp_item.OwnerCharID = PlayerData(index_).CharacterId
+            Dim slot As Byte = GetFreeItemSlot(index_)
+
+            If slot <> -1 Then
+                Dim temp_item As cInvItem = Inventorys(index_).UserItems(slot)
+                temp_item.Pk2Id = pk2id
+                temp_item.OwnerCharID = PlayerData(index_).CharacterId
 
 
-                    Dim refitem As cItem = GetItemByID(pk2id)
-                    If refitem.CLASS_A = 1 Then
-                        'Equip
-                        temp_item.Plus = plus
-                        temp_item.Durability = refitem.MAX_DURA
-                        temp_item.Blues = New List(Of cInvItem.sBlue)
-                    ElseIf refitem.CLASS_A = 2 Then
-                        'Pet
+                Dim refitem As cItem = GetItemByID(pk2id)
+                If refitem.CLASS_A = 1 Then
+                    'Equip
+                    temp_item.Plus = plus
+                    temp_item.Durability = refitem.MAX_DURA
+                    temp_item.Blues = New List(Of cInvItem.sBlue)
+                ElseIf refitem.CLASS_A = 2 Then
+                    'Pet
 
-                    ElseIf refitem.CLASS_A = 3 Then
-                        'Etc
-                        temp_item.Amount = plus
-                    End If
-
-                    Inventorys(index_).UserItems(i) = temp_item
-                    UpdateItem(Inventorys(index_).UserItems(i)) 'SAVE IT
-
-                    Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ItemMove)
-                    writer.Byte(1)
-                    writer.Byte(6) 'type = new item
-                    writer.Byte(Inventorys(index_).UserItems(i).Slot)
-
-                    AddItemDataToPacket(Inventorys(index_).UserItems(i), writer)
-
-                    Server.Send(writer.GetBytes, index_)
-
-                    Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
-
-                    If Settings.Log_GM Then
-                        Log.WriteGameLog(index_, "GM", "Item_Create", String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus))
-                        Exit For
-                    End If
+                ElseIf refitem.CLASS_A = 3 Then
+                    'Etc
+                    temp_item.Amount = plus
                 End If
-            Next
+
+                Inventorys(index_).UserItems(slot) = temp_item
+                UpdateItem(Inventorys(index_).UserItems(slot)) 'SAVE IT
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.ItemMove)
+                writer.Byte(1)
+                writer.Byte(6) 'type = new item
+                writer.Byte(slot)
+
+                AddItemDataToPacket(Inventorys(index_).UserItems(slot), writer)
+
+                Server.Send(writer.GetBytes, index_)
+
+                Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
+
+                If Settings.Log_GM Then
+                    Log.WriteGameLog(index_, "GM", "Item_Create", String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus))
+                End If
+            End If
         End Sub
 
         Public Sub OnGmTeleport(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -222,7 +220,7 @@
             Dim type As Byte = Packet.Byte
             Dim refobject As Object_ = GetObjectById(objectid)
 
-            Dim selector As String = refobject.Name.Substring(0, 3)
+            Dim selector As String = refobject.TypeName.Substring(0, 3)
 
             Select Case selector
                 Case "MOB"
@@ -232,7 +230,7 @@
             End Select
 
             If Settings.Log_GM Then
-                Log.WriteGameLog(Index_, "GM", "Monster_Spawn", String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.Name, type))
+                Log.WriteGameLog(Index_, "GM", "Monster_Spawn", String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.TypeName, type))
             End If
         End Sub
 

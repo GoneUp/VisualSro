@@ -30,7 +30,7 @@
                 End If
             Next
 
-            Throw New Exception("Cannot find get a new Char ID!")
+            Throw New Exception("Cannot find a new Char ID!")
         End Function
 
         '======================Skill Over ID's

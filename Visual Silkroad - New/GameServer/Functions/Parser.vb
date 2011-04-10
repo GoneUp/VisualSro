@@ -85,6 +85,10 @@ Namespace GameServer
 
                     Case ClientOpcodes.Attack
                         Functions.OnPlayerAttack(packet, Index_)
+
+                    Case ClientOpcodes.Death_Respawn
+                        Functions.OnPlayerRespawn(packet, Index_)
+
                         '=======NPC========
 
                     Case ClientOpcodes.Npc_Chat
@@ -141,7 +145,7 @@ Namespace GameServer
                     Case ClientOpcodes.Exchange_Abort
                         Functions.OnExchangeAbort(packet, Index_)
 
-                        'Stall
+                        '========STALL==========
                     Case ClientOpcodes.Stall_Open
                         Functions.Stall_Open_Own(packet, Index_)
 

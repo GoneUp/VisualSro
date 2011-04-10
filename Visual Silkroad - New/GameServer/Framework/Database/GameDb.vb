@@ -147,7 +147,12 @@
                     Chars(i).Pot_Abormal_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(44))
                     Chars(i).Pot_Delay = CByte(tmp.Tables(0).Rows(i).ItemArray(45))
 
-                    Chars(i).UniqueId = Id_Gen.GetUnqiueID()
+                    If Chars(i).CHP = 0 Then
+                        Chars(i).Alive = False
+                    End If
+
+
+                    Chars(i).UniqueId = Id_Gen.GetUnqiueId()
                 Next
 
             Else

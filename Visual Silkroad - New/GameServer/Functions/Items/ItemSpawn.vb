@@ -119,26 +119,28 @@
                     End If
                 Else
                     Dim slot As Byte = GetFreeItemSlot(Index_)
-                    Dim ref As cItem = GetItemByID(ItemList(Index_).Item.Pk2Id)
-                    Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
+                    If slot <> -1 Then
+                        Dim ref As cItem = GetItemByID(ItemList(Index_).Item.Pk2Id)
+                        Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
 
-                    temp_item.Pk2Id = ItemList(Index_).Item.Pk2Id
-                    temp_item.OwnerCharID = PlayerData(Index_).CharacterId
-                    temp_item.Durability = ItemList(Index_).Item.Durability
-                    temp_item.Plus = ItemList(Index_).Item.Plus
-                    temp_item.Amount = ItemList(Index_).Item.Amount
+                        temp_item.Pk2Id = ItemList(Index_).Item.Pk2Id
+                        temp_item.OwnerCharID = PlayerData(Index_).CharacterId
+                        temp_item.Durability = ItemList(Index_).Item.Durability
+                        temp_item.Plus = ItemList(Index_).Item.Plus
+                        temp_item.Amount = ItemList(Index_).Item.Amount
 
-                    UpdateItem(Inventorys(Index_).UserItems(slot)) 'SAVE IT
+                        UpdateItem(Inventorys(Index_).UserItems(slot)) 'SAVE IT
 
 
-                    writer.Create(ServerOpcodes.ItemMove)
-                    writer.Byte(1)
-                    writer.Byte(6) 'type = new item
-                    writer.Byte(Inventorys(Index_).UserItems(slot).Slot)
+                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Byte(1)
+                        writer.Byte(6) 'type = new item
+                        writer.Byte(Inventorys(Index_).UserItems(slot).Slot)
 
-                    AddItemDataToPacket(Inventorys(Index_).UserItems(slot), writer)
+                        AddItemDataToPacket(Inventorys(Index_).UserItems(slot), writer)
 
-                    Server.Send(writer.GetBytes, Index_)
+                        Server.Send(writer.GetBytes, Index_)
+                    End If
                 End If
             End If
 

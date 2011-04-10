@@ -216,7 +216,7 @@
                 Dim Stall_index As Integer = GetStallIndex(PlayerData(Index_).StallID)
 
                 If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then
-                    If CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 Then
+                    If CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 And GetFreeItemSlot(Index_) <> -1 Then
                         PlayerData(Index_).Gold -= Stalls(Stall_index).Items(slot).Gold
                         UpdateGold(Index_)
 

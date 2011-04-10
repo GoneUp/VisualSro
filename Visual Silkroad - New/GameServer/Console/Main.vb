@@ -10,7 +10,6 @@ Namespace GameServer
         Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
         Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
-        <DebuggerStepThrough()> _
         Shared Sub Main()
             AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
             AddHandler Server.OnClientDisconnect, AddressOf Program.Server_OnClientDisconnect

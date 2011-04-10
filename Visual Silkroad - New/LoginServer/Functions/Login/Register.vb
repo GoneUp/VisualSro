@@ -8,7 +8,7 @@
             DataBase.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmp As New UserArray
-            tmp.AccountId = Rand.Next(500000, 1000000)
+            tmp.AccountId = Id_Gen.GetNewAccountId
             tmp.Name = Name
             tmp.Pw = Password
             tmp.FailedLogins = 0

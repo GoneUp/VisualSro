@@ -76,7 +76,7 @@
         Public Sub OnNpcChat(ByVal NpcIndex As Integer, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             Dim obj As Object_ = GetObjectById(NpcList(NpcIndex).Pk2ID)
-            Dim name As String() = obj.Name.Split("_")
+            Dim name As String() = obj.TypeName.Split("_")
 
             writer.Create(ServerOpcodes.Target)
             writer.Byte(1) 'Sucess
@@ -93,7 +93,7 @@
             End If
 
 
-            CheckForTax(obj.Name, writer)
+            CheckForTax(obj.TypeName, writer)
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = True
@@ -118,7 +118,7 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Npc_Chat)
             writer.Byte(1) 'Sucess
-            If RefObj.Name <> "NPC_CH_GACHA_MACHINE" Then
+            If RefObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
                 writer.Byte(ChatId) 'Type
             Else
                 writer.Byte(17)

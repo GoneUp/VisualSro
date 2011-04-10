@@ -93,17 +93,17 @@
                         End If
                     ElseIf DestItem.Pk2Id <> 0 Then
                         Dim _DestRef As cItem = GetItemByID(DestItem.Pk2Id)
-                        If _DestRef.CLASS_A = 1 And CheckItemGender(_DestRef, index_) And CheckLevel(_DestRef, index_) Then
+                        If _SourceRef.CLASS_A = 1 And CheckItemGender(_SourceRef, index_) And CheckLevel(_SourceRef, index_) Then
                             Inventorys(index_).UserItems(New_Slot) = SourceItem
                             Inventorys(index_).UserItems(New_Slot).Slot = New_Slot
 
                             Inventorys(index_).UserItems(Old_Slot) = DestItem
                             Inventorys(index_).UserItems(Old_Slot).Slot = Old_Slot
 
-                        ElseIf CheckItemGender(_DestRef, index_) = False Then
+                        ElseIf CheckItemGender(_SourceRef, index_) = False Then
                             OnItemMoveError(index_, &H16, &H18)
                             Exit Sub
-                        ElseIf CheckLevel(_DestRef, index_) = False Then
+                        ElseIf CheckLevel(_SourceRef, index_) = False Then
                             OnItemMoveError(index_, &H6C, &H18)
                             Exit Sub
                         End If
@@ -451,12 +451,13 @@
             DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='0', plusvalue='0', durability='0', quantity='0' WHERE owner='{0}' AND itemnumber='item{1}'", PlayerData(Index_).CharacterId, slot))
         End Sub
 
-        Public Function GetFreeItemSlot(ByVal Index_ As Integer) As Byte
+        Public Function GetFreeItemSlot(ByVal Index_ As Integer) As Integer
             For i = 13 To Inventorys(Index_).UserItems.Length - 1
                 If Inventorys(Index_).UserItems(i).Pk2Id = 0 Then
                     Return i
                 End If
             Next
+            Return -1
         End Function
 
         Function FillItem(ByVal From_item As cInvItem) As cInvItem

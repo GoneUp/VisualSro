@@ -64,7 +64,7 @@ Namespace LoginServer
                 If socket IsNot Nothing Then
                     If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
                         If socket.Connected = True Then
-                            ' Server.Dissconnect(i)
+                            Server.Dissconnect(i)
                         End If
                     Else
                         Count += 1

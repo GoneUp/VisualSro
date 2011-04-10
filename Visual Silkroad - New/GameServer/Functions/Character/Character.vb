@@ -107,8 +107,9 @@
         End Sub
 
         Public Function CheckForAbuse(ByVal nick As String) As Boolean
+            Dim tmp As String = nick.ToLowerInvariant
             For i = 0 To RefAbuseList.Count - 1
-                If nick.ToLowerInvariant.Contains(RefAbuseList(i)) = True Then
+                If tmp.Contains(RefAbuseList(i)) = True Then
                     Return True
                 End If
             Next
@@ -491,6 +492,7 @@
             Next
 
             CleanUpPlayer(Index_)
+            Player_CheckDeath(Index_, True)
 
             writer = New PacketWriter
             writer.Create(ServerOpcodes.LoadingStart)
@@ -703,6 +705,21 @@
             If PlayerData(Index_).InGuild = True Then
                 SendGuildInfo(Index_, False)
                 LinkPlayerToGuild(Index_)
+            End If
+        End Sub
+
+        Public Sub Player_CheckDeath(ByVal Index_ As Integer, ByVal SetPosToTown As Boolean)
+            If PlayerData(Index_).CHP = 0 Then
+                PlayerData(Index_).Alive = True
+                PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
+                DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CharacterId))
+
+
+                If SetPosToTown Then
+                    PlayerData(Index_).Position = PlayerData(Index_).Position_Return
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                End If
+
             End If
         End Sub
     End Module

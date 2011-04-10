@@ -2,7 +2,7 @@
 Public Class cInventory
 
     Sub New(ByVal slots As Integer)
-        ReDim UserItems(slots)
+        ReDim UserItems(slots - 1)
         For i = 0 To UserItems.Length - 1
             UserItems(i) = New cInvItem
         Next

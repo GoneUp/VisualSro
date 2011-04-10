@@ -34,7 +34,7 @@
             Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
             ' Dim i = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
 
-            Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
+            Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
             Dim RefWeapon As New cItem
             Dim AttObject As Object_ = GetObjectById(PlayerData(Index_).Model)
             Dim RefMonster As Object_ = GetObjectById(Mob_.Pk2ID)
@@ -59,7 +59,7 @@
             writer.Byte(2)
             writer.Byte(&H30)
 
-            writer.DWord(AttackType)
+            writer.DWord(RefSkill.Id)
             writer.DWord(Mob_.UniqueID)
             writer.DWord(Id_Gen.GetSkillOverId)
             writer.DWord(PlayerData(Index_).UniqueId)
@@ -100,6 +100,7 @@
 
             If afterstate = &H80 Then
                 KillPlayer(Index_)
+                MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, False)
             Else
                 UpdateHP(Index_)
             End If
@@ -119,7 +120,6 @@
         ''' <returns></returns>
         ''' <remarks></remarks>
         Function CalculateDamagePlayer(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) As UInteger
-            Dim RefWeapon As New cItem
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
@@ -129,17 +129,16 @@
                 Balance = 0.01
             End If
 
-
-
             Dim DamageMin As Double
             Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                DamageMin = ((RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
-                DamageMax = ((PlayerData(Index_).MaxPhy + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + PlayerData(Index_).PhyAbs) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + PlayerData(Index_).PhyAbs) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
             ElseIf RefSkill.Type = TypeTable.Mag Then
-                DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
-                DamageMax = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                'UNUSED FOR NOW
+                '  DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                ' DamageMax = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
             End If
 
 

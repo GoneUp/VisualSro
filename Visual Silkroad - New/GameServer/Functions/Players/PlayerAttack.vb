@@ -111,7 +111,7 @@
                 RefWeapon.ATTACK_DISTANCE = 36
             End If
 
-            If AttObject.Name Is Nothing Or PlayerData(Index_).Busy Then
+            If AttObject.TypeName Is Nothing Or PlayerData(Index_).Busy Then
                 Exit Sub
             End If
 
@@ -191,7 +191,6 @@
                         Damage = Damage * 2
                         Crit = 2
                     End If
-
                     If CLng(MobList(MobListIndex).HP_Cur) - Damage > 0 Then
                         MobList(MobListIndex).HP_Cur -= Damage
                         MobAddDamageFromPlayer(Damage, Index_, MobListIndex, True)
@@ -295,7 +294,7 @@
 
         Public Sub PlayerAttackEndSkill(ByVal Index_ As Integer)
             Dim RefSkill As Skill_ = GetSkillById(PlayerData(Index_).UsingSkillId)
-            Dim AttObject As Object
+            Dim AttObject As New Object_
             Dim RefWeapon As New cItem
             Dim MobListIndex, afterstate, NumberVictims As Integer
             NumberVictims = 1

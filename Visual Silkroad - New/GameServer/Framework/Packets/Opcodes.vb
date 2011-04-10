@@ -25,6 +25,7 @@
 		Emotion = &H3091
 		[Exit] = &H7005
         Target = &H7045
+        Death_Respawn = &H3053
 
 		ItemMove = &H7034
         Alchemy = &H7150

@@ -57,6 +57,8 @@
                 DumpSpecialSectorFile(base_path & "\data\special_sectors.txt")
                 Log.WriteSystemLog("Loaded " & RefSpecialZones.Count & " Speical_Sectors.")
 
+                DumpNameFiles()
+
                 DumpNpcChatFile(base_path & "\data\npcchatid.txt")
 
                 DumpAbuseListFile(base_path & "\data\abuselist.txt")
@@ -233,6 +235,7 @@
                     Return RefGoldData(i)
                 End If
             Next
+            Throw New Exception("Level couldn't be found!")
         End Function
 
         Structure cLevelData
@@ -324,6 +327,8 @@
                     lines(i) = lines(i).Replace(".", ",")
                 End If
 
+
+
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New Skill_()
                 tmp.Id = Convert.ToUInt32(tmpString(1))
@@ -338,6 +343,7 @@
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
                 tmp.PwrMax = Convert.ToInt32(tmpString(73))
                 tmp.Distance = Convert.ToInt32(tmpString(78))
+
                 If tmp.Distance = 0 Then
                     tmp.Distance = 21
                 End If
@@ -367,11 +373,15 @@
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.All
                 End If
-
                 If tmpString(3).Contains("WIZARD") OrElse tmpString(3).Contains("STAFF") OrElse tmpString(3).Contains("WARLOCK") OrElse tmpString(3).Contains("BARD") OrElse tmpString(3).Contains("HARP") OrElse tmpString(3).Contains("CLERIC") Then
                     tmp.Type = TypeTable.Mag
                     tmp.Type2 = TypeTable.All
                 End If
+                If tmpString(3).StartsWith("MSKILL") Then
+                    tmp.Type = TypeTable.Phy
+                    tmp.Type2 = TypeTable.All
+                End If
+
 
                 RefSkills.Add(tmp)
             Next
@@ -412,8 +422,11 @@
 
         Public Class Object_
             Public Pk2ID As UInteger
-            Public Name As String
-            Public OtherName As String
+
+            Public TypeName As String
+            Public InternalName As String
+            Public RealName As String
+
             Public Type As Type_
             Public WalkSpeed As Single
             Public RunSpeed As Single
@@ -477,8 +490,8 @@
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New Object_()
                 tmp.Pk2ID = Convert.ToUInt32(tmpString(1))
-                tmp.Name = tmpString(2)
-                tmp.OtherName = tmpString(3)
+                tmp.TypeName = tmpString(2)
+                tmp.InternalName = tmpString(5)
                 tmp.WalkSpeed = Convert.ToSingle(tmpString(46))
                 tmp.RunSpeed = Convert.ToSingle(tmpString(47))
                 tmp.BerserkSpeed = Convert.ToSingle(tmpString(48))
@@ -500,7 +513,7 @@
                 tmp.Skill8 = Convert.ToUInt32(tmpString(91))
                 tmp.Skill9 = Convert.ToUInt32(tmpString(92))
 
-                Dim selector As String() = tmp.Name.Split("_")
+                Dim selector As String() = tmp.TypeName.Split("_")
                 Select Case selector(0)
                     Case "MOB"
                         If selector(1) = "TQ" Or selector(1) = "DH" Then
@@ -613,7 +626,7 @@
                 Dim obj As New Object_
 
                 obj.Pk2ID = tmpString(1)
-                obj.Name = tmpString(2)
+                obj.TypeName = tmpString(2)
                 obj.Type = Object_.Type_.Teleport
 
                 Dim area As Integer = tmpString(41)
@@ -688,6 +701,7 @@
                     Return RefTeleportPoints(i)
                 End If
             Next
+            Throw New Exception("Teleportpoint couldn't be found! P:" & Number)
         End Function
 
 
@@ -941,6 +955,45 @@
                     RefCaveTeleporter.Add(tmp)
                 End If
             Next i
+        End Sub
+
+        Public Sub DumpNameFiles()
+            Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\textdataname.txt")
+            For i As Integer = 0 To paths.Length - 1
+                DumpNameFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+            Next
+        End Sub
+
+        Public Sub DumpNameFile(ByVal path As String)
+            Dim lines As String() = IO.File.ReadAllLines(path)
+
+            For i As Integer = 0 To lines.Length - 1
+                If lines(i).StartsWith("//") = False Then
+                    Try
+                        Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                        If tmpString(0) = "1" Then
+                            Dim tmp2 As String() = tmpString(1).Split("_")
+                            Select Case tmp2(1)
+                                Case "MOB"
+                                    For b = 0 To RefObjects.Count - 1
+                                        If RefObjects(b).InternalName = tmpString(2) Then
+                                            RefObjects(b).RealName = tmpString(8)
+                                        End If
+                                    Next
+
+                                Case "NPC"
+                                Case "SKILL"
+                                Case "ITEM"
+                                Case "MK"
+                                Case "ZONE"
+                            End Select
+                        End If
+
+                    Catch ex As Exception
+                    End Try
+                End If
+            Next
+
         End Sub
     End Module
 End Namespace

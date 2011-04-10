@@ -23,7 +23,7 @@
             Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(index_).AccountID)
 
             If LongName = RefObject.Name_Package Then
-                If GameDB.Users(UserIndex).Silk - RefObject.Price >= 0 Then
+                If GameDB.Users(UserIndex).Silk - RefObject.Price >= 0 And GetFreeItemSlot(index_) <> -1 Then
                     Dim _Refitem As cItem = GetItemByName(RefObject.Name_Normal)
                     Dim slot As Byte = GetFreeItemSlot(index_)
                     Dim item As cInvItem = Inventorys(index_).UserItems(slot)

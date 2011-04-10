@@ -32,6 +32,7 @@
     Public MagDef As UShort
     Public PhyAbs As UShort
     Public MagAbs As UShort
+    Public AccessoryAbs As UShort
 
     Public Hit As UShort
     Public Parry As UShort
@@ -251,11 +252,11 @@
 
                             tmpDifference = _refitem.MAX_PHYS_ABSORB - _refitem.MIN_PHYS_ABSORB
                             Dim tmpPhyAbs As Single = _refitem.MIN_PHYS_ABSORB + (_item.PerPhyAbs * (tmpDifference / 100)) + (_item.Plus * _refitem.PHYS_ABSORB_INC)
-                            PhyAbs += Math.Round(tmpPhyAbs, 0, MidpointRounding.ToEven)
+                            PhyAbs += tmpPhyAbs  'Math.Round(tmpPhyAbs, 0, MidpointRounding.ToEven)
 
                             tmpDifference = _refitem.MAX_MAG_ABSORB - _refitem.MIN_MAG_ABSORB
                             Dim tmpMagAbs As Single = _refitem.MIN_MAG_ABSORB + (_item.PerMagAbs * (tmpDifference / 100)) + (_item.Plus * _refitem.MAG_ABSORB_INC)
-                            MagAbs += Math.Round(tmpMagAbs, 0, MidpointRounding.ToEven)
+                            MagAbs += tmpMagAbs 'Math.Round(tmpMagAbs, 0, MidpointRounding.ToEven)
 
                     End Select
                 End If

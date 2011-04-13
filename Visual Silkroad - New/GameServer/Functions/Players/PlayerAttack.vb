@@ -53,6 +53,15 @@
                                     If PlayerData(Index_).AttackType = AttackType_.Normal Then
                                         For i = 0 To MobList.Count - 1
                                             If MobList(i).UniqueID = ObjectID And MobList(i).Death = False Then
+                                                'Cleanup the regular Attack before using a Skill
+                                                Timers.PlayerAttackTimer(Index_).Stop()
+                                                PlayerData(Index_).Attacking = False
+                                                PlayerData(Index_).Busy = False
+                                                PlayerData(Index_).AttackType = AttackType_.Normal
+                                                PlayerData(Index_).AttackedId = 0
+                                                PlayerData(Index_).UsingSkillId = 0
+                                                PlayerData(Index_).SkillOverId = 0
+
                                                 PlayerAttackBeginSkill(skillid, Index_, i)
                                                 found = True
                                                 Exit For
@@ -316,7 +325,7 @@
             Next
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_End)
+            writer.Create(ServerOpcodes.Buff_Info)
             writer.Byte(1)
 
             writer.DWord(PlayerData(Index_).SkillOverId)
@@ -413,12 +422,19 @@
             End If
 
 
-            If DamageMin <= 0 Then
+            If DamageMin <= 0 Or DamageMin >= UInteger.MaxValue Then
                 DamageMin = 1
             End If
-            If DamageMax <= 0 Then
+            If DamageMax <= 0 Or DamageMax >= UInteger.MaxValue Then
                 DamageMax = 2
             End If
+
+
+            If DamageMax < DamageMin Then
+                Log.WriteSystemLog(String.Format("Ply Max Dmg over Min Dmg. Min {0} Max {1}. Char: {2}, Mob:{3}, Skill:{4}", DamageMin, DamageMax, PlayerData(Index_).CharacterName, Mob.TypeName, SkillID))
+                DamageMax = DamageMin + 1
+            End If
+
 
             Dim Radmon As Integer = Rnd() * 100
             FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)

@@ -89,7 +89,7 @@ Namespace GameServer
 
                     Else
                         If PlayerData(Index).AttackType = AttackType_.Buff Then
-                            PlayerBuff_End(Index)
+                            PlayerBuff_Info(Index, 0)
                         End If
                     End If
                 End If
@@ -214,8 +214,9 @@ Namespace GameServer
         End Sub
 
         Public Sub MonsterCheck_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            MonsterCheck.Stop()
+
             Try
-                MonsterCheck.Stop()
 
                 For i = 0 To MobList.Count - 1
                     If i < MobList.Count Then
@@ -239,18 +240,20 @@ Namespace GameServer
 
                 CheckForRespawns()
 
-                MonsterCheck.Start()
+
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MD") '
             End Try
+
+            MonsterCheck.Start() 'restart Timer
         End Sub
 
 
         Public Sub MonsterMovement_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim random As New Random
+            MonsterMovement.Stop()
 
             Try
-                MonsterMovement.Stop()
+
 
                 Dim time As Date = Date.Now
                 For i = 0 To MobList.Count - 1
@@ -263,8 +266,8 @@ Namespace GameServer
                             Dim dist As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
                             If dist < Settings.Server_Range Then
-                                Dim ToX As Single = GetRealX(Mob_.Position.XSector, Mob_.Position.X) + random.Next(-15, +10)
-                                Dim ToY As Single = GetRealY(Mob_.Position.YSector, Mob_.Position.Y) + random.Next(-10, +15)
+                                Dim ToX As Single = GetRealX(Mob_.Position.XSector, Mob_.Position.X) + Rand.Next(-15, +10)
+                                Dim ToY As Single = GetRealY(Mob_.Position.YSector, Mob_.Position.Y) + Rand.Next(-10, +15)
 
                                 Dim ToPos As New Position
                                 ToPos.XSector = GetXSec(ToX)
@@ -322,9 +325,9 @@ Namespace GameServer
                 MonsterMovement.Start()
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '
-                MonsterMovement.Start()
             End Try
 
+            MonsterMovement.Start()
         End Sub
 
         Public Sub PlayerMoveTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)

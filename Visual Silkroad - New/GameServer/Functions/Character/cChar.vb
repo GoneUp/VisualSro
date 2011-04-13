@@ -94,6 +94,7 @@
     Public UsingSkillId As UInt32 = 0
     Public AttackType As AttackType_
     Public SkillOverId As UInt32 = 0
+    Public CastingId As UInt32 = 0
     Public LastSelected As UInt32 = 0
 
     Public Pot_HP_Slot As Byte = 0

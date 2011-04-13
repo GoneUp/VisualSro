@@ -23,7 +23,7 @@
         End Sub
 
 
-        Public Sub MonsterAttackPlayer(ByVal MobIndex As Integer, ByVal Index_ As Integer)
+        Public Sub MonsterAttackPlayer(ByVal MobIndex As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
             If MobList(MobIndex) Is Nothing Then
                 Exit Sub
             End If
@@ -31,8 +31,11 @@
             Dim Mob_ As cMonster = MobList(MobIndex)
 
             Mob_.AttackingId = PlayerData(Index_).UniqueId
-            Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
-            ' Dim i = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
+            If SkillID = 0 Then
+                Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
+            Else
+                Mob_.UsingSkillId = SkillID
+            End If
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
             Dim RefWeapon As New cItem
@@ -47,13 +50,9 @@
             End If
 
 
-            Dim writer As New PacketWriter
-            ' writer.Create(ServerOpcodes.Attack_Reply)
-            ' writer.Byte(1)
-            ' writer.Byte(1)
-            'Server.Send(writer.GetBytes, Index_)
             UpdateState(1, 3, Index_, MobIndex)
 
+            Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Main)
             writer.Byte(1)
             writer.Byte(2)

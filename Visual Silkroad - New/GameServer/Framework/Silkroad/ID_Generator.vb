@@ -2,7 +2,7 @@
     Module ID_Generator
 
         '====================Unique ID's
-        Public UniqueIdCounter As UInteger = 1
+        Private UniqueIdCounter As UInteger = 1
 
         Public Function GetUnqiueId() As UInteger
             Dim toreturn As UInteger = UniqueIdCounter
@@ -34,7 +34,7 @@
         End Function
 
         '======================Skill Over ID's
-        Public SkillOverIdCounter As UInteger = 10
+        Private SkillOverIdCounter As UInteger = 10
 
         Public Function GetSkillOverId() As UInteger
             Dim toreturn As UInteger = SkillOverIdCounter
@@ -48,5 +48,19 @@
             Return toreturn
         End Function
 
+        '======================Casting ID's
+        Private CastingIdCounter As UInteger = 10
+
+        Public Function GetCastingId() As UInteger
+            Dim toreturn As UInteger = CastingIdCounter
+            If SkillOverIdCounter < UInteger.MaxValue Then
+                SkillOverIdCounter += 1
+            ElseIf SkillOverIdCounter = UInteger.MaxValue Then
+                SkillOverIdCounter = 0
+                Log.WriteSystemLog("Reached CastingID Max")
+            End If
+
+            Return toreturn
+        End Function
     End Module
 End Namespace

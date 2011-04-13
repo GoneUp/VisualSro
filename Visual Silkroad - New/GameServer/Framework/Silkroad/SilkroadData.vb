@@ -339,11 +339,13 @@
                 tmp.RequiredSp = Convert.ToUInt64(tmpString(46))
                 tmp.RequiredMp = Convert.ToUInt16(tmpString(53))
                 tmp.CastTime = Convert.ToByte(tmpString(68))
+                tmp.Time = Convert.ToUInt32(tmpString(70))
                 tmp.PwrPercent = Convert.ToInt32(tmpString(71))
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
                 tmp.PwrMax = Convert.ToInt32(tmpString(73))
                 tmp.Distance = Convert.ToInt32(tmpString(78))
 
+                Debug.Print(tmp.Time)
                 If tmp.Distance = 0 Then
                     tmp.Distance = 21
                 End If

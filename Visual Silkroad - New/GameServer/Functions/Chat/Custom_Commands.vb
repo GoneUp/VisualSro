@@ -180,6 +180,23 @@
                             End If
                         End If
                     Next
+
+
+                Case "\\moba"
+
+                    If tmp(1) <> "" And Functions.PlayerData(Index_).LastSelected <> 0 Then
+                        For i = 0 To Functions.MobList.Count - 1
+                            If Functions.MobList(i).UniqueID = Functions.PlayerData(Index_).LastSelected Then
+                                Functions.MonsterAttackPlayer(i, Index_)
+                            End If
+                        Next
+
+
+
+
+                    End If
+
+
             End Select
 
 

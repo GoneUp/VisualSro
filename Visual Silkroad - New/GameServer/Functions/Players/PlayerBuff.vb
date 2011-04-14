@@ -24,14 +24,14 @@
             tmp.SkillID = SkillID
             tmp.OwnerID = PlayerData(Index_).UniqueId
             tmp.DurationStart = Date.Now
-            tmp.DurationEnd = Date.Now.AddSeconds(RefSkill.Time)
+            tmp.DurationEnd = Date.Now.AddSeconds(RefSkill.UseDuration)
 
             PlayerData(Index_).Busy = True
             PlayerData(Index_).Attacking = False
             PlayerData(Index_).AttackType = AttackType_.Buff
             PlayerData(Index_).AttackedId = 0
             PlayerData(Index_).UsingSkillId = SkillID
-            PlayerData(Index_).SkillOverId = Id_Gen.GetSkillOverId
+            PlayerData(Index_).SkillOverId = tmp.OverID
             PlayerData(Index_).CastingId = Id_Gen.GetCastingId
 
             Dim writer As New PacketWriter

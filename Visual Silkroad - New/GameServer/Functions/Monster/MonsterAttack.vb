@@ -23,12 +23,12 @@
         End Sub
 
 
-        Public Sub MonsterAttackPlayer(ByVal MobIndex As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
-            If MobList(MobIndex) Is Nothing Then
+        Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
+            If MobList1.ContainsKey(MobUniqueID) = False Then
                 Exit Sub
             End If
 
-            Dim Mob_ As cMonster = MobList(MobIndex)
+            Dim Mob_ As cMonster = MobList1(MobUniqueID)
 
             Mob_.AttackingId = PlayerData(Index_).UniqueId
             If SkillID = 0 Then
@@ -38,19 +38,18 @@
             End If
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
-            Dim RefWeapon As New cItem
             Dim AttObject As Object_ = GetObjectById(PlayerData(Index_).Model)
             Dim RefMonster As Object_ = GetObjectById(Mob_.Pk2ID)
             Dim RefSkill As Skill_ = GetSkillById(Mob_.UsingSkillId)
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
             If Distance >= (RefSkill.Distance) Then
-                MoveMob(MobIndex, PlayerData(Index_).Position)
+                MoveMob(MobUniqueID, PlayerData(Index_).Position)
                 Exit Sub
             End If
 
 
-            UpdateState(1, 3, Index_, MobIndex)
+            UpdateState(1, 3, Index_, MobUniqueID)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Main)
@@ -102,11 +101,15 @@
                 MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, False)
             Else
                 UpdateHP(Index_)
+
+                If MobList1(MobUniqueID).GetsAttacked Then
+                    MonsterAttackPlayer(MobUniqueID, MobGetPlayerWithMostDamage(MobUniqueID, True))
+                End If
             End If
         End Sub
 
         Public Sub MonsterAttackObject(ByVal MobIndex As Integer, ByVal OtherUniqueID As Integer)
-
+            'is for horses and pet's
 
         End Sub
 
@@ -238,15 +241,15 @@
 
 
 
-        Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobListIndex As UInteger, ByVal PlayerIsAttacking As Boolean)
+        Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal PlayerIsAttacking As Boolean)
             Dim found As Boolean = False
 
             'Search for an exits Entery
-            For i = 0 To MobList(MobListIndex).DamageFromPlayer.Count - 1
-                If MobList(MobListIndex).DamageFromPlayer(i).PlayerIndex = Index_ Then
+            For i = 0 To MobList1(MobUniqueID).DamageFromPlayer.Count - 1
+                If MobList1(MobUniqueID).DamageFromPlayer(i).PlayerIndex = Index_ Then
                     found = True
-                    MobList(MobListIndex).DamageFromPlayer(i).Damage += Damage
-                    MobList(MobListIndex).DamageFromPlayer(i).Attacking = PlayerIsAttacking
+                    MobList1(MobUniqueID).DamageFromPlayer(i).Damage += Damage
+                    MobList1(MobUniqueID).DamageFromPlayer(i).Attacking = PlayerIsAttacking
                     Exit For
                 End If
             Next
@@ -257,20 +260,19 @@
                 tmp.PlayerIndex = Index_
                 tmp.Damage = Damage
                 tmp.Attacking = PlayerIsAttacking
-                MobList(MobListIndex).DamageFromPlayer.Add(tmp)
+                MobList1(MobUniqueID).DamageFromPlayer.Add(tmp)
             End If
         End Sub
 
         Public Sub MobSetAttackingFromPlayer(ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal PlayerIsAttacking As Boolean)
             Dim found As Boolean = False
-            Dim MobListIndex As Integer = GetMobIndex(MobUniqueID)
 
-            If MobListIndex <> -1 Then
+            If MobList1.ContainsKey(MobUniqueID) Then
                 'Search for an exits Entery
-                For i = 0 To MobList(MobListIndex).DamageFromPlayer.Count - 1
-                    If MobList(MobListIndex).DamageFromPlayer(i).PlayerIndex = Index_ Then
+                For i = 0 To MobList1(MobUniqueID).DamageFromPlayer.Count - 1
+                    If MobList1(MobUniqueID).DamageFromPlayer(i).PlayerIndex = Index_ Then
                         found = True
-                        MobList(MobListIndex).DamageFromPlayer(i).Attacking = PlayerIsAttacking
+                        MobList1(MobUniqueID).DamageFromPlayer(i).Attacking = PlayerIsAttacking
                         Exit For
                     End If
                 Next
@@ -281,7 +283,7 @@
                     tmp.PlayerIndex = Index_
                     tmp.Damage = 0
                     tmp.Attacking = PlayerIsAttacking
-                    MobList(MobListIndex).DamageFromPlayer.Add(tmp)
+                    MobList1(MobUniqueID).DamageFromPlayer.Add(tmp)
                 End If
             End If
         End Sub

@@ -101,7 +101,7 @@
 
         End Sub
 
-        Public Sub MoveUserToMonster(ByVal Index_ As Integer, ByVal MobIndex As Integer)
+        Public Sub MoveUserToMonster(ByVal Index_ As Integer, ByVal MobUniqueID As Integer)
             Dim RefWeapon As New cItem
 
             If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
@@ -115,14 +115,14 @@
             'Dim AttObject = GetObjectById(MobList(MobIndex).Pk2ID)
             'Dim mob = MobList(MobIndex)
 
-            Dim ToX As Single = GetRealX(MobList(MobIndex).Position.XSector, MobList(MobIndex).Position.X) + (1)
-            Dim ToY As Single = GetRealY(MobList(MobIndex).Position.YSector, MobList(MobIndex).Position.Y) + (1)
+            Dim ToX As Single = GetRealX(MobList1(MobUniqueID).Position.XSector, MobList1(MobUniqueID).Position.X) + (1)
+            Dim ToY As Single = GetRealY(MobList1(MobUniqueID).Position.YSector, MobList1(MobUniqueID).Position.Y) + (1)
 
             Dim ToPos As New Position
             ToPos.XSector = GetXSec(ToX)
             ToPos.YSector = GetYSec(ToY)
             ToPos.X = GetXOffset(ToX)
-            ToPos.Z = MobList(MobIndex).Position.Z
+            ToPos.Z = MobList1(MobUniqueID).Position.Z
             ToPos.Y = GetYOffset(ToY)
 
             Dim Distance As Single = CalculateDistance2(PlayerData(Index_).Position, ToPos)
@@ -137,7 +137,7 @@
             End Select
 
             PlayerData(Index_).AttackType = AttackType_.Normal
-            PlayerData(Index_).AttackedId = MobList(MobIndex).UniqueID
+            PlayerData(Index_).AttackedId = MobList1(MobUniqueID).UniqueID
             PlayerAttackTimer(Index_).Interval = Time * 1000
             PlayerAttackTimer(Index_).Start()
 
@@ -167,9 +167,9 @@
                 Next refindex
                 '===========MOBS===================
 
-                For i = 0 To MobList.Count - 1
-                    If CheckRange(PlayerData(Index_).Position, MobList(i).Position) Then 'And CheckSectors(PlayerData(Index_).Position, MobList(i).Position) Then
-                        Dim _mob As cMonster = MobList(i)
+                For i = 0 To MobList1.Values.Count - 1
+                    If CheckRange(PlayerData(Index_).Position, MobList1.Values(i).Position) Then 'And CheckSectors(PlayerData(Index_).Position, MobList(i).Position) Then
+                        Dim _mob As cMonster = MobList1.Values(i)
                         Dim obj As Object = GetObjectById(_mob.Pk2ID)
                         If PlayerData(Index_).SpawnedMonsters.Contains(_mob.UniqueID) = False Then
                             Server.Send(CreateMonsterSpawnPacket(_mob, obj), Index_)
@@ -223,8 +223,8 @@
                     End If
                 Next
 
-                For i = 0 To MobList.Count - 1
-                    Dim _mob As cMonster = MobList(i)
+                For i = 0 To MobList1.Values.Count - 1
+                    Dim _mob As cMonster = MobList1.Values(i)
                     If PlayerData(Index_).SpawnedMonsters.Contains(_mob.UniqueID) = True Then
                         If CheckRange(PlayerData(Index_).Position, _mob.Position) = False Then
                             Server.Send(CreateDespawnPacket(_mob.UniqueID), Index_)

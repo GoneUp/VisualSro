@@ -294,7 +294,7 @@
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
             If RefSkill.CastTime > 0 Then
-                PlayerAttackTimer(Index_).Interval = RefSkill.CastTime * 1000
+                PlayerAttackTimer(Index_).Interval = RefSkill.CastTime
                 PlayerAttackTimer(Index_).Start()
             Else
                 PlayerAttackEndSkill(Index_)

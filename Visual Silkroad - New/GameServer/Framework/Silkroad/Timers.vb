@@ -69,19 +69,12 @@ Namespace GameServer
                     PlayerData(Index).Attacking = False
                     MobSetAttackingFromPlayer(Index, PlayerData(Index).AttackedId, False)
 
-                    If PlayerData(Index).AttackedId <> 0 Then
-                        Dim MobListIndex As Integer
-                        For i = 0 To MobList.Count - 1
-                            If MobList(i).UniqueID = PlayerData(Index).AttackedId Then
-                                MobListIndex = i
-                            End If
-                        Next
-
-                        Dim mob_ As cMonster = MobList(MobListIndex)
+                    If PlayerData(Index).AttackedId <> 0 And MobList1.ContainsKey(PlayerData(Index).AttackedId) Then
+                        Dim mob_ As cMonster = MobList1(PlayerData(Index).AttackedId)
 
                         If mob_.Death = False Then
                             If PlayerData(Index).AttackType = AttackType_.Normal Then
-                                PlayerAttackNormal(Index, MobListIndex)
+                                PlayerAttackNormal(Index, mob_.UniqueID)
                             ElseIf PlayerData(Index).AttackType = AttackType_.Skill Then
                                 PlayerAttackEndSkill(Index)
                             End If
@@ -218,21 +211,20 @@ Namespace GameServer
 
             Try
 
-                For i = 0 To MobList.Count - 1
-                    If i < MobList.Count Then
-                        Dim mob_ = MobList(i)
-                        If MobList(i).Death = True Then
-                            Dim wert As Integer = Date.Compare(MobList(i).DeathRemoveTime, Date.Now)
+                For i = 0 To MobList1.Values.Count - 1
+                    If i < MobList1.Values.Count Then
+                        If MobList1.Values(i).Death = True Then
+                            Dim wert As Integer = Date.Compare(MobList1.Values(i).DeathRemoveTime, Date.Now)
                             If wert = -1 Then
                                 'Abgelaufen
-                                RemoveMob(i)
+                                RemoveMob(MobList1.Values(i).UniqueID)
                             End If
-                        ElseIf IsInSaveZone(MobList(i).Position) Then
-                            RemoveMob(i)
-                        ElseIf mob_.GetsAttacked = True Then
+                        ElseIf IsInSaveZone(MobList1.Values(i).Position) Then
+                            RemoveMob(MobList1.Values(i).UniqueID)
+                        ElseIf MobList1.Values(i).GetsAttacked = True Then
                             'Attack back...
-                            If mob_.IsAttacking = False Then
-                                MonsterAttackPlayer(i, MobGetPlayerWithMostDamage(i, True))
+                            If MobList1.Values(i).IsAttacking = False Then
+                                MonsterAttackPlayer(MobList1.Values(i).UniqueID, MobGetPlayerWithMostDamage(MobList1.Values(i).UniqueID, True))
                             End If
                         End If
                     End If
@@ -256,10 +248,11 @@ Namespace GameServer
 
 
                 Dim time As Date = Date.Now
-                For i = 0 To MobList.Count - 1
-                    If i < MobList.Count Then
-                        Dim obj As Object_ = GetObjectById(MobList(i).Pk2ID)
-                        Dim Mob_ = MobList(i)
+                For i = 0 To MobList1.Values.Count - 1
+                    If i < MobList1.Values.Count Then
+                        Dim Mob_ As cMonster = MobList1.Values(i)
+                        Dim obj As Object_ = GetObjectById(Mob_.Pk2ID)
+
 
 
                         If Mob_.Death = False And Mob_.Walking = False And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
@@ -273,7 +266,7 @@ Namespace GameServer
                                 ToPos.XSector = GetXSec(ToX)
                                 ToPos.YSector = GetYSec(ToY)
                                 ToPos.X = GetXOffset(ToX)
-                                ToPos.Z = MobList(i).Position.Z
+                                ToPos.Z = Mob_.Position.Z
                                 ToPos.Y = GetYOffset(ToY)
 
                                 If ToPos.X = Mob_.Position.X And ToPos.Y = Mob_.Position.Y Then
@@ -281,9 +274,9 @@ Namespace GameServer
                                 End If
 
 
-                                MoveMob(i, ToPos)
+                                MoveMob(Mob_.UniqueID, ToPos)
                             Else
-                                MoveMob(i, MobList(i).Position_Spawn)
+                                MoveMob(Mob_.UniqueID, Mob_.Position_Spawn)
                             End If
 
 
@@ -389,6 +382,7 @@ Namespace GameServer
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
             End Try
         End Sub
+
 
         Public Sub DatabaseTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             DatabaseTimer.Stop()

@@ -1,7 +1,8 @@
 ﻿Namespace GameServer.Functions
     Module MonsterSpawn
 
-        Public MobList As New List(Of cMonster)
+        ' Public MobList As New List(Of cMonster)
+        Public MobList1 As New Dictionary(Of UInteger, cMonster)
 
         Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster, ByVal obj As Object_) As Byte()
             Dim writer As New PacketWriter
@@ -77,9 +78,9 @@
             End Select
 
             tmp.HP_Max = tmp.HP_Cur
-            MobList.Add(tmp)
+            MobList.Add(tmp.UniqueID, tmp)
 
-            Dim MyIndex As UInteger = MobList.IndexOf(tmp)
+            Dim MyIndex As UInteger = tmp.UniqueID
             Dim range As Integer = Settings.Server_Range
 
             For refindex As Integer = 0 To Server.MaxClients
@@ -87,7 +88,7 @@
                 Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
-                        If PlayerData(refindex).SpawnedNPCs.Contains(tmp.UniqueID) = False Then
+                        If PlayerData(refindex).SpawnedMonsters.Contains(tmp.UniqueID) = False Then
                             Server.Send(CreateMonsterSpawnPacket(tmp, mob_), refindex)
                             PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
                         End If
@@ -96,10 +97,10 @@
             Next refindex
         End Sub
 
-        Public Sub RemoveMob(ByVal MobIndex As Integer)
-            Dim _mob As cMonster = MobList(MobIndex)
+        Public Sub RemoveMob(ByVal UniqueID As Integer)
+            Dim _mob As cMonster = MobList(UniqueID)
             Server.SendIfMobIsSpawned(CreateDespawnPacket(_mob.UniqueID), _mob.UniqueID)
-            MobList.RemoveAt(MobIndex)
+            MobList.Remove(UniqueID)
 
 
             For i = 0 To Server.MaxClients
@@ -109,7 +110,6 @@
                     End If
                 End If
             Next
-
         End Sub
 
         Public Sub SendUniqueSpawn(ByVal PK2ID As UInteger)

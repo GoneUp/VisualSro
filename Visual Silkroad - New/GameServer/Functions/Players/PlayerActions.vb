@@ -73,13 +73,13 @@
             Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
         End Sub
 
-        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer, ByVal MobListIndex As UInteger)
+        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Action)
-            writer.DWord(MobList(MobListIndex).UniqueID)
+            writer.DWord(MobUniqueID)
             writer.Byte(Type)
             writer.Byte(State)
-            Server.SendIfMobIsSpawned(writer.GetBytes, MobList(MobListIndex).UniqueID)
+            Server.SendIfMobIsSpawned(writer.GetBytes, MobUniqueID)
         End Sub
 
         Public Sub OnTeleportUser(ByVal Index_ As Integer, ByVal XSec As Byte, ByVal YSec As Byte)

@@ -283,8 +283,8 @@
             Public MasteryLevel As Byte
             Public RequiredSp As ULong
             Public RequiredMp As UShort
-            Public CastTime As Byte
-            Public Time As UInteger
+            Public CastTime As Integer
+            Public UseDuration As UInteger
             Public PwrPercent As Integer
             Public PwrMin As Integer
             Public PwrMax As Integer
@@ -327,25 +327,26 @@
                     lines(i) = lines(i).Replace(".", ",")
                 End If
 
-
-
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New Skill_()
                 tmp.Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(3)
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
+
+                If tmpString(13) > Int32.MaxValue Or tmpString(13) < Int32.MinValue Then
+                    Debug.Print(1)
+                End If
+                tmp.CastTime = Convert.ToInt32(tmpString(13))
                 tmp.MasteryID = Convert.ToUInt32(tmpString(34))
                 tmp.MasteryLevel = Convert.ToUInt32(tmpString(36))
                 tmp.RequiredSp = Convert.ToUInt64(tmpString(46))
                 tmp.RequiredMp = Convert.ToUInt16(tmpString(53))
-                tmp.CastTime = Convert.ToByte(tmpString(68))
-                tmp.Time = Convert.ToUInt32(tmpString(70))
+                tmp.UseDuration = Convert.ToInt32(tmpString(70))
                 tmp.PwrPercent = Convert.ToInt32(tmpString(71))
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
                 tmp.PwrMax = Convert.ToInt32(tmpString(73))
                 tmp.Distance = Convert.ToInt32(tmpString(78))
 
-                Debug.Print(tmp.Time)
                 If tmp.Distance = 0 Then
                     tmp.Distance = 21
                 End If

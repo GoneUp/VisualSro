@@ -172,10 +172,10 @@
             Next
 
 
-            For i = 0 To MobList.Count - 1
-                If PlayerData(Index_).SpawnedMonsters.Contains(i) = True Then
-                    Dim _mob As cMonster = MobList(i)
-                    Server.Send(CreateDespawnPacket(_mob.UniqueID), Index_)
+            For i = 0 To MobList1.Keys.Count - 1
+                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+                If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = True Then
+                    Server.Send(CreateDespawnPacket(Mob_.UniqueID), Index_)
                     PlayerData(Index_).SpawnedMonsters.Remove(i)
                 End If
             Next
@@ -219,6 +219,8 @@
             PlayerData(Index_).Attacking = False
             PlayerData(Index_).AttackedId = 0
             PlayerData(Index_).UsingSkillId = 0
+            PlayerData(Index_).SkillOverId = 0
+            PlayerData(Index_).CastingId = 0
             PlayerData(Index_).AttackType = AttackType_.Normal
             PlayerData(Index_).LastSelected = 0
             PlayerData(Index_).UsedItem = UseItemTypes.None

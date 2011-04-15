@@ -9,7 +9,6 @@
 
             Dim tag As Byte = packet.Byte
             If tag = 1 Then
-                '01 A8 60 61 02 FE FF 70 04
                 Dim to_pos As New Position
                 to_pos.XSector = packet.Byte
                 to_pos.YSector = packet.Byte
@@ -25,11 +24,6 @@
                     to_pos.Y = packet.DWordInt
                 End If
 
-                'Dim x = PlayerData(Index_).Position.X - to_pos.X
-                'Dim y = PlayerData(Index_).Position.Y - to_pos.Y
-                'Dim Distance = Math.Sqrt(x * x + y * y)
-                'Dim Traveltime = Distance / PlayerData(Index_).RunSpeed
-                'Console.WriteLine(Distance & "    " & Traveltime)
 
                 OnMoveUser(Index_, to_pos)
             End If
@@ -203,8 +197,7 @@
 
 
             Catch ex As Exception
-                Console.WriteLine("ObjectSpawnCheck()::error...")
-                Debug.Write(ex)
+                Log.WriteSystemLog("SpawnCheckError:: Message: " & ex.Message & " Stack:" & ex.StackTrace)
             End Try
         End Sub
 

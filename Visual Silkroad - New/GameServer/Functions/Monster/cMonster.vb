@@ -25,7 +25,6 @@
     Public IsAttacking As Boolean = False
     Public AttackingId As UInteger
     Public UsingSkillId As UInteger
-    Public LastSkillId As UInteger
 
     Function GetsAttacked() As Boolean
         For i = 0 To Me.DamageFromPlayer.Count - 1

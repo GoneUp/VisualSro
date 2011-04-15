@@ -78,7 +78,7 @@
             End Select
 
             tmp.HP_Max = tmp.HP_Cur
-            MobList.Add(tmp.UniqueID, tmp)
+            MobList1.Add(tmp.UniqueID, tmp)
 
             Dim MyIndex As UInteger = tmp.UniqueID
             Dim range As Integer = Settings.Server_Range
@@ -98,9 +98,9 @@
         End Sub
 
         Public Sub RemoveMob(ByVal UniqueID As Integer)
-            Dim _mob As cMonster = MobList(UniqueID)
+            Dim _mob As cMonster = MobList1(UniqueID)
             Server.SendIfMobIsSpawned(CreateDespawnPacket(_mob.UniqueID), _mob.UniqueID)
-            MobList.Remove(UniqueID)
+            MobList1.Remove(UniqueID)
 
 
             For i = 0 To Server.MaxClients

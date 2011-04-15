@@ -1,10 +1,10 @@
 ﻿Namespace GameServer.Mod
     Module modDamage
-        Public Sub SendDamageInfo(ByVal MobIndex As Integer)
-            Dim ref_ As Object_ = GetObjectById(Functions.MobList(MobIndex).Pk2ID)
+        Public Sub SendDamageInfo(ByVal MobUniqueId As Integer)
+            Dim ref_ As Object_ = GetObjectById(Functions.MobList1(MobUniqueId).Pk2ID)
 
             'Sort
-            Dim DmgList As List(Of cDamageDone) = Functions.MobList(MobIndex).DamageFromPlayer
+            Dim DmgList As List(Of cDamageDone) = Functions.MobList1(MobUniqueId).DamageFromPlayer
             Dim sort = From elem In DmgList Order By elem.Damage Descending Select elem Take 9
 
             'Build Info

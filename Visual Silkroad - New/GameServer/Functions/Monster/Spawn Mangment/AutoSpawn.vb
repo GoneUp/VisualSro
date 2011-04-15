@@ -63,13 +63,14 @@
         Public Sub SaveAutoSpawn(ByVal path As String)
             Dim str As String = ""
 
-            For i = 0 To MobList.Count - 1
-                str += CStr(MobList(i).Pk2ID) & ControlChars.Tab
-                str += CStr(Integer.Parse(ByteFromInteger(MobList(i).Position.YSector) & ByteFromInteger(MobList(i).Position.XSector), Globalization.NumberStyles.HexNumber)) & ControlChars.Tab
-                str += CStr(MobList(i).Position.X) & ControlChars.Tab
-                str += CStr(MobList(i).Position.Z) & ControlChars.Tab
-                str += CStr(MobList(i).Position.Y) & ControlChars.Tab
-                str += CStr(Math.Round((MobList(i).Angle * 360) / 65535))
+            For i = 0 To MobList1.Keys.Count - 1
+                Dim Mob_ As cMonster = MobList1(i)
+                str += CStr(Mob_.Pk2ID) & ControlChars.Tab
+                str += CStr(Integer.Parse(ByteFromInteger(Mob_.Position.YSector) & ByteFromInteger(Mob_.Position.XSector), Globalization.NumberStyles.HexNumber)) & ControlChars.Tab
+                str += CStr(Mob_.Position.X) & ControlChars.Tab
+                str += CStr(Mob_.Position.Z) & ControlChars.Tab
+                str += CStr(Mob_.Position.Y) & ControlChars.Tab
+                str += CStr(Math.Round((Mob_.Angle * 360) / 65535))
                 str += ControlChars.NewLine
             Next
 

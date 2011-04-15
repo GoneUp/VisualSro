@@ -238,11 +238,12 @@
             Dim unique_Id As UInteger = Packet.DWord
 
 
-            For i = 0 To MobList.Count - 1
-                If MobList(i).UniqueID = unique_Id Then
-                    MobAddDamageFromPlayer(MobList(i).HP_Cur, Index_, i, False)
-                    GetEXPFromMob(MobList(i))
-                    KillMob(i)
+            For i = 0 To MobList1.Keys.Count - 1
+                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+                If Mob_.UniqueID = unique_Id Then
+                    MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False)
+                    GetEXPFromMob(Mob_)
+                    KillMob(Mob_.UniqueID)
                 End If
             Next
         End Sub

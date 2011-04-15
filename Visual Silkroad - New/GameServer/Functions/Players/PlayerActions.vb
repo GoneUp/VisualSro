@@ -234,13 +234,13 @@
                 End If
             Next
 
-            For i = 0 To MobList.Count - 1
-                If MobList(i).UniqueID = ObjectID Then
-                    Dim mob = MobList(i)
+            For i = 0 To MobList1.Keys.Count - 1
+                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+                If Mob_.UniqueID = ObjectID Then
                     writer.Byte(1) 'Sucess
-                    writer.DWord(MobList(i).UniqueID)
+                    writer.DWord(Mob_.UniqueID)
                     writer.Byte(1) 'unknown
-                    writer.DWord(MobList(i).HP_Cur)
+                    writer.DWord(Mob_.HP_Cur)
                     writer.Byte(1) 'unknown
                     writer.Byte(5) 'unknown
                     Server.Send(writer.GetBytes, Index_)

@@ -3,26 +3,6 @@
 
         Dim Random As New Random
 
-        Public Sub MonsterAttack(ByVal MyUniqueID As UInteger, ByVal AttackedID As UInteger)
-            Dim MobIndex As Integer = 0
-
-            For i = 0 To MobList.Count - 1
-                If MobList(i).UniqueID = MyUniqueID Then
-                    MobIndex = i
-                    Exit For
-                End If
-            Next
-
-            'Find others Index
-            For i = 0 To PlayerData.Count - 1
-                If PlayerData(i).UniqueId = AttackedID Then
-                    MonsterAttackPlayer(MobIndex, i)
-                    Exit Sub
-                End If
-            Next
-        End Sub
-
-
         Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
             If MobList1.ContainsKey(MobUniqueID) = False Then
                 Exit Sub

@@ -101,7 +101,7 @@
                 Case "\\count_world"
                     Functions.SendPm(Index_, "===========COUNT============", "[SERVER]")
                     Functions.SendPm(Index_, "Players: " & Server.OnlineClient, "[SERVER]")
-                    Functions.SendPm(Index_, "Mob: " & Functions.MobList.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "Mob: " & Functions.MobList1.Count, "[SERVER]")
                     Functions.SendPm(Index_, "Npc: " & Functions.NpcList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "Items: " & Functions.ItemList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "== END ==", "[SERVER]")
@@ -185,9 +185,10 @@
                 Case "\\moba"
 
                     If tmp(1) <> "" And Functions.PlayerData(Index_).LastSelected <> 0 Then
-                        For i = 0 To Functions.MobList.Count - 1
-                            If Functions.MobList(i).UniqueID = Functions.PlayerData(Index_).LastSelected Then
-                                Functions.MonsterAttackPlayer(i, Index_)
+                        For i = 0 To Functions.MobList1.Keys.Count - 1
+                            Dim Mob_ As cMonster = Functions.MobList1(Functions.MobList1.Keys(i))
+                            If Mob_.UniqueID = Functions.PlayerData(Index_).LastSelected Then
+                                Functions.MonsterAttackPlayer(Mob_.UniqueID, Index_)
                             End If
                         Next
 

@@ -77,8 +77,9 @@
 #Region "Helper Functions"
         Private Function GetSpawnCount(ByVal SpotID As Long) As Integer
             Dim Count As Integer = 0
-            For i = 0 To MobList.Count - 1
-                If MobList(i).SpotID = SpotID Then
+            For i = 0 To MobList1.Keys.Count - 1
+                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+                If Mob_.SpotID = SpotID Then
                     Count += 1
                 End If
             Next
@@ -86,9 +87,9 @@
         End Function
 
         Private Function IsUniqueSpawned(ByVal Pk2ID As UInteger) As Boolean
-            For i = 0 To MobList.Count - 1
-                Dim mob = MobList(i)
-                If MobList(i).Pk2ID = Pk2ID And MobList(i).SpotID <> -1 Then
+            For i = 0 To MobList1.Keys.Count - 1
+                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+                If Mob_.Pk2ID = Pk2ID And Mob_.SpotID <> -1 Then
                     Return True
                 End If
             Next
@@ -97,8 +98,9 @@
 
         Private Function GetCountPerSector(ByVal Xsec As Byte, ByVal Ysec As Byte) As Integer
             Dim Count As Integer
-            For i = 0 To MobList.Count - 1
-                If MobList(i).Position_Spawn.XSector = Xsec And MobList(i).Position_Spawn.YSector = Ysec Then
+            For i = 0 To MobList1.Keys.Count - 1
+                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+                If Mob_.Position_Spawn.XSector = Xsec And Mob_.Position_Spawn.YSector = Ysec Then
                     Count += 1
                 End If
             Next

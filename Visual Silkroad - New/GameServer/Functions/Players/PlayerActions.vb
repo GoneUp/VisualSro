@@ -1,6 +1,6 @@
 ﻿Namespace GameServer.Functions
     Module PlayerActions
-        Public Sub OnLogout(ByVal packet As PacketReader, ByVal Index As Integer)
+        Public Sub OnLogout(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim tag As Byte = packet.Byte
             Select Case tag
                 Case 1 'Normal Exit
@@ -9,27 +9,26 @@
                     writer.Byte(1) 'sucees
                     writer.Byte(5) '1 sekunde
                     writer.Byte(1) 'modew
-                    Server.Send(writer.GetBytes, Index)
+                    Server.Send(writer.GetBytes, Index_)
 
                     writer = New PacketWriter
                     writer.Create(ServerOpcodes.Exit2)
-                    Server.Send(writer.GetBytes, Index)
-
-                    Server.Dissconnect(Index)
+                    Server.Send(writer.GetBytes, Index_)
                 Case 2 'Restart
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Exit)
                     writer.Byte(1) 'sucees
                     writer.Byte(5) '1 sekunde
                     writer.Byte(2) 'mode 
-                    Server.Send(writer.GetBytes, Index)
+                    Server.Send(writer.GetBytes, Index_)
 
                     writer = New PacketWriter
                     writer.Create(ServerOpcodes.Exit2)
-                    Server.Send(writer.GetBytes, Index)
-
-                    Server.Dissconnect(Index)
+                    Server.Send(writer.GetBytes, Index_)
             End Select
+
+            [Mod].Damage.OnPlayerLogoff(Index_)
+            Server.Dissconnect(Index_)
         End Sub
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim action As Byte = packet.Byte
@@ -234,8 +233,8 @@
                 End If
             Next
 
-            For i = 0 To MobList1.Keys.Count - 1
-                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+            If MobList.ContainsKey(ObjectID) Then
+                Dim Mob_ As cMonster = MobList(ObjectID)
                 If Mob_.UniqueID = ObjectID Then
                     writer.Byte(1) 'Sucess
                     writer.DWord(Mob_.UniqueID)
@@ -246,7 +245,8 @@
                     Server.Send(writer.GetBytes, Index_)
                     Exit Sub
                 End If
-            Next
+            End If
+
 
             For i = 0 To NpcList.Count - 1
                 If NpcList(i).UniqueID = ObjectID Then
@@ -270,8 +270,8 @@
         Public Sub KillPlayer(ByVal Index_ As Integer)
             UpdateState(8, 0, Index_)
             UpdateState(0, 2, Index_)
-            Die_1(Index_)
-            Die_2(Index_)
+            Player_Die1(Index_)
+            Player_Die2(Index_)
 
             Attack_SendAttackEnd(Index_)
             PlayerAttackTimer(Index_).Stop()
@@ -289,14 +289,14 @@
             DataBase.SaveQuery(String.Format("UPDATE positions SET death_xsect='{0}', death_ysect='{1}', death_xpos='{2}', death_zpos='{3}', death_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Recall.XSector, PlayerData(Index_).Position_Recall.YSector, Math.Round(PlayerData(Index_).Position_Recall.X), Math.Round(PlayerData(Index_).Position_Recall.Z), Math.Round(PlayerData(Index_).Position_Recall.Y), PlayerData(Index_).CharacterId))
         End Sub
 
-        Private Sub Die_1(ByVal Index_ As Integer)
+        Public Sub Player_Die1(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Die_1)
             writer.Byte(4)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Private Sub Die_2(ByVal Index_ As Integer)
+        Public Sub Player_Die2(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Die_2)
             writer.DWord(0)
@@ -304,7 +304,7 @@
         End Sub
 
         Public Sub OnPlayerRespawn(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            If PlayerData(Index_).CHP <> 0 Then
+            If PlayerData(Index_).Alive = True Then
                 Exit Sub
             End If
 
@@ -322,7 +322,7 @@
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
 
                 Case 2 'At present Point
-                    Die_2(Index_)
+                    Player_Die2(Index_)
                     UpdateState(0, 1, Index_)
                     UpdateHP(Index_)
             End Select

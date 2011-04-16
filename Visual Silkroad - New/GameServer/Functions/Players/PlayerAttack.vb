@@ -15,7 +15,7 @@
                         packet.Skip(2)
                         Dim ObjectID As UInt32 = packet.DWord
                         If PlayerData(Index_).Attacking = False Then
-                            If MobList1.ContainsKey(ObjectID) And MobList1(ObjectID).UniqueID = ObjectID And MobList1(ObjectID).Death = False Then
+                            If MobList.ContainsKey(ObjectID) And MobList(ObjectID).UniqueID = ObjectID And MobList(ObjectID).Death = False Then
                                 PlayerAttackNormal(Index_, ObjectID)
                             End If
 
@@ -39,14 +39,14 @@
                                 Dim ObjectID As UInt32 = packet.DWord
 
                                 If PlayerData(Index_).Attacking = False Then
-                                    If MobList1.ContainsKey(ObjectID) And MobList1(ObjectID).UniqueID = ObjectID And MobList1(ObjectID).Death = False Then
+                                    If MobList.ContainsKey(ObjectID) And MobList(ObjectID).UniqueID = ObjectID And MobList(ObjectID).Death = False Then
                                         PlayerAttackBeginSkill(skillid, Index_, ObjectID)
                                         found = True
                                     End If
 
                                 Else
                                     If PlayerData(Index_).AttackType = AttackType_.Normal Then
-                                         If MobList1.ContainsKey(ObjectID) And MobList1(ObjectID).UniqueID = ObjectID And MobList1(ObjectID).Death = False Then
+                                        If MobList.ContainsKey(ObjectID) And MobList(ObjectID).UniqueID = ObjectID And MobList(ObjectID).Death = False Then
                                             'Cleanup the regular Attack before using a Skill
                                             Timers.PlayerAttackTimer(Index_).Stop()
                                             PlayerData(Index_).Attacking = False
@@ -100,7 +100,7 @@
         Public Sub PlayerAttackNormal(ByVal Index_ As Integer, ByVal MobUniqueId As Integer)
             Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
             Dim RefWeapon As New cItem
-            Dim AttObject As Object_ = GetObjectById(MobList1(MobUniqueId).Pk2ID)
+            Dim AttObject As Object_ = GetObjectById(MobList(MobUniqueId).Pk2ID)
 
 
 
@@ -116,7 +116,7 @@
                 Exit Sub
             End If
 
-            Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, MobList1(MobUniqueId).Position)
+            Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, MobList(MobUniqueId).Position)
             If Distance >= (RefWeapon.ATTACK_DISTANCE) Then
                 MoveUserToMonster(Index_, MobUniqueId)
                 Exit Sub
@@ -182,7 +182,7 @@
             writer.Byte(NumberVictims) '1 victim
 
             For d = 0 To NumberVictims - 1
-                writer.DWord(MobList1(MobUniqueId).UniqueID)
+                writer.DWord(MobList(MobUniqueId).UniqueID)
 
                 For i = 0 To NumberAttack - 1
                     Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, AttackType)
@@ -192,14 +192,14 @@
                         Damage = Damage * 2
                         Crit = 2
                     End If
-                    If CLng(MobList1(MobUniqueId).HP_Cur) - Damage > 0 Then
-                        MobList1(MobUniqueId).HP_Cur -= Damage
-                        MobAddDamageFromPlayer(Damage, Index_, MobList1(MobUniqueId).UniqueID, True)
-                    ElseIf CLng(MobList1(MobUniqueId).HP_Cur) - Damage <= 0 Then
+                    If CLng(MobList(MobUniqueId).HP_Cur) - Damage > 0 Then
+                        MobList(MobUniqueId).HP_Cur -= Damage
+                        MobAddDamageFromPlayer(Damage, Index_, MobList(MobUniqueId).UniqueID, True)
+                    ElseIf CLng(MobList(MobUniqueId).HP_Cur) - Damage <= 0 Then
                         'Dead
                         afterstate = &H80
-                        MobAddDamageFromPlayer(MobList1(MobUniqueId).HP_Cur, Index_, MobList1(MobUniqueId).UniqueID, False) 'Done the last Damage
-                        MobList1(MobUniqueId).HP_Cur = 0
+                        MobAddDamageFromPlayer(MobList(MobUniqueId).HP_Cur, Index_, MobList(MobUniqueId).UniqueID, False) 'Done the last Damage
+                        MobList(MobUniqueId).HP_Cur = 0
                     End If
 
                     writer.Byte(afterstate)
@@ -212,8 +212,8 @@
             Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
 
             If afterstate = &H80 Then
-                GetEXPFromMob(MobList1(MobUniqueId))
-                KillMob(MobList1(MobUniqueId).UniqueID)
+                GetEXPFromMob(MobList(MobUniqueId))
+                KillMob(MobList(MobUniqueId).UniqueID)
                 Attack_SendAttackEnd(Index_)
 
                 PlayerData(Index_).Attacking = False
@@ -225,7 +225,7 @@
             Else
                 PlayerData(Index_).Attacking = True
                 PlayerData(Index_).Busy = True
-                PlayerData(Index_).AttackedId = MobList1(MobUniqueId).UniqueID
+                PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
                 PlayerData(Index_).UsingSkillId = AttackType
                 PlayerData(Index_).AttackType = AttackType_.Normal
                 If PlayerAttackTimer(Index_).Enabled = False Then
@@ -239,7 +239,7 @@
         Public Sub PlayerAttackBeginSkill(ByVal SkillID As UInt32, ByVal Index_ As Integer, ByVal MobUniqueId As Integer)
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim RefWeapon As New cItem
-            Dim Mob_ As cMonster = MobList1(MobUniqueId)
+            Dim Mob_ As cMonster = MobList(MobUniqueId)
 
             If PlayerData(Index_).Busy Or CheckIfUserOwnSkill(SkillID, Index_) = False Then
                 Exit Sub
@@ -297,7 +297,7 @@
             Dim RefSkill As Skill_ = GetSkillById(PlayerData(Index_).UsingSkillId)
             Dim AttObject As New Object_
             Dim RefWeapon As New cItem
-            Dim Mob_ As cMonster = MobList1(PlayerData(Index_).AttackedId)
+            Dim Mob_ As cMonster = MobList(PlayerData(Index_).AttackedId)
             Dim afterstate, NumberVictims As Integer
             NumberVictims = 1
 
@@ -371,6 +371,9 @@
                     PlayerAttackTimer(Index_).Interval = 2500
                     PlayerAttackTimer(Index_).Start()
                 End If
+
+                'Monster Attack back
+                Mob_.AttackTimer_Start(5)
             End If
         End Sub
 
@@ -380,13 +383,15 @@
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
-            If (CSng(PlayerData(Index_).Level) - Mob.Level) > -10 Then
-                Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 100))
-            Else
+            'If (CSng(PlayerData(Index_).Level) - Mob.Level) > -10 Then
+            '    Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 100))
+            'Else
+            '    Balance = 0.01
+            'End If
+            Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 100))
+            If Balance < 0 Then
                 Balance = 0.01
             End If
-
-
 
             Dim DamageMin As Double
             Dim DamageMax As Double
@@ -411,7 +416,7 @@
                 DamageMin = 1
             End If
             If DamageMax <= 0 Or DamageMax >= UInteger.MaxValue Then
-                DamageMax = 2
+                DamageMax = 4
             End If
 
 

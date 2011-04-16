@@ -439,6 +439,10 @@
                     AddHotKeyToDB(toadd)
                 Next
 
+                'Mods
+                [Mod].Damage.OnPlayerCreate(Index_)
+
+
                 'Finish
                 writer.Byte(1) 'success
                 Server.Send(writer.GetBytes, Index_)
@@ -491,9 +495,12 @@
                 End If
             Next
 
+            'Prepare
             CleanUpPlayer(Index_)
             Player_CheckDeath(Index_, True)
+            [Mod].Damage.OnPlayerLogon(Index_)
 
+            'Packet's
             writer = New PacketWriter
             writer.Create(ServerOpcodes.LoadingStart)
             Server.Send(writer.GetBytes, Index_)
@@ -508,11 +515,10 @@
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterID)
             writer.DWord(PlayerData(Index_).UniqueId) 'charid
-            writer.Word(13) 'moon pos
+            writer.Word(Date.Now.Day) 'moon pos
             writer.Byte(Date.Now.Hour) 'hours
             writer.Byte(Date.Now.Minute) 'minute
             Server.Send(writer.GetBytes, Index_)
-
         End Sub
         Public Sub OnCharacterInfo(ByVal Index_ As Integer)
             PlayerData(Index_).SetCharGroundStats()

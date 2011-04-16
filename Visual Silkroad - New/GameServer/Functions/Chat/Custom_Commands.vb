@@ -1,5 +1,5 @@
 ﻿Namespace GameServer.Mod
-    Module Costum_Log
+    Module Costum_Commands
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
             'This Function is for additional Log from a GM
             Dim writer As New PacketWriter
@@ -101,7 +101,7 @@
                 Case "\\count_world"
                     Functions.SendPm(Index_, "===========COUNT============", "[SERVER]")
                     Functions.SendPm(Index_, "Players: " & Server.OnlineClient, "[SERVER]")
-                    Functions.SendPm(Index_, "Mob: " & Functions.MobList1.Count, "[SERVER]")
+                    Functions.SendPm(Index_, "Mob: " & Functions.MobList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "Npc: " & Functions.NpcList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "Items: " & Functions.ItemList.Count, "[SERVER]")
                     Functions.SendPm(Index_, "== END ==", "[SERVER]")
@@ -185,18 +185,24 @@
                 Case "\\moba"
 
                     If tmp(1) <> "" And Functions.PlayerData(Index_).LastSelected <> 0 Then
-                        For i = 0 To Functions.MobList1.Keys.Count - 1
-                            Dim Mob_ As cMonster = Functions.MobList1(Functions.MobList1.Keys(i))
-                            If Mob_.UniqueID = Functions.PlayerData(Index_).LastSelected Then
-                                Functions.MonsterAttackPlayer(Mob_.UniqueID, Index_)
+                        For Each key In Functions.MobList.Keys.ToList
+                            If Functions.MobList.ContainsKey(key) Then
+                                Dim Mob_ As cMonster = Functions.MobList.Item(key)
+                                If Mob_.UniqueID = Functions.PlayerData(Index_).LastSelected Then
+                                    Functions.MonsterAttackPlayer(Mob_.UniqueID, Index_)
+                                End If
                             End If
                         Next
-
-
-
-
                     End If
-
+                Case "\\respawn"
+                    If Functions.PlayerData(Index_).Alive = False Then
+                        Functions.PlayerData(Index_).CHP = Functions.PlayerData(Index_).HP / 2
+                        Functions.PlayerData(Index_).Alive = True
+                        Functions.PlayerData(Index_).Busy = False
+                        Functions.Player_Die2(Index_)
+                        Functions.UpdateState(0, 1, Index_)
+                        Functions.UpdateHP(Index_)
+                    End If
 
             End Select
 

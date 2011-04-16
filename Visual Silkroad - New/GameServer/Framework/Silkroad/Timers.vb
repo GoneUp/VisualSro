@@ -5,6 +5,7 @@ Namespace GameServer
         Public PlayerMoveTimer As Timer() = New Timer(14999) {}
         Public MonsterMovement As New Timer
         Public MonsterCheck As New Timer
+        Public MonsterRespawn As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
         Public PickUpTimer As Timer() = New Timer(14999) {}
         Public CastAttackTimer As Timer() = New Timer(14999) {}
@@ -33,6 +34,7 @@ Namespace GameServer
                 Next
 
                 AddHandler MonsterCheck.Elapsed, AddressOf MonsterCheck_Elapsed
+                AddHandler MonsterRespawn.Elapsed, AddressOf MonsterRespawn_Elapsed
                 AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
                 AddHandler DatabaseTimer.Elapsed, AddressOf DatabaseTimer_Elapsed
 
@@ -42,6 +44,9 @@ Namespace GameServer
 
                 MonsterMovement.Interval = 5000
                 MonsterMovement.Start()
+
+                MonsterRespawn.Interval = 7500
+                MonsterRespawn.Start()
 
                 DatabaseTimer.Interval = 30000
                 DatabaseTimer.Start()
@@ -69,8 +74,8 @@ Namespace GameServer
                     PlayerData(Index).Attacking = False
                     MobSetAttackingFromPlayer(Index, PlayerData(Index).AttackedId, False)
 
-                    If PlayerData(Index).AttackedId <> 0 And MobList1.ContainsKey(PlayerData(Index).AttackedId) Then
-                        Dim mob_ As cMonster = MobList1(PlayerData(Index).AttackedId)
+                    If PlayerData(Index).AttackedId <> 0 And MobList.ContainsKey(PlayerData(Index).AttackedId) Then
+                        Dim mob_ As cMonster = MobList(PlayerData(Index).AttackedId)
 
                         If mob_.Death = False Then
                             If PlayerData(Index).AttackType = AttackType_.Normal Then
@@ -211,9 +216,9 @@ Namespace GameServer
 
             Try
 
-                For i = 0 To MobList1.Keys.Count - 1
-                    If i < MobList1.Keys.Count Then
-                        Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
+                For Each key In MobList.Keys.ToList
+                    If MobList.ContainsKey(key) Then
+                        Dim Mob_ As cMonster = MobList.Item(key)
 
                         If Mob_.Death = True Then
                             Dim wert As Integer = Date.Compare(Mob_.DeathRemoveTime, Date.Now)
@@ -223,39 +228,49 @@ Namespace GameServer
                             End If
                         ElseIf IsInSaveZone(Mob_.Position) Then
                             RemoveMob(Mob_.UniqueID)
-                        ElseIf Mob_.GetsAttacked = True Then
-                            'Attack back...
-                            If Mob_.IsAttacking = False Then
-                                MonsterAttackPlayer(Mob_.UniqueID, MobGetPlayerWithMostDamage(Mob_.UniqueID, True))
-                            End If
+                            'ElseIf Mob_.GetsAttacked = True Then
+                            '    'Attack back...
+                            '    If Mob_.IsAttacking = False Then
+                            '        MonsterAttackPlayer(Mob_.UniqueID, MobGetPlayerWithMostDamage(Mob_.UniqueID, True))
+                            '    End If
                         End If
                     End If
                 Next
 
-                CheckForRespawns()
 
-
+                Debug.Print("MC: " & DateDiff(DateInterval.Second, e.SignalTime, Date.Now))
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MD") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MC") '
             End Try
 
             MonsterCheck.Start() 'restart Timer
         End Sub
 
 
+        Public Sub MonsterRespawn_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            MonsterRespawn.Stop()
+
+            Try
+
+                CheckForRespawns()
+                Debug.Print("MR: " & DateDiff(DateInterval.Second, e.SignalTime, Date.Now))
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MR") '
+            End Try
+
+            MonsterRespawn.Start() 'restart Timer
+        End Sub
+
         Public Sub MonsterMovement_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             MonsterMovement.Stop()
 
             Try
 
-
-                Dim time As Date = Date.Now
-                For i = 0 To MobList1.Values.Count - 1
-                    If i < MobList1.Values.Count Then
-                        Dim Mob_ As cMonster = MobList1.Values(i)
+                For Each key In MobList.Keys.ToList
+                    If MobList.ContainsKey(key) Then
+                        Dim Mob_ As cMonster = MobList.Item(key)
                         Dim obj As Object_ = GetObjectById(Mob_.Pk2ID)
-
-
 
                         If Mob_.Death = False And Mob_.Walking = False And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
                             Dim dist As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
@@ -274,7 +289,6 @@ Namespace GameServer
                                 If ToPos.X = Mob_.Position.X And ToPos.Y = Mob_.Position.Y Then
                                     ToPos.X += 1
                                 End If
-
 
                                 MoveMob(Mob_.UniqueID, ToPos)
                             Else
@@ -315,9 +329,8 @@ Namespace GameServer
                     End If
                 Next
 
-                Debug.Print("MM: " & DateDiff(DateInterval.Second, time, Date.Now))
+                Debug.Print("MM: " & DateDiff(DateInterval.Second, e.SignalTime, Date.Now))
 
-                MonsterMovement.Start()
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '
             End Try

@@ -69,7 +69,7 @@
                 Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
                 Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
-                Log.WriteSystemLog("Loaded " & Functions.MobList1.Count & " Autospawn Monster.")
+                Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
                 Log.WriteSystemLog("Loaded " & Functions.NpcList.Count & " Autospawn Npc's.")
 
                 Log.WriteSystemLog("Loading took " & DateDiff(DateInterval.Second, time, Date.Now) & " Seconds.")

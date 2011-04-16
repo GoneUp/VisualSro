@@ -164,28 +164,30 @@
             Next
 
             For i = 0 To NpcList.Count - 1
-                If PlayerData(Index_).SpawnedNPCs.Contains(i) = True Then
+                If PlayerData(Index_).SpawnedNPCs.Contains(NpcList(i).UniqueID) = True Then
                     Dim _npc As cNPC = NpcList(i)
                     Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
-                    PlayerData(Index_).SpawnedNPCs.Remove(i)
+                    PlayerData(Index_).SpawnedNPCs.Remove(NpcList(i).UniqueID)
                 End If
             Next
 
 
-            For i = 0 To MobList1.Keys.Count - 1
-                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
-                If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = True Then
-                    Server.Send(CreateDespawnPacket(Mob_.UniqueID), Index_)
-                    PlayerData(Index_).SpawnedMonsters.Remove(i)
+            For Each key In MobList.Keys.ToList
+                If MobList.ContainsKey(key) Then
+                    Dim Mob_ As cMonster = MobList.Item(key)
+                    If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = True Then
+                        Server.Send(CreateDespawnPacket(Mob_.UniqueID), Index_)
+                        PlayerData(Index_).SpawnedMonsters.Remove(Mob_.UniqueID)
+                    End If
                 End If
             Next
 
 
             For i = 0 To ItemList.Count - 1
-                If PlayerData(Index_).SpawnedItems.Contains(i) = True Then
+                If PlayerData(Index_).SpawnedItems.Contains(ItemList(i).UniqueID) = True Then
                     Dim _item As cItemDrop = ItemList(i)
                     Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
-                    PlayerData(Index_).SpawnedItems.Remove(i)
+                    PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
                 End If
             Next
 

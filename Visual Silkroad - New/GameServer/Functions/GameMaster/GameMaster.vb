@@ -3,7 +3,7 @@
         Public Sub OnGM(ByVal Packet As GameServer.PacketReader, ByVal Index As Integer)
 
             Dim tag As Byte = Packet.Word
-            Debug.Print("[GM][Tag:" & tag & "]")
+            'Debug.Print("[GM][Tag:" & tag & "]")
 
             If PlayerData(Index).GM = True Then
                 Select Case tag
@@ -37,7 +37,7 @@
             Else
                 Server.Dissconnect(Index)
 
-                Log.WriteGameLog(Index, "GM", "Unautorized", "Gm_Command_Try")
+                Log.WriteGameLog(Index, "GM", "Unautorized", "Gm_Command_Try:" & tag)
                 'Hack Versuch
             End If
         End Sub
@@ -238,12 +238,14 @@
             Dim unique_Id As UInteger = Packet.DWord
 
 
-            For i = 0 To MobList1.Keys.Count - 1
-                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
-                If Mob_.UniqueID = unique_Id Then
-                    MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False)
-                    GetEXPFromMob(Mob_)
-                    KillMob(Mob_.UniqueID)
+            For Each key In MobList.Keys.ToList
+                If MobList.ContainsKey(key) Then
+                    Dim Mob_ As cMonster = MobList.Item(key)
+                    If Mob_.UniqueID = unique_Id Then
+                        MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False)
+                        GetEXPFromMob(Mob_)
+                        KillMob(Mob_.UniqueID)
+                    End If
                 End If
             Next
         End Sub

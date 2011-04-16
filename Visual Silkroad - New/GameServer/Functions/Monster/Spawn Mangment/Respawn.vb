@@ -3,27 +3,27 @@
         Dim Random As New Random
 
         Public Sub CheckForRespawns()
-            Dim i
+            Dim SpotIndex
 
             Try
                 Dim Random As New Random
 
-                For i = 0 To RefRespawns.Count - 1
-                    If GetSpawnCount(RefRespawns(i).SpotID) < Settings.Server_SpawnRate Then
-                        If GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector) <= Settings.Server_SpawnsPerSec Then
+                For SpotIndex = 0 To RefRespawns.Count - 1
+                    If GetSpawnCount(RefRespawns(SpotIndex).SpotID) < Settings.Server_SpawnRate Then
+                        If GetCountPerSector(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector) <= Settings.Server_SpawnsPerSec Then
                             If Random.Next(0, 7) = 0 Then
-                                ReSpawnMob(i)
+                                ReSpawnMob(SpotIndex)
                             End If
                         Else
-                            Debug.Print("CountPerSec overflow: " & GetCountPerSector(RefRespawns(i).Position.XSector, RefRespawns(i).Position.YSector))
+                            Debug.Print("CountPerSec overflow: " & GetCountPerSector(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector))
                         End If
                     End If
                 Next
 
 
-                For i = 0 To RefRespawnsUnique.Count - 1
-                    If IsUniqueSpawned(RefRespawnsUnique(i).Pk2ID) = False Then
-                        ReSpawnUnique(i)
+                For SpotIndex = 0 To RefRespawnsUnique.Count - 1
+                    If IsUniqueSpawned(RefRespawnsUnique(SpotIndex).Pk2ID) = False Then
+                        ReSpawnUnique(SpotIndex)
                     End If
                 Next
             Catch ex As Exception
@@ -77,20 +77,25 @@
 #Region "Helper Functions"
         Private Function GetSpawnCount(ByVal SpotID As Long) As Integer
             Dim Count As Integer = 0
-            For i = 0 To MobList1.Keys.Count - 1
-                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
-                If Mob_.SpotID = SpotID Then
-                    Count += 1
+            For Each key In MobList.Keys.ToList
+                If MobList.ContainsKey(key) Then
+                    Dim Mob_ As cMonster = MobList.Item(key)
+                    If Mob_.SpotID = SpotID Then
+                        Count += 1
+                    End If
                 End If
             Next
             Return Count
         End Function
 
         Private Function IsUniqueSpawned(ByVal Pk2ID As UInteger) As Boolean
-            For i = 0 To MobList1.Keys.Count - 1
-                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
-                If Mob_.Pk2ID = Pk2ID And Mob_.SpotID <> -1 Then
-                    Return True
+
+            For Each key In MobList.Keys.ToList
+                If MobList.ContainsKey(key) Then
+                    Dim Mob_ As cMonster = MobList.Item(key)
+                    If Mob_.Pk2ID = Pk2ID And Mob_.SpotID <> -1 Then
+                        Return True
+                    End If
                 End If
             Next
             Return False
@@ -98,10 +103,13 @@
 
         Private Function GetCountPerSector(ByVal Xsec As Byte, ByVal Ysec As Byte) As Integer
             Dim Count As Integer
-            For i = 0 To MobList1.Keys.Count - 1
-                Dim Mob_ As cMonster = MobList1(MobList1.Keys(i))
-                If Mob_.Position_Spawn.XSector = Xsec And Mob_.Position_Spawn.YSector = Ysec Then
-                    Count += 1
+
+            For Each key In MobList.Keys.ToList
+                If MobList.ContainsKey(key) Then
+                    Dim Mob_ As cMonster = MobList.Item(key)
+                    If Mob_.Position_Spawn.XSector = Xsec And Mob_.Position_Spawn.YSector = Ysec Then
+                        Count += 1
+                    End If
                 End If
             Next
             Return Count

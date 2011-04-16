@@ -1,19 +1,19 @@
 ﻿Namespace GameServer.Functions
     Module MonsterAction
         Public Sub KillMob(ByVal UniqueID As Integer)
-            MobList1(UniqueID).HP_Cur = 0
-            MobList1(UniqueID).Death = True
-            MobList1(UniqueID).DeathRemoveTime = Date.Now.AddSeconds(5)
+            MobList(UniqueID).HP_Cur = 0
+            MobList(UniqueID).Death = True
+            MobList(UniqueID).DeathRemoveTime = Date.Now.AddSeconds(5)
             UpdateState(0, 2, 0, UniqueID)
 
             Dim tmp_ As Integer = MobGetPlayerWithMostDamage(UniqueID)
             If tmp_ >= 0 Then
-                If MobList1(UniqueID).Mob_Type = 3 Then
-                    SendUniqueKill(MobList1(UniqueID).Pk2ID, PlayerData(tmp_).CharacterName)
+                If MobList(UniqueID).Mob_Type = 3 Then
+                    SendUniqueKill(MobList(UniqueID).Pk2ID, PlayerData(tmp_).CharacterName)
                 End If
 
                 If Settings.ModGeneral And Settings.ModDamage Then
-                    [Mod].SendDamageInfo(UniqueID)
+                    [Mod].Damage.SendDamageInfo(UniqueID)
                 End If
             End If
         End Sub
@@ -21,7 +21,7 @@
         Public Function MobGetPlayerWithMostDamage(ByVal UniqueID As Integer)
             Dim MostIndex As Integer = -1
             Dim MostDamage As UInteger
-            Dim Mob_ As cMonster = MobList1(UniqueID)
+            Dim Mob_ As cMonster = MobList(UniqueID)
 
             For i = 0 To Mob_.DamageFromPlayer.Count - 1
                 If Mob_.DamageFromPlayer(i).Damage > MostDamage Then
@@ -36,7 +36,7 @@
         Public Function MobGetPlayerWithMostDamage(ByVal UniqueID As Integer, ByVal Attacking As Boolean)
             Dim MostIndex As Integer = -1
             Dim MostDamage As UInteger
-            Dim Mob_ As cMonster = MobList1(UniqueID)
+            Dim Mob_ As cMonster = MobList(UniqueID)
 
             For i = 0 To Mob_.DamageFromPlayer.Count - 1
                 If Mob_.DamageFromPlayer(i).Damage > MostDamage Then
@@ -49,16 +49,16 @@
 
 
         Public Sub MoveMob(ByVal UniqueID As Integer, ByVal ToPos As Position)
-            Dim Obj As Object_ = GetObjectById(MobList1(UniqueID).Pk2ID)
-            Dim Distance As Single = CalculateDistance(MobList1(UniqueID).Position, ToPos)
+            Dim Obj As Object_ = GetObjectById(MobList(UniqueID).Pk2ID)
+            Dim Distance As Single = CalculateDistance(MobList(UniqueID).Position, ToPos)
             Dim Time As Single = Distance / Obj.WalkSpeed
 
             If Time > 0 Then
-                MobList1(UniqueID).Walking = True
-                MobList1(UniqueID).Position_FromPos = MobList1(UniqueID).Position
-                MobList1(UniqueID).Position_ToPos = ToPos
-                MobList1(UniqueID).WalkStart = Date.Now
-                MobList1(UniqueID).WalkEnd = Date.Now.AddSeconds(Time)
+                MobList(UniqueID).Walking = True
+                MobList(UniqueID).Position_FromPos = MobList(UniqueID).Position
+                MobList(UniqueID).Position_ToPos = ToPos
+                MobList(UniqueID).WalkStart = Date.Now
+                MobList(UniqueID).WalkEnd = Date.Now.AddSeconds(Time)
             Else
                 Debug.Print(1)
             End If
@@ -85,7 +85,13 @@
 
             writer.Byte(0) '1= source
 
-            Server.SendIfMobIsSpawned(writer.GetBytes, MobList1(UniqueID).UniqueID)
+            Server.SendIfMobIsSpawned(writer.GetBytes, MobList(UniqueID).UniqueID)
+
+            If MobList(UniqueID).IsAttacking = True Then
+                If Time > 0 Then
+                    MobList(UniqueID).AttackTimer_Start(Time * 1000)
+                End If
+            End If
         End Sub
 
 

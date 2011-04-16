@@ -96,6 +96,8 @@
                 If Settings.Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "Whisper", String.Format("Sender: {0} Message: {1}", sender, message))
                 End If
+            ElseIf sender = "[DAMAGE_MOD]" Then
+                [Mod].Damage.ParseMessage(Index_, message)
             Else
                 'Opposite not online
                 writer.Create(ServerOpcodes.Chat_Accept)

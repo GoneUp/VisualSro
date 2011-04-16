@@ -2,7 +2,7 @@
     Module MonsterSpawn
 
         ' Public MobList As New List(Of cMonster)
-        Public MobList1 As New Dictionary(Of UInteger, cMonster)
+        Public MobList As New Dictionary(Of UInteger, cMonster)
 
         Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster, ByVal obj As Object_) As Byte()
             Dim writer As New PacketWriter
@@ -78,7 +78,7 @@
             End Select
 
             tmp.HP_Max = tmp.HP_Cur
-            MobList1.Add(tmp.UniqueID, tmp)
+            MobList.Add(tmp.UniqueID, tmp)
 
             Dim MyIndex As UInteger = tmp.UniqueID
             Dim range As Integer = Settings.Server_Range
@@ -98,9 +98,9 @@
         End Sub
 
         Public Sub RemoveMob(ByVal UniqueID As Integer)
-            Dim _mob As cMonster = MobList1(UniqueID)
+            Dim _mob As cMonster = MobList(UniqueID)
             Server.SendIfMobIsSpawned(CreateDespawnPacket(_mob.UniqueID), _mob.UniqueID)
-            MobList1.Remove(UniqueID)
+            MobList.Remove(UniqueID)
 
 
             For i = 0 To Server.MaxClients

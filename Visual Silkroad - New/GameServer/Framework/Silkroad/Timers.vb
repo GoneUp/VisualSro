@@ -3,6 +3,7 @@ Namespace GameServer
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
         Public PlayerMoveTimer As Timer() = New Timer(14999) {}
+        Public PlayerAutoHeal As New Timer
         Public MonsterMovement As New Timer
         Public MonsterCheck As New Timer
         Public MonsterRespawn As New Timer
@@ -36,6 +37,7 @@ Namespace GameServer
                 AddHandler MonsterCheck.Elapsed, AddressOf MonsterCheck_Elapsed
                 AddHandler MonsterRespawn.Elapsed, AddressOf MonsterRespawn_Elapsed
                 AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
+                AddHandler PlayerAutoHeal.Elapsed, AddressOf PlayerAutoHeal_Elapsed
                 AddHandler DatabaseTimer.Elapsed, AddressOf DatabaseTimer_Elapsed
 
                 'Start Timers
@@ -47,6 +49,9 @@ Namespace GameServer
 
                 MonsterRespawn.Interval = 7500
                 MonsterRespawn.Start()
+
+                PlayerAutoHeal.Interval = 5000
+                PlayerAutoHeal.Start()
 
                 DatabaseTimer.Interval = 30000
                 DatabaseTimer.Start()
@@ -395,6 +400,33 @@ Namespace GameServer
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
             End Try
+        End Sub
+
+        Public Sub PlayerAutoHeal_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            PlayerAutoHeal.Stop()
+
+            Try
+                For i = 0 To PlayerData.Length - 1
+                    If PlayerData(i) IsNot Nothing Then
+                        If PlayerData(i).Ingame And PlayerData(i).Alive And PlayerData(i).CHP <> PlayerData(i).HP Then
+                            Select Case PlayerData(i).ActionFlag
+                                Case 0
+                                    'Nomral
+                                    PlayerData(i).CHP = Math.Round(PlayerData(i).CHP * 1.002, 0, MidpointRounding.AwayFromZero)
+                                Case 4
+                                    'Sitting
+                                    PlayerData(i).CHP = Math.Round(PlayerData(i).CHP * 1.05, 0, MidpointRounding.AwayFromZero)
+                            End Select
+                            UpdateHP(i)
+                        End If
+                    End If
+                Next
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PAH") '
+            End Try
+
+            PlayerAutoHeal.Start()
         End Sub
 
 

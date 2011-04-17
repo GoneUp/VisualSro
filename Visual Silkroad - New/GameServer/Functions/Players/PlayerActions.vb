@@ -48,11 +48,14 @@
                     End If
 
                     If PlayerData(Index_).ActionFlag = action Then
+                        'Stand up
                         PlayerData(Index_).ActionFlag = 0
                         UpdateState(1, 0, Index_)
                         SitUpTimer(Index_).Interval = 1500
                         SitUpTimer(Index_).Start()
                     Else
+                        'Sit down
+                        PlayerData(Index_).ActionFlag = 4
                         UpdateState(1, action, Index_)
                         SitUpTimer(Index_).Interval = 1500
                         SitUpTimer(Index_).Start()

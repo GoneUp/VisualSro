@@ -110,18 +110,6 @@ Namespace GameServer
             Try
                 command2.ExecuteNonQuery()
 
-
-            Catch exception As MySqlException
-                If exception.ErrorCode = -2147467259 Then
-                    Dim tmp_con As New MySqlConnection(ConnectionString)
-                    tmp_con.Open()
-
-                    Dim command3 As New MySqlCommand(command, tmp_con)
-                    'command3.ExecuteNonQuery()
-
-                    tmp_con.Close()
-                End If
-
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception, command)
             End Try

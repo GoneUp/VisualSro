@@ -127,6 +127,8 @@
                     Return MobMultiplierExp.Unique
                 Case 4
                     Return MobMultiplierExp.Giant
+                Case 5
+                    Return MobMultiplierExp.Titan
                 Case 6
                     Return MobMultiplierExp.Elite
                 Case 16

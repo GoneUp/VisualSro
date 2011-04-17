@@ -57,18 +57,17 @@
             tmp.Mob_Type = Type
             tmp.HP_Cur = mob_.Hp
 
-
             Select Case Type
                 Case 0
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Normal
                 Case 1
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
                 Case 3
-                    SendUniqueSpawn(MobID)
+
                 Case 4
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
                 Case 5
-                    tmp.HP_Cur = mob_.Hp * 100
+                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Titan
                 Case 6
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
                 Case 16
@@ -78,6 +77,10 @@
                 Case 20
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
             End Select
+
+            If IsUnique(tmp.Pk2ID) Then
+                SendUniqueSpawn(MobID)
+            End If
 
             tmp.HP_Max = tmp.HP_Cur
             MobList.Add(tmp.UniqueID, tmp)
@@ -139,7 +142,7 @@
             Champion = 2
             Unique = 2
             Giant = 20
-            Titan = 5
+            Titan = 100
             Elite = 10
             Party_Normal = 10
             Party_Champ = 20
@@ -151,7 +154,7 @@
             Champion = 2
             Unique = 7
             Giant = 3
-            Titan = 4
+            Titan = 25
             Elite = 4
             Party_Normal = 5
             Party_Champ = 6

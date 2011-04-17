@@ -67,6 +67,8 @@
                     SendUniqueSpawn(MobID)
                 Case 4
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
+                Case 5
+                    tmp.HP_Cur = mob_.Hp * 100
                 Case 6
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
                 Case 16
@@ -137,6 +139,7 @@
             Champion = 2
             Unique = 2
             Giant = 20
+            Titan = 5
             Elite = 10
             Party_Normal = 10
             Party_Champ = 20
@@ -148,10 +151,11 @@
             Champion = 2
             Unique = 7
             Giant = 3
+            Titan = 4
             Elite = 4
             Party_Normal = 5
             Party_Champ = 6
-            Party_Giant = 8
+            Party_Giant = 10
         End Enum
     End Module
 End Namespace

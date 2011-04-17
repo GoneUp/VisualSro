@@ -51,8 +51,9 @@ Namespace GameServer
             Dim sort = From elem In DamageFromPlayer Order By elem.Damage Descending Select elem
 
             For i = 0 To sort.Count - 1
-                If Functions.PlayerData(sort(i).PlayerIndex) IsNot Nothing Then
-                    If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
+                Dim Index As Integer = sort(i).PlayerIndex
+                If Functions.PlayerData(Index) IsNot Nothing And Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
+                    If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
                         GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
                     End If
                 End If
@@ -67,7 +68,7 @@ Namespace GameServer
 
         Function GetsAttacked() As Boolean
             For i = 0 To Me.DamageFromPlayer.Count - 1
-                If Me.DamageFromPlayer(i).Attacking = True Then
+                If Me.DamageFromPlayer(i).AttackingAllowed = True Then
                     Return True
                 End If
             Next
@@ -85,6 +86,6 @@ Namespace GameServer
     Public Class cDamageDone
         Public PlayerIndex As Integer
         Public Damage As ULong
-        Public Attacking As Boolean = False
+        Public AttackingAllowed As Boolean = False
     End Class
 End Namespace

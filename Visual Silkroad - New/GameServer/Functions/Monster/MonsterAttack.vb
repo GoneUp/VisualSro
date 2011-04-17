@@ -115,8 +115,8 @@
             Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 1000)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
-                DamageMax = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 1000)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
+                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 500)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 75)
+                DamageMax = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 510)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 75)
             ElseIf RefSkill.Type = TypeTable.Mag Then
                 'UNUSED FOR NOW
                 '  DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
@@ -221,7 +221,7 @@
 
 
 
-        Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal PlayerIsAttacking As Boolean)
+        Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal AttackingAllowed As Boolean)
             Dim found As Boolean = False
 
             'Search for an exits Entery
@@ -229,7 +229,7 @@
                 If MobList(MobUniqueID).DamageFromPlayer(i).PlayerIndex = Index_ Then
                     found = True
                     MobList(MobUniqueID).DamageFromPlayer(i).Damage += Damage
-                    MobList(MobUniqueID).DamageFromPlayer(i).Attacking = PlayerIsAttacking
+                    MobList(MobUniqueID).DamageFromPlayer(i).AttackingAllowed = AttackingAllowed
                     Exit For
                 End If
             Next
@@ -239,12 +239,12 @@
                 Dim tmp As New cDamageDone
                 tmp.PlayerIndex = Index_
                 tmp.Damage = Damage
-                tmp.Attacking = PlayerIsAttacking
+                tmp.AttackingAllowed = AttackingAllowed
                 MobList(MobUniqueID).DamageFromPlayer.Add(tmp)
             End If
         End Sub
 
-        Public Sub MobSetAttackingFromPlayer(ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal PlayerIsAttacking As Boolean)
+        Public Sub MobSetAttackingFromPlayer(ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal AttackingAllowed As Boolean)
             Dim found As Boolean = False
 
             If MobList.ContainsKey(MobUniqueID) Then
@@ -252,7 +252,7 @@
                 For i = 0 To MobList(MobUniqueID).DamageFromPlayer.Count - 1
                     If MobList(MobUniqueID).DamageFromPlayer(i).PlayerIndex = Index_ Then
                         found = True
-                        MobList(MobUniqueID).DamageFromPlayer(i).Attacking = PlayerIsAttacking
+                        MobList(MobUniqueID).DamageFromPlayer(i).AttackingAllowed = AttackingAllowed
                         Exit For
                     End If
                 Next
@@ -262,7 +262,7 @@
                     Dim tmp As New cDamageDone
                     tmp.PlayerIndex = Index_
                     tmp.Damage = 0
-                    tmp.Attacking = PlayerIsAttacking
+                    tmp.AttackingAllowed = AttackingAllowed
                     MobList(MobUniqueID).DamageFromPlayer.Add(tmp)
                 End If
             End If

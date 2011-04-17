@@ -42,7 +42,7 @@
         Public Sub OnUseHPPot(ByVal Slot As Byte, ByVal Index_ As Integer)
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
 
-            If _item.Pk2Id <> 0 Then
+            If _item.Pk2Id <> 0 And PlayerData(Index_).Alive Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 1 Then

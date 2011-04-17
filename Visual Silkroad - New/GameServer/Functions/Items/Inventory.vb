@@ -37,7 +37,7 @@
             Dim New_Slot As Byte = packet.Byte
             Dim amout As UInt16 = packet.Word
 
-            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
+            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Or PlayerData(index_).Alive = False Then
                 Exit Sub
             End If
 

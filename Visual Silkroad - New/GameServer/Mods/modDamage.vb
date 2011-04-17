@@ -36,8 +36,12 @@
             Next
         End Sub
 
-        Public Sub OnPlayerCreate(ByVal Index_ As Integer)
-            DataBase.InsertData(String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,1,1')", Functions.PlayerData(Index_).CharacterId))
+        Public Sub OnPlayerCreate(ByVal CharId As UInteger, ByVal Index_ As Integer)
+            Try
+                DataBase.InsertData(String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,1,1')", CharId))
+            Catch ex As Exception
+                Log.WriteSystemLog(String.Format("[MOD_DAMAGE][CREATE][Index:{0},CHAR:{1}]", Index_, CharId))
+            End Try
         End Sub
 
         Public Sub OnPlayerLogon(ByVal Index_)

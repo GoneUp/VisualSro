@@ -72,7 +72,6 @@ Namespace GameServer
                 If Index <> -1 And PlayerData(Index) IsNot Nothing Then
                     PlayerData(Index).Busy = False
                     PlayerData(Index).Attacking = False
-                    MobSetAttackingFromPlayer(Index, PlayerData(Index).AttackedId, False)
 
                     If PlayerData(Index).AttackedId <> 0 And MobList.ContainsKey(PlayerData(Index).AttackedId) Then
                         Dim mob_ As cMonster = MobList(PlayerData(Index).AttackedId)

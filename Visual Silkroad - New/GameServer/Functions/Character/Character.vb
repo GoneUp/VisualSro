@@ -440,7 +440,7 @@
                 Next
 
                 'Mods
-                [Mod].Damage.OnPlayerCreate(Index_)
+                [Mod].Damage.OnPlayerCreate(GameDB.Chars(NewCharacterIndex).CharacterId, Index_)
 
 
                 'Finish

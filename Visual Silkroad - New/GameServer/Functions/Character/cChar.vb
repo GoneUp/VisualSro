@@ -131,6 +131,8 @@
         MaxMag = 0 'GameServer.Functions.GetMaxMag(Me.Intelligence, Level)
         PhyDef = 0 'GameServer.Functions.GetPhyDef(Me.Strength, Level)
         MagDef = 0 'GameServer.Functions.GetMagDef(Me.Intelligence)
+        PhyAbs = 0
+        MagAbs = 0
     End Sub
 
     Sub AddItemsToStats(ByVal Index_ As Integer)
@@ -288,6 +290,7 @@
         If MagDef = 0 Then
             MagDef = GameServer.Functions.GetMagDef(Me.Intelligence)
         End If
+
 
     End Sub
 

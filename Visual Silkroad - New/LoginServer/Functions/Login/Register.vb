@@ -5,7 +5,7 @@
         Public Rand As New Random
 
         Public Sub RegisterUser(ByVal Name As String, ByVal Password As String, ByVal Index_ As Integer)
-            DataBase.InsertData(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
+            DataBase.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmp As New UserArray
             tmp.AccountId = Id_Gen.GetNewAccountId

@@ -65,22 +65,19 @@ Module Timers
                 Exit Sub
             End If
 
-            Dim ToX As Single = GetRealX(Pos(Index).XSector, Pos(Index).X) + rand.Next(-10, +10)
-            Dim ToY As Single = GetRealY(Pos(Index).YSector, Pos(Index).Y) + rand.Next(-10, +10)
-
             Dim ToPos As New Position
-            ToPos.XSector = GetXSec(ToX)
-            ToPos.YSector = GetYSec(ToY)
-            ToPos.X = GetXOffset(ToX)
+            ToPos.XSector = Pos(Index).XSector
+            ToPos.YSector = Pos(Index).YSector
+            ToPos.X = Pos(Index).X * rand.Next(-10, 10)
             ToPos.Z = Pos(Index).Z
-            ToPos.Y = GetYOffset(ToY)
+            ToPos.Y = Pos(Index).Y * rand.Next(-10, 10)
 
             If ToPos.X = Pos(Index).X And ToPos.Y = Pos(Index).Y Then
                 ToPos.X += 1
             End If
 
 
-            'OnMoveUser(ToPos, Index)
+            Parser.OnMoveUser(ToPos, Index)
 
 
             PlayerMoveTimer(Index).Start()

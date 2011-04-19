@@ -11,6 +11,9 @@ Namespace GameServer
         Private Shared da As MySqlDataAdapter
         Private Shared Query As New List(Of String)
 
+        Private Shared mysql_lock As Object = New Object
+
+
         Public Shared DB_IP As String
         Public Shared DB_PORT As UShort
         Public Shared DB_DATABASE As String
@@ -106,13 +109,17 @@ Namespace GameServer
 
 #Region "Insert/update"
         Public Shared Sub InsertData(ByVal command As String)
-            Dim command2 As New MySqlCommand(command, connection)
-            Try
-                command2.ExecuteNonQuery()
+            SyncLock mysql_lock
 
-            Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception, command)
-            End Try
+                Try
+
+                    Dim command2 As New MySqlCommand(command, Connection)
+                    command2.ExecuteNonQuery()
+
+                Catch exception As Exception
+                    RaiseEvent OnDatabaseError(exception, command)
+                End Try
+            End SyncLock
         End Sub
 
         Public Shared Sub InsertData(ByVal command As String, ByVal newConnection As Boolean)

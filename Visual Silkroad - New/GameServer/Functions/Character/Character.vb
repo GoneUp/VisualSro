@@ -202,54 +202,57 @@
                 Dim NewCharacterIndex As Integer = GameDB.Chars.Count - 1
 
                 GameDB.Chars(NewCharacterIndex) = New [cChar]
-                GameDB.Chars(NewCharacterIndex).AccountID = ClientList.CharListing(Index_).LoginInformation.Id
-                GameDB.Chars(NewCharacterIndex).CharacterName = nick
-                GameDB.Chars(NewCharacterIndex).CharacterId = Id_Gen.GetNewCharID
-                GameDB.Chars(NewCharacterIndex).UniqueId = Id_Gen.GetUnqiueID
-                GameDB.Chars(NewCharacterIndex).HP = 200
-                GameDB.Chars(NewCharacterIndex).MP = 200
-                GameDB.Chars(NewCharacterIndex).CHP = 200
-                GameDB.Chars(NewCharacterIndex).CMP = 200
-                GameDB.Chars(NewCharacterIndex).Model = model
-                GameDB.Chars(NewCharacterIndex).Volume = volume
-                GameDB.Chars(NewCharacterIndex).Level = Settings.Player_StartLevel
-                GameDB.Chars(NewCharacterIndex).Gold = Settings.Player_StartGold
-                GameDB.Chars(NewCharacterIndex).SkillPoints = Settings.Player_StartSP
-                GameDB.Chars(NewCharacterIndex).GM = Settings.Player_StartGM
 
-                GameDB.Chars(NewCharacterIndex).WalkSpeed = 16
-                GameDB.Chars(NewCharacterIndex).RunSpeed = 50
-                GameDB.Chars(NewCharacterIndex).BerserkSpeed = 100
-                GameDB.Chars(NewCharacterIndex).Strength = 20
-                GameDB.Chars(NewCharacterIndex).Intelligence = 20
-                GameDB.Chars(NewCharacterIndex).PVP = 0
-                GameDB.Chars(NewCharacterIndex).MaxSlots = 45
-                GameDB.Chars(NewCharacterIndex).Position_Dead = Settings.Player_StartReturnPos
-                GameDB.Chars(NewCharacterIndex).Position_Recall = Settings.Player_StartReturnPos
-                GameDB.Chars(NewCharacterIndex).Position_Return = Settings.Player_StartReturnPos
-                If model >= 1907 And model <= 1932 Then
-                    GameDB.Chars(NewCharacterIndex).Position = Settings.Player_StartPos_Ch
-                ElseIf model >= 14717 And model <= 14743 Then
-                    GameDB.Chars(NewCharacterIndex).Position = Settings.Player_StartPos_Eu
-                End If
-                Dim magdefmin As Double = 3.0
-                Dim phydefmin As Double = 6.0
-                Dim phyatkmin As UShort = 6
-                Dim phyatkmax As UShort = 9
-                Dim magatkmin As UShort = 6
-                Dim magatkmax As UShort = 9
-                Dim hit As UShort = 11
-                Dim parry As UShort = 11
+                With GameDB.Chars(NewCharacterIndex)
+                    .AccountID = ClientList.CharListing(Index_).LoginInformation.Id
+                    .CharacterName = nick
+                    .CharacterId = Id_Gen.GetNewCharId
+                    .UniqueId = Id_Gen.GetUnqiueId
+                    .HP = 200
+                    .MP = 200
+                    .CHP = 200
+                    .CMP = 200
+                    .Model = model
+                    .Volume = volume
+                    .Level = Settings.Player_StartLevel
+                    .Gold = Settings.Player_StartGold
+                    .SkillPoints = Settings.Player_StartSP
+                    .GM = Settings.Player_StartGM
 
-                GameDB.Chars(NewCharacterIndex).MinPhy = phyatkmin
-                GameDB.Chars(NewCharacterIndex).MaxPhy = phyatkmax
-                GameDB.Chars(NewCharacterIndex).MinMag = magatkmin
-                GameDB.Chars(NewCharacterIndex).MaxMag = magatkmax
-                GameDB.Chars(NewCharacterIndex).PhyDef = phydefmin
-                GameDB.Chars(NewCharacterIndex).MagDef = magdefmin
-                GameDB.Chars(NewCharacterIndex).Hit = hit
-                GameDB.Chars(NewCharacterIndex).Parry = parry
-                GameDB.Chars(NewCharacterIndex).SetCharGroundStats()
+                    .WalkSpeed = 16
+                    .RunSpeed = 50
+                    .BerserkSpeed = 100
+                    .Strength = 20
+                    .Intelligence = 20
+                    .PVP = 0
+                    .MaxSlots = 45
+                    .Position_Dead = Settings.Player_StartReturnPos
+                    .Position_Recall = Settings.Player_StartReturnPos
+                    .Position_Return = Settings.Player_StartReturnPos
+                    If model >= 1907 And model <= 1932 Then
+                        .Position = Settings.Player_StartPos_Ch
+                    ElseIf model >= 14717 And model <= 14743 Then
+                        .Position = Settings.Player_StartPos_Eu
+                    End If
+                    Dim magdefmin As Double = 3.0
+                    Dim phydefmin As Double = 6.0
+                    Dim phyatkmin As UShort = 6
+                    Dim phyatkmax As UShort = 9
+                    Dim magatkmin As UShort = 6
+                    Dim magatkmax As UShort = 9
+                    Dim hit As UShort = 11
+                    Dim parry As UShort = 11
+
+                    .MinPhy = phyatkmin
+                    .MaxPhy = phyatkmax
+                    .MinMag = magatkmin
+                    .MaxMag = magatkmax
+                    .PhyDef = phydefmin
+                    .MagDef = magdefmin
+                    .Hit = hit
+                    .Parry = parry
+                    .SetCharGroundStats()
+                End With
 
                 DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", GameDB.Chars(NewCharacterIndex).CharacterId, GameDB.Chars(NewCharacterIndex).AccountID, GameDB.Chars(NewCharacterIndex).CharacterName, GameDB.Chars(NewCharacterIndex).Model, GameDB.Chars(NewCharacterIndex).Volume, GameDB.Chars(NewCharacterIndex).Level, GameDB.Chars(NewCharacterIndex).Gold, GameDB.Chars(NewCharacterIndex).SkillPoints, CInt(GameDB.Chars(NewCharacterIndex).GM)))
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", GameDB.Chars(NewCharacterIndex).Position.XSector, GameDB.Chars(NewCharacterIndex).Position.YSector, Math.Round(GameDB.Chars(NewCharacterIndex).Position.X), Math.Round(GameDB.Chars(NewCharacterIndex).Position.Z), Math.Round(GameDB.Chars(NewCharacterIndex).Position.Y), GameDB.Chars(NewCharacterIndex).CharacterId))
@@ -446,7 +449,7 @@
                 'Finish
                 writer.Byte(1) 'success
                 Server.Send(writer.GetBytes, Index_)
-                End If
+            End If
         End Sub
         Public Sub UpdateItem(ByVal item As cInvItem)
             For i = 0 To GameDB.AllItems.Count - 1

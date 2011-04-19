@@ -110,6 +110,7 @@
     <Compile Include="Framework\Settings\cINI.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
+    <Compile Include="Framework\Silkroad\Timers.vb" />
     <Compile Include="Functions\Login\Ban.vb" />
     <Compile Include="Functions\Login\Register.vb" />
     <Compile Include="Functions\Parser.vb" />

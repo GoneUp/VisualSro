@@ -38,7 +38,7 @@
 
         Public Sub OnPlayerCreate(ByVal CharId As UInteger, ByVal Index_ As Integer)
             Try
-                DataBase.InsertData(String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,1,1')", CharId))
+                DataBase.SaveQuery(String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,1,1')", CharId))
             Catch ex As Exception
                 Log.WriteSystemLog(String.Format("[MOD_DAMAGE][CREATE][Index:{0},CHAR:{1}]", Index_, CharId))
             End Try
@@ -50,8 +50,9 @@
                 Dim tmp As New Settings_
                 tmp.CharacterId = Functions.PlayerData(Index_).CharacterId
 
+                Dim I = tmpSet_.Tables(0).Rows.Count
                 If tmpSet_.Tables(0).Rows.Count > 1 Or tmpSet_.Tables(0).Rows.Count = 0 Then
-                    Log.WriteSystemLog("[MOD_DAMAGE][UNKNOWN DB ERROR][Index:" & Index_ & "]")
+                    'Db Entry is not created
                     Settings(Index_) = tmp
                     Exit Sub
                 End If

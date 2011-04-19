@@ -36,6 +36,7 @@ Namespace GameServer
             DataBase.Connect()
             Log.WriteSystemLog("Connected Database. Loading Data now.")
 
+            ClientList.SetupClientList(Server.MaxClients)
             SilkroadData.DumpDataFiles()
             TheardDB.Start()
             TheardTimer.Start(1500)

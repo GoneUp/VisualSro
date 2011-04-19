@@ -26,16 +26,16 @@
         Private First As Boolean = False
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
+            GameDbUpdate.Stop()
+            GameDbUpdate.Interval = 20000 '20 secs
+
             Try
-
-                GameDbUpdate.Stop()
-                GameDbUpdate.Interval = 20000 '20 secs
-
                 If First = False Then
                     Log.WriteSystemLog("Execute all saved Querys. This can take some Time.")
                     ExecuteSavedQuerys()
                     Log.WriteSystemLog("Query saving done. Loading Playerdata from DB now.")
 
+                    GetUserData()
                     GetCharData() 'Only Update for the First Time! 
                     GetItemData()
                     GetMasteryData()
@@ -45,17 +45,16 @@
                     GetGuildData()
                     First = True
                 Else
-                    'Debug.Print("Updating from MySQL") Nervend..
+                    GetUserData()
                 End If
 
-                GetUserData()
-                GetItemData()
-                GameDbUpdate.Start()
+
 
             Catch ex As Exception
                 Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
-                GameDbUpdate.Start()
             End Try
+
+            GameDbUpdate.Start()
         End Sub
 
 #Region "Get from DB"
@@ -382,9 +381,8 @@
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
             Dim inventory As New cInventory([char].MaxSlots)
             For i = 0 To (AllItems.Length - 1)
-                If AllItems(i) IsNot Nothing Then
+                If i < AllItems.Length And AllItems(i) IsNot Nothing Then
                     If AllItems(i).OwnerCharID = [char].CharacterId Then
-                        'Dim item As cInvItem = AllItems(i)
                         inventory.UserItems(AllItems(i).Slot) = AllItems(i)
                     End If
                 End If

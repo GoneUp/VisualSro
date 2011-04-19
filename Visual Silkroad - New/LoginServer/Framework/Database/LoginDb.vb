@@ -2,7 +2,7 @@
     Module LoginDb
 
         'Timer
-        Public WithEvents LoginDbUpdate As New Timers.Timer
+        Public WithEvents LoginDbUpdate As New System.Timers.Timer
 
         'Server
         Public Servers As New List(Of Server_)
@@ -12,30 +12,32 @@
         Private First As Boolean
 
         Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
+            LoginDbUpdate.Stop()
+            LoginDbUpdate.Interval = 20000 '20 secs
+
 
             Try
-                LoginDbUpdate.Stop()
-                LoginDbUpdate.Interval = 20000 '20 secs
-
                 If First = False Then
                     Log.WriteSystemLog("Load Data from Database.")
-                End If
 
-                GetServerData()
-                GetNewsData()
-                GetUserData()
+                    GetServerData()
+                    GetNewsData()
+                    GetUserData()
 
-                If First = False Then
                     Log.WriteSystemLog("Loading Completed.")
                     First = True
-                End If
 
-                LoginDbUpdate.Start()
+                Else
+                    GetServerData()
+                    GetNewsData()
+                    GetUserData()
+                End If
 
             Catch ex As Exception
                 Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
-                LoginDbUpdate.Start()
             End Try
+
+            LoginDbUpdate.Start()
         End Sub
 
         Structure Server_

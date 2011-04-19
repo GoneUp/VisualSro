@@ -10,8 +10,8 @@ Namespace LoginServer
         Private Shared ConnectionString As String
         Private Shared da As MySqlDataAdapter
         Private Shared Query As New List(Of String)
-        Private Shared Blocked As Boolean
-        Private Shared BlockCount As UShort
+
+        Private Shared mysql_lock As Object = New Object
 
         Public Shared DB_IP As String
         Public Shared DB_PORT As UShort
@@ -109,22 +109,16 @@ Namespace LoginServer
 
 #Region "Insert/update"
         Public Shared Sub InsertData(ByVal command As String)
-            Try
-                Select Case Blocked
-                    Case False
-                        Blocked = True
-                        Dim command2 As New MySqlCommand(command, Connection)
-                        command2.ExecuteNonQuery()
-                        Blocked = False
-                    Case True
-                        InsertData(command, True)
-                        Console.WriteLine("Conn Blocked! " & BlockCount)
-                        BlockCount += 1
-                End Select
+            SyncLock mysql_lock
+                Try
 
-            Catch exception As Exception
-                RaiseEvent OnDatabaseError(exception, command)
-            End Try
+                    Dim command2 As New MySqlCommand(command, Connection)
+                    command2.ExecuteNonQuery()
+
+                Catch exception As Exception
+                    RaiseEvent OnDatabaseError(exception, command)
+                End Try
+            End SyncLock
         End Sub
 
         Public Shared Sub InsertData(ByVal command As String, ByVal NewConnetion As Boolean)
@@ -143,6 +137,26 @@ Namespace LoginServer
         End Sub
 #End Region
 
+#Region "Query"
+
+        Public Shared Sub SaveQuery(ByVal command As String)
+            Try
+                Query.Add(command)
+            Catch exception As Exception
+                RaiseEvent OnDatabaseError(exception, command)
+            End Try
+        End Sub
+
+        Public Shared Sub ExecuteQuerys()
+            For i = 0 To Query.Count - 1
+                InsertData(Query(i))
+            Next
+
+            Query.Clear()
+        End Sub
+
+
+#End Region
 
     End Class
 End Namespace

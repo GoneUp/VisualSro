@@ -36,6 +36,9 @@ Namespace LoginServer
 
             Log.WriteSystemLog("Connected Database. Starting Server now.")
             LoginDb.UpdateData()
+            ClientList.SetupClientList(Server.MaxClients)
+            LoadTimers()
+
 
             Server.Start()
             Log.WriteSystemLog("Inital Loading complete!")

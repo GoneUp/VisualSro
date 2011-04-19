@@ -144,16 +144,13 @@
                 '=============Players============
                 For refindex As Integer = 0 To Server.MaxClients
                     If (ClientList.GetSocket(refindex) IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso ClientList.GetSocket(refindex).Connected AndAlso Index_ <> refindex Then
-                        If CheckRange(PlayerData(Index_).Position, PlayerData(refindex).Position) Then
-                            If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
-                                Server.Send(CreateSpawnPacket(Index_), refindex)
-                                PlayerData(refindex).SpawnedPlayers.Add(Index_)
-                            End If
-                            If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
-                                Server.Send(CreateSpawnPacket(refindex), Index_)
-                                PlayerData(Index_).SpawnedPlayers.Add(refindex)
-                            End If
-
+                        If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
+                            Server.Send(CreateSpawnPacket(Index_), refindex)
+                            PlayerData(refindex).SpawnedPlayers.Add(Index_)
+                        End If
+                        If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
+                            Server.Send(CreateSpawnPacket(refindex), Index_)
+                            PlayerData(Index_).SpawnedPlayers.Add(refindex)
                         End If
                     End If
                 Next refindex
@@ -175,7 +172,7 @@
                 '===========NPCS===================
                 For i = 0 To NpcList.Count - 1
                     Dim _npc As cNPC = NpcList(i)
-                    If CheckRange(PlayerData(Index_).Position, NpcList(i).Position) And CheckSectors(PlayerData(Index_).Position, NpcList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Position, NpcList(i).Position) Then
                         If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = False Then
                             Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
                             PlayerData(Index_).SpawnedNPCs.Add(_npc.UniqueID)
@@ -187,7 +184,7 @@
                 '===========ITEMS===================
                 For i = 0 To ItemList.Count - 1
                     Dim _item As cItemDrop = ItemList(i)
-                    If CheckRange(PlayerData(Index_).Position, ItemList(i).Position) And CheckSectors(PlayerData(Index_).Position, ItemList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Position, ItemList(i).Position) Then
                         If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = False Then
                             Server.Send(CreateItemSpawnPacket(_item), Index_)
                             PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)

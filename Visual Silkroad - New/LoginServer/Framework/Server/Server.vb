@@ -29,8 +29,6 @@ Namespace LoginServer
                 ServerSocket.Listen(5)
                 ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
 
-                ClientList.SetupClientList(MaxClients)
-
                 ReDim RevTheard(MaxClients + 1)
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -2)

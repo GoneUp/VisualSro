@@ -42,7 +42,7 @@
     Sub SendLogin(ByVal Index_ As Integer)
         Dim Rand As New Random
         Dim name As String = "stress" & Index_
-        Dim pass As String = "stress" & Index_ & 100
+        Dim pass As String = "stress" & Index_
 
         Dim writer As New PacketWriter
         writer.Create(&H6102)
@@ -51,7 +51,7 @@
         writer.String(name)
         writer.Word(pass.Length)
         writer.String(pass)
-        writer.Word(4) '3 = local - 4 = remote
+        writer.Word(3) '3 = local - 4 = remote
         Send(writer.GetBytes, Index_)
     End Sub
 

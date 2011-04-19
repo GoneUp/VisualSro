@@ -41,7 +41,7 @@ Namespace GameServer
         End Function
 
         Public Sub SetupClientList(ByVal MaxUser As Integer)
-            ReDim List(MaxUser), LastPingTime(MaxUser)
+            ReDim List(MaxUser), LastPingTime(MaxUser), CharListing(MaxUser)
 
             PingTimer.Interval = 30000
             PingTimer.Start()

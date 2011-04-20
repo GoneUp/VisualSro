@@ -118,16 +118,13 @@ Namespace GameServer
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
             Try
                 Dim socket = ClientList.GetSocket(index)
-
-                If socket IsNot Nothing Then
+                If socket IsNot Nothing And socket.Connected Then
                     socket.Send(buff)
                 End If
 
-
-                If GameServer.Program.Logpackets = True Then
-                    Log.LogPacket(buff, True)
-                End If
-
+                'If GameServer.Program.Logpackets = True Then
+                '    Log.LogPacket(buff, True)
+                'End If
             Catch ex As Exception
                 If Settings.Log_Detail Then
                     RaiseEvent OnServerError(ex, index)
@@ -161,8 +158,6 @@ Namespace GameServer
         End Sub
 
         Public Shared Sub SendToAllInRange(ByVal buff() As Byte, ByVal Position As Position)
-            Dim range As Integer = 750
-
             For i As Integer = 0 To OnlineClient
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame

@@ -1,43 +1,49 @@
 ﻿Namespace GameServer.Functions
     Module GameMaster
-        Public Sub OnGM(ByVal Packet As GameServer.PacketReader, ByVal Index As Integer)
+        Public Sub OnGM(ByVal Packet As GameServer.PacketReader, ByVal Index_ As Integer)
 
             Dim tag As Byte = Packet.Word
             'Debug.Print("[GM][Tag:" & tag & "]")
 
-            If PlayerData(Index).GM = True Then
+            If PlayerData(Index_).GM = True Then
                 Select Case tag
                     Case GmTypes.MakeMonster
-                        OnCreateObject(Packet, Index)
+                        OnCreateObject(Packet, Index_)
 
                     Case GmTypes.MakeItem  ' Create Item
-                        OnGmCreateItem(Packet, Index)
+                        OnGmCreateItem(Packet, Index_)
 
                     Case GmTypes.WayPoints 'Teleport
-                        OnGmTeleport(Packet, Index)
+                        OnGmTeleport(Packet, Index_)
 
-					Case GmTypes.MoveToUser
-						OnMoveToUser(Packet, Index)
+                    Case GmTypes.MoveToUser
+                        OnMoveToUser(Packet, Index_)
 
-					Case GmTypes.RecallUser
-                        OnRecallUser(Packet, Index)
+                    Case GmTypes.RecallUser
+                        OnRecallUser(Packet, Index_)
 
                     Case GmTypes.Ban
-                        OnBanUser(Packet, Index)
+                        OnBanUser(Packet, Index_)
 
                     Case GmTypes.GoTown
-                        OnGoTown(Index)
+                        OnGoTown(Index_)
 
                     Case GmTypes.ToTown
-                        OnMoveUserToTown(Index, Packet)
+                        OnMoveUserToTown(Index_, Packet)
 
                     Case GmTypes.KillMob
-                        OnKillObject(Packet, Index)
+                        OnKillObject(Packet, Index_)
+
+                    Case GmTypes.Invincible
+                        OnInvincible(Index_)
+
+                    Case GmTypes.Invisible
+                        OnInvisible(Index_)
                 End Select
             Else
-                Server.Dissconnect(Index)
+                Server.Dissconnect(Index_)
 
-                Log.WriteGameLog(Index, "GM", "Unautorized", "Gm_Command_Try:" & tag)
+                Log.WriteGameLog(Index_, "GM", "Unautorized", "Gm_Command_Try:" & tag)
                 'Hack Versuch
             End If
         End Sub
@@ -250,19 +256,39 @@
             Next
         End Sub
 
+        Public Sub OnInvincible(ByVal Index_ As Integer)
+            If PlayerData(Index_).Invincible = False Then
+                PlayerData(Index_).Invincible = True
+            Else
+                PlayerData(Index_).Invincible = False
+            End If
+        End Sub
+
+        Public Sub OnInvisible(ByVal Index_ As Integer)
+            If PlayerData(Index_).Invisible = False Then
+                PlayerData(Index_).Invisible = True
+                DespawnPlayer(Index_)
+                UpdateState(4, 4, Index_)
+            Else
+                PlayerData(Index_).Invisible = False
+                UpdateState(4, 13, Index_)
+            End If
+        End Sub
 
         Enum GmTypes
-            FindUser = &H1
-            GoTown = &H2
-            ToTown = &H3
-            MakeMonster = &H6
-            MakeItem = &H7
-            MoveToUser = &H8
-            WayPoints = &H10
-            RecallUser = &H11
-            KillMob = &H14
-            Ban = &HD
-            MoveToNpc = &H31
+            FindUser = 1
+            GoTown = 2
+            ToTown = 3
+            MakeMonster = 6
+            MakeItem = 7
+            MoveToUser = 8
+            Ban = 13
+            Invisible = 14
+            Invincible = 15
+            WayPoints = 16
+            RecallUser = 17
+            KillMob = 20
+            MoveToNpc = 49
         End Enum
 
     End Module

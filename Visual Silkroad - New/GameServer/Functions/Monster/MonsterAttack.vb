@@ -60,7 +60,9 @@
                     End If
 
                     If CLng(PlayerData(Index_).CHP) - Damage > 0 Then
-                        PlayerData(Index_).CHP -= Damage
+                        If PlayerData(Index_).Invincible = False Then
+                            PlayerData(Index_).CHP -= Damage
+                        End If
                     ElseIf CLng(PlayerData(Index_).CHP) - Damage <= 0 Then
                         'Dead
                         afterstate = &H80

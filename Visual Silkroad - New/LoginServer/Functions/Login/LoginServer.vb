@@ -176,9 +176,11 @@
                 'User exestiert nicht == We register a User
 
                 If Settings.Auto_Register = True Then
-                    If CheckIfUserCanRegister(ClientList.GetSocket(Index_).RemoteEndPoint.ToString) = True Then
-                        RegisterUser(ID, Pw, Index_)
-                        Login_WriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw), Index_)
+                    If CheckIfUserCanRegister(ClientList.GetIP(Index_)) = True Then
+                        If RegisterUser(ID, Pw, Index_) Then
+                            Login_WriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", ID, Pw), Index_)
+                        End If
+
                     Else
                         Login_WriteSpecialText(String.Format("You can only register {0} Accounts a day!", Max_RegistersPerDay), Index_)
                     End If

@@ -38,7 +38,7 @@
                                 writer.Create(ServerOpcodes.Mastery_Up)
                                 writer.Byte(2)
                                 writer.Byte(4)
-                                Server.Send(writer.GetBytes, index_)
+                                'Server.Send(writer.GetBytes, index_)
                             End If
 
 
@@ -50,7 +50,7 @@
                     writer.Create(ServerOpcodes.Mastery_Up)
                     writer.Byte(2)
                     writer.Byte(4)
-                    Server.Send(writer.GetBytes, index_)
+                    'Server.Send(writer.GetBytes, index_)
                 End If
 
 
@@ -84,7 +84,7 @@
                                 writer.Create(ServerOpcodes.Mastery_Up)
                                 writer.Byte(2)
                                 writer.Byte(4)
-                                Server.Send(writer.GetBytes, index_)
+                                'Server.Send(writer.GetBytes, index_)
                             End If
 
 
@@ -96,7 +96,7 @@
                     writer.Create(ServerOpcodes.Mastery_Up)
                     writer.Byte(2)
                     writer.Byte(4)
-                    Server.Send(writer.GetBytes, index_)
+                    'Server.Send(writer.GetBytes, index_)
                 End If
 
 

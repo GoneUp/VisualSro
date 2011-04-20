@@ -48,17 +48,22 @@ Namespace GameServer
 
         Public Sub AttackTimer_Elapsed()
             AttackTimer.Stop()
-            Dim sort = From elem In DamageFromPlayer Order By elem.Damage Descending Select elem
 
-            For i = 0 To sort.Count - 1
-                Dim Index As Integer = sort(i).PlayerIndex
-                If Functions.PlayerData(Index) IsNot Nothing And Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
-                    If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
-                        GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
+            Try
+                Dim sort = From elem In DamageFromPlayer Order By elem.Damage Descending Select elem
+
+                For i = 0 To sort.Count - 1
+                    Dim Index As Integer = sort(i).PlayerIndex
+                    If Functions.PlayerData(Index) IsNot Nothing And Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
+                        If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
+                            GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
+                        End If
                     End If
-                End If
-            Next
+                Next
 
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE") '
+            End Try
         End Sub
 
         Public Sub Disponse()

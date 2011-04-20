@@ -430,7 +430,7 @@
             writer.Create(ServerOpcodes.ItemUseOtherPlayer)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.DWord(ItemID)
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
         ''' <summary>

@@ -36,11 +36,11 @@
             Select Case action
                 Case 2 'Run --> Walk
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).MovementType = MoveType_.Walk
+                    PlayerData(Index_).MovementType = MoveType_.Walking
 
                 Case 3 'Walk --> Run
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).MovementType = MoveType_.Run
+                    PlayerData(Index_).MovementType = MoveType_.Runing
 
                 Case 4 'sit down
                     If SitUpTimer(Index_).Enabled = True Then
@@ -72,7 +72,7 @@
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Byte(Type)
             writer.Byte(State)
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger)
@@ -139,7 +139,7 @@
             writer.Create(ServerOpcodes.Angle_Update)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Word(PlayerData(Index_).Angle)
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
         Public Sub OnEmotion(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -147,7 +147,7 @@
             writer.Create(ServerOpcodes.Emotion)
             writer.DWord(PlayerData(index_).UniqueId)
             writer.Byte(packet.Byte)
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
         End Sub
 
         Public Sub OnHelperIcon(ByVal packet As PacketReader, ByVal index_ As Integer)
@@ -157,7 +157,7 @@
             writer.Create(ServerOpcodes.HelperIcon)
             writer.DWord(PlayerData(index_).UniqueId)
             writer.Byte(PlayerData(index_).HelperIcon)
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
 
             DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'", PlayerData(index_).HelperIcon, PlayerData(index_).CharacterId))
         End Sub

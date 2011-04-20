@@ -219,8 +219,13 @@ Namespace GameServer
             MonsterCheck.Stop()
 
             Try
+                Dim stopwatch As New Stopwatch
+                stopwatch.Start()
 
-                For Each key In MobList.Keys.ToList
+
+
+                Dim tmplist As Array = MobList.Keys.ToArray
+                For Each key In tmplist
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
 
@@ -232,17 +237,17 @@ Namespace GameServer
                             End If
                         ElseIf IsInSaveZone(Mob_.Position) Then
                             RemoveMob(Mob_.UniqueID)
-                            'ElseIf Mob_.GetsAttacked = True Then
-                            '    'Attack back...
-                            '    If Mob_.IsAttacking = False Then
-                            '        MonsterAttackPlayer(Mob_.UniqueID, MobGetPlayerWithMostDamage(Mob_.UniqueID, True))
-                            '    End If
+                        ElseIf Mob_.GetsAttacked = True Then
+                            'Attack back...
+                            If Mob_.IsAttacking = False Then
+                                MonsterAttackPlayer(Mob_.UniqueID, MobGetPlayerWithMostDamage(Mob_.UniqueID, True))
+                            End If
                         End If
                     End If
                 Next
 
-
-                Debug.Print("MC: " & DateDiff(DateInterval.Second, e.SignalTime, Date.Now))
+                stopwatch.Stop()
+                Debug.Print("MC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & tmplist.Length)
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MC") '
             End Try
@@ -255,10 +260,13 @@ Namespace GameServer
             MonsterRespawn.Stop()
 
             Try
+                Dim stopwatch As New Stopwatch
+                stopwatch.Start()
 
                 CheckForRespawns()
-                Debug.Print("MR: " & DateDiff(DateInterval.Second, e.SignalTime, Date.Now))
 
+                stopwatch.Stop()
+                Debug.Print("MR: " & stopwatch.ElapsedMilliseconds & "ms")
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MR") '
             End Try
@@ -270,8 +278,11 @@ Namespace GameServer
             MonsterMovement.Stop()
 
             Try
+                Dim stopwatch As New Stopwatch
+                stopwatch.Start()
 
-                For Each key In MobList.Keys.ToList
+                Dim tmplist As Array = MobList.Keys.ToArray
+                For Each key In tmplist
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
                         Dim obj As Object_ = GetObjectById(Mob_.Pk2ID)
@@ -333,7 +344,8 @@ Namespace GameServer
                     End If
                 Next
 
-                Debug.Print("MM: " & DateDiff(DateInterval.Second, e.SignalTime, Date.Now))
+                Stopwatch.Stop()
+                Debug.Print("MM: " & Stopwatch.ElapsedMilliseconds & "ms")
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '
@@ -357,45 +369,24 @@ Namespace GameServer
                     PlayerMoveTimer(Index).Stop()
 
                     If PlayerData(Index).Walking = True Then
-                        Dim wert As Integer = Date.Compare(PlayerData(Index).WalkEnd, Date.Now)
-                        If wert = -1 Then
-                            'Abgelaufen
+                        Dim newpos As Position = Formula.GetCurrentPosition(Index)
+
+                        If CalculateDistance2(newpos, PlayerData(Index).Position_ToPos) < 9 Then
+                            'Same Pos = Walk end
                             PlayerData(Index).Walking = False
                             PlayerData(Index).Position = PlayerData(Index).Position_ToPos
                             ObjectSpawnCheck(Index)
                         Else
-                            Dim Past As Single = DateDiff(DateInterval.Second, PlayerData(Index).WalkStart, Date.Now)
-                            Dim FullTime As Single = DateDiff(DateInterval.Second, PlayerData(Index).WalkStart, PlayerData(Index).WalkEnd)
-                            Dim Verhältnis As Single = (Past / FullTime)
-
-                            Dim Walked As Single = (CalculateDistance2(PlayerData(Index).Position_FromPos, PlayerData(Index).Position_ToPos) * Verhältnis)
-
-                            If Walked > 0 Then
-                                Dim OldX As Single = PlayerData(Index).Position_FromPos.X
-                                Dim OldY As Single = PlayerData(Index).Position_FromPos.Y
-                                Dim Full_X As Single = PlayerData(Index).Position_FromPos.X - PlayerData(Index).Position_ToPos.X
-                                Dim Full_Y As Single = PlayerData(Index).Position_FromPos.Y - PlayerData(Index).Position_ToPos.Y
-
-                                Dim Cur_X As Single = Full_X * Verhältnis
-                                Dim Cur_Y As Single = Full_Y * Verhältnis
-
-                                Dim New_X As Single = OldX + Cur_X
-                                Dim New_Y As Single = OldY + Cur_Y
-
-                                'PlayerData(Index).Position.XSector = GetXSec(PlayerData(Index).Position.X)
-                                'PlayerData(Index).Position.YSector = GetYSec(PlayerData(Index).Position.Y)
-
-                                'SendPm(Index, "X: " & CStr(GetRealX(PlayerData(Index).Position.XSector, PlayerData(Index).Position.X)) & " Y:" & GetRealY(PlayerData(Index).Position.YSector, PlayerData(Index).Position.Y), "[TMP]")
-                                ObjectSpawnCheck(Index)
+                            If Single.IsNaN(newpos.Y) = Single.NaN Or Single.IsNaN(newpos.X) Then
+                                newpos.X = PlayerData(Index).Position_FromPos.X
+                                newpos.Y = PlayerData(Index).Position_FromPos.Y
                             End If
 
+                            PlayerData(Index).Position = newpos
+                            SendPm(Index, "X: " & newpos.X & "Y: " & newpos.Y, "hh")
                             PlayerMoveTimer(Index).Start()
                         End If
                     End If
-
-
-
-
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '

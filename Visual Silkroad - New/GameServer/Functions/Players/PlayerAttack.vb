@@ -208,7 +208,7 @@
                     writer.Word(0)
                 Next
             Next
-            Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
             If afterstate = &H80 Then
                 GetEXPFromMob(MobList(MobUniqueId))
@@ -252,13 +252,15 @@
                 'Exit Sub
             End If
 
-            If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 Then
+            If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 And PlayerData(Index_).Invincible = False Then
                 'Not enough MP
                 Attack_SendNotEnoughMP(Index_)
                 Exit Sub
             Else
-                PlayerData(Index_).CMP -= RefSkill.RequiredMp
-                UpdateMP(Index_)
+                If PlayerData(Index_).Invincible = False Then
+                    PlayerData(Index_).CMP -= RefSkill.RequiredMp
+                    UpdateMP(Index_)
+                End If
             End If
 
             PlayerData(Index_).AttackedId = Mob_.UniqueID

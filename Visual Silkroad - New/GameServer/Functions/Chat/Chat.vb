@@ -20,7 +20,7 @@
                     OnNoticeChat(Packet, Index_)
 
                 Case ChatModes.Stall
-                    Stall_Chat(Packet, Index_)
+                    OnStall_Chat(Packet, Index_)
 
                 Case ChatModes.Union
                 Case ChatModes.Academy

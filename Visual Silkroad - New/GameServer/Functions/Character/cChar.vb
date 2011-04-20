@@ -66,7 +66,7 @@
     Public WalkStart As New Date
     Public WalkEnd As New Date
     Public Walking As Boolean = False
-    Public MovementType As MoveType_ = MoveType_.Run
+    Public MovementType As MoveType_ = MoveType_.Runing
 
     Public SpawnedPlayers As New List(Of Integer)
     Public SpawnedMonsters As New List(Of Integer)
@@ -348,9 +348,10 @@ Public Enum AttackType_
 End Enum
 
 Public Enum MoveType_
-    Walk = 0
-    Run = 1
-    Berserk = 2
+    Standing = 0
+    Walking = 1
+    Runing = 2
+    Berserk = 3
 End Enum
 
 Public Structure cBuff

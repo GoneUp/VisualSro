@@ -63,9 +63,9 @@
 
             writer.Word(chari.Angle)
             writer.Byte(0) 'dest
-            If chari.MovementType = MoveType_.Walk Then
+            If chari.MovementType = MoveType_.Walking Then
                 writer.Byte(0) 'Walking
-            ElseIf chari.MovementType = MoveType_.Run Then
+            ElseIf chari.MovementType = MoveType_.Runing Then
                 writer.Byte(1) 'Running
             End If
 
@@ -205,8 +205,6 @@
                 End If
 
             Next
-
-            PlayerData(Index_).SpawnedPlayers.Clear()
         End Sub
 
         Public Sub CleanUpPlayer(ByVal Index_ As Integer)

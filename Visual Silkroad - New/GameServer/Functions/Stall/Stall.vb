@@ -277,7 +277,7 @@
             End If
         End Sub
 
-        Public Sub Stall_Chat(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnStall_Chat(ByVal packet As PacketReader, ByVal Index_ As Integer)
 
             If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 Then
                 Dim counter As Byte = packet.Byte

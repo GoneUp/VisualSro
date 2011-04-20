@@ -106,7 +106,7 @@
                 writer.Float(ItemList(ItemIndex).Position.X)
                 writer.Float(ItemList(ItemIndex).Position.X)
                 writer.Word(0)
-                Server.SendToAllInRange(writer.GetBytes, PlayerData(Index_).Position)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
                 writer.Create(ServerOpcodes.PickUp_Item)
                 writer.DWord(PlayerData(Index_).UniqueId)

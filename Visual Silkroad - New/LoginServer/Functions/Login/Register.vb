@@ -4,7 +4,23 @@
         Public RegisterList As New List(Of Register_)
         Public Rand As New Random
 
-        Public Sub RegisterUser(ByVal Name As String, ByVal Password As String, ByVal Index_ As Integer)
+        ''' <summary>
+        ''' Registers a User
+        ''' </summary>
+        ''' <param name="Name"></param>
+        ''' <param name="Password"></param>
+        ''' <param name="Index_"></param>
+        ''' <returns>True at success, False on fail.</returns>
+        ''' <remarks></remarks>
+        Public Function RegisterUser(ByVal Name As String, ByVal Password As String, ByVal Index_ As Integer)
+            If Name.Contains("ä") Or Name.Contains("ü") Or Name.Contains("ö") Or Password.Contains("ä") Or Password.Contains("ü") Or Password.Contains("ö") Then
+                Login_WriteSpecialText("Please don't enter any Chars like ä, ö, ü.", Index_)
+                Return False
+            End If
+
+
+
+
             DataBase.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmp As New UserArray
@@ -27,7 +43,9 @@
             If Log_Register Then
                 Log.WriteGameLog(Index_, "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
             End If
-        End Sub
+
+            Return True
+        End Function
 
         Public Sub Login_WriteSpecialText(ByVal Text As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter

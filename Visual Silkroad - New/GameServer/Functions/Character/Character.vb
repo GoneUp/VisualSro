@@ -164,7 +164,7 @@
 
             'Check it
 
-            If model >= 1907 And model <= 1932 = False And model >= 14717 And model <= 14743 = False Then
+            If IsCharChinese(model) = False And IsCharEurope(model) = False Then
                 'Wrong Model Code! 
                 Server.Dissconnect(Index_)
                 Log.WriteSystemLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
@@ -261,7 +261,7 @@
 
                 ' Masterys
 
-                If model >= 1907 And model <= 1932 Then
+                If IsCharChinese(model) Then
                     'Chinese Char
                     '257 - 259
 
@@ -309,7 +309,7 @@
                     AddMasteryToDB(mastery)
 
 
-                ElseIf model >= 14717 And model <= 14743 Then
+                ElseIf IsCharEurope(model) Then
 
                     'Europe Char
                     '513 - 518
@@ -731,5 +731,22 @@
 
             End If
         End Sub
+
+        Public Function IsCharChinese(ByVal Model As UInteger) As Boolean
+            If Model >= 1907 And Model <= 1932 Then
+                Return True
+            Else
+                Return False
+            End If
+
+        End Function
+
+        Public Function IsCharEurope(ByVal Model As UInteger) As Boolean
+            If Model >= 14717 And Model <= 14743 Then
+                Return True
+            Else
+                Return False
+            End If
+        End Function
     End Module
 End Namespace

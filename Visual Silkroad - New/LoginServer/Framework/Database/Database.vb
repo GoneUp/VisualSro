@@ -66,7 +66,7 @@ Namespace LoginServer
                 reader.Fill(tmpset)
 
                 tmp_con.Close()
-
+                tmp_con.Dispose()
             Catch ex As MySqlException
                 RaiseEvent OnDatabaseError(ex, command)
             End Try

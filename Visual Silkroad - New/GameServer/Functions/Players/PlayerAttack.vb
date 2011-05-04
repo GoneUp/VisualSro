@@ -62,7 +62,7 @@
                                     End If
                                 End If
                             Case 0
-                                PlayerBuff_Beginn(skillid, Index_)
+                                PlayerBuff_BeginnCasting(skillid, Index_)
 
 
                         End Select
@@ -108,7 +108,7 @@
                 RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Else
                 'No Weapon
-                RefWeapon.ATTACK_DISTANCE = 36
+                RefWeapon.ATTACK_DISTANCE = 6
             End If
 
             If AttObject.TypeName Is Nothing Or PlayerData(Index_).Busy Then
@@ -116,7 +116,7 @@
             End If
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
-            If Distance >= (RefWeapon.ATTACK_DISTANCE) Then
+            If Distance >= (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)) Then
                 MoveUserToMonster(Index_, MobUniqueId)
                 Exit Sub
             End If

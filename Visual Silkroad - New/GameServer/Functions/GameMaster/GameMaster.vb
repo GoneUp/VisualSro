@@ -117,7 +117,7 @@
             Server.Send(writer.GetBytes, index_)
 
         End Sub
-        Public Sub OnSetWeather(ByVal Type As Byte, ByVal Strength As Byte, ByVal index_ As Integer)
+        Public Sub OnSetWeather(ByVal Type As Byte, ByVal Strength As Byte)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Weather)
             writer.Byte(Type)

@@ -148,6 +148,7 @@
         Target = &HB045
         Attack_Reply = &HB074
         Attack_Main = &HB070
+
         Buff_Info = &HB071
         Buff_Icon = &HB0BD
         Buff_End = &HB072

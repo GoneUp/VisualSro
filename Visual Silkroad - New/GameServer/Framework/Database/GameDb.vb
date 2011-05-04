@@ -119,7 +119,7 @@
                     Chars(i).Position.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
                     Chars(i).Position.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
                     Chars(i).Position.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(19))
-                    Chars(i).Position.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(20)) 'xsec
+                    Chars(i).Position.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(20))
                     Chars(i).Position.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(21))
                     Chars(i).CHP = CUInt(tmp.Tables(0).Rows(i).ItemArray(22))
                     Chars(i).CMP = CUInt(tmp.Tables(0).Rows(i).ItemArray(23))
@@ -150,7 +150,7 @@
                         Chars(i).Alive = False
                     End If
 
-
+                    Chars(i).Position_Tracker = New Functions.cPositionTracker(Chars(i).Position, Chars(i).WalkSpeed, Chars(i).RunSpeed, Chars(i).BerserkSpeed)
                     Chars(i).UniqueId = Id_Gen.GetUnqiueId()
                 Next
 

@@ -554,10 +554,10 @@
             Return New Object_()
         End Function
 
-        Structure ReversePoint_
+        Public Class ReversePoint_
             Public TeleportID As UInteger
-            Public Position As Position
-        End Structure
+            Public Position As New Position
+        End Class
 
         Public Sub DumpReversePoints(ByVal path As String)
             Dim lines As String() = IO.File.ReadAllLines(path)
@@ -935,11 +935,11 @@
         End Function
 
 
-        Public Structure CaveTeleporter_
-            Public FromPosition As Position
+        Public Class CaveTeleporter_
+            Public FromPosition As New Position
             Public Range As Integer
             Public ToTeleporterID As Integer
-        End Structure
+        End Class
 
 
         Public Sub DumpCaveTeleporterFile(ByVal path As String)

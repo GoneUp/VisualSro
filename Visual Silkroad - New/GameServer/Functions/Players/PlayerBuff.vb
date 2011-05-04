@@ -1,7 +1,7 @@
 ﻿Namespace GameServer.Functions
     Module PlayerBuff
 
-        Public Sub PlayerBuff_Beginn(ByVal SkillID As UInt32, ByVal Index_ As Integer)
+        Public Sub PlayerBuff_BeginnCasting(ByVal SkillID As UInt32, ByVal Index_ As Integer)
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim RefWeapon As New cItem
 
@@ -25,6 +25,7 @@
             tmp.OwnerID = PlayerData(Index_).UniqueId
             tmp.DurationStart = Date.Now
             tmp.DurationEnd = Date.Now.AddSeconds(RefSkill.UseDuration)
+            tmp.Type = BuffType_.SkillBuff
 
             PlayerData(Index_).Busy = True
             PlayerData(Index_).Attacking = False
@@ -57,14 +58,28 @@
 
 
             If RefSkill.CastTime > 0 Then
-                PlayerAttackTimer(Index_).Interval = RefSkill.CastTime * 1000
+                PlayerAttackTimer(Index_).Interval = RefSkill.CastTime
                 PlayerAttackTimer(Index_).Start()
             Else
-                PlayerBuff_Info(Index_, 0)
-                PlayerBuff_Iconpacket(Index_)
-                Attack_SendAttackEnd(Index_)
+                PlayerBuff_EndCasting(Index_)
             End If
         End Sub
+
+        Public Sub PlayerBuff_EndCasting(ByVal Index_ As Integer)
+            PlayerBuff_Info(Index_, 0)
+            PlayerBuff_Iconpacket(Index_)
+            Attack_SendAttackEnd(Index_)
+
+            'Clean Up
+            PlayerData(Index_).Busy = False
+            PlayerData(Index_).Attacking = False
+            PlayerData(Index_).AttackType = AttackType_.Normal
+            PlayerData(Index_).AttackedId = 0
+            PlayerData(Index_).UsingSkillId = 0
+            PlayerData(Index_).SkillOverId = 0
+            PlayerData(Index_).CastingId = 0
+        End Sub
+
 
         Public Sub PlayerBuff_Info(ByVal Index_ As Integer, ByVal Type As Byte)
             Dim writer As New PacketWriter
@@ -87,16 +102,33 @@
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
+
+        Public Sub PlayerBuff_End(ByVal SkillOverId As UInteger, ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Buff_End)
+            writer.DWord(PlayerData(Index_).Buffs(SkillOverId).OverID)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+
+            RemoveBuffFromList(SkillOverId, Index_)
+        End Sub
+
+
         Private Sub AddBuffToList(ByVal buff As cBuff, ByVal Index_ As Integer)
-            PlayerData(Index_).Buffs.Add(buff)
+            PlayerData(Index_).Buffs.Add(buff.OverID, buff)
+
+            PlayerData(Index_).SetCharGroundStats()
+            PlayerData(Index_).AddItemsToStats(Index_)
+            PlayerData(Index_).AddBuffsToStats()
+            OnStatsPacket(Index_)
         End Sub
 
         Private Sub RemoveBuffFromList(ByVal SkillOverId As UInteger, ByVal Index_ As Integer)
-            For i = 0 To PlayerData(Index_).Buffs.Count - 1
-                If PlayerData(Index_).Buffs(i).OverID = SkillOverId Then
-                    PlayerData(Index_).Buffs.Remove(PlayerData(Index_).Buffs(i))
-                End If
-            Next
+            PlayerData(Index_).Buffs.Remove(SkillOverId)
+
+            PlayerData(Index_).SetCharGroundStats()
+            PlayerData(Index_).AddItemsToStats(Index_)
+            PlayerData(Index_).AddBuffsToStats()
+            OnStatsPacket(Index_)
         End Sub
     End Module
 End Namespace

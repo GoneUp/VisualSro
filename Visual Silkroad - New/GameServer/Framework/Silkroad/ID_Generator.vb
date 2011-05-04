@@ -53,11 +53,26 @@
 
         Public Function GetCastingId() As UInteger
             Dim toreturn As UInteger = CastingIdCounter
-            If SkillOverIdCounter < UInteger.MaxValue Then
-                SkillOverIdCounter += 1
-            ElseIf SkillOverIdCounter = UInteger.MaxValue Then
-                SkillOverIdCounter = 0
+            If CastingIdCounter < UInteger.MaxValue Then
+                CastingIdCounter += 1
+            ElseIf CastingIdCounter = UInteger.MaxValue Then
+                CastingIdCounter = 0
                 Log.WriteSystemLog("Reached CastingID Max")
+            End If
+
+            Return toreturn
+        End Function
+
+        '======================Exchange ID's
+        Private ExchangeIdCounter As UInteger = 10
+
+        Public Function GetExchangeId() As UInteger
+            Dim toreturn As UInteger = ExchangeIdCounter
+            If ExchangeIdCounter < UInteger.MaxValue Then
+                ExchangeIdCounter += 1
+            ElseIf ExchangeIdCounter = UInteger.MaxValue Then
+                ExchangeIdCounter = 0
+                Log.WriteSystemLog("Reached ExcahngeID Max")
             End If
 
             Return toreturn

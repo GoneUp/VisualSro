@@ -6,7 +6,7 @@
         'items
         Public Inventorys(5000) As cInventory
         'Exchange
-        Public ExchangeData As New List(Of cExchange)
+        Public ExchangeData As New Dictionary(Of UInteger, cExchange)
 
 
         ''' <summary>
@@ -63,10 +63,10 @@
 
             writer.Word(chari.Angle)
             writer.Byte(0) 'dest
-            If chari.MovementType = MoveType_.Walking Then
+            If chari.Position_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
                 writer.Byte(0) 'Walking
-            ElseIf chari.MovementType = MoveType_.Runing Then
-                writer.Byte(1) 'Running
+            Else
+                writer.Byte(1) 'Running + Zerk
             End If
 
 
@@ -213,6 +213,7 @@
             PlayerData(Index_).SpawnedNPCs.Clear()
             PlayerData(Index_).SpawnedMonsters.Clear()
             PlayerData(Index_).SpawnedItems.Clear()
+            PlayerData(Index_).Buffs.Clear()
 
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Alive = True
@@ -227,11 +228,15 @@
             PlayerData(Index_).UsedItemParameter = 0
             PlayerData(Index_).PickUpId = 0
 
+            If PlayerData(Index_).InExchange Then
+                Exchange_AbortFromServer(Index_)
+            End If
             PlayerData(Index_).InExchange = False
-            PlayerData(Index_).ExchangeID = 0
+            PlayerData(Index_).ExchangeID = -1
+            PlayerData(Index_).InExchangeWith = -1
 
-            If PlayerData(Index_).InStall = True Then
-
+            If PlayerData(Index_).InStall Then
+                Stall_Close_Own(Index_)
             End If
 
             PlayerData(Index_).InStall = False

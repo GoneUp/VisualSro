@@ -36,11 +36,11 @@
             Select Case action
                 Case 2 'Run --> Walk
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).MovementType = MoveType_.Walking
+                    PlayerData(Index_).Position_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
 
                 Case 3 'Walk --> Run
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).MovementType = MoveType_.Runing
+                    PlayerData(Index_).Position_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
 
                 Case 4 'sit down
                     If SitUpTimer(Index_).Enabled = True Then
@@ -262,11 +262,16 @@
 
         Public Sub OnClientStatusUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim status As ULong = packet.QWord
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ClientStatus)
-            writer.Byte(1)
-            writer.QWord(status)
-            Server.Send(writer.GetBytes, Index_)
+
+            Select Case status
+                Case 1
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.ClientStatus)
+                    writer.Byte(1)
+                    writer.QWord(status)
+                    Server.Send(writer.GetBytes, Index_)
+            End Select
+
         End Sub
 
 

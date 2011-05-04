@@ -1,59 +1,69 @@
 ﻿Imports GameServer
 Module Log
 
-    Public Sub CheckCommand(ByVal msg As String)
+    Public Sub CheckCommand(ByVal FullMessage As String)
 
-        If msg.StartsWith("/info") Then
-            GameServer.Log.WriteSystemLog("This Emulator is from GoneUp.")
-            GameServer.Log.WriteSystemLog("Specical Thanks to:")
-            GameServer.Log.WriteSystemLog("Drew Benton")
-            GameServer.Log.WriteSystemLog("manneke for the great help")
-            GameServer.Log.WriteSystemLog("Windrius for the original Framework")
-            GameServer.Log.WriteSystemLog("SREmu Team")
-            GameServer.Log.WriteSystemLog("Dickernoob for CSREmu")
-            GameServer.Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
+        Dim msg() As String = FullMessage.Split(" ")
 
+        Select Case msg(0)
 
-        ElseIf msg.StartsWith("/help") Then
-            GameServer.Log.WriteSystemLog("Log: ")
-            GameServer.Log.WriteSystemLog("/info for the credits")
-            GameServer.Log.WriteSystemLog("/packets to enable packetlog")
-            GameServer.Log.WriteSystemLog("/notice [Message] - To write a global Message ")
-            GameServer.Log.WriteSystemLog("/clear")
-
-        ElseIf msg.StartsWith("/packets") Then
-
-            GameServer.Program.Logpackets = True
-            GameServer.Log.WriteSystemLog("Log Packets started!")
+            Case "/info"
+                GameServer.Log.WriteSystemLog("This Emulator is from GoneUp.")
+                GameServer.Log.WriteSystemLog("Specical Thanks to:")
+                GameServer.Log.WriteSystemLog("Drew Benton")
+                GameServer.Log.WriteSystemLog("manneke for the great help")
+                GameServer.Log.WriteSystemLog("Windrius for the original Framework")
+                GameServer.Log.WriteSystemLog("SREmu Team")
+                GameServer.Log.WriteSystemLog("Dickernoob for CSREmu")
+                GameServer.Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
-        ElseIf msg.StartsWith("/clear") Then
-            Console.Clear()
+            Case "/help"
+                GameServer.Log.WriteSystemLog("Log: ")
+                GameServer.Log.WriteSystemLog("/info for the credits")
+                GameServer.Log.WriteSystemLog("/packets to enable packetlog")
+                GameServer.Log.WriteSystemLog("/notice [Message] - To write a global Message ")
+                GameServer.Log.WriteSystemLog("/clear")
+
+            Case "/packets"
+
+                GameServer.Program.Logpackets = True
+                GameServer.Log.WriteSystemLog("Log Packets started!")
 
 
-        ElseIf msg.StartsWith("/notice") Then
-            Dim spit As String = msg.Substring(8)
-            GameServer.Functions.SendNotice(spit(1))
+            Case "/clear"
+                Console.Clear()
 
 
-        ElseIf msg.StartsWith("/weather") Then
-            Dim spit As String = msg.Substring(9)
-            Dim spit2 As String() = spit.Split(" ")
-            GameServer.Functions.OnSetWeather(CByte(spit2(0)), CByte(spit2(1)), 1)
+            Case "/notice"
+                GameServer.Functions.SendNotice(msg(1))
 
-        ElseIf msg = "/normalweather" Then
-            GameServer.Functions.OnSetWeather(1, 75, 1)
 
-        ElseIf msg = "/rain" Then
-            GameServer.Functions.OnSetWeather(2, 75, 1)
+            Case "/weather"
+                GameServer.Functions.OnSetWeather(CByte(msg(1)), CByte(msg(2)))
 
-        ElseIf msg = "/snow" Then
-            GameServer.Functions.OnSetWeather(3, 75, 1)
+            Case "/normalweather"
+                GameServer.Functions.OnSetWeather(1, 75)
 
-        ElseIf msg = "/count" Then
-            GameServer.Log.WriteSystemLog(String.Format("Count:{0}!", GameServer.Server.OnlineClient))
-        End If
+            Case "/rain"
+                GameServer.Functions.OnSetWeather(2, 75)
 
+            Case "/snow"
+                GameServer.Functions.OnSetWeather(3, 75)
+
+            Case "/count"
+                GameServer.Log.WriteSystemLog(String.Format("Count:{0}!", GameServer.Server.OnlineClient))
+
+            Case "/end"
+                For i = 0 To GameServer.Functions.PlayerData.Count - 1
+                    If GameServer.Functions.PlayerData(i) IsNot Nothing Then
+                        GameServer.Server.Dissconnect(i)
+                    End If
+                Next
+                GameServer.Server.Stop()
+                GameServer.DataBase.ExecuteQuerys()
+                End
+        End Select
 
     End Sub
 End Module

@@ -37,6 +37,20 @@ Namespace GameServer
             End Try
         End Sub
 
+        Public Shared Sub [Stop]()
+
+            Try
+                ServerSocket.Shutdown(SocketShutdown.Both)
+                ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+                ReDim RevTheard(MaxClients + 1)
+            Catch exception As Exception
+                RaiseEvent OnServerError(exception, -3)
+            Finally
+                Dim time As String = DateTime.Now.ToString()
+                RaiseEvent OnServerStarted(time)
+            End Try
+        End Sub
+
 
         Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
             Try

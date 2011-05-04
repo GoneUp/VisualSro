@@ -7,7 +7,7 @@ Namespace GameServer
         Public Shared Logpackets As Boolean = False
 
         Public Shared TheardDB As New Thread(AddressOf GameServer.GameDB.UpdateData)
-        Public Shared TheardTimer As New Thread(AddressOf LoadTimers)
+        Public Shared TheardTimer As New Thread(AddressOf Functions.LoadTimers)
         Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
         Shared Sub Main()

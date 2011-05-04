@@ -30,6 +30,17 @@
             Case "/clear"
                 Console.Clear()
 
+
+            Case "/end"
+                For i = 0 To LoginServer.ClientList.SessionInfo.Count - 1
+                    If LoginServer.ClientList.SessionInfo(i) IsNot Nothing Then
+                        LoginServer.Server.Dissconnect(i)
+                    End If
+                Next
+                ' GameServer.Server.stop()
+                LoginServer.DataBase.ExecuteQuerys()
+                End
+    
         End Select
 
 

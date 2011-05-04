@@ -66,8 +66,9 @@ Namespace GameServer
                 Dim reader As New MySqlDataAdapter(command, tmp_con)
                 reader.Fill(tmpset)
 
+                reader.Dispose()
                 tmp_con.Close()
-
+                tmp_con.Dispose()
             Catch ex As MySqlException
                 RaiseEvent OnDatabaseError(ex, command)
             End Try
@@ -114,6 +115,7 @@ Namespace GameServer
                     If CheckForInjection(command) = False Then
                         Dim command2 As New MySqlCommand(command, Connection)
                         command2.ExecuteNonQuery()
+                        command2.Dispose()
                     End If
                 Catch exception As Exception
                     RaiseEvent OnDatabaseError(exception, command)
@@ -130,7 +132,9 @@ Namespace GameServer
                 Dim command3 As New MySqlCommand(command, tmp_con)
                 command3.ExecuteNonQuery()
 
+                command3.Dispose()
                 tmp_con.Close()
+                tmp_con.Dispose()
 
             Catch exception As MySqlException
                 If exception.ErrorCode = -2147467259 Then

@@ -49,6 +49,7 @@
 
 
         Public Sub MoveMob(ByVal UniqueID As Integer, ByVal ToPos As Position)
+            Dim i = MobList(UniqueID)
             Dim Obj As Object_ = GetObjectById(MobList(UniqueID).Pk2ID)
             Dim Distance As Single = CalculateDistance(MobList(UniqueID).Position, ToPos)
             Dim Time As Single = Distance / Obj.WalkSpeed

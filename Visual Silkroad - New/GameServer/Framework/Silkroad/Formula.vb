@@ -2,10 +2,10 @@
     Module Formula
         Public Function CalculateDistance(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
             'Get Real Cords
-            Dim Pos1X As Double = GetRealX(Pos_1.XSector, Pos_1.X)
-            Dim Pos1Y As Double = GetRealY(Pos_1.YSector, Pos_1.Y)
-            Dim Pos2X As Double = GetRealX(Pos_2.XSector, Pos_2.X)
-            Dim Pos2Y As Double = GetRealY(Pos_2.YSector, Pos_2.Y)
+            Dim Pos1X As Double = Pos_1.ToGameX
+            Dim Pos1Y As Double = Pos_1.ToGameY
+            Dim Pos2X As Double = Pos_2.ToGameX
+            Dim Pos2Y As Double = Pos_2.ToGameY
 
             Dim distance_x As Double = Pos1X - Pos2X
             Dim distance_y As Double = Pos1Y - Pos2Y
@@ -30,39 +30,6 @@
             Return Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
         End Function
 
-        Public Function GetCurrentPosition(ByVal Index_ As Integer) As Position
-            Dim ToGoX As Single
-            Dim ToGoY As Single
-            Dim num4 As Double
-            Dim num5 As Double
-            Dim tmpPos As Position
-            Select Case PlayerData(Index_).ActionFlag
-                Case 0
-                    Dim TimeLeft As Double = Date.Now.Subtract(PlayerData(Index_).WalkStart).TotalMilliseconds
-                    ToGoX = (PlayerData(Index_).Position.X - PlayerData(Index_).Position_ToPos.X)
-                    ToGoY = (PlayerData(Index_).Position.Y - PlayerData(Index_).Position_ToPos.Y)
-                    num4 = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
-                    Select Case PlayerData(Index_).MovementType
-                        Case MoveType_.Walking
-                            num5 = ((PlayerData(Index_).WalkSpeed / 10.0!) * TimeLeft) / 1000.0!
-                        Case MoveType_.Runing
-                            num5 = ((PlayerData(Index_).RunSpeed / 10.0!) * TimeLeft) / 1000.0!
-                        Case MoveType_.Berserk
-                            num5 = ((PlayerData(Index_).BerserkSpeed / 10.0!) * TimeLeft) / 1000.0!
-                    End Select
-
-                Case 4
-            End Select
-            Dim num6 As Single = CSng((((100.0! / num4) * num5) * 0.01))
-            ToGoX *= num6
-            ToGoY *= num6
-
-            tmpPos = PlayerData(Index_).Position
-            tmpPos.X -= ToGoX
-            tmpPos.Y -= ToGoY
-            PlayerData(Index_).WalkStart = Date.Now
-            Return tmpPos
-        End Function
 
 #Region "Pos Help Functions"
         Public Function GetRealX(ByVal XSec As Byte, ByVal XPos As Single) As Single

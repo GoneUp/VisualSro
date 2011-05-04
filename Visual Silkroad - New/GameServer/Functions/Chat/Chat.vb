@@ -102,7 +102,7 @@
                 'Opposite not online
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(2)
-                writer.Byte(3) 'error byte
+                writer.Word(3) 'error byte
                 writer.Byte(ChatModes.PmIncome)
                 writer.Byte(counter)
 

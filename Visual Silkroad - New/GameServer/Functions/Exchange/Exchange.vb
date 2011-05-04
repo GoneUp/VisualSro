@@ -39,8 +39,9 @@
                 Dim tmp_ex As New cExchange
                 tmp_ex.Player1Index = (PlayerData(Index_).InExchangeWith)
                 tmp_ex.Player2Index = Index_
-                ExchangeData.Add(tmp_ex)
-                tmp_ex.ExchangeID = (ExchangeData.IndexOf(tmp_ex))
+                tmp_ex.ExchangeID = Id_Gen.GetExchangeId
+                ExchangeData.Add(tmp_ex.ExchangeID, tmp_ex)
+
 
                 PlayerData(Index_).ExchangeID = tmp_ex.ExchangeID
                 PlayerData(PlayerData(Index_).InExchangeWith).ExchangeID = tmp_ex.ExchangeID
@@ -63,30 +64,30 @@
             End If
         End Sub
 
-        Public Sub OnExchangeUpdateItems(ByVal ExListInd As Integer)
+        Public Sub OnExchangeUpdateItems(ByVal ExchangeId As Integer)
 
 
             '======Player 1
             Dim writer As New PacketWriter
             Dim itemcount As Byte = 0
-            Dim temp_inv As cInventory = Inventorys((ExchangeData(ExListInd).Player1Index))
+            Dim temp_inv As cInventory = Inventorys((ExchangeData(ExchangeId).Player1Index))
 
             For own_decider = 0 To 1
                 itemcount = 0
                 writer.Create(ServerOpcodes.Exchange_UpdateItems)
-                writer.DWord(PlayerData(ExchangeData(ExListInd).Player1Index).UniqueId)
+                writer.DWord(PlayerData(ExchangeData(ExchangeId).Player1Index).UniqueId)
 
                 For i = 0 To 11 'Count items
-                    If ExchangeData(ExListInd).Items1(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items1(i) <> -1 Then
                         itemcount += 1
                     End If
                 Next
                 writer.Byte(itemcount)
 
                 For i = 0 To 11 'Send Item Data
-                    If ExchangeData(ExListInd).Items1(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items1(i) <> -1 Then
 
-                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExListInd).Items1(i))
+                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items1(i))
                         Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                         If own_decider = 0 Then
@@ -99,32 +100,32 @@
                 Next
 
                 If own_decider = 0 Then
-                    Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player1Index)
+                    Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player1Index)
                 Else
-                    Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player2Index)
+                    Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player2Index)
                 End If
             Next
 
             '=========Player 2
             itemcount = 0
-            temp_inv = Inventorys((ExchangeData(ExListInd).Player2Index))
+            temp_inv = Inventorys((ExchangeData(ExchangeId).Player2Index))
 
             For own_decider = 0 To 1
                 itemcount = 0
                 writer.Create(ServerOpcodes.Exchange_UpdateItems)
-                writer.DWord(PlayerData(ExchangeData(ExListInd).Player2Index).UniqueId)
+                writer.DWord(PlayerData(ExchangeData(ExchangeId).Player2Index).UniqueId)
 
                 For i = 0 To 11 'Count items
-                    If ExchangeData(ExListInd).Items2(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items2(i) <> -1 Then
                         itemcount += 1
                     End If
                 Next
                 writer.Byte(itemcount)
 
                 For i = 0 To 11 'Send Item Data
-                    If ExchangeData(ExListInd).Items2(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items2(i) <> -1 Then
 
-                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExListInd).Items2(i))
+                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items2(i))
                         Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                         If own_decider = 0 Then
@@ -137,9 +138,9 @@
                 Next
                 If own_decider = 0 Then
                     'Own Data with own Slots
-                    Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player2Index)
+                    Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player2Index)
                 Else
-                    Server.Send(writer.GetBytes, ExchangeData(ExListInd).Player1Index)
+                    Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player1Index)
                 End If
             Next
         End Sub
@@ -219,15 +220,15 @@
                 End If
             End If
         End Sub
-        Public Sub FinishExchange(ByVal ExchangeSession As Integer)
+        Public Sub FinishExchange(ByVal ExchangeId As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Exchange_Finsih)
-            Server.Send(writer.GetBytes, ExchangeData(ExchangeSession).Player1Index)
+            Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player1Index)
             writer.Create(ServerOpcodes.Exchange_Finsih)
-            Server.Send(writer.GetBytes, ExchangeData(ExchangeSession).Player2Index)
+            Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player2Index)
 
 
-            Dim tmp_ex As cExchange = ExchangeData(ExchangeSession)
+            Dim tmp_ex As cExchange = ExchangeData(ExchangeId)
             'Player 1 items --> Player 2
             For i = 0 To 11
                 If tmp_ex.Items1(i) <> -1 Then
@@ -311,7 +312,7 @@
             UpdateGold(tmp_ex.Player2Index)
 
             'Clean up
-            ExchangeData.RemoveAt(ExchangeSession)
+            ExchangeData.Remove(ExchangeId)
             PlayerData(tmp_ex.Player1Index).ExchangeID = -1
             PlayerData(tmp_ex.Player1Index).InExchangeWith = -1
             PlayerData(tmp_ex.Player1Index).InExchange = False
@@ -358,7 +359,7 @@
                         Server.Send(writer.GetBytes, Index_)
 
                         Dim tmp_ex As cExchange = ExchangeData(PlayerData(Index_).ExchangeID)
-                        ExchangeData.RemoveAt(PlayerData(Index_).ExchangeID)
+                        ExchangeData.Remove(tmp_ex.ExchangeID)
                         PlayerData(tmp_ex.Player1Index).ExchangeID = -1
                         PlayerData(tmp_ex.Player1Index).InExchangeWith = -1
                         PlayerData(tmp_ex.Player1Index).InExchange = False
@@ -381,6 +382,18 @@
                 End If
 
             End If
+        End Sub
+
+        Public Sub Exchange_AbortFromServer(ByVal index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+            writer.Byte(2)
+            writer.Byte(&H1B)
+            Server.Send(writer.GetBytes, PlayerData(index_).InExchangeWith)
+
+            PlayerData(index_).ExchangeID = -1
+            PlayerData(index_).InExchangeWith = -1
+            PlayerData(index_).InExchange = False
         End Sub
 
         Public Function GetFreeSlotExchage(ByVal Index_ As Integer)

@@ -1,5 +1,5 @@
-﻿Imports System.Timers, GameServer.GameServer.Functions
-Namespace GameServer
+﻿Imports System.Timers
+Namespace GameServer.Functions
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
         Public PlayerMoveTimer As Timer() = New Timer(14999) {}
@@ -91,7 +91,7 @@ Namespace GameServer
 
                     Else
                         If PlayerData(Index).AttackType = AttackType_.Buff Then
-                            PlayerBuff_Info(Index, 0)
+                            PlayerBuff_EndCasting(Index)
                         End If
                     End If
                 End If
@@ -344,8 +344,8 @@ Namespace GameServer
                     End If
                 Next
 
-                Stopwatch.Stop()
-                Debug.Print("MM: " & Stopwatch.ElapsedMilliseconds & "ms")
+                stopwatch.Stop()
+                Debug.Print("MM: " & stopwatch.ElapsedMilliseconds & "ms")
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '
@@ -368,24 +368,18 @@ Namespace GameServer
                 If Index <> -1 Then
                     PlayerMoveTimer(Index).Stop()
 
-                    If PlayerData(Index).Walking = True Then
-                        Dim newpos As Position = Formula.GetCurrentPosition(Index)
+                    If PlayerData(Index).Position_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                        Dim new_pos As Position = PlayerData(Index).Position_Tracker.GetCurrentPosition()
+                        PlayerData(Index).Position = new_pos
+                        ObjectSpawnCheck(Index)
 
-                        If CalculateDistance2(newpos, PlayerData(Index).Position_ToPos) < 9 Then
-                            'Same Pos = Walk end
-                            PlayerData(Index).Walking = False
-                            PlayerData(Index).Position = PlayerData(Index).Position_ToPos
-                            ObjectSpawnCheck(Index)
-                        Else
-                            If Single.IsNaN(newpos.Y) = Single.NaN Or Single.IsNaN(newpos.X) Then
-                                newpos.X = PlayerData(Index).Position_FromPos.X
-                                newpos.Y = PlayerData(Index).Position_FromPos.Y
-                            End If
+                        SendPm(Index, "X: " & new_pos.ToGameX & "Y: " & new_pos.ToGameY, "hh")
+                        PlayerMoveTimer(Index).Start()
 
-                            PlayerData(Index).Position = newpos
-                            SendPm(Index, "X: " & newpos.X & "Y: " & newpos.Y, "hh")
-                            PlayerMoveTimer(Index).Start()
-                        End If
+                    ElseIf PlayerData(Index).Position_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+                        ObjectSpawnCheck(Index)
+                        SendPm(Index, "Walk End", "hh")
+
                     End If
                 End If
             Catch ex As Exception
@@ -399,16 +393,27 @@ Namespace GameServer
             Try
                 For i = 0 To PlayerData.Length - 1
                     If PlayerData(i) IsNot Nothing Then
-                        If PlayerData(i).Ingame And PlayerData(i).Alive And PlayerData(i).CHP <> PlayerData(i).HP Then
+                        If PlayerData(i).Ingame And PlayerData(i).Alive Then
                             Select Case PlayerData(i).ActionFlag
                                 Case 0
                                     'Nomral
-                                    PlayerData(i).CHP = Math.Round(PlayerData(i).CHP * 1.002, 0, MidpointRounding.AwayFromZero)
+                                    If PlayerData(i).CHP <> PlayerData(i).HP Then
+                                        PlayerData(i).CHP = Math.Round(PlayerData(i).HP * 1.002, 0, MidpointRounding.AwayFromZero)
+                                    End If
+                                    If PlayerData(i).CMP <> PlayerData(i).MP Then
+                                        PlayerData(i).CMP = Math.Round(PlayerData(i).MP * 1.002, 0, MidpointRounding.AwayFromZero)
+                                    End If
+
                                 Case 4
                                     'Sitting
-                                    PlayerData(i).CHP = Math.Round(PlayerData(i).CHP * 1.05, 0, MidpointRounding.AwayFromZero)
+                                    If PlayerData(i).CHP <> PlayerData(i).HP Then
+                                        PlayerData(i).CHP = Math.Round(PlayerData(i).HP * 1.05, 0, MidpointRounding.AwayFromZero)
+                                    End If
+                                    If PlayerData(i).CMP <> PlayerData(i).MP Then
+                                        PlayerData(i).CMP = Math.Round(PlayerData(i).MP * 1.05, 0, MidpointRounding.AwayFromZero)
+                                    End If
                             End Select
-                            UpdateHP(i)
+                            UpdateHP_MP(i)
                         End If
                     End If
                 Next

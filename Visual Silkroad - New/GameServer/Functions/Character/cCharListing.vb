@@ -1,19 +1,21 @@
-﻿Public Class cCharListing
-   
-    Public Structure UserArray
-        Public Id As Integer
-        Public Name As String
-        Public Pw As String
-        Public FailedLogins As String
-        Public Banned As Boolean
-        Public LoggedIn As Boolean
+﻿Namespace GameServer
+    Public Class cCharListing
 
-        Public Silk As UInteger
-        Public Silk_Bonus As UInteger
-        Public Silk_Points As UInteger
-    End Structure
+        Public Structure UserArray
+            Public Id As Integer
+            Public Name As String
+            Public Pw As String
+            Public FailedLogins As String
+            Public Banned As Boolean
+            Public LoggedIn As Boolean
 
-    Public LoginInformation As UserArray
-    Public Chars As New List(Of [cChar])
-    Public NumberOfChars As Byte
-End Class
+            Public Silk As UInteger
+            Public Silk_Bonus As UInteger
+            Public Silk_Points As UInteger
+        End Structure
+
+        Public LoginInformation As UserArray
+        Public Chars As New List(Of [cChar])
+        Public NumberOfChars As Byte
+    End Class
+End Namespace

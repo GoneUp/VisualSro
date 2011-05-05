@@ -119,6 +119,10 @@ Namespace GameServer
                     End If
                 Catch exception As Exception
                     RaiseEvent OnDatabaseError(exception, command)
+
+                    If exception.Message = "Connection must be valid and open." Then
+                        ReConnect()
+                    End If
                 End Try
             End SyncLock
         End Sub
@@ -170,7 +174,7 @@ Namespace GameServer
 
 #Region "Check"
         Public Shared Function CheckForInjection(ByVal command As String)
-            If command.Contains("'") Or command.Contains(";") Then
+            If command.Contains(";") Then
                 Return True
             End If
             Return False

@@ -12,7 +12,7 @@ Namespace GameServer.Functions
 
         Dim Speed_Walk As Single
         Dim Speed_Run As Single
-        Dim Speed_Zerk As Single = 100.0
+        Dim Speed_Zerk As Single
 
         Dim StartWalkTime As DateTime
 

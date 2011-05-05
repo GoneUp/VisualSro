@@ -208,7 +208,9 @@ Namespace GameServer
             For i = 0 To MaxClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).SpawnedPlayers.Contains(Index_) = True Or Index_ = i Then
-                        Send(buff, i)
+                        If PlayerData(i).Ingame = True Then
+                            Send(buff, i)
+                        End If
                     End If
                 End If
             Next

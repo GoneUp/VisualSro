@@ -213,7 +213,7 @@
             PlayerData(Index_).SpawnedNPCs.Clear()
             PlayerData(Index_).SpawnedMonsters.Clear()
             PlayerData(Index_).SpawnedItems.Clear()
-            PlayerData(Index_).Buffs.Clear()
+
 
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Alive = True
@@ -242,7 +242,12 @@
             PlayerData(Index_).InStall = False
             PlayerData(Index_).StallID = 0
 
-
+            Dim tmplist As Array = PlayerData(Index_).Buffs.Keys.ToArray
+            For Each key In tmplist
+                PlayerData(Index_).Buffs(key).ElaspedTimer_Stop()
+                PlayerData(Index_).Buffs(key).Disponse()
+            Next
+            PlayerData(Index_).Buffs.Clear()
         End Sub
 
         Public Sub CheckStall(ByVal Index_ As Integer)

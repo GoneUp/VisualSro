@@ -373,7 +373,7 @@ Namespace GameServer.Functions
                         PlayerData(Index).Position = new_pos
                         ObjectSpawnCheck(Index)
 
-                        SendPm(Index, "X: " & new_pos.ToGameX & "Y: " & new_pos.ToGameY, "hh")
+                        SendPm(Index, "X: " & new_pos.X & "Y: " & new_pos.Y & " Normal X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
                         PlayerMoveTimer(Index).Start()
 
                     ElseIf PlayerData(Index).Position_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
@@ -394,26 +394,33 @@ Namespace GameServer.Functions
                 For i = 0 To PlayerData.Length - 1
                     If PlayerData(i) IsNot Nothing Then
                         If PlayerData(i).Ingame And PlayerData(i).Alive Then
+                            Dim Changed_HPMP As Boolean = False
                             Select Case PlayerData(i).ActionFlag
                                 Case 0
                                     'Nomral
                                     If PlayerData(i).CHP <> PlayerData(i).HP Then
                                         PlayerData(i).CHP = Math.Round(PlayerData(i).HP * 1.002, 0, MidpointRounding.AwayFromZero)
+                                        Changed_HPMP = True
                                     End If
                                     If PlayerData(i).CMP <> PlayerData(i).MP Then
                                         PlayerData(i).CMP = Math.Round(PlayerData(i).MP * 1.002, 0, MidpointRounding.AwayFromZero)
+                                        Changed_HPMP = True
                                     End If
 
                                 Case 4
                                     'Sitting
                                     If PlayerData(i).CHP <> PlayerData(i).HP Then
                                         PlayerData(i).CHP = Math.Round(PlayerData(i).HP * 1.05, 0, MidpointRounding.AwayFromZero)
+                                        Changed_HPMP = True
                                     End If
                                     If PlayerData(i).CMP <> PlayerData(i).MP Then
                                         PlayerData(i).CMP = Math.Round(PlayerData(i).MP * 1.05, 0, MidpointRounding.AwayFromZero)
+                                        Changed_HPMP = True
                                     End If
                             End Select
-                            UpdateHP_MP(i)
+                            If Changed_HPMP = True Then
+                                UpdateHP_MP(i)
+                            End If
                         End If
                     End If
                 Next

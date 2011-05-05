@@ -41,6 +41,7 @@
         Public Strength As UShort
         Public Intelligence As UShort
 
+        'Flags
         Public GM As Boolean
         Public PVP As Byte
         Public MaxSlots As Byte
@@ -51,6 +52,7 @@
         Public ActionFlag As Byte '0x00 = standing, 0x02 = walking, 0x03 = running, 0x04 = sitting
         Public Busy As Boolean
         Public Alive As Boolean = True
+        Public Skilling As Boolean = False
 
         Public UsedItem As UseItemTypes
         Public UsedItemParameter As Integer
@@ -358,30 +360,6 @@
         Walking = 1
         Runing = 2
         Berserk = 3
-    End Enum
-
-    Public Structure cBuff
-        Public OwnerID As UInteger
-        Public OverID As UInteger
-        'Public CastingId As UInteger
-        Public DurationStart As DateTime
-        Public DurationEnd As DateTime
-
-        Public Type As BuffType_
-
-        'If Skill
-        Public SkillID As UInteger
-
-        'If Item
-        Public ItemID As UInteger
-
-
-
-    End Structure
-
-    Public Enum BuffType_
-        ItemBuff = 0
-        SkillBuff = 0
     End Enum
 
 End Namespace

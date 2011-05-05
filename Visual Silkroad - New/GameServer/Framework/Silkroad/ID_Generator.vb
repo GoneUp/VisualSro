@@ -10,6 +10,7 @@
                 UniqueIdCounter += 1
             ElseIf UniqueIdCounter = UInteger.MaxValue Then
                 UniqueIdCounter = 0
+                Log.WriteSystemLog("Reached UniqueId Max")
             End If
 
             Return toreturn

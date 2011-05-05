@@ -5,6 +5,12 @@
             Dim masterycount As UInteger = 0
             Dim writer As New PacketWriter
 
+            If PlayerData(index_).Skilling = True Then
+                Exit Sub
+            End If
+            PlayerData(index_).Skilling = True
+
+
             For i = 0 To GameDB.Masterys.Length - 1
                 If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId Then
                     masterycount += GameDB.Masterys(i).Level
@@ -98,15 +104,18 @@
                     writer.Byte(4)
                     'Server.Send(writer.GetBytes, index_)
                 End If
-
-
-
-
             End If
+
+            PlayerData(index_).Skilling = False
         End Sub
 
         Public Sub OnAddSkill(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim SkillID As UInteger = Packet.DWord
+
+            If PlayerData(Index_).Skilling = True Then
+                Exit Sub
+            End If
+            PlayerData(Index_).Skilling = True
 
             Dim _skill As Skill_ = GetSkillById(SkillID)
             Dim _refmastery As cMastery = GetMasteryByID(_skill.MasteryID, Index_)
@@ -129,6 +138,8 @@
                 'Not enough SP or other Errors
 
             End If
+            PlayerData(Index_).Skilling = False
+
         End Sub
 
 

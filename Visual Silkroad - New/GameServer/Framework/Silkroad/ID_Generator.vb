@@ -21,8 +21,10 @@
             For NewID As UInteger = 1 To UInteger.MaxValue
                 Dim free As Boolean = True
                 For c = 0 To GameDB.Chars.Count - 1
-                    If GameDB.Chars(c).CharacterId = NewID Then
-                        free = False
+                    If GameDB.Chars(c) IsNot Nothing Then
+                        If GameDB.Chars(c).CharacterId = NewID Then
+                            free = False
+                        End If
                     End If
                 Next
 

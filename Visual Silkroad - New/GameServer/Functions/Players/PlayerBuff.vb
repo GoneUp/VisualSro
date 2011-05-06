@@ -9,14 +9,15 @@
                 Exit Sub
             End If
 
-
-            If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 Then
+            If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 And PlayerData(Index_).Invincible = False Then
                 'Not enough MP
                 Attack_SendNotEnoughMP(Index_)
                 Exit Sub
             Else
-                PlayerData(Index_).CMP -= RefSkill.RequiredMp
-                UpdateMP(Index_)
+                If PlayerData(Index_).Invincible = False Then
+                    PlayerData(Index_).CMP -= RefSkill.RequiredMp
+                    UpdateMP(Index_)
+                End If
             End If
 
             Dim tmp As New cBuff

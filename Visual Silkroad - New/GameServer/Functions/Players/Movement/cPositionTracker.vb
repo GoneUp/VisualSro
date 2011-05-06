@@ -70,6 +70,14 @@ Namespace GameServer.Functions
             If pMoveState = enumMoveState.Walking Then
                 pPosition = GetCurrentPosition()
             End If
+
+            If Double.IsNaN(pPosition.X) Then 'Error Correction
+                pPosition.X = ToPos.X
+            End If
+            If Double.IsNaN(pPosition.Y) Then
+                pPosition.Y = ToPos.Y
+            End If
+
             wPosition = ToPos
             Dim WalkDistance As Double = Functions.CalculateDistance(pPosition, ToPos)
             Dim WalkTime As Double

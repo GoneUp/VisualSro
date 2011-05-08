@@ -62,16 +62,24 @@
             writer.Float(chari.Position.Y)
 
             writer.Word(chari.Angle)
-            writer.Byte(0) 'dest
-            If chari.Position_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
+            writer.Byte(chari.Pos_Tracker.MoveState) 'dest
+            If chari.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
                 writer.Byte(0) 'Walking
             Else
                 writer.Byte(1) 'Running + Zerk
             End If
 
+            If chari.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+                writer.Byte(0)  'dest
+                writer.Word(chari.Angle)
+            ElseIf chari.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                writer.Byte(chari.Pos_Tracker.WalkPos.XSector)
+                writer.Byte(chari.Pos_Tracker.WalkPos.YSector)
+                writer.Float(chari.Pos_Tracker.WalkPos.X)
+                writer.Float(chari.Pos_Tracker.WalkPos.Z)
+                writer.Float(chari.Pos_Tracker.WalkPos.Y)
+            End If
 
-            writer.Byte(0) 'dest
-            writer.Word(chari.Angle)
 
             writer.Byte(chari.Alive) ' death flag
             writer.Byte(chari.ActionFlag) 'action flag
@@ -80,7 +88,16 @@
             writer.Float(chari.RunSpeed)
             writer.Float(chari.BerserkSpeed)
 
-            writer.Byte(0) 'no buffs for now
+            writer.Byte(chari.Buffs.Count) 'no buffs for now
+            Dim tmplist As Array = chari.Buffs.Keys.ToArray
+            For Each key In tmplist
+                If chari.Buffs.ContainsKey(key) Then
+                    writer.DWord(chari.Buffs(key).SkillID)
+                    writer.DWord(chari.Buffs(key).OverID)
+                End If
+            Next
+
+
 
             writer.Word(chari.CharacterName.Length)
             writer.String(chari.CharacterName)

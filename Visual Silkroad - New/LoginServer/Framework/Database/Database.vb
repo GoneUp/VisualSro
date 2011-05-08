@@ -111,11 +111,8 @@ Namespace LoginServer
         Public Shared Sub InsertData(ByVal command As String)
             SyncLock mysql_lock
                 Try
-                    If CheckForInjection(command) = False Then
-                        Dim command2 As New MySqlCommand(command, Connection)
-                        command2.ExecuteNonQuery()
-                    End If
-
+                    Dim command2 As New MySqlCommand(command, Connection)
+                    command2.ExecuteNonQuery()
                 Catch exception As Exception
                     RaiseEvent OnDatabaseError(exception, command)
                 End Try
@@ -160,7 +157,7 @@ Namespace LoginServer
 #End Region
 #Region "Check"
         Public Shared Function CheckForInjection(ByVal command As String)
-            If command.Contains("'") Or command.Contains(";") Then
+            If command.Contains(";") Then
                 Return True
             End If
             Return False

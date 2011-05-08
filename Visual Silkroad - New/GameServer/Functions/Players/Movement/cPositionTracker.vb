@@ -28,47 +28,59 @@ Namespace GameServer.Functions
             pSpeedMode = enumSpeedMode.Running
         End Sub
 
-        Public Function GetCurrentPosition() As Position
+        Public Function GetCurPos() As Position
             Dim ToGoX As Single
             Dim ToGoY As Single
             Dim num4 As Double
             Dim num5 As Double
-            Dim tmpPos As Position
-            Select Case pMoveState
-                Case enumMoveState.Standing
-                    Return pPosition
-                Case enumMoveState.Walking
-                    Dim TimeLeft As Double = Date.Now.Subtract(StartWalkTime).TotalMilliseconds
-                    ToGoX = (pPosition.X - wPosition.X)
-                    ToGoY = (pPosition.Y - wPosition.Y)
-                    num4 = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
+            Dim tmpPos As New Position
 
-                    Select Case pSpeedMode
-                        Case enumSpeedMode.Walking
-                            num5 = ((Speed_Walk / 10.0!) * TimeLeft) / 1000.0!
-                        Case enumSpeedMode.Running
-                            num5 = ((Speed_Run / 10.0!) * TimeLeft) / 1000.0!
-                        Case enumSpeedMode.Zerking
-                            num5 = ((Speed_Zerk / 10.0!) * TimeLeft) / 1000.0!
-                    End Select
-                Case enumMoveState.Spinning
-                    Return pPosition
-            End Select
-            Dim num6 As Single = CSng((((100.0! / num4) * num5) * 0.01))
-            ToGoX *= num6
-            ToGoY *= num6
+            Try
+                Select Case pMoveState
+                    Case enumMoveState.Standing
+                        Return pPosition
+                    Case enumMoveState.Walking
+                        Dim TimeLeft As Double = Date.Now.Subtract(StartWalkTime).TotalMilliseconds
+                        ToGoX = (pPosition.ToGameX - wPosition.ToGameX)
+                        ToGoY = (pPosition.ToGameY - wPosition.ToGameY)
+                        num4 = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
 
-            tmpPos = pPosition
-            tmpPos.X -= ToGoX
-            tmpPos.Y -= ToGoY
-            StartWalkTime = Date.Now
+                        Select Case pSpeedMode
+                            Case enumSpeedMode.Walking
+                                num5 = ((Speed_Walk / 10.0!) * TimeLeft) / 1000.0!
+                            Case enumSpeedMode.Running
+                                num5 = ((Speed_Run / 10.0!) * TimeLeft) / 1000.0!
+                            Case enumSpeedMode.Zerking
+                                num5 = ((Speed_Zerk / 10.0!) * TimeLeft) / 1000.0!
+                        End Select
+                    Case enumMoveState.Spinning
+                        Return pPosition
+                End Select
+                Dim num6 As Single = CSng((((100.0! / num4) * num5) * 0.01))
+                ToGoX *= num6
+                ToGoY *= num6
+
+
+                Dim tmpX As Single = (pPosition.ToGameX)
+                Dim tmpY As Single = (pPosition.ToGameY)
+                tmpX -= ToGoX
+                tmpY -= ToGoY
+                tmpPos = pPosition
+                tmpPos.X = GetXOffset(tmpX)
+                tmpPos.Y = GetYOffset(tmpY)
+                StartWalkTime = Date.Now
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Pos Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: POSCALC") '
+            End Try
+
             Return tmpPos
         End Function
 
         Public Sub Move(ByVal ToPos As Position)
             'Navmesh checks later...
             If pMoveState = enumMoveState.Walking Then
-                pPosition = GetCurrentPosition()
+                pPosition = GetCurPos()
             End If
 
             If Double.IsNaN(pPosition.X) Then 'Error Correction
@@ -80,7 +92,7 @@ Namespace GameServer.Functions
 
             wPosition = ToPos
             Dim WalkDistance As Double = Functions.CalculateDistance(pPosition, ToPos)
-            Dim WalkTime As Double
+            Dim WalkTime As Integer
             Select Case pSpeedMode
                 Case enumSpeedMode.Walking
                     WalkTime = (WalkDistance / Speed_Walk) * 10000
@@ -93,7 +105,8 @@ Namespace GameServer.Functions
 
             StartWalkTime = Date.Now 'Move Start Zeit
             If Double.IsInfinity(WalkTime) = False And Double.IsNaN(WalkTime) = False Then
-                tmrMovement = New Timer(WalkTime)
+                tmrMovement = New Timer
+                tmrMovement.Interval = WalkTime
                 tmrMovement.Start()
             End If
 
@@ -110,7 +123,7 @@ Namespace GameServer.Functions
                 Return Speed_Walk
             End Get
             Set(ByVal value As Single)
-                pPosition = GetCurrentPosition() 'Store Old
+                pPosition = GetCurPos() 'Store Old
                 Speed_Walk = value
                 If pMoveState = enumMoveState.Walking Then
                     Move(wPosition) 'Recalculate
@@ -122,7 +135,7 @@ Namespace GameServer.Functions
                 Return Speed_Run
             End Get
             Set(ByVal value As Single)
-                pPosition = GetCurrentPosition() 'Store Old
+                pPosition = GetCurPos() 'Store Old
                 Speed_Run = value
                 If pMoveState = enumMoveState.Walking Then
                     Move(wPosition) 'Recalculate
@@ -134,7 +147,7 @@ Namespace GameServer.Functions
                 Return Speed_Zerk
             End Get
             Set(ByVal value As Single)
-                pPosition = GetCurrentPosition() 'Store Old
+                pPosition = GetCurPos() 'Store Old
                 Speed_Zerk = value
                 If pMoveState = enumMoveState.Walking Then
                     Move(wPosition) 'Recalculate
@@ -142,10 +155,16 @@ Namespace GameServer.Functions
             End Set
         End Property
 
-        Public ReadOnly Property LastPos() As Position
+        Public Property LastPos() As Position
             Get
                 Return pPosition
             End Get
+            Set(ByVal value As Position)
+                If tmrMovement IsNot Nothing Then
+                    'tmrMovement.Dispose()
+                End If
+                pPosition = value
+            End Set
         End Property
         Public ReadOnly Property WalkPos() As Position
             Get
@@ -163,7 +182,7 @@ Namespace GameServer.Functions
                 Return pSpeedMode
             End Get
             Set(ByVal value As enumSpeedMode)
-                pPosition = GetCurrentPosition() 'Store Old
+                pPosition = GetCurPos() 'Store Old
                 pSpeedMode = value
                 If pMoveState = enumMoveState.Walking Then
                     Move(wPosition) 'Recalculate

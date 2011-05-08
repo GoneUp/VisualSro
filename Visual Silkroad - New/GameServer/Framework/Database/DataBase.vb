@@ -112,11 +112,9 @@ Namespace GameServer
         Public Shared Sub InsertData(ByVal command As String)
             SyncLock mysql_lock
                 Try
-                    If CheckForInjection(command) = False Then
-                        Dim command2 As New MySqlCommand(command, Connection)
-                        command2.ExecuteNonQuery()
-                        command2.Dispose()
-                    End If
+                    Dim command2 As New MySqlCommand(command, Connection)
+                    command2.ExecuteNonQuery()
+                    command2.Dispose()
                 Catch exception As Exception
                     RaiseEvent OnDatabaseError(exception, command)
 

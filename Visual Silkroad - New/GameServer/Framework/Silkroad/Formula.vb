@@ -32,27 +32,27 @@
 
 
 #Region "Pos Help Functions"
-        Public Function GetRealX(ByVal XSec As Byte, ByVal XPos As Single) As Single
+        Public Function ToPacketX(ByVal XSec As Byte, ByVal XPos As Single) As Single
             Return (XSec - 135) * 192 + XPos / 10
         End Function
 
-        Public Function GetRealY(ByVal YSec As Byte, ByVal YPos As Single) As Single
+        Public Function ToPacketY(ByVal YSec As Byte, ByVal YPos As Single) As Single
             Return (YSec - 92) * 192 + YPos / 10
         End Function
 
-        Public Function GetXSec(ByVal X As Single) As Single
+        Public Function GetXSecFromGameX(ByVal X As Single) As Single
             Return CSng(Math.Floor(CDbl(((X / 192.0!) + 135.0!))))
         End Function
-        Public Function GetYSec(ByVal Y As Single) As Single
+        Public Function GetYSecFromGameY(ByVal Y As Single) As Single
             Return CSng(Math.Floor(CDbl(((Y / 192.0!) + 92.0!))))
         End Function
 
         Public Function GetXOffset(ByVal X As Single) As Integer
-            Return CInt(Math.Round(CDbl((((((X / 192.0!) - GetXSec(X)) + 135.0!) * 192.0!) * 10.0!))))
+            Return CInt(Math.Round(CDbl((((((X / 192.0!) - GetXSecFromGameX(X)) + 135.0!) * 192.0!) * 10.0!))))
         End Function
 
         Public Function GetYOffset(ByVal Y As Single) As Integer
-            Return CInt(Math.Round(CDbl((((((Y / 192.0!) - GetYSec(Y)) + 92.0!) * 192.0!) * 10.0!))))
+            Return CInt(Math.Round(CDbl((((((Y / 192.0!) - GetYSecFromGameY(Y)) + 92.0!) * 192.0!) * 10.0!))))
         End Function
 #End Region
 

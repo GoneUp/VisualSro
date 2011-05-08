@@ -212,8 +212,9 @@
                     writer.Word(Users(UserIndex).BannTime.Year) 'jahr
                     writer.Word(Users(UserIndex).BannTime.Month) 'monat
                     writer.Word(Users(UserIndex).BannTime.Day) 'tag
-                    writer.Word(Users(UserIndex).BannTime.Hour) 'tag
-                    writer.Word(Users(UserIndex).BannTime.Minute) 'tag
+                    writer.Word(Users(UserIndex).BannTime.Hour) 'stunde
+                    writer.Word(Users(UserIndex).BannTime.Minute) 'minute
+                    writer.Word(Users(UserIndex).BannTime.Second) 'sekunde
                     writer.DWord(Users(UserIndex).BannTime.Millisecond) 'tag
 
                     Server.Send(writer.GetBytes, Index_)

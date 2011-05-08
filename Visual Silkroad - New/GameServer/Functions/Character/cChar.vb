@@ -57,11 +57,10 @@
         Public UsedItem As UseItemTypes
         Public UsedItemParameter As Integer
 
-        Public Position As New Position
         Public Position_Recall As New Position
         Public Position_Return As New Position
         Public Position_Dead As New Position
-        Public Position_Tracker As Functions.cPositionTracker
+        Public Pos_Tracker As Functions.cPositionTracker
 
         Public SpawnedPlayers As New List(Of Integer)
         Public SpawnedMonsters As New List(Of Integer)
@@ -104,6 +103,15 @@
 
         Public TeleportType As TeleportType_
 
+        Public Property Position() As Position
+            Get
+                Return Me.Pos_Tracker.GetCurPos
+            End Get
+            Set(ByVal value As Position)
+                Me.Pos_Tracker.LastPos = value
+            End Set
+        End Property
+
 
         Sub SetCharGroundStats()
             'HP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Strength - 20) * 10
@@ -118,9 +126,9 @@
             Me.WalkSpeed = 15
             Me.RunSpeed = Me.Level + 49
             Me.BerserkSpeed = Me.RunSpeed * 2
-            Me.Position_Tracker.WalkSpeed = Me.WalkSpeed
-            Me.Position_Tracker.RunSpeed = Me.RunSpeed
-            Me.Position_Tracker.ZerkSpeed = Me.BerserkSpeed
+            Me.Pos_Tracker.WalkSpeed = Me.WalkSpeed
+            Me.Pos_Tracker.RunSpeed = Me.RunSpeed
+            Me.Pos_Tracker.ZerkSpeed = Me.BerserkSpeed
 
 
             'Set default.

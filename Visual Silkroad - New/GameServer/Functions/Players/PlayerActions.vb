@@ -36,11 +36,11 @@
             Select Case action
                 Case 2 'Run --> Walk
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).Position_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
+                    PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
 
                 Case 3 'Walk --> Run
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).Position_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                    PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
 
                 Case 4 'sit down
                     If SitUpTimer(Index_).Enabled = True Then

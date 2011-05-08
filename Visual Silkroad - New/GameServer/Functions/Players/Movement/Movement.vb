@@ -35,7 +35,7 @@ Namespace GameServer.Functions
             Try
                 Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
                 Dim WalkTime As Single
-                Select Case PlayerData(Index_).Position_Tracker.SpeedMode
+                Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
                     Case cPositionTracker.enumSpeedMode.Walking
                         WalkTime = (Distance / PlayerData(Index_).WalkSpeed) * 10000
                     Case cPositionTracker.enumSpeedMode.Running
@@ -71,7 +71,7 @@ Namespace GameServer.Functions
 
                 CheckForCaveTeleporter(Index_)
 
-                PlayerData(Index_).Position_Tracker.Move(ToPos)
+                PlayerData(Index_).Pos_Tracker.Move(ToPos)
                 PlayerMoveTimer(Index_).Interval = 500
                 PlayerMoveTimer(Index_).Start()
                 ' End If
@@ -95,19 +95,19 @@ Namespace GameServer.Functions
             End If
 
 
-            Dim ToX As Single = GetRealX(MobList(MobUniqueID).Position.XSector, MobList(MobUniqueID).Position.X) + (1)
-            Dim ToY As Single = GetRealY(MobList(MobUniqueID).Position.YSector, MobList(MobUniqueID).Position.Y) + (1)
+            Dim ToX As Single = ToPacketX(MobList(MobUniqueID).Position.XSector, MobList(MobUniqueID).Position.X) + (1)
+            Dim ToY As Single = ToPacketY(MobList(MobUniqueID).Position.YSector, MobList(MobUniqueID).Position.Y) + (1)
 
             Dim ToPos As New Position
-            ToPos.XSector = GetXSec(ToX)
-            ToPos.YSector = GetYSec(ToY)
+            ToPos.XSector = GetXSecFromGameX(ToX)
+            ToPos.YSector = GetYSecFromGameY(ToY)
             ToPos.X = GetXOffset(ToX)
             ToPos.Z = MobList(MobUniqueID).Position.Z
             ToPos.Y = GetYOffset(ToY)
 
             Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
             Dim WalkTime As Single
-            Select Case PlayerData(Index_).Position_Tracker.SpeedMode
+            Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
                     WalkTime = (Distance / PlayerData(Index_).WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
@@ -132,14 +132,17 @@ Namespace GameServer.Functions
 
                 '=============Players============
                 For refindex As Integer = 0 To Server.MaxClients
-                    If (ClientList.GetSocket(refindex) IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso ClientList.GetSocket(refindex).Connected AndAlso Index_ <> refindex Then
-                        If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
-                            Server.Send(CreateSpawnPacket(Index_), refindex)
-                            PlayerData(refindex).SpawnedPlayers.Add(Index_)
-                        End If
-                        If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
-                            Server.Send(CreateSpawnPacket(refindex), Index_)
-                            PlayerData(Index_).SpawnedPlayers.Add(refindex)
+                    Dim othersock As Net.Sockets.Socket = ClientList.GetSocket(refindex)
+                    If (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso (othersock.Connected) AndAlso Index_ <> refindex Then
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, PlayerData(refindex).Position) Then
+                            If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
+                                Server.Send(CreateSpawnPacket(Index_), refindex)
+                                PlayerData(refindex).SpawnedPlayers.Add(Index_)
+                            End If
+                            If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
+                                Server.Send(CreateSpawnPacket(refindex), Index_)
+                                PlayerData(Index_).SpawnedPlayers.Add(refindex)
+                            End If
                         End If
                     End If
                 Next refindex
@@ -148,7 +151,7 @@ Namespace GameServer.Functions
                 For Each key In MobList.Keys.ToList
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
-                        If CheckRange(PlayerData(Index_).Position, Mob_.Position) Then
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Mob_.Position) Then
                             Dim obj As Object = GetObjectById(Mob_.Pk2ID)
                             If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = False Then
                                 Server.Send(CreateMonsterSpawnPacket(Mob_, obj), Index_)
@@ -161,7 +164,7 @@ Namespace GameServer.Functions
                 '===========NPCS===================
                 For i = 0 To NpcList.Count - 1
                     Dim _npc As cNPC = NpcList(i)
-                    If CheckRange(PlayerData(Index_).Position, NpcList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, NpcList(i).Position) Then
                         If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = False Then
                             Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
                             PlayerData(Index_).SpawnedNPCs.Add(_npc.UniqueID)
@@ -173,7 +176,7 @@ Namespace GameServer.Functions
                 '===========ITEMS===================
                 For i = 0 To ItemList.Count - 1
                     Dim _item As cItemDrop = ItemList(i)
-                    If CheckRange(PlayerData(Index_).Position, ItemList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, ItemList(i).Position) Then
                         If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = False Then
                             Server.Send(CreateItemSpawnPacket(_item), Index_)
                             PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)

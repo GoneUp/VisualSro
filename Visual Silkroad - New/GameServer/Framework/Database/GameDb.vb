@@ -99,6 +99,8 @@
 
                 For i = 0 To Chars.Length - 1
                     Chars(i) = New [cChar]
+                    Chars(i).Pos_Tracker = New Functions.cPositionTracker(New Position, Chars(i).WalkSpeed, Chars(i).RunSpeed, Chars(i).BerserkSpeed)
+
                     Chars(i).CharacterId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                     Chars(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                     Chars(i).CharacterName = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
@@ -150,7 +152,7 @@
                         Chars(i).Alive = False
                     End If
 
-                    Chars(i).Position_Tracker = New Functions.cPositionTracker(Chars(i).Position, Chars(i).WalkSpeed, Chars(i).RunSpeed, Chars(i).BerserkSpeed)
+
                     Chars(i).UniqueId = Id_Gen.GetUnqiueId()
                 Next
 

@@ -119,7 +119,7 @@ Namespace GameServer.Functions
                 If Index <> -1 Then
                     Select Case Functions.PlayerData(Index).UsedItem
                         Case UseItemTypes.Return_Scroll
-                            PlayerData(Index).Position_Recall = Functions.PlayerData(Index).Position 'Save Pos
+                            PlayerData(Index).Position_Recall = Functions.PlayerData(Index).Position  'Save Pos
                             PlayerData(Index).Position = Functions.PlayerData(Index).Position_Return 'Set new Pos
                             'Save to DB
                             DataBase.SaveQuery(String.Format("UPDATE positions SET recall_xsect='{0}', recall_ysect='{1}', recall_xpos='{2}', recall_zpos='{3}', recall_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index).Position_Recall.XSector, PlayerData(Index).Position_Recall.YSector, Math.Round(PlayerData(Index).Position_Recall.X), Math.Round(PlayerData(Index).Position_Recall.Z), Math.Round(PlayerData(Index).Position_Recall.Y), PlayerData(Index).CharacterId))
@@ -291,12 +291,12 @@ Namespace GameServer.Functions
                             Dim dist As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
                             If dist < Settings.Server_Range Then
-                                Dim ToX As Single = GetRealX(Mob_.Position.XSector, Mob_.Position.X) + Rand.Next(-15, +10)
-                                Dim ToY As Single = GetRealY(Mob_.Position.YSector, Mob_.Position.Y) + Rand.Next(-10, +15)
+                                Dim ToX As Single = ToPacketX(Mob_.Position.XSector, Mob_.Position.X) + Rand.Next(-15, +10)
+                                Dim ToY As Single = ToPacketY(Mob_.Position.YSector, Mob_.Position.Y) + Rand.Next(-10, +15)
 
                                 Dim ToPos As New Position
-                                ToPos.XSector = GetXSec(ToX)
-                                ToPos.YSector = GetYSec(ToY)
+                                ToPos.XSector = GetXSecFromGameX(ToX)
+                                ToPos.YSector = GetYSecFromGameY(ToY)
                                 ToPos.X = GetXOffset(ToX)
                                 ToPos.Z = Mob_.Position.Z
                                 ToPos.Y = GetYOffset(ToY)
@@ -336,8 +336,8 @@ Namespace GameServer.Functions
                                     Mob_.Position.X = GetXOffset(OldX + Cur_X)
                                     Mob_.Position.Y = GetYOffset(OldY + Cur_Y)
 
-                                    Mob_.Position.XSector = GetXSec(Mob_.Position.X)
-                                    Mob_.Position.YSector = GetYSec(Mob_.Position.Y)
+                                    Mob_.Position.XSector = GetXSecFromGameX(Mob_.Position.X)
+                                    Mob_.Position.YSector = GetYSecFromGameY(Mob_.Position.Y)
                                 End If
                             End If
                         End If
@@ -368,19 +368,21 @@ Namespace GameServer.Functions
                 If Index <> -1 Then
                     PlayerMoveTimer(Index).Stop()
 
-                    If PlayerData(Index).Position_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
-                        Dim new_pos As Position = PlayerData(Index).Position_Tracker.GetCurrentPosition()
-                        PlayerData(Index).Position = new_pos
-                        ObjectSpawnCheck(Index)
+                    If PlayerData(Index) IsNot Nothing Then
+                        If PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                            Dim new_pos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
+                            ObjectSpawnCheck(Index)
 
-                        SendPm(Index, "X: " & new_pos.X & "Y: " & new_pos.Y & " Normal X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
-                        PlayerMoveTimer(Index).Start()
+                            SendPm(Index, "X: " & new_pos.X & "Y: " & new_pos.Y & " Normal X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
+                            PlayerMoveTimer(Index).Start()
 
-                    ElseIf PlayerData(Index).Position_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
-                        ObjectSpawnCheck(Index)
-                        SendPm(Index, "Walk End", "hh")
-
+                        ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+                            PlayerData(Index).Position = PlayerData(Index).Pos_Tracker.GetCurPos()
+                            ObjectSpawnCheck(Index)
+                            SendPm(Index, "Walk End", "hh")
+                        End If
                     End If
+
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '

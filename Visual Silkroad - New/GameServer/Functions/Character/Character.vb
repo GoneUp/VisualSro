@@ -252,7 +252,7 @@
                     .Hit = hit
                     .Parry = parry
 
-                    .Position_Tracker = New cPositionTracker(.Position, .WalkSpeed, .RunSpeed, .BerserkSpeed)
+                    .Pos_Tracker = New cPositionTracker(.Position, .WalkSpeed, .RunSpeed, .BerserkSpeed)
                     .SetCharGroundStats()
                 End With
 

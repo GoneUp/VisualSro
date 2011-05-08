@@ -103,8 +103,8 @@
                 writer.Byte(ItemList(ItemIndex).Position.XSector)
                 writer.Byte(ItemList(ItemIndex).Position.YSector)
                 writer.Float(ItemList(ItemIndex).Position.X)
-                writer.Float(ItemList(ItemIndex).Position.X)
-                writer.Float(ItemList(ItemIndex).Position.X)
+                writer.Float(ItemList(ItemIndex).Position.Z)
+                writer.Float(ItemList(ItemIndex).Position.Y)
                 writer.Word(0)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 

@@ -452,24 +452,6 @@
                 Server.Send(writer.GetBytes, Index_)
             End If
         End Sub
-        Public Sub UpdateItem(ByVal item As cInvItem)
-            For i = 0 To GameDB.AllItems.Count - 1
-                If GameDB.AllItems(i) IsNot Nothing Then
-                    If GameDB.AllItems(i).OwnerCharID = item.OwnerCharID And GameDB.AllItems(i).Slot = item.Slot Then
-                        GameDB.AllItems(i) = item
-                        DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='item{5}'", item.Pk2Id, item.Plus, item.Durability, item.Amount, item.OwnerCharID, item.Slot))
-                        Exit For
-                    End If
-                End If
-            Next
-        End Sub
-
-        Public Sub AddItemToDB(ByVal item As cInvItem)
-            Array.Resize(GameDB.AllItems, GameDB.AllItems.Count + 1)
-            GameDB.AllItems(GameDB.AllItems.Count - 1) = item
-
-            DataBase.SaveQuery(String.Format("INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability, "item" & item.Slot))
-        End Sub
 
         Public Sub AddMasteryToDB(ByVal toadd As cMastery)
             Array.Resize(GameDB.Masterys, GameDB.Masterys.Length + 1)

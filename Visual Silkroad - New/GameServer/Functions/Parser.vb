@@ -12,11 +12,7 @@ Namespace GameServer
                 Dim opcode As UInteger = packet.Word
                 Dim security As UInteger = packet.Word
 
-                Dim lastpingtime As DateTime = ClientList.LastPingTime(Index_)
-
                 ClientList.LastPingTime(Index_) = DateTime.Now
-
-
                 Select Case opcode
 
                     Case ClientOpcodes.Ping

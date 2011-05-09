@@ -447,9 +447,39 @@
             writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
             Return writer.GetBytes
         End Function
+
+        Public Sub AddItemToDB(ByVal item As cInvItem)
+            Array.Resize(GameDB.AllItems, GameDB.AllItems.Count + 1)
+            GameDB.AllItems(GameDB.AllItems.Count - 1) = item
+
+            DataBase.SaveQuery(String.Format("INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability, "item" & item.Slot))
+        End Sub
+
+        Public Sub UpdateItem(ByVal item As cInvItem)
+            For i = 0 To GameDB.AllItems.Count - 1
+                If GameDB.AllItems(i) IsNot Nothing Then
+                    If GameDB.AllItems(i).OwnerCharID = item.OwnerCharID And GameDB.AllItems(i).Slot = item.Slot And GameDB.AllItems(i).ItemType = item.ItemType Then
+                        GameDB.AllItems(i) = item
+                        DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='{5}'", item.Pk2Id, item.Plus, item.Durability, item.Amount, item.OwnerCharID, GetItemTypeDbString(item)))
+                        Exit For
+                    End If
+                End If
+            Next
+        End Sub
+
         Public Sub DeleteItemFromDB(ByVal slot As Byte, ByVal Index_ As Integer)
             DataBase.SaveQuery(String.Format("UPDATE items SET itemtype='0', plusvalue='0', durability='0', quantity='0' WHERE owner='{0}' AND itemnumber='item{1}'", PlayerData(Index_).CharacterId, slot))
         End Sub
+
+        Private Function GetItemTypeDbString(ByVal item As cInvItem) As String
+            Select Case item.ItemType
+                Case cInvItem.sUserItemType.Inventory
+                    Return "item" & item.Slot
+                Case cInvItem.sUserItemType.Avatar
+                    Return "avatar" & item.Slot
+            End Select
+            Return "WTF"
+        End Function
 
         Public Function GetFreeItemSlot(ByVal Index_ As Integer) As Integer
             For i = 13 To Inventorys(Index_).UserItems.Length - 1

@@ -177,7 +177,6 @@
                     AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
                     AllItems(i).Amount = CUShort(tmp.Tables(0).Rows(i).ItemArray(5))
                     AllItems(i).Durability = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
-
                     AllItems(i).PerDurability = CByte(tmp.Tables(0).Rows(i).ItemArray(8))
                     AllItems(i).PerPhyRef = CByte(tmp.Tables(0).Rows(i).ItemArray(9))
                     AllItems(i).PerMagRef = CByte(tmp.Tables(0).Rows(i).ItemArray(10))
@@ -191,6 +190,8 @@
                     AllItems(i).PerParryRate = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
                     AllItems(i).PerPhyAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(19))
                     AllItems(i).PerMagAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(20))
+
+                    AllItems(i).ItemType = GetItemTypeFromDb((CStr(tmp.Tables(0).Rows(i).ItemArray(7))))
                 Next
             Else
                 ReDim AllItems(0)
@@ -385,7 +386,11 @@
             For i = 0 To (AllItems.Length - 1)
                 If i < AllItems.Length And AllItems(i) IsNot Nothing Then
                     If AllItems(i).OwnerCharID = [char].CharacterId Then
-                        inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                        If AllItems(i).ItemType = cInvItem.sUserItemType.Inventory Then
+                            inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                        ElseIf AllItems(i).ItemType = cInvItem.sUserItemType.Avatar Then
+                            inventory.AvatarItems(AllItems(i).Slot) = AllItems(i)
+                        End If
                     End If
                 End If
             Next
@@ -418,6 +423,14 @@
                 End If
             Next
             Return Nothing
+        End Function
+
+        Private Function GetItemTypeFromDb(ByVal itemstring As String) As cInvItem.sUserItemType
+            If itemstring.StartsWith("item") Then
+                Return cInvItem.sUserItemType.Inventory
+            ElseIf itemstring.StartsWith("avatar") Then
+                Return cInvItem.sUserItemType.Avatar
+            End If
         End Function
 #End Region
 

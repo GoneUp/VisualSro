@@ -6,6 +6,10 @@ Public Class cInventory
         For i = 0 To UserItems.Length - 1
             UserItems(i) = New cInvItem
         Next
+
+        For i = 0 To AvatarItems.Count - 1
+            AvatarItems(i) = New cInvItem
+        Next
     End Sub
     Sub CalculateItemCount()
         ItemCount = 0
@@ -16,8 +20,20 @@ Public Class cInventory
         Next
     End Sub
 
+    Sub CalculateAvatarCount()
+        AvatarCount = 0
+        For i = 0 To AvatarItems.Length - 1
+            If AvatarItems(i).Pk2Id <> 0 Then
+                AvatarCount += 1
+            End If
+        Next
+    End Sub
+
     Public UserItems(255) As cInvItem
     Public ItemCount As Byte
+
+    Public AvatarItems(4) As cInvItem
+    Public AvatarCount As Byte
 
 End Class
 
@@ -96,10 +112,10 @@ Public Class cItem
     Public MAX_ATTACK_RATING As Single
     Public MIN_CRITICAL As Single
     Public MAX_CRITICAL As Single
-    Public USE_TIME_HP As Integer  ' steht drin wieviel HP ein potion heilt           //*******************************
-    Public USE_TIME_HP_PER As Integer ' steht drin wieviel prozent HP ein grain heilt    //* Das hier muss wahrscheinlich
-    Public USE_TIME_MP As Integer ' steht drin wieviel MP ein potion heilt           //* umbenannt werden, USE_TIME
-    Public USE_TIME_MP_PER As Integer ' steht drin wieviel prozent MP ein grain heilt    //* passt nicht ganz.
+    Public USE_TIME_HP As Integer  ' steht drin wieviel HP ein potion heilt          
+    Public USE_TIME_HP_PER As Integer ' steht drin wieviel prozent HP ein grain heilt   
+    Public USE_TIME_MP As Integer ' steht drin wieviel MP ein potion heilt        
+    Public USE_TIME_MP_PER As Integer ' steht drin wieviel prozent MP ein grain heilt   
 End Class
 
 Public Class cInvItem
@@ -112,6 +128,7 @@ Public Class cInvItem
     Public Pk2Id As Long = 0
     Public Plus As Byte = 0
     Public DatabaseID As UInteger = 0
+    Public ItemType As sUserItemType
 
     Public PerDurability As Byte
     Public PerPhyRef As Byte
@@ -180,6 +197,13 @@ Public Class cInvItem
         Public Typ As UInt32
         Public Amount As UInt32
     End Structure
+
+    Enum sUserItemType
+        Inventory = 0
+        Avatar = 1
+        Storage_User = 2
+        Storage_Guild = 3
+    End Enum
 End Class
 
 

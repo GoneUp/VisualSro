@@ -1,7 +1,6 @@
 ﻿Imports System
 
 Namespace GameServer
-
     Public Class cMonster
         Public Pk2ID As UInt32
         Public UniqueID As UInt32
@@ -12,14 +11,8 @@ Namespace GameServer
         Public HP_Cur As UInteger
         Public HP_Max As UInteger
 
-        Public Position As Position
-        Public Position_FromPos As Position
-        Public Position_ToPos As Position
         Public Position_Spawn As Position
-
-        Public WalkStart As New Date
-        Public WalkEnd As New Date
-        Public Walking As Boolean = False
+        Public Pos_Tracker As Functions.cPositionTracker
 
         Public Death As Boolean = False
         Public DeathRemoveTime As Date
@@ -30,6 +23,16 @@ Namespace GameServer
         Public AttackingId As UInteger
         Public UsingSkillId As UInteger
         Public AttackTimer As System.Timers.Timer
+
+
+        Public Property Position() As Position
+            Get
+                Return Me.Pos_Tracker.GetCurPos
+            End Get
+            Set(ByVal value As Position)
+                Me.Pos_Tracker.LastPos = value
+            End Set
+        End Property
 
 #Region "Timer"
         Sub New()

@@ -230,9 +230,9 @@
                     .Position_Recall = Settings.Player_StartReturnPos
                     .Position_Return = Settings.Player_StartReturnPos
                     If model >= 1907 And model <= 1932 Then
-                        .Position = Settings.Player_StartPos_Ch
+                        .Pos_Tracker = New cPositionTracker(Settings.Player_StartPos_Ch, .WalkSpeed, .RunSpeed, .BerserkSpeed)
                     ElseIf model >= 14717 And model <= 14743 Then
-                        .Position = Settings.Player_StartPos_Eu
+                        .Pos_Tracker = New cPositionTracker(Settings.Player_StartPos_Eu, .WalkSpeed, .RunSpeed, .BerserkSpeed)
                     End If
                     Dim magdefmin As Double = 3.0
                     Dim phydefmin As Double = 6.0
@@ -252,7 +252,6 @@
                     .Hit = hit
                     .Parry = parry
 
-                    .Pos_Tracker = New cPositionTracker(.Position, .WalkSpeed, .RunSpeed, .BerserkSpeed)
                     .SetCharGroundStats()
                 End With
 

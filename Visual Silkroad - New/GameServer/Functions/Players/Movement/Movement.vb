@@ -1,6 +1,4 @@
-﻿Imports GameServer.GameServer.cPositionTracker
-
-Namespace GameServer.Functions
+﻿Namespace GameServer.Functions
     Module Movement
 
         Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
@@ -72,7 +70,7 @@ Namespace GameServer.Functions
                 CheckForCaveTeleporter(Index_)
 
                 PlayerData(Index_).Pos_Tracker.Move(ToPos)
-                PlayerMoveTimer(Index_).Interval = 500
+                PlayerMoveTimer(Index_).Interval = 250
                 PlayerMoveTimer(Index_).Start()
                 ' End If
 

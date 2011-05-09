@@ -16,7 +16,7 @@
             writer.Float(_mob.Position.Y)
 
             writer.Word(_mob.Angle)
-            If _mob.Walking = False Then
+            If _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                 writer.Byte(0) 'dest
                 writer.Byte(1) 'walk run flag
                 writer.Byte(0) 'dest   
@@ -24,11 +24,11 @@
             Else
                 writer.Byte(1) 'dest
                 writer.Byte(1) 'walk run flag
-                writer.Byte(_mob.Position_ToPos.XSector)
-                writer.Byte(_mob.Position_ToPos.YSector)
-                writer.Word(_mob.Position_ToPos.X)
-                writer.Byte(BitConverter.GetBytes(CShort(_mob.Position_ToPos.Z)))
-                writer.Word(_mob.Position_ToPos.Y)
+                writer.Byte(_mob.Pos_Tracker.WalkPos.XSector)
+                writer.Byte(_mob.Pos_Tracker.WalkPos.YSector)
+                writer.Word(_mob.Pos_Tracker.WalkPos.X)
+                writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.Z)))
+                writer.Word(_mob.Pos_Tracker.WalkPos.Y)
             End If
 
             writer.Byte(0) 'unknown
@@ -51,7 +51,7 @@
             Dim tmp As New cMonster
             tmp.UniqueID = Id_Gen.GetUnqiueID
             tmp.Pk2ID = mob_.Pk2ID
-            tmp.Position = Position
+            tmp.Pos_Tracker = New cPositionTracker(Position, mob_.WalkSpeed, mob_.RunSpeed, mob_.BerserkSpeed)
             tmp.Position_Spawn = Position
             tmp.SpotID = SpotID
             tmp.Mob_Type = Type
@@ -63,7 +63,7 @@
                 Case 1
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
                 Case 3
-
+                    tmp.HP_Cur = mob_.Hp
                 Case 4
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
                 Case 5

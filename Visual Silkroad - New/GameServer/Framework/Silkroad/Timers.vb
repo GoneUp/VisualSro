@@ -287,12 +287,12 @@ Namespace GameServer.Functions
                         Dim Mob_ As cMonster = MobList.Item(key)
                         Dim obj As Object_ = GetObjectById(Mob_.Pk2ID)
 
-                        If Mob_.Death = False And Mob_.Walking = False And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
-                            Dim dist As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
+                        If Mob_.Death = False And Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
+                            Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
-                            If dist < Settings.Server_Range Then
-                                Dim ToX As Single = ToPacketX(Mob_.Position.XSector, Mob_.Position.X) + Rand.Next(-15, +10)
-                                Dim ToY As Single = ToPacketY(Mob_.Position.YSector, Mob_.Position.Y) + Rand.Next(-10, +15)
+                            If Dist_FromSpawn < Settings.Server_Range Then
+                                Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +10)
+                                Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-10, +15)
 
                                 Dim ToPos As New Position
                                 ToPos.XSector = GetXSecFromGameX(ToX)
@@ -302,43 +302,12 @@ Namespace GameServer.Functions
                                 ToPos.Y = GetYOffset(ToY)
 
                                 If ToPos.X = Mob_.Position.X And ToPos.Y = Mob_.Position.Y Then
-                                    ToPos.X += 1
+                                    ToPos.X += 10
                                 End If
 
                                 MoveMob(Mob_.UniqueID, ToPos)
                             Else
                                 MoveMob(Mob_.UniqueID, Mob_.Position_Spawn)
-                            End If
-
-
-                        ElseIf Mob_.Walking = True And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
-                            Dim wert As Integer = Date.Compare(Mob_.WalkEnd, Date.Now)
-                            If wert = -1 Then
-                                'Abgelaufen
-                                Mob_.Walking = False
-                                Mob_.Position = Mob_.Position_ToPos
-                            Else
-                                Dim Past As Single = DateDiff(DateInterval.Second, Date.Now, Mob_.WalkEnd)
-                                Dim FullTime As Single = DateDiff(DateInterval.Second, Mob_.WalkStart, Mob_.WalkEnd)
-                                Dim Verhältnis As Single = (Past / FullTime)
-
-                                Dim Walked As Single = (CalculateDistance(Mob_.Position_FromPos, Mob_.Position_ToPos) * Verhältnis)
-
-                                If Walked > 0 Then
-                                    Dim OldX As Single = Mob_.Position_FromPos.X
-                                    Dim OldY As Single = Mob_.Position_FromPos.Y
-                                    Dim Full_X As Single = Mob_.Position_FromPos.X - Mob_.Position_ToPos.X
-                                    Dim Full_Y As Single = Mob_.Position_FromPos.Y - Mob_.Position_ToPos.Y
-
-                                    Dim Cur_X As Single = Full_X * Verhältnis
-                                    Dim Cur_Y As Single = Full_Y * Verhältnis
-
-                                    Mob_.Position.X = GetXOffset(OldX + Cur_X)
-                                    Mob_.Position.Y = GetYOffset(OldY + Cur_Y)
-
-                                    Mob_.Position.XSector = GetXSecFromGameX(Mob_.Position.X)
-                                    Mob_.Position.YSector = GetYSecFromGameY(Mob_.Position.Y)
-                                End If
                             End If
                         End If
                     End If

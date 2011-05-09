@@ -49,20 +49,18 @@
 
 
         Public Sub MoveMob(ByVal UniqueID As Integer, ByVal ToPos As Position)
-            Dim i = MobList(UniqueID)
             Dim Obj As Object_ = GetObjectById(MobList(UniqueID).Pk2ID)
-            Dim Distance As Single = CalculateDistance(MobList(UniqueID).Position, ToPos)
-            Dim Time As Single = Distance / Obj.WalkSpeed
 
-            If Time > 0 Then
-                MobList(UniqueID).Walking = True
-                MobList(UniqueID).Position_FromPos = MobList(UniqueID).Position
-                MobList(UniqueID).Position_ToPos = ToPos
-                MobList(UniqueID).WalkStart = Date.Now
-                MobList(UniqueID).WalkEnd = Date.Now.AddSeconds(Time)
-            Else
-                Debug.Print(1)
-            End If
+            Dim Distance As Single = CalculateDistance(MobList(UniqueID).Position, ToPos)
+            Dim WalkTime As Single
+            Select Case MobList(UniqueID).Pos_Tracker.SpeedMode
+                Case cPositionTracker.enumSpeedMode.Walking
+                    WalkTime = (Distance / Obj.WalkSpeed) * 10000
+                Case cPositionTracker.enumSpeedMode.Running
+                    WalkTime = (Distance / Obj.RunSpeed) * 10000
+                Case cPositionTracker.enumSpeedMode.Zerking
+                    WalkTime = (Distance / Obj.BerserkSpeed) * 10000
+            End Select
 
 
 
@@ -87,10 +85,12 @@
             writer.Byte(0) '1= source
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(UniqueID).UniqueID)
+            MobList(UniqueID).Pos_Tracker.Move(ToPos)
+
 
             If MobList(UniqueID).IsAttacking = True Then
-                If Time > 0 Then
-                    MobList(UniqueID).AttackTimer_Start(Time * 1000)
+                If WalkTime > 0 Then
+                    MobList(UniqueID).AttackTimer_Start(WalkTime)
                 End If
             End If
         End Sub

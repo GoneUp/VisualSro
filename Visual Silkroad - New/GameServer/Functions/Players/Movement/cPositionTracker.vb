@@ -44,7 +44,6 @@ Namespace GameServer.Functions
                         ToGoX = (pPosition.ToGameX - wPosition.ToGameX)
                         ToGoY = (pPosition.ToGameY - wPosition.ToGameY)
                         num4 = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
-
                         Select Case pSpeedMode
                             Case enumSpeedMode.Walking
                                 num5 = ((Speed_Walk / 10.0!) * TimeLeft) / 1000.0!
@@ -56,6 +55,12 @@ Namespace GameServer.Functions
                     Case enumMoveState.Spinning
                         Return pPosition
                 End Select
+
+                If num4 = 0.0 Then
+                    'Nothing to do more
+                    Return pPosition
+                End If
+
                 Dim num6 As Single = CSng((((100.0! / num4) * num5) * 0.01))
                 ToGoX *= num6
                 ToGoY *= num6
@@ -91,7 +96,7 @@ Namespace GameServer.Functions
             End If
 
             wPosition = ToPos
-            Dim WalkDistance As Double = Functions.CalculateDistance(pPosition, ToPos)
+            Dim WalkDistance As Double = Functions.CalculateDistance2(pPosition, ToPos)
             Dim WalkTime As Integer
             Select Case pSpeedMode
                 Case enumSpeedMode.Walking
@@ -109,7 +114,6 @@ Namespace GameServer.Functions
                 tmrMovement.Interval = WalkTime
                 tmrMovement.Start()
             End If
-
         End Sub
         Private Sub tmrMovement_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs) Handles tmrMovement.Elapsed
             pPosition = wPosition 'Neue Character Position merken

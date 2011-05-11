@@ -135,7 +135,7 @@
         UnEquipItem = &H3039
         PickUp_Item = &H3036
         PickUp_Move = &HB034
-
+        ItemDelete = &H304D
 
         'Spawns
 		SingleSpawn = &H3015

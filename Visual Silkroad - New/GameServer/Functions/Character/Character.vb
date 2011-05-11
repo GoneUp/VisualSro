@@ -229,9 +229,9 @@
                     .Position_Dead = Settings.Player_StartReturnPos
                     .Position_Recall = Settings.Player_StartReturnPos
                     .Position_Return = Settings.Player_StartReturnPos
-                    If model >= 1907 And model <= 1932 Then
+                    If IsCharChinese(model) Then
                         .Pos_Tracker = New cPositionTracker(Settings.Player_StartPos_Ch, .WalkSpeed, .RunSpeed, .BerserkSpeed)
-                    ElseIf model >= 14717 And model <= 14743 Then
+                    ElseIf IsCharEurope(model) Then
                         .Pos_Tracker = New cPositionTracker(Settings.Player_StartPos_Eu, .WalkSpeed, .RunSpeed, .BerserkSpeed)
                     End If
                     Dim magdefmin As Double = 3.0

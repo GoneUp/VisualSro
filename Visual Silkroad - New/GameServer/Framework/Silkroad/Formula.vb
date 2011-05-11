@@ -23,9 +23,8 @@
             Return x + distance_y
         End Function
         Public Function CalculateDistance2(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
-
-            Dim distance_x As Double = Pos_1.X - Pos_2.X
-            Dim distance_y As Double = Pos_1.Y - Pos_2.Y
+            Dim distance_x As Double = Pos_1.ToGameX - Pos_2.ToGameX
+            Dim distance_y As Double = Pos_1.ToGameY - Pos_2.ToGameY
 
             Return Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
         End Function

@@ -34,9 +34,9 @@
             Return writer.GetBytes
         End Function
 
-        Public Sub DropItem(ByVal Item As cInvItem, ByVal Position As Position)
+        Public Function DropItem(ByVal Item As cInvItem, ByVal Position As Position) As UInteger
             Dim tmp_ As New cItemDrop
-            tmp_.UniqueID = Id_Gen.GetUnqiueID
+            tmp_.UniqueID = Id_Gen.GetUnqiueId
             tmp_.DroppedBy = Item.OwnerCharID
             tmp_.Position = Position
             tmp_.Item = FillItem(Item)
@@ -66,7 +66,9 @@
                     End If
                 End If
             Next refindex
-        End Sub
+
+            Return tmp_.UniqueID
+        End Function
 
         Public Sub RemoveItem(ByVal ItemIndex As Integer)
             Dim _item As cItemDrop = ItemList(ItemIndex)

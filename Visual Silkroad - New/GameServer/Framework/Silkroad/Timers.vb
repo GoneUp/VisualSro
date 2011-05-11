@@ -342,13 +342,13 @@ Namespace GameServer.Functions
                             Dim new_pos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
                             ObjectSpawnCheck(Index)
 
-                            SendPm(Index, "X: " & new_pos.X & "Y: " & new_pos.Y & " Normal X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
+                            ' SendPm(Index, "X: " & new_pos.X & "Y: " & new_pos.Y & " Normal X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
                             PlayerMoveTimer(Index).Start()
 
                         ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                             PlayerData(Index).Position = PlayerData(Index).Pos_Tracker.GetCurPos()
                             ObjectSpawnCheck(Index)
-                            SendPm(Index, "Walk End", "hh")
+                            'SendPm(Index, "Walk End", "hh")
                         End If
                     End If
 

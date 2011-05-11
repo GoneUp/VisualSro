@@ -143,48 +143,59 @@
 
         Public Sub OnNpcTeleport(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ObjectID As UInteger = packet.DWord
-            packet.Byte()
-            Dim TeleportNumber As Integer = packet.DWord
-            Dim Point_ As TeleportPoint_ = GetTeleportPoint(TeleportNumber)
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
+            Dim type As Byte = packet.Byte() '2=normal teleport; 5=special point; 
 
-            If CSng(PlayerData(Index_).Gold) - Point_.Cost <= 0 Then
-                'Not enough Gold...
-                writer.Byte(2)
-                writer.Byte(7)
-                'Server.Send(writer.GetBytes, Index_)
+            Select Case type
+                Case 2
+                    Dim TeleportNumber As Integer = packet.DWord
+                    Dim Point_ As TeleportPoint_ = GetTeleportPoint(TeleportNumber)
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
 
-            ElseIf PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
-                'Level too low
-                writer.Byte(2)
-                writer.Byte(&H15)
-                writer.Byte(&H1C)
-                Server.Send(writer.GetBytes, Index_)
+                    If CSng(PlayerData(Index_).Gold) - Point_.Cost <= 0 Then
+                        'Not enough Gold...
+                        writer.Byte(2)
+                        writer.Byte(7)
+                        'Server.Send(writer.GetBytes, Index_)
 
-            ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
-                'Level too high
-                writer.Byte(2)
-                writer.Byte(&H16)
-                writer.Byte(&H1C)
-                Server.Send(writer.GetBytes, Index_)
+                    ElseIf PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
+                        'Level too low
+                        writer.Byte(2)
+                        writer.Byte(&H15)
+                        writer.Byte(&H1C)
+                        Server.Send(writer.GetBytes, Index_)
 
-            Else
-                PlayerData(Index_).Busy = True
-                PlayerData(Index_).Position = Point_.ToPos
-                PlayerData(Index_).TeleportType = TeleportType_.Npc
+                    ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
+                        'Level too high
+                        writer.Byte(2)
+                        writer.Byte(&H16)
+                        writer.Byte(&H1C)
+                        Server.Send(writer.GetBytes, Index_)
 
-                PlayerData(Index_).Gold -= Point_.Cost
-                UpdateGold(Index_)
+                    Else
+                        PlayerData(Index_).Busy = True
+                        PlayerData(Index_).Position = Point_.ToPos
+                        PlayerData(Index_).TeleportType = TeleportType_.Npc
 
-                writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
-                writer.Byte(1)
-                Server.Send(writer.GetBytes, Index_)
+                        PlayerData(Index_).Gold -= Point_.Cost
+                        UpdateGold(Index_)
+
+                        writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
+                        writer.Byte(1)
+                        Server.Send(writer.GetBytes, Index_)
 
 
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
-            End If
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                    End If
+
+
+                Case 5
+                    Dim TeleportNumber As Integer = packet.Byte '0x02=recall point, 0x03=move to dead point
+
+
+            End Select
+
 
         End Sub
 

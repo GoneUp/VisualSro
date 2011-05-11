@@ -215,6 +215,7 @@
 
         End Sub
 
+#Region "Drop"
         Public Sub OnDropItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
                 Exit Sub
@@ -223,14 +224,17 @@
 
             Dim slot As Byte = packet.Byte
             Dim ref_item As cItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
-
-            DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
+            Dim item_uniqueid As UInteger = DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
 
             DeleteItemFromDB(slot, index_)
             Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))
 
 
             Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.ItemDelete)
+            writer.DWord(item_uniqueid)
+            Server.Send(writer.GetBytes, index_)
+
             writer.Create(ServerOpcodes.ItemMove)
             writer.Byte(1)
             writer.Byte(&HF)
@@ -266,7 +270,7 @@
                 Server.Send(writer.GetBytes, index_)
             End If
         End Sub
-
+#End Region
 #Region "Exchange"
         Public Sub OnExchangeAddItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim slot As Byte = packet.Byte
@@ -403,7 +407,7 @@
             End If
         End Sub
 #End Region
-
+#Region "Helper Functions"
         Private Function CheckItemGender(ByVal tmpItem As cItem, ByVal Index_ As Integer) As Boolean
             Dim Gender As Integer = 0
 
@@ -537,7 +541,7 @@
             OldItem.PerParryRate = 0
             OldItem.PerPhyAbs = 0
             OldItem.PerMagAbs = 0
-   
+
             OldItem.Blues = Nothing
 
             Return OldItem
@@ -597,8 +601,7 @@
             writer.Byte(Byte2)
             Server.Send(writer.GetBytes, Index_)
         End Sub
+#End Region
+
     End Module
-
-
-
 End Namespace

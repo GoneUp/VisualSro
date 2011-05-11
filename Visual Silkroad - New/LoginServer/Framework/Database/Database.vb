@@ -113,8 +113,13 @@ Namespace LoginServer
                 Try
                     Dim command2 As New MySqlCommand(command, Connection)
                     command2.ExecuteNonQuery()
+                    command2.Dispose()
                 Catch exception As Exception
                     RaiseEvent OnDatabaseError(exception, command)
+
+                    If exception.Message = "Connection must be valid and open." Then
+                        ReConnect()
+                    End If
                 End Try
             End SyncLock
         End Sub

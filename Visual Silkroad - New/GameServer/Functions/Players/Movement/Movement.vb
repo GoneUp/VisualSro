@@ -17,6 +17,7 @@
                     to_pos.X = packet.WordInt
                     to_pos.Z = packet.WordInt
                     to_pos.Y = packet.WordInt
+                    Debug.Print("x: " & to_pos.X & " y: " & to_pos.Y)
                 Else
                     'In Cave
                     to_pos.X = packet.DWordInt
@@ -272,7 +273,7 @@
         End Sub
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then
+            If CalculateDistance2(Pos_1, Pos_2) <= Settings.Server_Range Then
                 Return True
             Else
                 Return False

@@ -432,6 +432,10 @@
             Dim Radmon As Integer = Rnd() * 100
             FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
 
+
+            If PlayerData(Index_).Berserk = True Then
+                FinalDamage *= 2
+            End If
             'A = Basic Attack Power
             'B = Skill Attack Power
             'C = Attack Power Increasing rate

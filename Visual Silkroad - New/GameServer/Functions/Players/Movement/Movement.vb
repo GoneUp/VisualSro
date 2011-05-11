@@ -273,7 +273,7 @@
         End Sub
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            If CalculateDistance2(Pos_1, Pos_2) <= Settings.Server_Range Then
+            If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then
                 Return True
             Else
                 Return False

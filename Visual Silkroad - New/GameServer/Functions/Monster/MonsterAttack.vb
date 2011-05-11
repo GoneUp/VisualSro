@@ -53,7 +53,6 @@
                 For i = 0 To NumberAttack - 1
                     Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Id)
                     Dim Crit As Byte = Attack_GetCritical()
-
                     If Crit = True Then
                         Damage = Damage * 2
                         Crit = 2
@@ -195,7 +194,7 @@
 
                 Case Ref_.Skill6
                     If Ref_.Skill7 <> 0 Then
-                        Return Ref_.Skill3
+                        Return Ref_.Skill7
                     Else
                         Return Ref_.Skill1
                     End If

@@ -29,6 +29,19 @@
             Return Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
         End Function
 
+        Public Function CalculateDamage(ByVal BasicAP As Double, ByVal SkillAP As Double, ByVal AttackPowerInc As Double, ByVal EnemyAccAbsorbation As Double, ByVal EnemyDef As Double, ByVal Balance As Double, ByVal DamageInc As Double, ByVal SkillAPRate As Double)
+            'A = Basic Attack Power
+            'B = Skill Attack Power
+            'C = Attack Power Increasing rate
+            'D = Enemy 's total accessories Absorption rate
+            'E = Enemy 's Defence Power
+            'F = Balance rate
+            'G = Total Damage Increasing rate
+            'H = Skill Attack Power rate
+            'A final damage formula:
+
+            'Damage = ((A + B) * (1 + C) / (1 + D) - E) * F * (1 + G) * H
+        End Function
 
 #Region "Pos Help Functions"
         Public Function ToPacketX(ByVal XSec As Byte, ByVal XPos As Single) As Single

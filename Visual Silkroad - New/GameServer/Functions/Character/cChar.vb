@@ -18,7 +18,7 @@
         Public SkillPointBar As ULong
         Public Attributes As UShort
         Public BerserkBar As Byte
-        Public Berserk As Byte
+        Public Berserk As Boolean
         Public WalkSpeed As Single
         Public RunSpeed As Single
         Public BerserkSpeed As Single
@@ -119,7 +119,7 @@
             HP = (Math.Pow(1.02, Me.Level - 1) * Me.Strength * 10)
             MP = (Math.Pow(1.02, Me.Level - 1) * Me.Intelligence * 10)
 
-            Hit = Math.Round(Me.Level + 10)
+            Hit = Math.Round(Me.Level + 1000)
             Parry = Math.Round(Me.Level + 10)
 
             '=================Really unsure of these Formulas=============

@@ -349,6 +349,10 @@ Namespace GameServer.Functions
                             PlayerData(Index).Position = PlayerData(Index).Pos_Tracker.GetCurPos()
                             ObjectSpawnCheck(Index)
                             'SendPm(Index, "Walk End", "hh")
+
+
+                            PlayerMoveTimer(Index).Interval = 20 * 1000
+                            PlayerMoveTimer(Index).Start()
                         End If
                     End If
 

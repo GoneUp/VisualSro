@@ -244,4 +244,4 @@ CREATE TABLE `users` (
 -- ----------------------------
 INSERT INTO `news` VALUES ('1', 'Opening', '<center><font color=red><b>Welcome to the Visual Silkroad Project</b></font></center>', '3000-01-01 00:00:00');
 INSERT INTO `servers` VALUES ('3', 'Local', '0', '500', '1', '127.0.0.1', '15780');
-INSERT INTO `servers` VALUES ('4', 'Remote', '0', '500', '1', '78.111.78.27', '15780');
+INSERT INTO `servers` VALUES ('4', 'Remote', '0', '500', '1', '78.111.78.180', '15780');

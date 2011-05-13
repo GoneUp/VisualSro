@@ -235,6 +235,7 @@
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Alive = True
             PlayerData(Index_).Attacking = False
+            PlayerData(Index_).Skilling = False
             PlayerData(Index_).AttackedId = 0
             PlayerData(Index_).UsingSkillId = 0
             PlayerData(Index_).SkillOverId = 0

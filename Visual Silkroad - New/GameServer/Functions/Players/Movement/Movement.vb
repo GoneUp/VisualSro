@@ -94,15 +94,11 @@
             End If
 
 
-            Dim ToX As Single = ToPacketX(MobList(MobUniqueID).Position.XSector, MobList(MobUniqueID).Position.X) + (1)
-            Dim ToY As Single = ToPacketY(MobList(MobUniqueID).Position.YSector, MobList(MobUniqueID).Position.Y) + (1)
 
-            Dim ToPos As New Position
-            ToPos.XSector = GetXSecFromGameX(ToX)
-            ToPos.YSector = GetYSecFromGameY(ToY)
-            ToPos.X = GetXOffset(ToX)
+            Dim ToPos As Position = MobList(MobUniqueID).Pos_Tracker.GetCurPos
+            ToPos.X += 5
             ToPos.Z = MobList(MobUniqueID).Position.Z
-            ToPos.Y = GetYOffset(ToY)
+            ToPos.Y += 5
 
             Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
             Dim WalkTime As Single

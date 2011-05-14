@@ -290,9 +290,9 @@ Namespace GameServer.Functions
                         If Mob_.Death = False And Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
                             Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
-                            If Dist_FromSpawn < Settings.Server_Range Then
-                                Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +10)
-                                Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-10, +15)
+                            If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
+                                Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-10, +10)
+                                Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-10, +10)
 
                                 Dim ToPos As New Position
                                 ToPos.XSector = GetXSecFromGameX(ToX)

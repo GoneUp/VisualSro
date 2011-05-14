@@ -59,11 +59,11 @@
             Return CSng(Math.Floor(CDbl(((Y / 192.0!) + 92.0!))))
         End Function
 
-        Public Function GetXOffset(ByVal X As Single) As Integer
+        Public Function GetXOffset(ByVal X As Single) As Double
             Return CInt(Math.Round(CDbl((((((X / 192.0!) - GetXSecFromGameX(X)) + 135.0!) * 192.0!) * 10.0!))))
         End Function
 
-        Public Function GetYOffset(ByVal Y As Single) As Integer
+        Public Function GetYOffset(ByVal Y As Single) As Double
             Return CInt(Math.Round(CDbl((((((Y / 192.0!) - GetYSecFromGameY(Y)) + 92.0!) * 192.0!) * 10.0!))))
         End Function
 #End Region

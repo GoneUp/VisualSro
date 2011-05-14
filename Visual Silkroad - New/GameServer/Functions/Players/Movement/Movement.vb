@@ -190,7 +190,7 @@
             Try
                 For Other_Index = 0 To Server.MaxClients
                     If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) Then
-                        If CheckRange(PlayerData(Index_).Position, PlayerData(Other_Index).Position) = False Then
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, PlayerData(Other_Index).Position) = False Then
                             'Despawn for both
                             Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
                             PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
@@ -204,7 +204,7 @@
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
                         If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = True Then
-                            If CheckRange(PlayerData(Index_).Position, Mob_.Position) = False Then
+                            If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, Mob_.Position) = False Then
                                 Server.Send(CreateDespawnPacket(Mob_.UniqueID), Index_)
                                 PlayerData(Index_).SpawnedMonsters.Remove(Mob_.UniqueID)
                             End If
@@ -215,7 +215,7 @@
                 For i = 0 To NpcList.Count - 1
                     Dim _npc As cNPC = NpcList(i)
                     If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = True Then
-                        If CheckRange(PlayerData(Index_).Position, _npc.Position) = False Then
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, _npc.Position) = False Then
                             Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
                             PlayerData(Index_).SpawnedNPCs.Remove(_npc.UniqueID)
                         End If
@@ -226,7 +226,7 @@
                 For i = 0 To ItemList.Count - 1
                     Dim _item As cItemDrop = ItemList(i)
                     If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = True Then
-                        If CheckRange(PlayerData(Index_).Position, _item.Position) = False Then
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, _item.Position) = False Then
                             Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
                             PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
                         End If
@@ -269,7 +269,7 @@
         End Sub
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then
+            If CalculateDistance2(Pos_1, Pos_2) <= Settings.Server_Range Then
                 Return True
             Else
                 Return False

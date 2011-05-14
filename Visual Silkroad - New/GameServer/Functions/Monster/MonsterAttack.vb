@@ -64,15 +64,17 @@
                         End If
                     ElseIf CLng(PlayerData(Index_).CHP) - Damage <= 0 Then
                         'Dead
-                        afterstate = &H80
-                        PlayerData(Index_).CHP = 0
+                        If PlayerData(Index_).Invincible = False Then
+                            afterstate = &H80
+                            PlayerData(Index_).CHP = 0
+                        End If
                     End If
 
-                    writer.Byte(afterstate)
-                    writer.Byte(Crit)
-                    writer.DWord(Damage)
-                    writer.Byte(0)
-                    writer.Word(0)
+                        writer.Byte(afterstate)
+                        writer.Byte(Crit)
+                        writer.DWord(Damage)
+                        writer.Byte(0)
+                        writer.Word(0)
                 Next
             Next
             Server.SendIfMobIsSpawned(writer.GetBytes, Mob_.UniqueID)

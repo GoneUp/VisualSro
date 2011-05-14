@@ -52,28 +52,30 @@ Namespace GameServer.Functions
                             Case enumSpeedMode.Zerking
                                 num5 = ((Speed_Zerk / 10.0!) * TimeLeft) / 1000.0!
                         End Select
+
+                        If num4 = 0.0 Then
+                            'Nothing to do more
+                            Return pPosition
+                        End If
+
+                        Dim num6 As Single = CSng((((100.0! / num4) * num5) * 0.01))
+                        ToGoX *= num6
+                        ToGoY *= num6
+
+
+                        Dim tmpX As Single = (pPosition.ToGameX)
+                        Dim tmpY As Single = (pPosition.ToGameY)
+                        tmpX -= ToGoX
+                        tmpY -= ToGoY
+                        tmpPos = pPosition
+                        tmpPos.X = GetXOffset(tmpX)
+                        tmpPos.Y = GetYOffset(tmpY)
+                        StartWalkTime = Date.Now
                     Case enumMoveState.Spinning
                         Return pPosition
                 End Select
 
-                If num4 = 0.0 Then
-                    'Nothing to do more
-                    Return pPosition
-                End If
 
-                Dim num6 As Single = CSng((((100.0! / num4) * num5) * 0.01))
-                ToGoX *= num6
-                ToGoY *= num6
-
-
-                Dim tmpX As Single = (pPosition.ToGameX)
-                Dim tmpY As Single = (pPosition.ToGameY)
-                tmpX -= ToGoX
-                tmpY -= ToGoY
-                tmpPos = pPosition
-                tmpPos.X = GetXOffset(tmpX)
-                tmpPos.Y = GetYOffset(tmpY)
-                StartWalkTime = Date.Now
 
             Catch ex As Exception
                 Log.WriteSystemLog("Pos Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: POSCALC") '
@@ -107,8 +109,11 @@ Namespace GameServer.Functions
                     WalkTime = (WalkDistance / Speed_Zerk) * 10000
             End Select
             pMoveState = enumMoveState.Walking
-
             StartWalkTime = Date.Now 'Move Start Zeit
+
+            If WalkTime = 0 Then
+                WalkTime = 1
+            End If
             If Double.IsInfinity(WalkTime) = False And Double.IsNaN(WalkTime) = False Then
                 tmrMovement = New Timer
                 tmrMovement.Interval = WalkTime

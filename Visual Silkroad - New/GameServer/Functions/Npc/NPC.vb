@@ -152,7 +152,7 @@
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
 
-                    If CSng(PlayerData(Index_).Gold) - Point_.Cost <= 0 Then
+                    If CSng(PlayerData(Index_).Gold) - Point_.Cost < 0 Then
                         'Not enough Gold...
                         writer.Byte(2)
                         writer.Byte(7)

@@ -123,9 +123,9 @@
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterID)
             writer.DWord(PlayerData(Index_).UniqueId) 'charid
-            writer.Word(13) 'moon pos
-            writer.Byte(9) 'hours
-            writer.Byte(28) 'minute
+            writer.Word(Date.Now.Day) 'moon pos
+            writer.Byte(Date.Now.Hour) 'hours
+            writer.Byte(Date.Now.Minute) 'minute
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = False

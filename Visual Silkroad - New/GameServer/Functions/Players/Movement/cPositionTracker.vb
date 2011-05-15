@@ -67,10 +67,10 @@ Namespace GameServer.Functions
                         Dim tmpY As Single = (pPosition.ToGameY)
                         tmpX -= ToGoX
                         tmpY -= ToGoY
-                        tmpPos = pPosition
-                        tmpPos.X = GetXOffset(tmpX)
-                        tmpPos.Y = GetYOffset(tmpY)
+                        pPosition.X = GetXOffset(tmpX)
+                        pPosition.Y = GetYOffset(tmpY)
                         StartWalkTime = Date.Now
+                        Return pPosition
                     Case enumMoveState.Spinning
                         Return pPosition
                 End Select
@@ -80,8 +80,6 @@ Namespace GameServer.Functions
             Catch ex As Exception
                 Log.WriteSystemLog("Pos Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: POSCALC") '
             End Try
-
-            Return tmpPos
         End Function
 
         Public Sub Move(ByVal ToPos As Position)
@@ -98,7 +96,7 @@ Namespace GameServer.Functions
             End If
 
             wPosition = ToPos
-            Dim WalkDistance As Double = Functions.CalculateDistance2(pPosition, ToPos)
+            Dim WalkDistance As Double = Functions.CalculateDistance(pPosition, ToPos)
             Dim WalkTime As Integer
             Select Case pSpeedMode
                 Case enumSpeedMode.Walking

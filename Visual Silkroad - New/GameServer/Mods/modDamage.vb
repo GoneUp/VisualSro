@@ -93,7 +93,7 @@
 
         Private Function GenerateSettings(ByVal Index_ As Integer) As String
             '[Normal],[Giant],[Unique] (On = 1, Off=0)(Normal = Normal & Champion Mobs
-            Return Settings(Index_).Send_Normal & "," & Settings(Index_).Send_Giant & "," & Settings(Index_).Send_Unique
+            Return CByte(Settings(Index_).Send_Normal) & "," & CByte(Settings(Index_).Send_Giant) & "," & CByte(Settings(Index_).Send_Unique)
         End Function
 
         Private Function IsSendingAllowed(ByVal Index_ As Integer, ByVal Mob_Type As Integer) As Boolean

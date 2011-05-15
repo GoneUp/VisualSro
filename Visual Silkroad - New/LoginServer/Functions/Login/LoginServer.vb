@@ -68,7 +68,6 @@
             writer.Create(ServerOpcodes.MassiveMessage)
             writer.Byte(0) 'Data
 
-            Dim i = Settings.Server_CurrectVersion
             If ClientList.SessionInfo(Index_).Version = Settings.Server_CurrectVersion Then
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
@@ -77,11 +76,23 @@
                 writer.Byte(2)
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
+                Server.Dissconnect(Index_)
             ElseIf ClientList.SessionInfo(Index_).Version < Settings.Server_CurrectVersion Then
                 'Client too old 
                 writer.Byte(2)
-                writer.Byte(4)
+                writer.Byte(5)
                 Server.Send(writer.GetBytes, Index_)
+                Server.Dissconnect(Index_)
+            ElseIf ClientList.SessionInfo(Index_).Locale <> Settings.Server_Local Then
+                'Wrong Local
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, Index_)
+                Server.Dissconnect(Index_)
+            ElseIf ClientList.SessionInfo(Index_).ClientName <> "SR_Client" Then
+                'Wrong Clientname
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, Index_)
+                Server.Dissconnect(Index_)
             End If
 
 
@@ -188,15 +199,7 @@
 
                 ElseIf Auto_Register = False Then
                     'Normal Fail
-                    writer.Byte(2) 'login failed
-                    writer.Byte(1)
-                    writer.Byte(3)
-                    writer.Word(0)
-                    writer.Byte(0)
-                    writer.Byte(1) 'number of falied logins
-                    writer.Word(0)
-                    writer.Byte(0)
-                    Server.Send(writer.GetBytes, Index_)
+                    Login_WriteSpecialText("User does not existis!", Index_)
                 End If
 
             Else

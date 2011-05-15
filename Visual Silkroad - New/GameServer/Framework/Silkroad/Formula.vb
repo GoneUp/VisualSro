@@ -1,32 +1,9 @@
 ﻿Namespace GameServer.Functions
     Module Formula
         Public Function CalculateDistance(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
-            'Get Real Cords
-            Dim Pos1X As Double = Pos_1.ToGameX
-            Dim Pos1Y As Double = Pos_1.ToGameY
-            Dim Pos2X As Double = Pos_2.ToGameX
-            Dim Pos2Y As Double = Pos_2.ToGameY
-
-            Dim distance_x As Double = Pos1X - Pos2X
-            Dim distance_y As Double = Pos1Y - Pos2Y
-
-            Dim x As Double = 0
-            If distance_x < 0 And distance_x <> 0 Then
-                x = distance_x * -1
-            Else
-                x = distance_x
-            End If
-            If distance_y < 0 And distance_y <> 0 Then
-                Return ((distance_y * -1) + x)
-            End If
-
-            Return x + distance_y
-        End Function
-        Public Function CalculateDistance2(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
             Dim distance_x As Double = Pos_1.ToGameX - Pos_2.ToGameX
             Dim distance_y As Double = Pos_1.ToGameY - Pos_2.ToGameY
-
-            Return Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
+            Return (Math.Sqrt(distance_x * distance_x) + Math.Sqrt(distance_y * distance_y))
         End Function
 
         Public Function CalculateDamage(ByVal BasicAP As Double, ByVal SkillAP As Double, ByVal AttackPowerInc As Double, ByVal EnemyAccAbsorbation As Double, ByVal EnemyDef As Double, ByVal Balance As Double, ByVal DamageInc As Double, ByVal SkillAPRate As Double)
@@ -41,6 +18,7 @@
             'A final damage formula:
 
             'Damage = ((A + B) * (1 + C) / (1 + D) - E) * F * (1 + G) * H
+            Return ((BasicAP + SkillAP) * (1 + AttackPowerInc) / (1 + EnemyAccAbsorbation) - EnemyDef) * Balance * (1 + DamageInc) * SkillAPRate
         End Function
 
 #Region "Pos Help Functions"

@@ -328,10 +328,10 @@
         Public Y As Single
 
         Public Function ToGameX() As Single
-            Return ((XSector - 135) * 192 + (X / 10))
+            Return CSng((XSector - 135) * 192 + (X / 10))
         End Function
         Public Function ToGameY() As Single
-            Return ((YSector - 92) * 192 + (Y / 10))
+            Return CSng((YSector - 92) * 192 + (Y / 10))
         End Function
     End Class
 
@@ -362,12 +362,4 @@
         Skill = 1
         Buff = 2
     End Enum
-
-    Public Enum MoveType_
-        Standing = 0
-        Walking = 1
-        Runing = 2
-        Berserk = 3
-    End Enum
-
 End Namespace

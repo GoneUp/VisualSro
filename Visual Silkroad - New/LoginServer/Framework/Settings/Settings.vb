@@ -17,6 +17,7 @@
         Public Max_FailedLogins As Integer = 5
         Public Max_RegistersPerDay As Integer = 3
         Public Server_CurrectVersion As UInteger = 0
+        Public Server_Local As Byte = 0
 
         Public Log_Connect As Boolean = False
         Public Log_Register As Boolean = False
@@ -37,6 +38,7 @@
             Max_FailedLogins = File.Read("SERVER", "Max_FailedLogins", "5")
             Max_RegistersPerDay = File.Read("SERVER", "Max_RegistersPerDay", "3")
             Server_CurrectVersion = File.Read("SERVER", "Server_CurrectVersion", "0")
+            Server_Local = File.Read("SERVER", "Server_Local", "0")
 
             Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
             Log_Login = CBool(File.Read("LOG", "Login", "0"))

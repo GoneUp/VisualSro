@@ -75,9 +75,9 @@
             ElseIf chari.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
                 writer.Byte(chari.Pos_Tracker.WalkPos.XSector)
                 writer.Byte(chari.Pos_Tracker.WalkPos.YSector)
-                writer.Float(chari.Pos_Tracker.WalkPos.X)
-                writer.Float(chari.Pos_Tracker.WalkPos.Z)
-                writer.Float(chari.Pos_Tracker.WalkPos.Y)
+                writer.Byte(BitConverter.GetBytes(CShort(chari.Pos_Tracker.WalkPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(chari.Pos_Tracker.WalkPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(chari.Pos_Tracker.WalkPos.Y)))
             End If
 
 

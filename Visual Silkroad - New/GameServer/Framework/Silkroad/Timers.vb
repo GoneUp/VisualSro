@@ -346,7 +346,6 @@ Namespace GameServer.Functions
                             PlayerMoveTimer(Index).Start()
 
                         ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
-                            PlayerData(Index).Position = PlayerData(Index).Pos_Tracker.GetCurPos()
                             ObjectSpawnCheck(Index)
                             'SendPm(Index, "Walk End", "hh")
 

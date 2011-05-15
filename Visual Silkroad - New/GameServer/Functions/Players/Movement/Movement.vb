@@ -82,19 +82,7 @@
 
         End Sub
 
-        Public Sub MoveUserToMonster(ByVal Index_ As Integer, ByVal MobUniqueID As Integer)
-            Dim RefWeapon As New cItem
-
-            If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then 'Will be used for Weapon Distance
-                'Weapon
-                RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
-            Else
-                'No Weapon
-                RefWeapon.ATTACK_DISTANCE = 6
-            End If
-
-
-
+        Public Sub MoveUserToMonster(ByVal Index_ As Integer, ByVal MobUniqueID As Integer, ByVal Range As Integer)
             Dim ToPos As Position = MobList(MobUniqueID).Pos_Tracker.GetCurPos
             ToPos.X += 5
             ToPos.Z = MobList(MobUniqueID).Position.Z
@@ -129,7 +117,7 @@
                 For refindex As Integer = 0 To Server.MaxClients
                     Dim othersock As Net.Sockets.Socket = ClientList.GetSocket(refindex)
                     If (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso (othersock.Connected) AndAlso Index_ <> refindex Then
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, PlayerData(refindex).Position) Then
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, PlayerData(refindex).Position) Then
                             If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
                                 Server.Send(CreateSpawnPacket(Index_), refindex)
                                 PlayerData(refindex).SpawnedPlayers.Add(Index_)
@@ -146,7 +134,7 @@
                 For Each key In MobList.Keys.ToList
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Mob_.Position) Then
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, Mob_.Position) Then
                             Dim obj As Object = GetObjectById(Mob_.Pk2ID)
                             If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = False Then
                                 Server.Send(CreateMonsterSpawnPacket(Mob_, obj), Index_)
@@ -159,7 +147,7 @@
                 '===========NPCS===================
                 For i = 0 To NpcList.Count - 1
                     Dim _npc As cNPC = NpcList(i)
-                    If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, NpcList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, NpcList(i).Position) Then
                         If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = False Then
                             Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
                             PlayerData(Index_).SpawnedNPCs.Add(_npc.UniqueID)
@@ -171,7 +159,7 @@
                 '===========ITEMS===================
                 For i = 0 To ItemList.Count - 1
                     Dim _item As cItemDrop = ItemList(i)
-                    If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, ItemList(i).Position) Then
+                    If CheckRange(PlayerData(Index_).Pos_Tracker.WalkPos, ItemList(i).Position) Then
                         If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = False Then
                             Server.Send(CreateItemSpawnPacket(_item), Index_)
                             PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)
@@ -269,7 +257,10 @@
         End Sub
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            If CalculateDistance2(Pos_1, Pos_2) <= Settings.Server_Range Then
+            Dim i = CalculateDistance(Pos_1, Pos_2)
+            Dim b = CalculateDistance(Pos_1, Pos_2)
+
+            If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then
                 Return True
             Else
                 Return False

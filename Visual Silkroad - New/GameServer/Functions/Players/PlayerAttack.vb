@@ -117,7 +117,7 @@
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
             If Distance >= (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)) Then
-                MoveUserToMonster(Index_, MobUniqueId)
+                MoveUserToMonster(Index_, MobUniqueId, (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)))
                 Exit Sub
             End If
 
@@ -248,8 +248,8 @@
 
 
             If CalculateDistance(PlayerData(Index_).Position, Mob_.Position) >= RefSkill.Distance Then
-                'MoveUserToMonster(Index_, MobIndex)
-                'Exit Sub
+                MoveUserToMonster(Index_, MobUniqueId, RefSkill.Distance)
+                Exit Sub
             End If
 
             If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 And PlayerData(Index_).Invincible = False Then

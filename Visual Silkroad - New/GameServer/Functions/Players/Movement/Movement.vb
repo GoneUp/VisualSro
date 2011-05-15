@@ -84,19 +84,32 @@
 
         Public Sub MoveUserToMonster(ByVal Index_ As Integer, ByVal MobUniqueID As Integer, ByVal Range As Integer)
             Dim ToPos As Position = MobList(MobUniqueID).Pos_Tracker.GetCurPos
-            ToPos.X += 5
-            ToPos.Z = MobList(MobUniqueID).Position.Z
-            ToPos.Y += 5
 
-            Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
+            Dim distance_x As Double = PlayerData(Index_).Position.ToGameX - ToPos.ToGameX
+            Dim distance_y As Double = PlayerData(Index_).Position.ToGameY - ToPos.ToGameY
+            Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
+
+            Dim Cosinus As Double = Math.Cos(distance_x / distance)
+            Dim Sinus As Double = Math.Sin(distance_y / distance)
+
+            Dim distance_x_new As Double = Range * Cosinus
+            Dim distance_y_new As Double = Range * Sinus
+
+            ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
+            ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
+            ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
+            ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
+
+            SendPm(Index_, "Try to move to: " & ToPos.ToGameX & " y." & ToPos.ToGameY, "sgsdg")
+
             Dim WalkTime As Single
             Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
-                    WalkTime = (Distance / PlayerData(Index_).WalkSpeed) * 10000
+                    WalkTime = (distance / PlayerData(Index_).WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
-                    WalkTime = (Distance / PlayerData(Index_).RunSpeed) * 10000
+                    WalkTime = (distance / PlayerData(Index_).RunSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Zerking
-                    WalkTime = (Distance / PlayerData(Index_).BerserkSpeed) * 10000
+                    WalkTime = (distance / PlayerData(Index_).BerserkSpeed) * 10000
             End Select
 
             PlayerData(Index_).AttackType = AttackType_.Normal
@@ -257,9 +270,6 @@
         End Sub
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            Dim i = CalculateDistance(Pos_1, Pos_2)
-            Dim b = CalculateDistance(Pos_1, Pos_2)
-
             If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then
                 Return True
             Else

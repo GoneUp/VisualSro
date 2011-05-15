@@ -31,8 +31,8 @@ Namespace GameServer.Functions
         Public Function GetCurPos() As Position
             Dim ToGoX As Single
             Dim ToGoY As Single
-            Dim num4 As Double
-            Dim num5 As Double
+            Dim Distance As Double
+            Dim Speed As Double
             Dim tmpPos As New Position
 
             Try
@@ -43,22 +43,22 @@ Namespace GameServer.Functions
                         Dim TimeLeft As Double = Date.Now.Subtract(StartWalkTime).TotalMilliseconds
                         ToGoX = (pPosition.ToGameX - wPosition.ToGameX)
                         ToGoY = (pPosition.ToGameY - wPosition.ToGameY)
-                        num4 = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
+                        Distance = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
                         Select Case pSpeedMode
                             Case enumSpeedMode.Walking
-                                num5 = ((Speed_Walk / 10.0!) * TimeLeft) / 1000.0!
+                                Speed = ((Speed_Walk / 10.0!) * TimeLeft) / 1000.0!
                             Case enumSpeedMode.Running
-                                num5 = ((Speed_Run / 10.0!) * TimeLeft) / 1000.0!
+                                Speed = ((Speed_Run / 10.0!) * TimeLeft) / 1000.0!
                             Case enumSpeedMode.Zerking
-                                num5 = ((Speed_Zerk / 10.0!) * TimeLeft) / 1000.0!
+                                Speed = ((Speed_Zerk / 10.0!) * TimeLeft) / 1000.0!
                         End Select
 
-                        If num4 = 0.0 Then
+                        If Distance = 0.0 Then
                             'Nothing to do more
                             Return pPosition
                         End If
 
-                        Dim num6 As Single = CSng((((100.0! / num4) * num5) * 0.01))
+                        Dim num6 As Single = CSng((((100.0! / Distance) * Speed) * 0.01))
                         ToGoX *= num6
                         ToGoY *= num6
 

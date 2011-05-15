@@ -1,7 +1,6 @@
 ﻿Namespace GameServer.Functions
     Module MonsterSpawn
 
-        ' Public MobList As New List(Of cMonster)
         Public MobList As New Dictionary(Of UInteger, cMonster)
 
         Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster, ByVal obj As Object_) As Byte()
@@ -16,6 +15,7 @@
             writer.Float(_mob.Position.Y)
 
             writer.Word(_mob.Angle)
+
             If _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                 writer.Byte(0) 'dest
                 writer.Byte(1) 'walk run flag

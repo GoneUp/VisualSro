@@ -335,5 +335,29 @@
                     UpdateHP(Index_)
             End Select
         End Sub
+
+        Public Sub OnSetReturnPoint(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim town As UInteger = packet.DWord
+
+            Select Case town
+                Case 1 'jg
+                    PlayerData(Index_).Position_Return.XSector = 168
+                    PlayerData(Index_).Position_Return.YSector = 98
+                    PlayerData(Index_).Position_Return.X = 0
+                    PlayerData(Index_).Position_Return.Z = 0
+                    PlayerData(Index_).Position_Return.Y = 0
+
+                Case 2 'dw
+                Case 3 'ht
+                Case 5 'const
+                Case 6 'sm
+
+                Case Else
+                    SendPm(Index_, "Return Point not found!", "[SERVER]")
+            End Select
+
+
+            DataBase.SaveQuery(String.Format("UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Return.XSector, PlayerData(Index_).Position_Return.YSector, Math.Round(PlayerData(Index_).Position_Return.X), Math.Round(PlayerData(Index_).Position_Return.Z), Math.Round(PlayerData(Index_).Position_Return.Y), PlayerData(Index_).CharacterId))
+        End Sub
     End Module
 End Namespace

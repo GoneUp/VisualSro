@@ -192,12 +192,10 @@
 
                 Case 5
                     Dim TeleportNumber As Integer = packet.Byte '0x02=recall point, 0x03=move to dead point
-
-
             End Select
-
-
         End Sub
+
+
 
         Private Sub CheckForTax(ByVal Model_Name As String, ByVal writer As PacketWriter)
             Select Case Model_Name

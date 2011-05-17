@@ -100,8 +100,6 @@
             ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
             ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
 
-            SendPm(Index_, "Try to move to: " & ToPos.ToGameX & " y." & ToPos.ToGameY, "sgsdg")
-
             Dim WalkTime As Single
             Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking

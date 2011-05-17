@@ -68,7 +68,7 @@
                 DumpCaveTeleporterFile(base_path & "\data\cave_teleport.txt")
                 Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
-                ' Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
+                Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
                 Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
                 Log.WriteSystemLog("Loaded " & Functions.NpcList.Count & " Autospawn Npc's.")
 

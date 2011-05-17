@@ -60,6 +60,7 @@ Namespace GameServer
                     If Functions.PlayerData(Index) IsNot Nothing And Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
                         If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
                             GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
+                            Exit For
                         End If
                     End If
                 Next

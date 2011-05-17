@@ -73,6 +73,9 @@ Namespace GameServer
                     Case ClientOpcodes.Hotkey_Update
                         Functions.OnHotkeyUpdate(packet, Index_)
 
+                    Case ClientOpcodes.SetReturnPoint
+                        Functions.OnSetReturnPoint(packet, Index_)
+
                         '=======ATTACK======
 
                     Case ClientOpcodes.Target

@@ -67,6 +67,8 @@ Namespace GameServer.Functions
                         Dim tmpY As Single = (pPosition.ToGameY)
                         tmpX -= ToGoX
                         tmpY -= ToGoY
+                        pPosition.XSector = GetXSecFromGameX(tmpX)
+                        pPosition.YSector = GetYSecFromGameY(tmpY)
                         pPosition.X = GetXOffset(tmpX)
                         pPosition.Y = GetYOffset(tmpY)
                         StartWalkTime = Date.Now

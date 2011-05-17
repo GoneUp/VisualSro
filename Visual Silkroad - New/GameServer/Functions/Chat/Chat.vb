@@ -197,13 +197,13 @@
         ''' <param name="message"></param>
         ''' <param name="index"></param>
         ''' <remarks></remarks>
-        Public Sub SendNotice(ByVal message As String, ByVal index As Integer)
+        Public Sub SendNotice(ByVal message As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Chat)
             writer.Byte(ChatModes.Notice)
             writer.Word(message.Length)
             writer.UString(message)
-            Server.Send(writer.GetBytes, index)
+            Server.Send(writer.GetBytes, Index_)
         End Sub
 
     End Module

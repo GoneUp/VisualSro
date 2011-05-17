@@ -341,17 +341,15 @@
 
             Select Case town
                 Case 1 'jg
-                    PlayerData(Index_).Position_Return.XSector = 168
-                    PlayerData(Index_).Position_Return.YSector = 98
-                    PlayerData(Index_).Position_Return.X = 0
-                    PlayerData(Index_).Position_Return.Z = 0
-                    PlayerData(Index_).Position_Return.Y = 0
-
+                    PlayerData(Index_).Position_Return = GetTeleportPoint(1)
                 Case 2 'dw
+                    PlayerData(Index_).Position_Return = GetTeleportPoint(2)
                 Case 3 'ht
+                    PlayerData(Index_).Position_Return = GetTeleportPoint(11)
                 Case 5 'const
+                    PlayerData(Index_).Position_Return = GetTeleportPoint(25)
                 Case 6 'sm
-
+                    PlayerData(Index_).Position_Return = GetTeleportPoint(34)
                 Case Else
                     SendPm(Index_, "Return Point not found!", "[SERVER]")
             End Select

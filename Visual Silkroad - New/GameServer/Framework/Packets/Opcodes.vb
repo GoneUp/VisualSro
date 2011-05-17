@@ -26,6 +26,7 @@
 		[Exit] = &H7005
         Target = &H7045
         Death_Respawn = &H3053
+        SetReturnPoint = &H7059
 
 		ItemMove = &H7034
         Alchemy = &H7150

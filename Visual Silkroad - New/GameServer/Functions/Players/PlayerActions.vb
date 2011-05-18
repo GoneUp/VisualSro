@@ -294,7 +294,7 @@
             PlayerData(Index_).Position_Dead = PlayerData(Index_).Position
             UpdateHP(Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE positions SET death_xsect='{0}', dead_ysect='{1}', dead_xpos='{2}', dead_zpos='{3}', dead_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Recall.XSector, PlayerData(Index_).Position_Recall.YSector, Math.Round(PlayerData(Index_).Position_Recall.X), Math.Round(PlayerData(Index_).Position_Recall.Z), Math.Round(PlayerData(Index_).Position_Recall.Y), PlayerData(Index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE positions SET dead_xsect='{0}', dead_ysect='{1}', dead_xpos='{2}', dead_zpos='{3}', dead_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Recall.XSector, PlayerData(Index_).Position_Recall.YSector, Math.Round(PlayerData(Index_).Position_Recall.X), Math.Round(PlayerData(Index_).Position_Recall.Z), Math.Round(PlayerData(Index_).Position_Recall.Y), PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub Player_Die1(ByVal Index_ As Integer)

@@ -53,6 +53,11 @@ Namespace GameServer
             AttackTimer.Stop()
 
             Try
+                If Me.Death Then
+                    Exit Try
+                End If
+
+
                 Dim sort = From elem In DamageFromPlayer Order By elem.Damage Descending Select elem
 
                 For i = 0 To sort.Count - 1

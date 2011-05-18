@@ -82,6 +82,7 @@
                     Settings(Index_).Send_Giant = tmpString(1)
                     Settings(Index_).Send_Unique = tmpString(2)
                     DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}', name='damage'", GenerateSettings(Index_), Functions.PlayerData(Index_).CharacterId))
+                    Functions.SendPm(Index_, "Updated Settings of Damage Mod. Normal, Champions is: " & Settings(Index_).Send_Normal & ",  Giant is: " & Settings(Index_).Send_Giant & ", Unique is: " & Settings(Index_).Send_Unique, "[DAMAGE_MOD]")
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog(String.Format("[MOD_DAMAGE][PARSE: {0}][Index:{1}]", Message, Index_))

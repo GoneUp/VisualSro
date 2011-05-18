@@ -54,6 +54,9 @@ Module Log
             Case "/count"
                 GameServer.Log.WriteSystemLog(String.Format("Count:{0}!", GameServer.Server.OnlineClient))
 
+            Case "/cleanup"
+                System.GC.Collect()
+
             Case "/end"
                 For i = 0 To GameServer.Functions.PlayerData.Count - 1
                     If GameServer.Functions.PlayerData(i) IsNot Nothing Then

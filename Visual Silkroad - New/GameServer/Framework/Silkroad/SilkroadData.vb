@@ -292,6 +292,17 @@
             Public NumberOfAttacks As Byte
             Public Type As Byte
             Public Type2 As Byte
+
+            Public EffectId As String
+            Public Effect_1 As Long
+            Public Effect_2 As Long
+            Public Effect_3 As Long
+            Public Effect_4 As Long
+            Public Effect_5 As Long
+            Public Effect_6 As Long
+            Public Effect_7 As Long
+            Public Effect_8 As Long
+            Public Effect_9 As Long
         End Structure
         Public Structure tmpSkill_
             Public Id As UInteger
@@ -345,11 +356,23 @@
                 tmp.PwrPercent = Convert.ToInt32(tmpString(71))
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
                 tmp.PwrMax = Convert.ToInt32(tmpString(73))
-                tmp.Distance = Convert.ToInt32(tmpString(78))
+                tmp.EffectId = Functions.HexToString(Hex(tmpString(74)))
+                tmp.Effect_1 = Convert.ToInt32(tmpString(75))
+                tmp.Effect_2 = Convert.ToInt32(tmpString(76))
+                tmp.Effect_3 = Convert.ToInt32(tmpString(77))
+                tmp.Effect_4 = Convert.ToInt32(tmpString(78))
+                tmp.Effect_5 = Convert.ToInt32(tmpString(79))
+                tmp.Effect_7 = Convert.ToInt32(tmpString(80))
+                tmp.Effect_8 = Convert.ToInt32(tmpString(81))
+                tmp.Effect_9 = Convert.ToInt32(tmpString(82))
+
+                ' tmp.Distance = Convert.ToInt32(tmpString(78))
 
                 If tmp.Distance = 0 Then
                     tmp.Distance = 21
                 End If
+
+                Debug.Print(tmp.EffectId)
 
                 tmp.NumberOfAttacks = GetNumberOfAttacks(GetTmpSkillById(tmp.Id))
                 If tmpString(3).Contains("SWORD") Then

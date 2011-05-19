@@ -123,5 +123,25 @@
             End If
         End Function
 
+
+
+        Public Function HexToString(ByVal ToConvert As String) As String
+            Dim tmp As String = ""
+            Dim str = ToConvert.Count Mod 2 = ToConvert.Count / 2
+            Dim str2 = 4 Mod 2 = 4 / 2
+            Dim i = 4 / 2
+            Dim d = 5 / 2
+            Try
+                If ToConvert.Count >= 2 Then
+                    For i = 0 To ToConvert.Count - 1 Step 2
+                        tmp += Chr("&H" & (ToConvert.Substring(i, 2)))
+                    Next
+                End If
+            Catch ex As Exception
+
+            End Try
+
+            Return tmp
+        End Function
     End Module
 End Namespace

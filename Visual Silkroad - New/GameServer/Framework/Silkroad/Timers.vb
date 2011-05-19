@@ -229,7 +229,7 @@ Namespace GameServer.Functions
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
 
-                        If Mob_.Death = True Then
+                        If Mob_.Death = True Or Mob_.HP_Cur <= 0 Then
                             Dim wert As Integer = Date.Compare(Mob_.DeathRemoveTime, Date.Now)
                             If wert = -1 Then
                                 'Abgelaufen

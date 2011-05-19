@@ -311,8 +311,12 @@
 
 
                         Case BuffType_.SkillBuff
-                            'Dim Ref As GameServer.Skill_ = GameServer.GetSkillById(Buffs(key).SkillID)
+                            Dim Ref As GameServer.Skill_ = GameServer.GetSkillById(Buffs(key).SkillID)
 
+                            Select Case Ref.EffectId
+                                Case Else
+                                    Functions.SendNotice("Unknown Buff: " & Ref.EffectId)
+                            End Select
 
                     End Select
                 End If

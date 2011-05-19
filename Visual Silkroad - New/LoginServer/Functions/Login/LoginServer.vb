@@ -175,8 +175,8 @@
         Public Sub HandleLogin(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
 
             Dim LoginMethod As Byte = packet.Byte()
-            Dim ID As String = packet.String(packet.Word)
-            Dim Pw As String = packet.String(packet.Word)
+            Dim ID As String = packet.String(packet.Word).ToLower
+            Dim Pw As String = packet.String(packet.Word).ToLower
             Dim ServerID As Integer = packet.Word
             Dim writer As New LoginServer.PacketWriter
 

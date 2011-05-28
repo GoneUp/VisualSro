@@ -16,6 +16,7 @@ Namespace GameServer
             AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
             AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
             AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
+            AddHandler Server.OnServerStopped, AddressOf Program.Server_OnServerStopped
             AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
             AddHandler DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
 
@@ -103,6 +104,10 @@ read:
 
         Private Shared Sub Server_OnServerStarted(ByVal time As String)
             GameServer.Log.WriteSystemLog("Server Started: " & time)
+        End Sub
+
+        Private Shared Sub Server_OnServerStopped(ByVal time As String)
+            GameServer.Log.WriteSystemLog("Server Stopped: " & time)
         End Sub
 
         Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)

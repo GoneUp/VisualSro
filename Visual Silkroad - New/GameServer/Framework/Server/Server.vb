@@ -19,6 +19,7 @@ Namespace GameServer
         Public Shared Event OnReceiveData As dReceive
         Public Shared Event OnServerError As dError
         Public Shared Event OnServerStarted As dServerStarted
+        Public Shared Event OnServerStopped As dServerStopped
 
         Public Shared Sub Start()
             Dim localEP As New IPEndPoint(IPAddress.Any, ServerPort)
@@ -47,7 +48,7 @@ Namespace GameServer
                 RaiseEvent OnServerError(exception, -3)
             Finally
                 Dim time As String = DateTime.Now.ToString()
-                RaiseEvent OnServerStarted(time)
+                RaiseEvent OnServerStopped(time)
             End Try
         End Sub
 
@@ -310,6 +311,7 @@ Namespace GameServer
         Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
         Public Delegate Sub dServerStarted(ByVal time As String)
+        Public Delegate Sub dServerStopped(ByVal time As String)
 #End Region
     End Class
 End Namespace

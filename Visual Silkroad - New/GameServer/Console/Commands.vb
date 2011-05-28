@@ -52,12 +52,16 @@ Module Log
                 GameServer.Functions.OnSetWeather(3, 75)
 
             Case "/count"
-                GameServer.Log.WriteSystemLog(String.Format("Count:{0}!", GameServer.Server.OnlineClient))
+                GameServer.Log.WriteSystemLog(String.Format("Count Player:{0}!", GameServer.Server.OnlineClient))
+                GameServer.Log.WriteSystemLog(String.Format("Count Mob:{0}!", GameServer.Functions.MobList.Count))
 
             Case "/cleanup"
+                Dim mem As Long = Process.GetCurrentProcess.PrivateMemorySize64
                 System.GC.Collect()
-
+                GameServer.Log.WriteSystemLog("Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64) / 1024 / 1024)
             Case "/end"
+
+                GameServer.Log.WriteSystemLog("Ending Server....")
                 For i = 0 To GameServer.Functions.PlayerData.Count - 1
                     If GameServer.Functions.PlayerData(i) IsNot Nothing Then
                         GameServer.Server.Dissconnect(i)

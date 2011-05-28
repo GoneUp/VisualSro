@@ -15,7 +15,7 @@
                         packet.Skip(2)
                         Dim ObjectID As UInt32 = packet.DWord
                         If PlayerData(Index_).Attacking = False Then
-                            If MobList.ContainsKey(ObjectID) And MobList(ObjectID).UniqueID = ObjectID And MobList(ObjectID).Death = False Then
+                            If MobList.ContainsKey(ObjectID) And MobList(ObjectID).Death = False Then
                                 PlayerAttackNormal(Index_, ObjectID)
                             End If
 
@@ -33,20 +33,23 @@
                     Case 4
                         Dim skillid As UInteger = packet.DWord
                         Dim type As Byte = packet.Byte() 'Type = 1--> Monster Attack --- Type = 0 --> Buff
+                        Dim refskill As Skill_ = GetSkillById(skillid)
 
                         Select Case type
+                            Case 0
+                                PlayerBuff_BeginnCasting(skillid, Index_)
                             Case 1
                                 Dim ObjectID As UInt32 = packet.DWord
 
                                 If PlayerData(Index_).Attacking = False Then
-                                    If MobList.ContainsKey(ObjectID) And MobList(ObjectID).UniqueID = ObjectID And MobList(ObjectID).Death = False Then
+                                    If MobList.ContainsKey(ObjectID) And MobList(ObjectID).Death = False Then
                                         PlayerAttackBeginSkill(skillid, Index_, ObjectID)
                                         found = True
                                     End If
 
                                 Else
                                     If PlayerData(Index_).AttackType = AttackType_.Normal Then
-                                        If MobList.ContainsKey(ObjectID) And MobList(ObjectID).UniqueID = ObjectID And MobList(ObjectID).Death = False Then
+                                        If MobList.ContainsKey(ObjectID) And MobList(ObjectID).Death = False Then
                                             'Cleanup the regular Attack before using a Skill
                                             Timers.PlayerAttackTimer(Index_).Stop()
                                             PlayerData(Index_).Attacking = False
@@ -61,10 +64,6 @@
                                         End If
                                     End If
                                 End If
-                            Case 0
-                                PlayerBuff_BeginnCasting(skillid, Index_)
-
-
                         End Select
                 End Select
 
@@ -97,11 +96,15 @@
         End Sub
 
         Public Sub PlayerAttackNormal(ByVal Index_ As Integer, ByVal MobUniqueId As Integer)
+
+            If PlayerData(Index_).Busy Or MobList.ContainsKey(MobUniqueId) = False Then
+                Exit Sub
+            End If
+
             Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
             Dim RefWeapon As New cItem
             Dim AttObject As Object_ = GetObjectById(MobList(MobUniqueId).Pk2ID)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
-
 
             If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
                 'Weapon
@@ -111,16 +114,11 @@
                 RefWeapon.ATTACK_DISTANCE = 6
             End If
 
-            If AttObject.TypeName Is Nothing Or PlayerData(Index_).Busy Then
-                Exit Sub
-            End If
-
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
             If Distance >= (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)) Then
                 MoveUserToMonster(Index_, MobUniqueId, (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)))
                 Exit Sub
             End If
-
 
             Select Case RefWeapon.CLASS_C
                 Case 0
@@ -382,7 +380,6 @@
 
 
         Function CalculateDamageMob(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) As UInteger
-            Dim RefWeapon As New cItem
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
@@ -398,13 +395,6 @@
 
             Dim DamageMin As Double
             Dim DamageMax As Double
-
-            If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
-                'Weapon
-                GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
-            Else
-                'No Weapon
-            End If
 
             If RefSkill.Type = TypeTable.Phy Then
                 DamageMin = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)

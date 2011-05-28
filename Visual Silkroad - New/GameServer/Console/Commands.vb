@@ -66,6 +66,11 @@ Module Log
                 GameServer.Server.Stop()
                 GameServer.DataBase.ExecuteQuerys()
                 End
+
+            Case "/dcoff"
+                GameServer.Settings.Server_PingDc = False
+            Case "/dcon"
+                GameServer.Settings.Server_PingDc = True
         End Select
 
     End Sub

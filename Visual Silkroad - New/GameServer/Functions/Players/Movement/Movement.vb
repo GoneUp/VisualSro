@@ -27,6 +27,11 @@
 
 
                 OnMoveUser(Index_, to_pos)
+            ElseIf tag = 0 Then
+                Dim to_angle As UShort = packet.Word
+                Dim to_grad As Single = (to_angle / 65535) * 360
+                SendPm(Index_, "You are tyring to Angle Move to: " & to_grad, "Debug")
+
             End If
         End Sub
 
@@ -64,6 +69,12 @@
                 End If
 
                 writer.Byte(0) '1= source
+                'writer.Byte(PlayerData(Index_).Position.XSector)
+                'writer.Byte(PlayerData(Index_).Position.YSector)
+                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X)))
+                'writer.Byte(BitConverter.GetBytes(PlayerData(Index_).Position.Z))
+                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
+
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)

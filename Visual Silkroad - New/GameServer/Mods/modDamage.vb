@@ -38,7 +38,7 @@
 
         Public Sub OnPlayerCreate(ByVal CharId As UInteger, ByVal Index_ As Integer)
             Try
-                DataBase.SaveQuery(String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,1,1')", CharId))
+                DataBase.SaveQuery(String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,255,255')", CharId))
             Catch ex As Exception
                 Log.WriteSystemLog(String.Format("[MOD_DAMAGE][CREATE][Index:{0},CHAR:{1}]", Index_, CharId))
             End Try
@@ -60,9 +60,9 @@
 
                 Dim setting As String = tmpSet_.Tables(0).Rows(0).Item(3)
                 Dim tmpString As String() = setting.Split(",")
-                tmp.Send_Normal = tmpString(0)
-                tmp.Send_Giant = tmpString(1)
-                tmp.Send_Unique = tmpString(2)
+                tmp.Send_Normal = CBool(tmpString(0))
+                tmp.Send_Giant = CBool(tmpString(1))
+                tmp.Send_Unique = CBool(tmpString(2))
                 Settings(Index_) = tmp
             Catch ex As Exception
                 Log.WriteSystemLog(String.Format("[MOD_DAMAGE][LOAD][Index:{0},CHAR:{1}]", Index_, Functions.PlayerData(Index_).CharacterName))
@@ -70,7 +70,7 @@
         End Sub
 
         Public Sub OnPlayerLogoff(ByVal Index_)
-            DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}', name='damage'", GenerateSettings(Index_), Functions.PlayerData(Index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'", GenerateSettings(Index_), Functions.PlayerData(Index_).CharacterId))
             Settings(Index_) = New Settings_
         End Sub
 
@@ -81,7 +81,7 @@
                     Settings(Index_).Send_Normal = tmpString(0)
                     Settings(Index_).Send_Giant = tmpString(1)
                     Settings(Index_).Send_Unique = tmpString(2)
-                    DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}', name='damage'", GenerateSettings(Index_), Functions.PlayerData(Index_).CharacterId))
+                    DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'", GenerateSettings(Index_), Functions.PlayerData(Index_).CharacterId))
                     Functions.SendPm(Index_, "Updated Settings of Damage Mod. Normal, Champions is: " & Settings(Index_).Send_Normal & ",  Giant is: " & Settings(Index_).Send_Giant & ", Unique is: " & Settings(Index_).Send_Unique, "[DAMAGE_MOD]")
                 End If
             Catch ex As Exception

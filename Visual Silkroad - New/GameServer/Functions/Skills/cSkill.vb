@@ -59,7 +59,7 @@
 
     Public Enum BuffType_
         ItemBuff = 0
-        SkillBuff = 0
+        SkillBuff = 1
     End Enum
 End Namespace
 

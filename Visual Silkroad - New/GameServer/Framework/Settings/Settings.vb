@@ -23,6 +23,7 @@
         Public Server_SPRate As Long = 1
         Public Server_GoldRate As Long = 1
         Public Server_DropRate As Long = 1
+        Public Server_PingDc As Boolean = True
 
         Public Server_Ip As String = "0.0.0.0"
         Public Server_Port As UShort = 15580

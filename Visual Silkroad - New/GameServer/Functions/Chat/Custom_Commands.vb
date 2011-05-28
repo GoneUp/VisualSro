@@ -204,6 +204,28 @@
                         Functions.UpdateHP(Index_)
                     End If
 
+                Case "\\dropgold"
+                    '\\dropgold [amout] [how much drops]
+                    If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) Then
+                        Dim side As Integer = Math.Sqrt(tmp(2))
+                        Dim tmpitem As New cInvItem
+                        tmpitem.OwnerCharID = Functions.PlayerData(Index_).UniqueId
+                        tmpitem.Amount = tmp(1)
+                        tmpitem.Pk2Id = 1
+
+                        For x = 1 To side
+                            For y = 1 To side
+                                Dim tmp_pos As Position = Functions.PlayerData(Index_).Position
+                                Dim tmpX As Single = tmp_pos.ToGameX + x
+                                Dim tmpY As Single = tmp_pos.ToGameY + y
+                                tmp_pos.XSector = Functions.GetXSecFromGameX(tmpX)
+                                tmp_pos.YSector = Functions.GetYSecFromGameY(tmpY)
+                                tmp_pos.X = Functions.GetXOffset(tmpX)
+                                tmp_pos.Y = Functions.GetYOffset(tmpY)
+                                Functions.DropItem(tmpitem, tmp_pos)
+                            Next
+                        Next
+                    End If
             End Select
 
 

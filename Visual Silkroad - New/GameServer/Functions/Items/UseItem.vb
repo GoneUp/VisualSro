@@ -9,15 +9,15 @@
 
             If ID1 = &HEC Then
                 Select Case ID2
-                    Case &H8 'HP-Pot
+                    Case 8 'HP-Pot
                         OnUseHPPot(slot, Index_)
-                    Case &H9 'Return Scroll
+                    Case 9 'Return Scroll
                         OnUseReturnScroll(slot, Index_)
-                    Case &H10 'MP-Pot 
+                    Case 14 'Speed Drug
+                    Case 16 'MP-Pot 
                         OnUseMPPot(slot, Index_)
-                    Case &HE 'Speed Drug
-
-                    Case &H40 'Berserk Scroll
+                    Case 24 'gngwc 100% scrol
+                    Case 64 'Berserk Scroll
                         OnUseBerserkScroll(slot, Index_)
                 End Select
 

@@ -20,6 +20,7 @@ Namespace GameServer
         Public DamageFromPlayer As New List(Of cDamageDone)
 
         Public IsAttacking As Boolean = False
+        Public AttackEndTime As New Date
         Public AttackingId As UInteger
         Public UsingSkillId As UInteger
         Public AttackTimer As System.Timers.Timer
@@ -43,6 +44,7 @@ Namespace GameServer
         Public Sub AttackTimer_Start(ByVal Interval As Integer)
             AttackTimer.Interval = Interval
             AttackTimer.Start()
+            Me.IsAttacking = False
         End Sub
 
         Public Sub AttackTimer_Stop()
@@ -53,8 +55,8 @@ Namespace GameServer
             AttackTimer.Stop()
 
             Try
-                If Me.Death Then
-                    Exit Try
+                If Me.Death = True And Date.Compare(Date.Now, Me.AttackEndTime) = -1 Then
+                    Exit Sub
                 End If
 
 
@@ -73,6 +75,9 @@ Namespace GameServer
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE") '
             End Try
+
+            AttackTimer.Interval = 2500
+            AttackTimer.Start()
         End Sub
 
         Public Sub Disponse()

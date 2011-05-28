@@ -39,46 +39,53 @@
                 'No Gold
 
             Else
-                Dim Slot As Byte = GetFreeItemSlot(index_)
+                Dim ItemSlots As New List(Of Byte)
 
-                If Slot <> -1 Then
-                    Dim temp_item As cInvItem = Inventorys(index_).UserItems(Slot)
-                    temp_item.Pk2Id = BuyItem.ITEM_TYPE
-                    temp_item.OwnerCharID = PlayerData(index_).CharacterId
+                For i = 0 To amout
+                    Dim Slot As Byte = GetFreeItemSlot(index_)
 
-                    If BuyItem.CLASS_A = 1 Then
-                        'Equip
-                        temp_item.Plus = 0
-                        temp_item.Durability = BuyItem.MAX_DURA
-                        temp_item.Blues = New List(Of cInvItem.sBlue)
+                    If Slot <> -1 Then
+                        Dim temp_item As cInvItem = Inventorys(index_).UserItems(Slot)
+                        temp_item.Pk2Id = BuyItem.ITEM_TYPE
+                        temp_item.OwnerCharID = PlayerData(index_).CharacterId
 
-                    ElseIf BuyItem.CLASS_A = 2 Then
-                        'Pet
-                    ElseIf BuyItem.CLASS_A = 3 Then
-                        'Etc
-                        temp_item.Amount = amout
+                        If BuyItem.CLASS_A = 1 Then
+                            'Equip
+                            temp_item.Plus = 0
+                            temp_item.Durability = BuyItem.MAX_DURA
+                            temp_item.Blues = New List(Of cInvItem.sBlue)
+
+                        ElseIf BuyItem.CLASS_A = 2 Then
+                            'Pet
+                        ElseIf BuyItem.CLASS_A = 3 Then
+                            'Etc
+                            temp_item.Amount = amout
+                        End If
+
+                        Inventorys(index_).UserItems(Slot) = temp_item
+                        UpdateItem(Inventorys(index_).UserItems(Slot)) 'SAVE IT
+                        ItemSlots.Add(Slot)
                     End If
+                Next
 
-                    Inventorys(index_).UserItems(Slot) = temp_item
-                    UpdateItem(Inventorys(index_).UserItems(Slot)) 'SAVE IT
-
-
-                    PlayerData(index_).Gold -= Price
-                    UpdateGold(index_)
+                PlayerData(index_).Gold -= Price
+                UpdateGold(index_)
 
 
-                    Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ItemMove)
-                    writer.Byte(1)
-                    writer.Byte(8)
-                    writer.Byte(shopline)
-                    writer.Byte(itemline)
-                    writer.Byte(1)
-                    writer.Byte(Slot)
-                    writer.Word(amout)
-                    Server.Send(writer.GetBytes, index_)
-                End If
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.ItemMove)
+                writer.Byte(1)
+                writer.Byte(8)
+                writer.Byte(shopline)
+                writer.Byte(itemline)
+                writer.Byte(ItemSlots.Count)
+                For Each slot In ItemSlots
+                    writer.Byte(slot)
+                Next
+                writer.Word(amout)
+                Server.Send(writer.GetBytes, index_)
             End If
+
         End Sub
 
 

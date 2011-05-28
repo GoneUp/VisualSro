@@ -4,28 +4,40 @@
         Dim Random As New Random
 
         Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
-            If MobList.ContainsKey(MobUniqueID) = False Then
+            If MobList.ContainsKey(MobUniqueID) = False Or MobList(MobUniqueID).IsAttacking = True And PlayerData(Index_) IsNot Nothing Then
                 Exit Sub
             End If
 
+            Debug.Print("Attack")
             Dim Mob_ As cMonster = MobList(MobUniqueID)
+            Dim RefSkill As Skill_
 
             Mob_.IsAttacking = True
             Mob_.AttackingId = PlayerData(Index_).UniqueId
+
+            'Search for the right Skill
             If SkillID = 0 Then
                 Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
             Else
                 Mob_.UsingSkillId = SkillID
             End If
 
+            RefSkill = GetSkillById(Mob_.UsingSkillId)
+
+            Do Until RefSkill.EffectId = "att"
+                Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
+                RefSkill = GetSkillById(Mob_.UsingSkillId)
+            Loop
+
+
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
             Dim AttObject As Object_ = GetObjectById(PlayerData(Index_).Model)
             Dim RefMonster As Object_ = GetObjectById(Mob_.Pk2ID)
-            Dim RefSkill As Skill_ = GetSkillById(Mob_.UsingSkillId)
+
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
             If Distance >= (RefSkill.Distance) Then
-                MoveMob(MobUniqueID, PlayerData(Index_).Position)
+                MoveMobToUser(MobUniqueID, PlayerData(Index_).Position, RefSkill.Distance)
                 Exit Sub
             End If
 
@@ -70,11 +82,11 @@
                         End If
                     End If
 
-                        writer.Byte(afterstate)
-                        writer.Byte(Crit)
-                        writer.DWord(Damage)
-                        writer.Byte(0)
-                        writer.Word(0)
+                    writer.Byte(afterstate)
+                    writer.Byte(Crit)
+                    writer.DWord(Damage)
+                    writer.Byte(0)
+                    writer.Word(0)
                 Next
             Next
             Server.SendIfMobIsSpawned(writer.GetBytes, Mob_.UniqueID)
@@ -87,7 +99,8 @@
                 MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, False)
             Else
                 UpdateHP(Index_)
-                Mob_.AttackTimer_Start(3000)
+                Mob_.AttackTimer_Start(RefSkill.UseDuration * 1000)
+                Mob_.AttackEndTime = Date.Now.AddMilliseconds(RefSkill.UseDuration * 1000)
             End If
         End Sub
 
@@ -108,7 +121,7 @@
             Dim RefSkill As Skill_ = GetSkillById(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
-            If (CSng(Mob.Level) - PlayerData(Index_).Level) > -30 Then
+            If (CSng(Mob.Level) - PlayerData(Index_).Level) > -99 Then
                 Balance = (1 + (CSng(Mob.Level) - PlayerData(Index_).Level) / 100)
             Else
                 Balance = 0.01
@@ -118,8 +131,8 @@
             Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 500)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 75)
-                DamageMax = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 510)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 75)
+                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 500)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                DamageMax = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 510)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
             ElseIf RefSkill.Type = TypeTable.Mag Then
                 'UNUSED FOR NOW
                 '  DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)

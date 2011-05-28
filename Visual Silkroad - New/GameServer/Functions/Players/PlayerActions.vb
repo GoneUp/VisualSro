@@ -190,7 +190,7 @@
                     PlayerData(index_).Pot_Abormal_Value = packet.Byte
                     PlayerData(index_).Pot_Delay = packet.Byte
 
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET pot_hp_slot='{0}', pot_hp_value='{1}', pot_mp_slot='{2}', pot_mp_value='{3}', pot_abnormal_slot='{4}', pot_abnormal_value='{5}', , pot_delay='{6}' where id='{7}'", _
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET pot_hp_slot='{0}', pot_hp_value='{1}', pot_mp_slot='{2}', pot_mp_value='{3}', pot_abnormal_slot='{4}', pot_abnormal_value='{5}', pot_delay='{6}' where id='{7}'", _
                                                      PlayerData(index_).Pot_HP_Slot, PlayerData(index_).Pot_HP_Value, PlayerData(index_).Pot_MP_Slot, PlayerData(index_).Pot_MP_Value, PlayerData(index_).Pot_Abormal_Slot, PlayerData(index_).Pot_Abormal_Value, PlayerData(index_).Pot_Delay, PlayerData(index_).CharacterId))
             End Select
 
@@ -337,25 +337,20 @@
         End Sub
 
         Public Sub OnSetReturnPoint(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim town As UInteger = packet.DWord
+            Dim ObjectId As UInteger = packet.DWord
+            For i = 0 To NpcList.Count - 1
+                If ObjectId = NpcList(i).UniqueID Then
+                    Dim ref As Object_ = GetObjectById(NpcList(i).Pk2ID)
+                    PlayerData(Index_).Position_Return = GetTeleportPoint(ref.Pk2ID)
 
-            Select Case town
-                Case 1 'jg
-                    PlayerData(Index_).Position_Return = GetTeleportPoint(1)
-                Case 2 'dw
-                    PlayerData(Index_).Position_Return = GetTeleportPoint(2)
-                Case 3 'ht
-                    PlayerData(Index_).Position_Return = GetTeleportPoint(11)
-                Case 5 'const
-                    PlayerData(Index_).Position_Return = GetTeleportPoint(25)
-                Case 6 'sm
-                    PlayerData(Index_).Position_Return = GetTeleportPoint(34)
-                Case Else
-                    SendPm(Index_, "Return Point not found!", "[SERVER]")
-            End Select
+                    DataBase.SaveQuery(String.Format("UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Return.XSector, PlayerData(Index_).Position_Return.YSector, Math.Round(PlayerData(Index_).Position_Return.X), Math.Round(PlayerData(Index_).Position_Return.Z), Math.Round(PlayerData(Index_).Position_Return.Y), PlayerData(Index_).CharacterId))
+                End If
+            Next
 
 
-            DataBase.SaveQuery(String.Format("UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Return.XSector, PlayerData(Index_).Position_Return.YSector, Math.Round(PlayerData(Index_).Position_Return.X), Math.Round(PlayerData(Index_).Position_Return.Z), Math.Round(PlayerData(Index_).Position_Return.Y), PlayerData(Index_).CharacterId))
+
+
+
         End Sub
     End Module
 End Namespace

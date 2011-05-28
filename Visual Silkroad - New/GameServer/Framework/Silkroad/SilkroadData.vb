@@ -343,7 +343,6 @@
                 tmp.Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(3)
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
-
                 If tmpString(13) > Int32.MaxValue Or tmpString(13) < Int32.MinValue Then
                     Debug.Print(1)
                 End If
@@ -356,23 +355,22 @@
                 tmp.PwrPercent = Convert.ToInt32(tmpString(71))
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
                 tmp.PwrMax = Convert.ToInt32(tmpString(73))
-                tmp.EffectId = Functions.HexToString(Hex(tmpString(74)))
-                tmp.Effect_1 = Convert.ToInt32(tmpString(75))
-                tmp.Effect_2 = Convert.ToInt32(tmpString(76))
-                tmp.Effect_3 = Convert.ToInt32(tmpString(77))
-                tmp.Effect_4 = Convert.ToInt32(tmpString(78))
-                tmp.Effect_5 = Convert.ToInt32(tmpString(79))
-                tmp.Effect_7 = Convert.ToInt32(tmpString(80))
-                tmp.Effect_8 = Convert.ToInt32(tmpString(81))
-                tmp.Effect_9 = Convert.ToInt32(tmpString(82))
+                tmp.EffectId = Functions.HexToString(Hex(tmpString(69)))
+                tmp.Effect_1 = Convert.ToInt32(tmpString(70))
+                tmp.Effect_2 = Convert.ToInt32(tmpString(71))
+                tmp.Effect_3 = Convert.ToInt32(tmpString(72))
+                tmp.Effect_4 = Convert.ToInt32(tmpString(73))
+                tmp.Effect_5 = Convert.ToInt32(tmpString(74))
+                tmp.Effect_7 = Convert.ToInt32(tmpString(75))
+                tmp.Effect_8 = Convert.ToInt32(tmpString(76))
+                tmp.Effect_9 = Convert.ToInt32(tmpString(77))
 
                 ' tmp.Distance = Convert.ToInt32(tmpString(78))
 
-                If tmp.Distance = 0 Then
+                If tmp.EffectId = "att" Then
                     tmp.Distance = 21
                 End If
 
-                Debug.Print(tmp.EffectId)
 
                 tmp.NumberOfAttacks = GetNumberOfAttacks(GetTmpSkillById(tmp.Id))
                 If tmpString(3).Contains("SWORD") Then
@@ -700,8 +698,6 @@
                     obj.ToPos.Z = tmpString(7)
                     obj.ToPos.Y = tmpString(8)
 
-
-
                     Dim link_lines As String() = IO.File.ReadAllLines(Path_Link)
                     For b As Integer = 0 To link_lines.Length - 1
                         Dim tmpString2 As String() = link_lines(b).Split(ControlChars.Tab)
@@ -721,7 +717,7 @@
             Next
         End Sub
 
-        Public Function GetTeleportPoint(ByVal Number As UInteger)
+        Public Function GetTeleportPoint(ByVal Number As Integer)
             For i = 0 To RefTeleportPoints.Count - 1
                 If RefTeleportPoints(i).Number = Number Then
                     Return RefTeleportPoints(i)
@@ -730,6 +726,14 @@
             Throw New Exception("Teleportpoint couldn't be found! P:" & Number)
         End Function
 
+        Public Function GetTeleportPoint(ByVal Pk2Id As UInteger)
+            For i = 0 To RefTeleportPoints.Count - 1
+                If RefTeleportPoints(i).Pk2ID = Pk2Id Then
+                    Return RefTeleportPoints(i)
+                End If
+            Next
+            Throw New Exception("Teleportpoint couldn't be found! PN:" & Pk2Id)
+        End Function
 
         Public Structure SpecialSector_
             Public Type As SpecialSector_Types

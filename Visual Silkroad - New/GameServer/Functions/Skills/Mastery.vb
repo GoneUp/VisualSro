@@ -177,5 +177,25 @@
             Next
             Return False
         End Function
+
+
+        Public Function GetHighestPlayerMastery(ByVal Index_ As Integer) As cMastery
+            Dim ToReturn As cMastery
+            For i = 0 To GameDB.Masterys.Length - 1
+
+                If GameDB.Masterys(i) IsNot Nothing Then
+                    If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId Then
+                        If ToReturn Is Nothing Then
+                            ToReturn = GameDB.Masterys(i)
+                        ElseIf ToReturn.Level < GameDB.Masterys(i).Level Then
+                            ToReturn = GameDB.Masterys(i)
+                        End If
+
+                    End If
+
+                End If
+            Next
+            Return ToReturn
+        End Function
     End Module
 End Namespace

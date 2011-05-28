@@ -188,6 +188,11 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Character)
             writer.Byte(1) 'create
+            writer.Byte(2)
+            writer.Byte(1)
+            writer.Byte(4)
+            Server.Send(writer.GetBytes, Index_)
+            Exit Sub
 
             If GameDB.CheckNick(nick) And CheckForAbuse(nick) = True Then
                 writer.Byte(2)
@@ -514,7 +519,7 @@
             Dim chari As [cChar] = PlayerData(Index_)
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterInfo)
-            writer.DWord(2289569290)  '@@@@@@@@@@@@@@@@@
+            writer.DWord(1273064057)  '@@@@@@@@@@@@@@@@@
             writer.DWord(chari.Model)  ' Character Model
             writer.Byte(chari.Volume)  ' Volume & Height
             writer.Byte(chari.Level)  ' Level
@@ -578,8 +583,8 @@
             writer.Byte(2) 'end
 
 
-            writer.Word(1)  ' Amount of Completed Quests
-            writer.DWord(1) 'event
+            writer.Word(0)  ' Amount of Completed Quests
+            'writer.DWord(1) 'event
 
             writer.Word(0)  ' Amount of Pending Quests
 
@@ -676,7 +681,7 @@
             writer.Word(1)  'unknown
             writer.Word(1)
             writer.Byte(0)
-            writer.Byte(1)
+            writer.Byte(0)
 
 
             Server.Send(writer.GetBytes, Index_)
@@ -689,6 +694,19 @@
             writer.Byte(1)
             writer.Byte(&HB4)
             Server.Send(writer.GetBytes, Index_)
+
+            writer.Create(ServerOpcodes.JoinWorldUnknown)
+            writer.Word(0)
+            Server.Send(writer.GetBytes, Index_)
+
+            writer.Create(ServerOpcodes.JoinWorldUnknown2)
+            writer.Byte(0)
+            Server.Send(writer.GetBytes, Index_)
+
+            writer.Create(ServerOpcodes.JoinWorldUnknown3) 'new message
+            writer.Byte(9)
+            writer.Byte(1)
+            'Server.Send(writer.GetBytes, Index_)
 
             'UpdateState(4, 2, Index_) 'Untouchable Status
             ObjectSpawnCheck(Index_)

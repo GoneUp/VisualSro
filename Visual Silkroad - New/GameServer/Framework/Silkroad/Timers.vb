@@ -372,26 +372,36 @@ Namespace GameServer.Functions
                             Select Case PlayerData(i).ActionFlag
                                 Case 0
                                     'Nomral
-                                    If PlayerData(i).CHP <> PlayerData(i).HP Then
+                                    If PlayerData(i).CHP < PlayerData(i).HP Then
                                         PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.002, 0, MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
-                                    If PlayerData(i).CMP <> PlayerData(i).MP Then
+                                    If PlayerData(i).CMP < PlayerData(i).MP Then
                                         PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.002, 0, MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
 
                                 Case 4
                                     'Sitting
-                                    If PlayerData(i).CHP <> PlayerData(i).HP Then
+                                    If PlayerData(i).CHP < PlayerData(i).HP Then
                                         PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.05, 0, MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
-                                    If PlayerData(i).CMP <> PlayerData(i).MP Then
+                                    If PlayerData(i).CMP < PlayerData(i).MP Then
                                         PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.05, 0, MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
                             End Select
+
+                            'Check and Correct Errors...
+                            If PlayerData(i).CHP > PlayerData(i).HP Then
+                                PlayerData(i).CHP = PlayerData(i).HP
+                            End If
+                            If PlayerData(i).CMP > PlayerData(i).MP Then
+                                PlayerData(i).CMP = PlayerData(i).MP
+                            End If
+
+
                             If Changed_HPMP = True Then
                                 UpdateHP_MP(i)
                             End If

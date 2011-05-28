@@ -18,36 +18,39 @@
             Dim type5 As Byte = packet.Byte
             Dim LongName As String = packet.String(packet.Word)
             Dim RefObject As MallPackage_ = GetItemMallItemByName(LongName)
+            Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
             Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(index_).AccountID)
 
             If LongName = RefObject.Name_Package Then
-                If GameDB.Users(UserIndex).Silk - RefObject.Price >= 0 And GetFreeItemSlot(index_) <> -1 Then
-                    Dim _Refitem As cItem = GetItemByName(RefObject.Name_Normal)
-                    Dim slot As Byte = GetFreeItemSlot(index_)
-                    Dim item As cInvItem = Inventorys(index_).UserItems(slot)
-                    Select Case _Refitem.CLASS_A
-                        Case 1
-                            item.Pk2Id = _Refitem.ITEM_TYPE
-                            item.Durability = 30
-                            item.Amount = 0
-                            UpdateItem(item)
-                        Case 2
-                            item.Pk2Id = _Refitem.ITEM_TYPE
-                            item.Durability = 30
-                            item.Amount = 10
-                            UpdateItem(item)
-                        Case 3
-                            item.Pk2Id = _Refitem.ITEM_TYPE
-                            item.Durability = 30
-                            item.Amount = RefObject.Amout
-                            UpdateItem(item)
-                    End Select
+                If GameDB.Users(UserIndex).Silk - (RefObject.Price * amout) >= 0 And GetFreeItemSlot(index_) <> -1 Then
+                    Dim ItemSlots As New List(Of Byte)
 
-                    GameDB.Users(UserIndex).Silk -= RefObject.Price
-                    DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", GameDB.Users(UserIndex).Silk, PlayerData(index_).AccountID))
-                    OnSendSilks(index_)
+                    For i = 1 To amout
+                        Dim _Refitem As cItem = GetItemByName(RefObject.Name_Normal)
+                        Dim slot As Byte = GetFreeItemSlot(index_)
+                        Dim item As cInvItem = Inventorys(index_).UserItems(slot)
+                        item.Pk2Id = _Refitem.ITEM_TYPE
+
+                        Select Case _Refitem.CLASS_A
+                            Case 1
+                                item.Durability = 30
+                                item.Amount = 0
+                            Case 2
+                                item.Durability = 30
+                                item.Amount = 10
+                            Case 3
+                                item.Durability = 30
+                                item.Amount = RefObject.Amout
+                        End Select
+                        UpdateItem(item)
+                        ItemSlots.Add(slot)
+
+                        GameDB.Users(UserIndex).Silk -= RefObject.Price
+                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", GameDB.Users(UserIndex).Silk, PlayerData(index_).AccountID))
+                        OnSendSilks(index_)
+                    Next
 
                     writer.Create(ServerOpcodes.ItemMove)
                     writer.Byte(1)
@@ -57,12 +60,14 @@
                     writer.Byte(type3)
                     writer.Byte(type4)
                     writer.Byte(type5)
-                    writer.Byte(1)
-                    writer.Byte(slot)
-                    writer.Word(1)
+                    writer.Byte(ItemSlots.Count)
+                    For Each slot In ItemSlots
+                        writer.Byte(slot)
+                    Next
+                    writer.Word(amout)
                     Server.Send(writer.GetBytes, index_)
 
-                    Log.WriteGameLog(index_, "Item_Mall", "Buy", String.Format("Item: {0}, Amout {1}, Payed: {2}", _Refitem.ITEM_TYPE_NAME, item.Amount, RefObject.Price))
+                    Log.WriteGameLog(index_, "Item_Mall", "Buy", String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, RefObject.Price))
                 Else
                     writer.Create(ServerOpcodes.ItemMove)
                     writer.Byte(2)

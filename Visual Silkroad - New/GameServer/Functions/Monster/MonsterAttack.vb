@@ -49,7 +49,7 @@
             writer.Byte(2)
             writer.Byte(&H30)
 
-            writer.DWord(RefSkill.Id)
+            writer.DWord(RefSkill.Pk2Id)
             writer.DWord(Mob_.UniqueID)
             writer.DWord(Id_Gen.GetSkillOverId)
             writer.DWord(PlayerData(Index_).UniqueId)
@@ -62,7 +62,7 @@
                 writer.DWord(PlayerData(Index_).UniqueId)
 
                 For i = 0 To NumberAttack - 1
-                    Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Id)
+                    Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Pk2Id)
                     Dim Crit As Byte = Attack_GetCritical()
                     If Crit = True Then
                         Damage = Damage * 2

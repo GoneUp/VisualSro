@@ -5,9 +5,9 @@
         Public RefGoldData As New List(Of cGoldData)
         Public RefLevelData As New List(Of cLevelData)
 
-        Public RefTmpSkills As New List(Of tmpSkill_)
-        Public RefSkills As New List(Of Skill_)
-        Public RefObjects As New List(Of Object_)
+        Public RefTmpSkills As New Dictionary(Of UInteger, tmpSkill_)
+        Public RefSkills As New Dictionary(Of UInteger, Skill_)
+        Public RefObjects As New Dictionary(Of UInteger, Object_)
         Public RefMallItems As New List(Of MallPackage_)
         Public RefReversePoints As New List(Of ReversePoint_)
         Public RefTeleportPoints As New List(Of TeleportPoint_)
@@ -277,7 +277,7 @@
 
         Public Structure Skill_
             Public Name As String
-            Public Id As UInteger
+            Public Pk2Id As UInteger
             Public NextId As UInteger
             Public MasteryID As UInteger
             Public MasteryLevel As Byte
@@ -305,7 +305,7 @@
             Public Effect_9 As Long
         End Structure
         Public Structure tmpSkill_
-            Public Id As UInteger
+            Public Pk2Id As UInteger
             Public NextId As UInteger
         End Structure
 
@@ -324,9 +324,9 @@
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New tmpSkill_()
-                tmp.Id = Convert.ToUInt32(tmpString(1))
+                tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
-                RefTmpSkills.Add(tmp)
+                RefTmpSkills.Add(tmp.Pk2Id, tmp)
             Next
         End Sub
 
@@ -340,12 +340,9 @@
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New Skill_()
-                tmp.Id = Convert.ToUInt32(tmpString(1))
+                tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(3)
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
-                If tmpString(13) > Int32.MaxValue Or tmpString(13) < Int32.MinValue Then
-                    Debug.Print(1)
-                End If
                 tmp.CastTime = Convert.ToInt32(tmpString(13))
                 tmp.MasteryID = Convert.ToUInt32(tmpString(34))
                 tmp.MasteryLevel = Convert.ToUInt32(tmpString(36))
@@ -373,7 +370,7 @@
                 End If
 
 
-                tmp.NumberOfAttacks = GetNumberOfAttacks(GetTmpSkillById(tmp.Id))
+                tmp.NumberOfAttacks = GetNumberOfAttacks(GetTmpSkillById(tmp.Pk2Id))
                 If tmpString(3).Contains("SWORD") Then
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.Bicheon
@@ -408,7 +405,7 @@
                 End If
 
 
-                RefSkills.Add(tmp)
+                RefSkills.Add(tmp.Pk2Id, tmp)
             Next
         End Sub
 
@@ -427,22 +424,20 @@
             Return 1
         End Function
 
-        Public Function GetSkillById(ByVal ItemId As UInteger) As Skill_
-            For i As Integer = 0 To RefSkills.Count - 1
-                If RefSkills(i).Id = ItemId Then
-                    Return RefSkills(i)
-                End If
-            Next
-            Return New Skill_()
+        Public Function GetSkillById(ByVal Pk2Id As UInteger) As Skill_
+            If RefSkills.ContainsKey(Pk2Id) Then
+                Return RefSkills(Pk2Id)
+            Else
+                Return New Skill_
+            End If
         End Function
 
         Private Function GetTmpSkillById(ByVal NextId As UInteger) As tmpSkill_
-            For i As Integer = 0 To RefTmpSkills.Count - 1
-                If RefTmpSkills(i).Id = NextId Then
-                    Return RefTmpSkills(i)
-                End If
-            Next
-            Return New tmpSkill_()
+            If RefTmpSkills.ContainsKey(NextId) Then
+                Return RefTmpSkills(NextId)
+            Else
+                Return New tmpSkill_
+            End If
         End Function
 
         Public Class Object_
@@ -481,8 +476,6 @@
 
             'These Fileds are for Teleports
             Public T_Position As Position
-
-
             Enum Type_
                 Mob_Normal = 0
                 Npc = 1
@@ -494,9 +487,6 @@
                 Mob_Quest = 7
             End Enum
         End Class
-
-
-
 
         Public Sub DumpObjectFiles()
             Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\characterdata.txt")
@@ -563,17 +553,16 @@
                         tmp.Type = Object_.Type_.COS
                 End Select
 
-                RefObjects.Add(tmp)
+                RefObjects.Add(tmp.Pk2ID, tmp)
             Next
         End Sub
 
-        Public Function GetObjectById(ByVal ItemId As UInteger) As Object_
-            For i As Integer = 0 To RefObjects.Count - 1
-                If RefObjects(i).Pk2ID = ItemId Then
-                    Return RefObjects(i)
-                End If
-            Next
-            Return New Object_()
+        Public Function GetObjectById(ByVal Pk2Id As UInteger) As Object_
+            If RefObjects.ContainsKey(Pk2Id) Then
+                Return RefObjects(Pk2Id)
+            Else
+                Return New Object_()
+            End If
         End Function
 
         Public Class ReversePoint_
@@ -663,7 +652,7 @@
                 obj.T_Position.Z = tmpString(44)
                 obj.T_Position.Y = tmpString(45)
 
-                RefObjects.Add(obj)
+                RefObjects.Add(obj.Pk2ID, obj)
 
                 Functions.SpawnNPC(obj.Pk2ID, obj.T_Position, 0)
             Next
@@ -805,13 +794,13 @@
 
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
-                    For d = 0 To RefObjects.Count - 1
-                        If RefObjects(d).Pk2ID = tmpString(1) Then
-                            Dim b = RefObjects(d)
-                            ReDim RefObjects(d).ChatBytes(tmpString.Length - 3)
+                    Dim tmplist As Array = RefObjects.Keys.ToArray
+                    For Each key In tmplist
+                        If RefObjects.ContainsKey(key) Then
+                            ReDim RefObjects(key).ChatBytes(tmpString.Length - 3)
 
-                            For c = 0 To RefObjects(d).ChatBytes.Count - 1
-                                RefObjects(d).ChatBytes(c) = tmpString(c + 2)
+                            For c = 0 To RefObjects(key).ChatBytes.Count - 1
+                                RefObjects(key).ChatBytes(c) = tmpString(c + 2)
                             Next
 
                             Exit For
@@ -861,12 +850,14 @@
 
                     If tmpString(3).StartsWith("STORE") Then
                         Dim StoreName As String = tmpString(3).Remove(tmpString(3).Length - 5, 5)
-                        Dim Index As Integer = GetNpc(StoreName)
+                        Dim Pk2Id As Integer = GetNpc(StoreName)
                         Dim TabIndex As Integer = tmpString(3).Remove(0, tmpString(3).Length - 1)
 
-                        If RefObjects(Index).Shop IsNot Nothing Then
-                            If StoreName.StartsWith("STORE_KT_SMITH") = False Or StoreName.StartsWith("STORE_KT_ARMOR") = False Or StoreName.StartsWith("STORE_KT_ACCESSORY") = False Then
-                                RefObjects(Index).Shop.Tab(TabIndex - 1).TabName = tmpString(3)
+                        If Pk2Id <> -1 Then
+                            If RefObjects(Pk2Id).Shop IsNot Nothing Then
+                                If StoreName.StartsWith("STORE_KT_SMITH") = False Or StoreName.StartsWith("STORE_KT_ARMOR") = False Or StoreName.StartsWith("STORE_KT_ACCESSORY") = False Then
+                                    RefObjects(Pk2Id).Shop.Tab(TabIndex - 1).TabName = tmpString(3)
+                                End If
                             End If
                         End If
                     End If
@@ -881,21 +872,21 @@
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                     Dim TabName As String = tmpString(2)
-                    Dim Index As Integer = GetNpc2(TabName)
+                    Dim Pk2Id As Integer = GetNpc2(TabName)
                     Dim ItemLine As Byte = tmpString(4)
 
-                    If Index <> -1 Then
-                        For r = 0 To RefObjects(Index).Shop.Tab.Count - 1
-                            If RefObjects(Index).Shop.Tab(r) IsNot Nothing Then
-                                If RefObjects(Index).Shop.Tab(r).TabName = TabName Then
-                                    If RefObjects(Index).Shop.Tab(r).Items.Count <= ItemLine Then
-                                        Dim d = RefObjects(Index).Shop.Tab(r)
+                    If Pk2Id <> -1 Then
+                        For r = 0 To RefObjects(Pk2Id).Shop.Tab.Count - 1
+                            If RefObjects(Pk2Id).Shop.Tab(r) IsNot Nothing Then
+                                If RefObjects(Pk2Id).Shop.Tab(r).TabName = TabName Then
+                                    If RefObjects(Pk2Id).Shop.Tab(r).Items.Count <= ItemLine Then
+                                        Dim d = RefObjects(Pk2Id).Shop.Tab(r)
                                         Debug.Print(9)
                                     End If
 
-                                    RefObjects(Index).Shop.Tab(r).Items(ItemLine) = New Functions.ShopData_.ShopItem_
-                                    RefObjects(Index).Shop.Tab(r).Items(ItemLine).ItemLine = ItemLine
-                                    RefObjects(Index).Shop.Tab(r).Items(ItemLine).PackageName = tmpString(3)
+                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine) = New Functions.ShopData_.ShopItem_
+                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine).ItemLine = ItemLine
+                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine).PackageName = tmpString(3)
                                 End If
                             End If
                         Next
@@ -938,25 +929,32 @@
         End Sub
 
         Public Function GetNpc(ByVal StoreName As String)
-            For i = 0 To RefObjects.Count - 1
-                If RefObjects(i).Shop IsNot Nothing Then
-                    If RefObjects(i).Shop.StoreName = StoreName Then
-                        Return i
+            Dim tmplist As Array = RefObjects.Keys.ToArray
+            For Each key In tmplist
+                If RefObjects.ContainsKey(key) Then
+                    If RefObjects(key).Shop IsNot Nothing Then
+                        If RefObjects(key).Shop.StoreName = StoreName Then
+                            Return key
+                        End If
                     End If
                 End If
             Next
+            Return -1
         End Function
 
         Public Function GetNpc2(ByVal TabName As String)
-            For i = 0 To RefObjects.Count - 1
-                If RefObjects(i).Shop IsNot Nothing Then
-                    For r = 0 To RefObjects(i).Shop.Tab.Count - 1
-                        If RefObjects(i).Shop.Tab(r) IsNot Nothing Then
-                            If RefObjects(i).Shop.Tab(r).TabName = TabName Then
-                                Return i
+            Dim tmplist As Array = RefObjects.Keys.ToArray
+            For Each key In tmplist
+                If RefObjects.ContainsKey(key) Then
+                    If RefObjects(key).Shop IsNot Nothing Then
+                        For r = 0 To RefObjects(key).Shop.Tab.Count - 1
+                            If RefObjects(key).Shop.Tab(r) IsNot Nothing Then
+                                If RefObjects(key).Shop.Tab(r).TabName = TabName Then
+                                    Return key
+                                End If
                             End If
-                        End If
-                    Next
+                        Next
+                    End If
                 End If
             Next
             Return -1
@@ -1006,11 +1004,13 @@
                             Dim tmp2 As String() = tmpString(1).Split("_")
                             Select Case tmp2(1)
                                 Case "MOB"
-                                    For b = 0 To RefObjects.Count - 1
-                                        Dim r = RefObjects(b)
-                                        If RefObjects(b).InternalName = tmpString(1) Then
-                                            RefObjects(b).RealName = tmpString(8)
-                                            Exit For
+                                    Dim tmplist As Array = RefObjects.Keys.ToArray
+                                    For Each key In tmplist
+                                        If RefObjects.ContainsKey(key) Then
+                                            If RefObjects(key).InternalName = tmpString(1) Then
+                                                RefObjects(key).RealName = tmpString(8)
+                                                Exit For
+                                            End If
                                         End If
                                     Next
 

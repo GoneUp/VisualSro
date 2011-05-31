@@ -326,7 +326,7 @@
                 writer.DWord(PlayerData(Index_).AttackedId)
 
                 For i = 0 To RefSkill.NumberOfAttacks - 1
-                    Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, RefSkill.Id)
+                    Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, RefSkill.Pk2Id)
                     Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then

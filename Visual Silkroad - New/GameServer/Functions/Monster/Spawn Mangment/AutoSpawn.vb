@@ -27,20 +27,20 @@
                     pos.YSector = Byte.Parse(Convert.ToUInt16(tmpString(1)).ToString("X").Substring(0, 2), System.Globalization.NumberStyles.HexNumber)
 
                     tmp.Pk2ID = Pk2ID
-                    tmp.SpotID = i
+                    tmp.SpotID = i + 10
                     tmp.Position = pos
 
                     Select Case obj_.Type
                         Case Object_.Type_.Mob_Normal
+                            RefRespawns.Add(tmp)
                             For s = 1 To Settings.Server_SpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
-                            RefRespawns.Add(tmp)
                         Case Object_.Type_.Mob_Cave
+                            RefRespawns.Add(tmp)
                             For s = 1 To Settings.Server_SpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
-                            RefRespawns.Add(tmp)
                         Case Object_.Type_.Mob_Unique
                             AddUnqiueRespawn(tmp)
                         Case Object_.Type_.Npc

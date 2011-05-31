@@ -1,27 +1,18 @@
 ﻿Namespace GameServer.Functions
     Module Respawn
         Dim Random As New Random
-        Public MobCountSectorTbl(255, 255) As RespawnSectorCache_
 
         Public Sub CheckForRespawns()
             Dim SpotIndex As Integer
-            FillSectorCache()
+
 
             Try
                 Dim Random As New Random
 
                 For SpotIndex = 0 To RefRespawns.Count - 1
-                    If GetSpawnCount(RefRespawns(SpotIndex).SpotID) < Settings.Server_SpawnRate Then
-                        If Date.Compare(MobCountSectorTbl(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector).Expired, Date.Now) = -1 Then
-
-                        End If
-
-                        If MobCountSectorTbl(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector).Count <= Settings.Server_SpawnsPerSec Then
-                            If Random.Next(0, 4) = 0 Then
-                                ReSpawnMob(SpotIndex)
-                            End If
-                        Else
-                            Debug.Print("CountPerSec overflow: " & GetCountPerSector(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector))
+                    If RefRespawns(SpotIndex).SpawnCount < Settings.Server_SpawnRate Then
+                        If Random.Next(0, 4) = 0 Then
+                            ReSpawnMob(SpotIndex)
                         End If
                     End If
                 Next
@@ -81,6 +72,15 @@
         End Sub
 
 #Region "Helper Functions"
+        Public Function GetRespawn(ByVal SpotId As Integer) As ReSpawn_
+            For SpotIndex = 0 To RefRespawns.Count - 1
+                If RefRespawns(SpotIndex).SpotID = SpotId Then
+                    Return RefRespawns(SpotIndex)
+                End If
+            Next
+            Return New ReSpawn_ With {.SpotID = -1}
+        End Function
+
         Private Function GetSpawnCount(ByVal SpotID As Long) As Integer
             Dim Count As Integer = 0
             Dim tmplist As Array = MobList.Keys.ToArray
@@ -123,58 +123,19 @@
             Next
             Return Count
         End Function
-
-        Private Sub FillSectorCache()
-            ReDim MobCountSectorTbl(255, 255)
-
-            Dim tmplist As Array = MobList.Keys.ToArray
-            For Each key In tmplist
-                If MobList.ContainsKey(key) Then
-                    Dim Mob_ As cMonster = MobList.Item(key)
-                    If MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector) Is Nothing Then
-                        MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector) = New RespawnSectorCache_
-
-                        MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector).Count += 1
-                    Else
-                        MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector).Count += 1
-                    End If
-                End If
-            Next
-        End Sub
-
-        Private Sub FillSectorCache(ByVal Xsec As Byte, ByVal YSec As Byte)
-            MobCountSectorTbl(Xsec, YSec).Count = 0
-
-            Dim tmplist As Array = MobList.Keys.ToArray
-            For Each key In tmplist
-                If MobList.ContainsKey(key) Then
-                    Dim Mob_ As cMonster = MobList.Item(key)
-                    If Mob_.Position.XSector = Xsec And Mob_.Position.YSector = YSec Then
-                        MobCountSectorTbl(Xsec, YSec).Count += 1
-                    End If
-                End If
-            Next
-        End Sub
 #End Region
 
-        Structure ReSpawn_
+        Class ReSpawn_
             Public SpotID As Long
             Public Pk2ID As UInteger
             Public Position As Position
             Public Angle As UShort
-        End Structure
+            Public SpawnCount As Short
+        End Class
 
-        Structure ReSpawnUnique_
+        Class ReSpawnUnique_
             Public Pk2ID As UInteger
             Public Spots As List(Of Position)
-        End Structure
-
-        Class RespawnSectorCache_
-            Public Count As Integer
-            Public Expired As Date 'When this time is reached then the Cache must be recalcutated
-            Sub New()
-                Expired = Date.Now.AddMinutes(1)
-            End Sub
         End Class
 
     End Module

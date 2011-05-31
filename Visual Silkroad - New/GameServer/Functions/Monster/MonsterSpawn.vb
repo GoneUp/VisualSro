@@ -78,15 +78,19 @@
                     tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
             End Select
 
-            If IsUnique(tmp.Pk2ID) Then
-                SendUniqueSpawn(MobID)
-            End If
-
             tmp.HP_Max = tmp.HP_Cur
             MobList.Add(tmp.UniqueID, tmp)
 
-            Dim MyIndex As UInteger = tmp.UniqueID
-            Dim range As Integer = Settings.Server_Range
+            'Send Unique Spawn..
+            If IsUnique(tmp.Pk2ID) Or tmp.Mob_Type = 3 Then
+                SendUniqueSpawn(MobID)
+            End If
+
+            'Add it to Respawn...
+            If SpotID >= 0 Then
+                GetRespawn(SpotID).SpawnCount += 1
+            End If
+
 
             For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
@@ -106,6 +110,10 @@
             Dim _mob As cMonster = MobList(UniqueID)
             Server.SendIfMobIsSpawned(CreateDespawnPacket(_mob.UniqueID), _mob.UniqueID)
             MobList.Remove(UniqueID)
+
+            If _mob.SpotID >= 0 Then
+                GetRespawn(_mob.SpotID).SpawnCount -= 1
+            End If
 
 
             For i = 0 To Server.MaxClients

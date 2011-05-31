@@ -18,8 +18,6 @@ Namespace GameServer
         Public DeathRemoveTime As Date
 
         Public DamageFromPlayer As New List(Of cDamageDone)
-
-        Public IsAttacking As Boolean = False
         Public AttackEndTime As New Date
         Public AttackingId As UInteger
         Public UsingSkillId As UInteger
@@ -35,6 +33,14 @@ Namespace GameServer
             End Set
         End Property
 
+        Public Function IsAttacking() As Boolean
+            If Date.Compare(Date.Now, Me.AttackEndTime) = -1 Then
+                Return True
+            Else
+                Return False
+            End If
+        End Function
+
 #Region "Timer"
         Sub New()
             AttackTimer = New System.Timers.Timer
@@ -44,7 +50,6 @@ Namespace GameServer
         Public Sub AttackTimer_Start(ByVal Interval As Integer)
             AttackTimer.Interval = Interval
             AttackTimer.Start()
-            Me.IsAttacking = False
         End Sub
 
         Public Sub AttackTimer_Stop()
@@ -55,7 +60,7 @@ Namespace GameServer
             AttackTimer.Stop()
 
             Try
-                If Me.Death = True And Date.Compare(Date.Now, Me.AttackEndTime) = -1 Then
+                If Me.Death = True And IsAttacking() Then
                     Exit Sub
                 End If
 
@@ -64,10 +69,20 @@ Namespace GameServer
 
                 For i = 0 To sort.Count - 1
                     Dim Index As Integer = sort(i).PlayerIndex
-                    If Functions.PlayerData(Index) IsNot Nothing And Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
-                        If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
-                            GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
-                            Exit For
+                    If Functions.PlayerData(Index) IsNot Nothing Then
+                        If Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
+                            If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
+                                GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
+                                Exit For
+                            End If
+                        End If
+                    End If
+                Next
+
+                For i = 0 To Server.MaxClients
+                    If Functions.PlayerData(i) IsNot Nothing Then
+                        If Functions.CalculateDistance(Me.Position, Functions.PlayerData(i).Position) < 20 Then
+                            Functions.SendPm(i, "You are in Aggro Range", "Serv")
                         End If
                     End If
                 Next
@@ -76,7 +91,7 @@ Namespace GameServer
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE") '
             End Try
 
-            AttackTimer.Interval = 2500
+            AttackTimer.Interval = 5000
             AttackTimer.Start()
         End Sub
 

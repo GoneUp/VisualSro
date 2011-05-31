@@ -1,16 +1,22 @@
 ﻿Namespace GameServer.Functions
     Module Respawn
         Dim Random As New Random
+        Public MobCountSectorTbl(255, 255) As RespawnSectorCache_
 
         Public Sub CheckForRespawns()
-            Dim SpotIndex
+            Dim SpotIndex As Integer
+            FillSectorCache()
 
             Try
                 Dim Random As New Random
 
                 For SpotIndex = 0 To RefRespawns.Count - 1
                     If GetSpawnCount(RefRespawns(SpotIndex).SpotID) < Settings.Server_SpawnRate Then
-                        If GetCountPerSector(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector) <= Settings.Server_SpawnsPerSec Then
+                        If Date.Compare(MobCountSectorTbl(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector).Expired, Date.Now) = -1 Then
+
+                        End If
+
+                        If MobCountSectorTbl(RefRespawns(SpotIndex).Position.XSector, RefRespawns(SpotIndex).Position.YSector).Count <= Settings.Server_SpawnsPerSec Then
                             If Random.Next(0, 4) = 0 Then
                                 ReSpawnMob(SpotIndex)
                             End If
@@ -117,6 +123,38 @@
             Next
             Return Count
         End Function
+
+        Private Sub FillSectorCache()
+            ReDim MobCountSectorTbl(255, 255)
+
+            Dim tmplist As Array = MobList.Keys.ToArray
+            For Each key In tmplist
+                If MobList.ContainsKey(key) Then
+                    Dim Mob_ As cMonster = MobList.Item(key)
+                    If MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector) Is Nothing Then
+                        MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector) = New RespawnSectorCache_
+
+                        MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector).Count += 1
+                    Else
+                        MobCountSectorTbl(Mob_.Position.XSector, Mob_.Position.YSector).Count += 1
+                    End If
+                End If
+            Next
+        End Sub
+
+        Private Sub FillSectorCache(ByVal Xsec As Byte, ByVal YSec As Byte)
+            MobCountSectorTbl(Xsec, YSec).Count = 0
+
+            Dim tmplist As Array = MobList.Keys.ToArray
+            For Each key In tmplist
+                If MobList.ContainsKey(key) Then
+                    Dim Mob_ As cMonster = MobList.Item(key)
+                    If Mob_.Position.XSector = Xsec And Mob_.Position.YSector = YSec Then
+                        MobCountSectorTbl(Xsec, YSec).Count += 1
+                    End If
+                End If
+            Next
+        End Sub
 #End Region
 
         Structure ReSpawn_
@@ -131,6 +169,13 @@
             Public Spots As List(Of Position)
         End Structure
 
+        Class RespawnSectorCache_
+            Public Count As Integer
+            Public Expired As Date 'When this time is reached then the Cache must be recalcutated
+            Sub New()
+                Expired = Date.Now.AddMinutes(1)
+            End Sub
+        End Class
 
     End Module
 End Namespace

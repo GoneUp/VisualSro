@@ -188,11 +188,7 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Character)
             writer.Byte(1) 'create
-            writer.Byte(2)
-            writer.Byte(1)
-            writer.Byte(4)
-            Server.Send(writer.GetBytes, Index_)
-            Exit Sub
+        
 
             If GameDB.CheckNick(nick) And CheckForAbuse(nick) = True Then
                 writer.Byte(2)
@@ -703,7 +699,7 @@
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.JoinWorldUnknown3) 'new message
+            writer.Create(ServerOpcodes.MessageNotice) 'New message
             writer.Byte(9)
             writer.Byte(1)
             'Server.Send(writer.GetBytes, Index_)

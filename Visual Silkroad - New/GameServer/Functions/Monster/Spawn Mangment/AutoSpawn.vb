@@ -32,10 +32,14 @@
 
                     Select Case obj_.Type
                         Case Object_.Type_.Mob_Normal
-                            SpawnMob(Pk2ID, GetRadomMobType, pos, 0, i)
+                            For s = 1 To Settings.Server_SpawnRate
+                                SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
+                            Next
                             RefRespawns.Add(tmp)
                         Case Object_.Type_.Mob_Cave
-                            SpawnMob(Pk2ID, GetRadomMobType, pos, 0, i)
+                            For s = 1 To Settings.Server_SpawnRate
+                                SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
+                            Next
                             RefRespawns.Add(tmp)
                         Case Object_.Type_.Mob_Unique
                             AddUnqiueRespawn(tmp)

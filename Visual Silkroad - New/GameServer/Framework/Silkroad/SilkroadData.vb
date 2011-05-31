@@ -361,9 +361,10 @@
                 tmp.Effect_3 = Convert.ToInt32(tmpString(72))
                 tmp.Effect_4 = Convert.ToInt32(tmpString(73))
                 tmp.Effect_5 = Convert.ToInt32(tmpString(74))
-                tmp.Effect_7 = Convert.ToInt32(tmpString(75))
-                tmp.Effect_8 = Convert.ToInt32(tmpString(76))
-                tmp.Effect_9 = Convert.ToInt32(tmpString(77))
+                tmp.Effect_6 = Convert.ToInt32(tmpString(75))
+                tmp.Effect_7 = Convert.ToInt32(tmpString(76))
+                tmp.Effect_8 = Convert.ToInt32(tmpString(77))
+                tmp.Effect_9 = Convert.ToInt32(tmpString(78))
 
                 ' tmp.Distance = Convert.ToInt32(tmpString(78))
 

@@ -47,12 +47,11 @@ Namespace GameServer
             TheardServer.Start()
             Log.WriteSystemLog("Inital Loading complete!")
 
-
-read:
-            Dim msg As String = Console.ReadLine()
-            CheckCommand(msg)
-            GoTo read
-
+            Do While True
+                Dim msg As String = Console.ReadLine()
+                CheckCommand(msg)
+                Thread.Sleep(10)
+            Loop
 
 
         End Sub

@@ -94,7 +94,7 @@
         JoinWorldReply = &H3809
         JoinWorldUnknown = &H3077
         JoinWorldUnknown2 = &H3305
-        JoinWorldUnknown3 = &H3B07
+        MessageNotice = &H3B07
         ClientStatus = &HB0EA
 
 		Movement = &HB021

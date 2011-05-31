@@ -4,7 +4,7 @@
         Dim Random As New Random
 
         Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
-            If MobList.ContainsKey(MobUniqueID) = False Or MobList(MobUniqueID).IsAttacking = True And PlayerData(Index_) IsNot Nothing Then
+            If MobList.ContainsKey(MobUniqueID) = False Or MobList(MobUniqueID).IsAttacking = True Or PlayerData(Index_) Is Nothing Then
                 Exit Sub
             End If
 
@@ -12,7 +12,6 @@
             Dim Mob_ As cMonster = MobList(MobUniqueID)
             Dim RefSkill As Skill_
 
-            Mob_.IsAttacking = True
             Mob_.AttackingId = PlayerData(Index_).UniqueId
 
             'Search for the right Skill
@@ -92,7 +91,6 @@
             Server.SendIfMobIsSpawned(writer.GetBytes, Mob_.UniqueID)
 
             Mob_.AttackingId = 0
-            Mob_.IsAttacking = True
 
             If afterstate = &H80 Then
                 KillPlayer(Index_)

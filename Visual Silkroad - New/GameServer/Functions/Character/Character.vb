@@ -355,25 +355,27 @@
 
                 'ITEMS
                 'Inventory
-                For I = 0 To 44
+                For I = 0 To 109
                     Dim to_add As New cInvItem
                     to_add.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
                     to_add.Pk2Id = 0
                     to_add.Plus = 0
                     to_add.Amount = 0
                     to_add.Slot = I
+                    to_add.ItemType = cInvItem.sUserItemType.Inventory
                     AddItemToDB(to_add)
                 Next
                 'Avatar
-                'For I = 0 To 5
-                '    Dim to_add As New cInvItem
-                '    to_add.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
-                '    to_add.Pk2Id = 0
-                '    to_add.Plus = 0
-                '    to_add.Amount = 0
-                '    to_add.Slot = I
-                '    AddItemToDB(to_add)
-                'Next
+                For I = 0 To 5
+                    Dim to_add As New cInvItem
+                    to_add.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    to_add.Pk2Id = 0
+                    to_add.Plus = 0
+                    to_add.Amount = 0
+                    to_add.Slot = I
+                    to_add.ItemType = cInvItem.sUserItemType.Avatar
+                    AddItemToDB(to_add)
+                Next
 
 
                 '1 =  Body
@@ -563,9 +565,15 @@
                 End If
             Next
 
-
+            Inventorys(Index_).CalculateAvatarCount()
             writer.Byte(5)  ' Avatar Item Max
-            writer.Byte(0)  ' Amount of Avatars
+            writer.Byte(Inventorys(Index_).AvatarCount)  ' Amount of Avatars
+            For Each _avatar As cInvItem In Inventorys(Index_).AvatarItems
+                If _avatar.Pk2Id <> 0 Then
+                    writer.DWord(_avatar.Pk2Id)
+                    writer.Byte(_avatar.Plus)
+                End If
+            Next
 
             writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
 

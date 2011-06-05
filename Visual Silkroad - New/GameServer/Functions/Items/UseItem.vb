@@ -5,7 +5,7 @@
             Dim ID1 As Byte = packet.Byte
             Dim ID2 As Byte = packet.Byte
 
-            Debug.Print("[USE_ITEM][ID1:" & ID1 & "][2:" & ID2 & "]")
+            Debug.Print("[USE_ITEM][ID1:" & Hex(ID1) & "][2:" & ID2 & "]")
 
             If ID1 = &HEC Then
                 Select Case ID2
@@ -23,17 +23,19 @@
 
             ElseIf ID1 = &HED Then
                 Select Case ID2
-                    Case &H8
+                    Case 8
                         OnUseHPPot(slot, Index_)
-                    Case &H9 'Return Scroll
+                    Case 9 'Return Scroll
                         OnUseReturnScroll(slot, Index_)
-                    Case &H10 'MP-Pot 
+                    Case 14 'Use Ballon
+                    Case 16 'MP-Pot 
                         OnUseMPPot(slot, Index_)
-                    Case &H19 'Reverse
+                    Case 25 'Reverse
                         OnUseReverseScroll(slot, Index_, packet)
-                    Case &H29 'Globals
+                    Case 33 'Add Stall Decoration
+                    Case 41 'Globals
                         OnUseGlobal(slot, Index_, packet)
-                    Case &H4E 'Skin CHange Scroll
+                    Case 78 'Skin CHange Scroll
                         OnUseSkinScroll(slot, Index_, packet)
                 End Select
             End If
@@ -52,24 +54,7 @@
                         PlayerData(Index_).CHP += refitem.USE_TIME_HP
                     End If
 
-                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
-                        'Despawn Item
-
-                        _item.Pk2Id = 0
-                        _item.Durability = 0
-                        _item.Plus = 0
-                        _item.Amount = 0
-
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        DeleteItemFromDB(Slot, Index_)
-
-                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
-                        _item.Amount -= 1
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        UpdateItem(_item)
-                    End If
-
-
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateHP(Index_)
 
                     Dim writer As New PacketWriter
@@ -99,24 +84,7 @@
                         PlayerData(Index_).CMP += refitem.USE_TIME_MP
                     End If
 
-                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
-                        'Despawn Item
-
-                        _item.Pk2Id = 0
-                        _item.Durability = 0
-                        _item.Plus = 0
-                        _item.Amount = 0
-
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        DeleteItemFromDB(Slot, Index_)
-
-                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
-                        _item.Amount -= 1
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        UpdateItem(_item)
-                    End If
-
-
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateMP(Index_)
 
                     Dim writer As New PacketWriter
@@ -150,25 +118,8 @@
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 3 Then 'Check for right Item
-                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
-                        'Despawn Item
-
-                        _item.Pk2Id = 0
-                        _item.Durability = 0
-                        _item.Plus = 0
-                        _item.Amount = 0
-
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        DeleteItemFromDB(Slot, Index_)
-                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
-                        _item.Amount -= 1
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        UpdateItem(_item)
-                    End If
-
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
-
-
 
                     writer.Create(ServerOpcodes.ItemUse)
                     writer.Byte(1)
@@ -215,22 +166,7 @@
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 1 Then
-                    If Inventorys(Index_).UserItems(Slot).Amount - 1 <= 0 Then
-                        'Despawn Item
-
-                        _item.Pk2Id = 0
-                        _item.Durability = 0
-                        _item.Plus = 0
-                        _item.Amount = 0
-
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        DeleteItemFromDB(Slot, Index_)
-                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
-                        _item.Amount -= 1
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        UpdateItem(_item)
-                    End If
-
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -264,22 +200,7 @@
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
-                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
-                        'Despawn Item
-
-                        _item.Pk2Id = 0
-                        _item.Durability = 0
-                        _item.Plus = 0
-                        _item.Amount = 0
-
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        DeleteItemFromDB(Slot, Index_)
-                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
-                        _item.Amount -= 1
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        UpdateItem(_item)
-                    End If
-
+                    UpdateAmout(Index_, Slot, -1)
 
                     writer.Create(ServerOpcodes.ItemUse)
                     writer.Byte(1)
@@ -326,21 +247,8 @@
                         Exit Sub
                     End If
 
-                    '==============Useing..
-                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
-                        'Despawn Item
-                        _item.Pk2Id = 0
-                        _item.Durability = 0
-                        _item.Plus = 0
-                        _item.Amount = 0
-
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        DeleteItemFromDB(Slot, Index_)
-                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
-                        _item.Amount -= 1
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        UpdateItem(_item)
-                    End If
+                    '==============Using..
+                    UpdateAmout(Index_, Slot, -1)
 
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -369,25 +277,8 @@
 
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
-
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 8 Then
-                    If Inventorys(Index_).UserItems(Slot).Amount - 1 = 0 Then
-                        'Despawn Item
-
-                        _item.Pk2Id = 0
-                        _item.Durability = 0
-                        _item.Plus = 0
-                        _item.Amount = 0
-
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        DeleteItemFromDB(Slot, Index_)
-
-                    ElseIf Inventorys(Index_).UserItems(Slot).Amount - 1 > 0 Then
-                        _item.Amount -= 1
-                        Inventorys(Index_).UserItems(Slot) = _item
-                        UpdateItem(_item)
-                    End If
-
+                    UpdateAmout(Index_, Slot, -1)
 
                     PlayerData(Index_).BerserkBar = 5
                     UpdateBerserk(Index_)
@@ -432,6 +323,34 @@
             writer.DWord(ItemID)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
+
+        
+        ''' <summary>
+        ''' Changing the Item Amout
+        ''' </summary>
+        ''' <param name="Index_"></param>
+        ''' <param name="Slot"></param>
+        ''' <param name="ToAdd"></param>
+        ''' <returns>New Item amout</returns>
+        ''' <remarks></remarks>
+        Public Function UpdateAmout(ByVal Index_ As Integer, ByVal Slot As Byte, ByVal ToAdd As Integer) As UShort
+            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            If _item.Amount + ToAdd = 0 Then
+                'Despawn Item
+
+                _item.Pk2Id = 0
+                _item.Durability = 0
+                _item.Plus = 0
+                _item.Amount = 0
+
+                Inventorys(Index_).UserItems(Slot) = _item
+                DeleteItemFromDB(Slot, Index_)
+            ElseIf Inventorys(Index_).UserItems(Slot).Amount + ToAdd > 0 Then
+                _item.Amount += ToAdd
+                Inventorys(Index_).UserItems(Slot) = _item
+                UpdateItem(_item)
+            End If
+        End Function
 
         ''' <summary>
         ''' Checks that the Equip Slots are empty

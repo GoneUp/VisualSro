@@ -1,7 +1,7 @@
 ﻿Namespace GameServer.Functions
     Module ItemSpawn
 
-        Public ItemList As New List(Of cItemDrop)
+        Public ItemList As New Dictionary(Of UInteger, cItemDrop)
 
         Public Function CreateItemSpawnPacket(ByVal Item_ As cItemDrop) As Byte()
             Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
@@ -25,8 +25,8 @@
             writer.Float(Item_.Position.Y)
             writer.Word(0) 'angle
 
-            writer.Byte(1)
-            writer.DWord(UInt32.MaxValue)
+            writer.Byte(0)
+            ' writer.DWord(UInt32.MaxValue)
             writer.Byte(0)
             writer.Byte(6)
             writer.DWord(Item_.DroppedBy)
@@ -52,7 +52,7 @@
                 End If
             End If
 
-            ItemList.Add(tmp_)
+            ItemList.Add(tmp_.UniqueID, tmp_)
 
             For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
@@ -70,10 +70,10 @@
             Return tmp_.UniqueID
         End Function
 
-        Public Sub RemoveItem(ByVal ItemIndex As Integer)
-            Dim _item As cItemDrop = ItemList(ItemIndex)
+        Public Sub RemoveItem(ByVal UniqueId As UInteger)
+            Dim _item As cItemDrop = ItemList(UniqueId)
             Server.SendIfItemIsSpawned(CreateDespawnPacket(_item.UniqueID), _item.UniqueID)
-            ItemList.RemoveAt(ItemIndex)
+            ItemList.Remove(UniqueId)
 
 
             For i = 0 To Server.MaxClients
@@ -86,13 +86,13 @@
 
         End Sub
 
-        Public Sub PickUp(ByVal ItemIndex As UInteger, ByVal Index_ As Integer)
-            Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, ItemList(ItemIndex).Position)
+        Public Sub PickUp(ByVal UniqueId As UInteger, ByVal Index_ As Integer)
+            Dim _item As cItemDrop = ItemList(UniqueId)
+            Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, _item.Position)
 
             If distance >= 5 Then
                 'Out Of Range
-                OnMoveUser(Index_, ItemList(ItemIndex).Position)
-                Dim Traveltime = distance / PlayerData(Index_).RunSpeed
+                Dim TravelTime As Single = MoveUserToObject(Index_, _item.Position, 5)
                 PickUpTimer(Index_).Interval = Traveltime
                 PickUpTimer(Index_).Start()
 
@@ -102,37 +102,40 @@
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.PickUp_Move)
                 writer.DWord(PlayerData(Index_).UniqueId)
-                writer.Byte(ItemList(ItemIndex).Position.XSector)
-                writer.Byte(ItemList(ItemIndex).Position.YSector)
-                writer.Float(ItemList(ItemIndex).Position.X)
-                writer.Float(ItemList(ItemIndex).Position.Z)
-                writer.Float(ItemList(ItemIndex).Position.Y)
+                writer.Byte(_item.Position.XSector)
+                writer.Byte(_item.Position.YSector)
+                writer.Float(_item.Position.X)
+                writer.Float(_item.Position.Z)
+                writer.Float(_item.Position.Y)
                 writer.Word(0)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
                 writer.Create(ServerOpcodes.PickUp_Item)
                 writer.DWord(PlayerData(Index_).UniqueId)
                 writer.Byte(0)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
-                If ItemList(Index_).Item.Pk2Id = 1 Or ItemList(Index_).Item.Pk2Id = 2 Or ItemList(Index_).Item.Pk2Id = 3 Then
-                    If ItemList(Index_).Item.Amount > 0 Then
-                        PlayerData(Index_).Gold += ItemList(Index_).Item.Amount
+                RemoveItem(UniqueId)
+
+                If _item.Item.Pk2Id = 1 Or _item.Item.Pk2Id = 2 Or _item.Item.Pk2Id = 3 Then
+                    If _item.Item.Amount > 0 Then
+                        PlayerData(Index_).Gold += _item.Item.Amount
                         UpdateGold(Index_)
                     End If
                 Else
                     Dim slot As Byte = GetFreeItemSlot(Index_)
                     If slot <> -1 Then
-                        Dim ref As cItem = GetItemByID(ItemList(Index_).Item.Pk2Id)
+                        Dim ref As cItem = GetItemByID(_item.Item.Pk2Id)
                         Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
 
-                        temp_item.Pk2Id = ItemList(Index_).Item.Pk2Id
+                        temp_item.Pk2Id = _item.Item.Pk2Id
                         temp_item.OwnerCharID = PlayerData(Index_).CharacterId
-                        temp_item.Durability = ItemList(Index_).Item.Durability
-                        temp_item.Plus = ItemList(Index_).Item.Plus
-                        temp_item.Amount = ItemList(Index_).Item.Amount
+                        temp_item.Durability = _item.Item.Durability
+                        temp_item.Plus = _item.Item.Plus
+                        temp_item.Amount = _item.Item.Amount
+                        temp_item.Blues = New List(Of cInvItem.sBlue)
 
                         UpdateItem(Inventorys(Index_).UserItems(slot)) 'SAVE IT
-
 
                         writer.Create(ServerOpcodes.ItemMove)
                         writer.Byte(1)
@@ -145,10 +148,6 @@
                     End If
                 End If
             End If
-
-
-
-
         End Sub
     End Module
 

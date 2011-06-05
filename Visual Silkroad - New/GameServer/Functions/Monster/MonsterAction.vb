@@ -8,7 +8,7 @@
             MobList(UniqueID).HP_Cur = 0
             MobList(UniqueID).Death = True
             MobList(UniqueID).DeathRemoveTime = Date.Now.AddSeconds(5)
-            UpdateState(0, 2, 0, UniqueID)
+            UpdateState(0, 2, MobList(UniqueID))
 
             Dim tmp_ As Integer = MobGetPlayerWithMostDamage(UniqueID)
             If tmp_ >= 0 Then
@@ -84,12 +84,7 @@
                 writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
             End If
 
-            writer.Byte(1) '1= source
-            writer.Byte(MobList(UniqueID).Position.XSector)
-            writer.Byte(MobList(UniqueID).Position.YSector)
-            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.X * -1)))
-            writer.Byte(BitConverter.GetBytes(MobList(UniqueID).Position.Z))
-            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.Y * -1)))
+            writer.Byte(0) '1= source
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(UniqueID).UniqueID)
             MobList(UniqueID).Pos_Tracker.Move(ToPos)
@@ -116,10 +111,12 @@
                 Dim distance_x_new As Double = Range * Cosinus
                 Dim distance_y_new As Double = Range * Sinus
 
-                ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
-                ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
-                ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
-                ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
+                Dim new_x As Single = ToPos.ToGameX + distance_x_new
+                Dim new_y As Single = ToPos.ToGameY + distance_y_new
+                ToPos.X = GetXOffset(new_x)
+                ToPos.Y = GetYOffset(new_y)
+                ToPos.XSector = GetXSecFromGameX(new_x)
+                ToPos.YSector = GetYSecFromGameY(new_y)
             End If
 
             Dim WalkTime As Single
@@ -151,14 +148,7 @@
                 writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
             End If
 
-            writer.Byte(1) '1= source
-            writer.Byte(MobList(UniqueID).Position.XSector)
-            writer.Byte(MobList(UniqueID).Position.YSector)
-            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.X * -1)))
-            writer.Byte(BitConverter.GetBytes(MobList(UniqueID).Position.Z))
-            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.Y * -1)))
-
-
+            writer.Byte(0) '1= source
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(UniqueID).UniqueID)
             MobList(UniqueID).Pos_Tracker.Move(ToPos)

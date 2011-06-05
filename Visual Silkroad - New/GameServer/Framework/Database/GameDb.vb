@@ -372,7 +372,9 @@
                 If i < AllItems.Length And AllItems(i) IsNot Nothing Then
                     If AllItems(i).OwnerCharID = [char].CharacterId Then
                         If AllItems(i).ItemType = cInvItem.sUserItemType.Inventory Then
-                            inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                            If AllItems(i).Slot < [char].MaxSlots Then
+                                inventory.UserItems(AllItems(i).Slot) = AllItems(i)
+                            End If
                         ElseIf AllItems(i).ItemType = cInvItem.sUserItemType.Avatar Then
                             inventory.AvatarItems(AllItems(i).Slot) = AllItems(i)
                         End If

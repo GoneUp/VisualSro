@@ -3,14 +3,13 @@ Namespace GameServer.Functions
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
         Public PlayerMoveTimer As Timer() = New Timer(14999) {}
+        Public PlayerBerserkTimer As Timer() = New Timer(14999) {}
         Public PlayerAutoHeal As New Timer
         Public MonsterMovement As New Timer
         Public MonsterCheck As New Timer
         Public MonsterRespawn As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
         Public PickUpTimer As Timer() = New Timer(14999) {}
-        Public CastAttackTimer As Timer() = New Timer(14999) {}
-        Public CastBuffTimer As Timer() = New Timer(14999) {}
         Public UsingItemTimer As Timer() = New Timer(14999) {}
         Public SitUpTimer As Timer() = New Timer(14999) {}
         Public DatabaseTimer As New Timer
@@ -19,13 +18,15 @@ Namespace GameServer.Functions
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttackTimer(TimerCount), PlayerMoveTimer(TimerCount), PickUpTimer(TimerCount), MonsterAttack(TimerCount), CastAttackTimer(TimerCount), CastBuffTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+                ReDim PlayerAttackTimer(TimerCount), PlayerMoveTimer(TimerCount), PickUpTimer(TimerCount), MonsterAttack(TimerCount), PlayerBerserkTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
 
                 For i As Integer = 0 To TimerCount - 1
                     PlayerAttackTimer(i) = New Timer()
                     AddHandler PlayerAttackTimer(i).Elapsed, AddressOf AttackTimer_Elapsed
                     PlayerMoveTimer(i) = New Timer()
                     AddHandler PlayerMoveTimer(i).Elapsed, AddressOf PlayerMoveTimer_Elapsed
+                    PlayerBerserkTimer(i) = New Timer()
+                    AddHandler PlayerBerserkTimer(i).Elapsed, AddressOf PlayerBerserkTimer_Elapsed
                     UsingItemTimer(i) = New Timer()
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
@@ -204,11 +205,10 @@ Namespace GameServer.Functions
                 If Index <> -1 Then
                     PickUpTimer(Index).Stop()
 
-                    For i = 0 To ItemList.Count - 1
-                        If ItemList(i).UniqueID = PlayerData(Index).PickUpId Then
-                            PickUp(i, Index)
-                        End If
-                    Next
+                    If ItemList.ContainsKey(PlayerData(Index).PickUpId) Then
+                        PickUp(PlayerData(Index).PickUpId, Index)
+                    End If
+
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
@@ -284,7 +284,7 @@ Namespace GameServer.Functions
                         Dim Mob_ As cMonster = MobList.Item(key)
                         Dim obj As Object_ = GetObjectById(Mob_.Pk2ID)
                         If Rand.Next(0, 3) = 0 Then
-                            If Mob_.Death = False And Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
+                            If Mob_.Death = False And Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False And Mob_.IsAttacking = False Then
                                 Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
                                 If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
@@ -415,6 +415,32 @@ Namespace GameServer.Functions
             PlayerAutoHeal.Start()
         End Sub
 
+
+        Public Sub PlayerBerserkTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+
+            Dim Index As Integer = -1
+            Try
+                Dim objB As Timer = DirectCast(sender, Timer)
+                For i As Integer = Information.LBound(PlayerBerserkTimer, 1) To Information.UBound(PlayerBerserkTimer, 1)
+                    If Object.ReferenceEquals(PlayerBerserkTimer(i), objB) Then
+                        Index = i
+                        Exit For
+                    End If
+                Next
+
+                PlayerBerserkTimer(Index).Stop()
+
+                If Index <> -1 And PlayerData(Index) IsNot Nothing Then
+                    PlayerData(Index).Berserk = False
+                    PlayerData(Index).BerserkBar = 0
+                    PlayerData(Index).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                    UpdateSpeeds(Index)
+                    UpdateState(4, 0, Index)
+                End If
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+            End Try
+        End Sub
 
         Public Sub DatabaseTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             DatabaseTimer.Stop()

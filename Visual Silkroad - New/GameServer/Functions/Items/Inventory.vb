@@ -27,7 +27,12 @@
                     OnExchangeAddGold(packet, index_)
                 Case 24 'Buy From Item Mall
                     OnBuyItemFromMall(packet, index_)
+                Case 36 'Equip Avatar 
+                    Dim Old_Slot As Byte = packet.Byte
+                    Dim New_Slot As Byte = packet.Byte
+                    SendNotice("Old: " & Old_Slot & " New: " & New_Slot)
                 Case Else
+
                     Console.WriteLine("[INVENTORY][TAG: " & type & "]")
             End Select
 

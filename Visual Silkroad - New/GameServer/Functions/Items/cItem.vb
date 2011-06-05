@@ -32,7 +32,7 @@ Public Class cInventory
     Public UserItems(255) As cInvItem
     Public ItemCount As Byte
 
-    Public AvatarItems(4) As cInvItem
+    Public AvatarItems(5) As cInvItem
     Public AvatarCount As Byte
 
 End Class

@@ -76,6 +76,9 @@ Namespace GameServer
                     Case ClientOpcodes.SetReturnPoint
                         Functions.OnSetReturnPoint(packet, Index_)
 
+                    Case ClientOpcodes.Berserk_Activate
+                        Functions.OnUseBerserk(packet, Index_)
+
                         '=======ATTACK======
 
                     Case ClientOpcodes.Target

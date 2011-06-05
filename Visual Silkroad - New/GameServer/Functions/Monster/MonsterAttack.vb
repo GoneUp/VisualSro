@@ -4,7 +4,10 @@
         Dim Random As New Random
 
         Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
-            If MobList.ContainsKey(MobUniqueID) = False Or MobList(MobUniqueID).IsAttacking = True Or Index_ = -1 Or PlayerData(Index_) Is Nothing Then
+            If MobList.ContainsKey(MobUniqueID) = False Or Index_ = -1 Or PlayerData(Index_) Is Nothing Then
+                Exit Sub
+            End If
+            If MobList(MobUniqueID).IsAttacking = True Then
                 Exit Sub
             End If
 
@@ -35,13 +38,13 @@
 
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
-            If Distance >= Math.Sqrt(RefSkill.Distance) Then
+            If Distance >= Math.Sqrt(RefSkill.Distance) And RefMonster.WalkSpeed > 0 Then
                 MoveMobToUser(MobUniqueID, PlayerData(Index_).Position, Math.Sqrt(RefSkill.Distance))
                 Exit Sub
             End If
 
 
-            UpdateState(1, 3, Index_, MobUniqueID)
+            UpdateState(1, 3, Mob_)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Attack_Main)

@@ -226,6 +226,13 @@
                             Next
                         Next
                     End If
+                Case "\\berserk"
+                    If IsNumeric(tmp(1)) Then
+                        If tmp(1) < 6 Then
+                            Functions.PlayerData(Index_).BerserkBar = tmp(1)
+                            Functions.UpdateBerserk(Index_)
+                        End If
+                    End If
             End Select
 
 

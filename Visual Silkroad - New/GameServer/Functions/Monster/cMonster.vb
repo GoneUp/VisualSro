@@ -77,7 +77,11 @@ Namespace GameServer
                     If Functions.PlayerData(Index) IsNot Nothing Then
                         If Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
                             If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
-                                Pos_Tracker.SpeedMode = Functions.cPositionTracker.enumSpeedMode.Running
+                                If Functions.cPositionTracker.enumSpeedMode.Walking Then
+                                    Pos_Tracker.SpeedMode = Functions.cPositionTracker.enumSpeedMode.Running
+                                    Functions.UpdateState(1, 3, Me)
+                                End If
+
                                 GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
                                 Exit For
                             End If

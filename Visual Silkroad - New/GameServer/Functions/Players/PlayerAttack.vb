@@ -22,14 +22,13 @@
                         End If
                     Case 2
                         'Pickup
-                        packet.Skip(1)
+                        packet.Byte()
                         Dim ObjectID As UInt32 = packet.DWord
 
-                        For i = 0 To ItemList.Count - 1
-                            If ItemList(i).UniqueID = ObjectID Then
-                                PickUp(i, Index_)
-                            End If
-                        Next
+                        If ItemList.ContainsKey(ObjectID) Then
+                            PickUp(ObjectID, Index_)
+                        End If
+
                     Case 4
                         Dim skillid As UInteger = packet.DWord
                         Dim type As Byte = packet.Byte() 'Type = 1--> Monster Attack --- Type = 0 --> Buff
@@ -116,7 +115,13 @@
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
             If Distance >= (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)) Then
-                MoveUserToMonster(Index_, MobUniqueId, (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)))
+                Dim Walktime As Single = MoveUserToObject(Index_, Mob_.Position, (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)))
+                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
+
+                PlayerAttackTimer(Index_).Interval = WalkTime
+                PlayerAttackTimer(Index_).Start()
+
                 Exit Sub
             End If
 
@@ -246,7 +251,13 @@
 
 
             If CalculateDistance(PlayerData(Index_).Position, Mob_.Position) >= RefSkill.Distance Then
-                MoveUserToMonster(Index_, MobUniqueId, RefSkill.Distance)
+                Dim Walktime As Single = MoveUserToObject(Index_, Mob_.Position, RefSkill.Distance)
+                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
+
+                PlayerAttackTimer(Index_).Interval = Walktime
+                PlayerAttackTimer(Index_).Start()
+
                 Exit Sub
             End If
 

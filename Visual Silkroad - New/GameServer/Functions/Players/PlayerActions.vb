@@ -75,13 +75,24 @@
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger)
+
+        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal State2 As Byte, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Action)
-            writer.DWord(MobUniqueID)
+            writer.DWord(PlayerData(Index_).UniqueId)
             writer.Byte(Type)
             writer.Byte(State)
-            Server.SendIfMobIsSpawned(writer.GetBytes, MobUniqueID)
+            writer.Byte(State2)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+        End Sub
+
+        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Mob_ As cMonster)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Action)
+            writer.DWord(Mob_.UniqueID)
+            writer.Byte(Type)
+            writer.Byte(State)
+            Server.SendIfMobIsSpawned(writer.GetBytes, Mob_.UniqueID)
         End Sub
 
         Public Sub OnTeleportUser(ByVal Index_ As Integer, ByVal XSec As Byte, ByVal YSec As Byte)
@@ -347,10 +358,25 @@
                     DataBase.SaveQuery(String.Format("UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Return.XSector, PlayerData(Index_).Position_Return.YSector, Math.Round(PlayerData(Index_).Position_Return.X), Math.Round(PlayerData(Index_).Position_Return.Z), Math.Round(PlayerData(Index_).Position_Return.Y), PlayerData(Index_).CharacterId))
                 End If
             Next
+        End Sub
 
+        Public Sub OnUseBerserk(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim tag As Byte = packet.Byte
 
+            If tag = 1 Then
+                If PlayerData(Index_).Ingame = True And PlayerData(Index_).Berserk = False And PlayerData(Index_).BerserkBar = 5 Then
+                    PlayerData(Index_).BerserkBar = 0
+                    PlayerData(Index_).Berserk = True
+                    PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking
 
+                    UpdateBerserk(Index_)
+                    UpdateState(4, 1, 0, Index_)
+                    UpdateSpeedsBerserk(Index_)
 
+                    PlayerBerserkTimer(Index_).Interval = 60 * 1000
+                    PlayerBerserkTimer(Index_).Start()
+                End If
+            End If
 
         End Sub
     End Module

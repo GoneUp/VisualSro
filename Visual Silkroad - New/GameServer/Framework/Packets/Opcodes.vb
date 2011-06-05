@@ -27,6 +27,7 @@
         Target = &H7045
         Death_Respawn = &H3053
         SetReturnPoint = &H7059
+        Berserk_Activate = &H70A7
 
 		ItemMove = &H7034
         Alchemy = &H7150
@@ -138,7 +139,7 @@
 		EquipItem = &H3038
         UnEquipItem = &H3039
         PickUp_Item = &H3036
-        PickUp_Move = &HB034
+        PickUp_Move = &HB023
         ItemDelete = &H304D
 
         'Spawns

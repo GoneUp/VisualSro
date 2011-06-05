@@ -200,11 +200,13 @@
             Next
 
 
-            For i = 0 To ItemList.Count - 1
-                If PlayerData(Index_).SpawnedItems.Contains(ItemList(i).UniqueID) = True Then
-                    Dim _item As cItemDrop = ItemList(i)
-                    Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
-                    PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
+            For Each key In ItemList.Keys.ToList
+                If ItemList.ContainsKey(key) Then
+                    If PlayerData(Index_).SpawnedItems.Contains(key) = True Then
+                        Dim _item As cItemDrop = ItemList(key)
+                        Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
+                        PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
+                    End If
                 End If
             Next
 
@@ -245,6 +247,7 @@
             PlayerData(Index_).UsedItem = UseItemTypes.None
             PlayerData(Index_).UsedItemParameter = 0
             PlayerData(Index_).PickUpId = 0
+            PlayerData(Index_).Berserk = False
 
             If PlayerData(Index_).InExchange Then
                 Exchange_AbortFromServer(Index_)

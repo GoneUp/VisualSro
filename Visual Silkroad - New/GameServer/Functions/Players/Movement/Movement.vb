@@ -92,8 +92,16 @@
 
         End Sub
 
-        Public Sub MoveUserToMonster(ByVal Index_ As Integer, ByVal MobUniqueID As Integer, ByVal Range As Integer)
-            Dim ToPos As Position = MobList(MobUniqueID).Pos_Tracker.GetCurPos
+        ''' <summary>
+        ''' Moves a User To a Object Based on the Range
+        ''' </summary>
+        ''' <param name="Index_"></param>
+        ''' <param name="ObjectPos"></param>
+        ''' <param name="Range"></param>
+        ''' <returns>The Walktime in ms</returns>
+        ''' <remarks></remarks>
+        Public Function MoveUserToObject(ByVal Index_ As Integer, ByVal ObjectPos As Position, ByVal Range As Integer) As Single
+            Dim ToPos As Position = ObjectPos
 
             Dim distance_x As Double = PlayerData(Index_).Position.ToGameX - ToPos.ToGameX
             Dim distance_y As Double = PlayerData(Index_).Position.ToGameY - ToPos.ToGameY
@@ -110,6 +118,7 @@
                 ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
                 ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
                 ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
+                Debug.Print(ToPos.ToString)
             End If
 
             Dim WalkTime As Single
@@ -122,15 +131,9 @@
                     WalkTime = (distance / PlayerData(Index_).BerserkSpeed) * 10000
             End Select
 
-            PlayerData(Index_).AttackType = AttackType_.Normal
-            PlayerData(Index_).AttackedId = MobList(MobUniqueID).UniqueID
-
-            PlayerAttackTimer(Index_).Interval = WalkTime
-            PlayerAttackTimer(Index_).Start()
-
-
             OnMoveUser(Index_, ToPos)
-        End Sub
+            Return WalkTime
+        End Function
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try
                 ObjectDeSpawnCheck(Index_)
@@ -179,12 +182,14 @@
 
 
                 '===========ITEMS===================
-                For i = 0 To ItemList.Count - 1
-                    Dim _item As cItemDrop = ItemList(i)
-                    If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, ItemList(i).Position) Then
-                        If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = False Then
-                            Server.Send(CreateItemSpawnPacket(_item), Index_)
-                            PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)
+                For Each key In ItemList.Keys.ToList
+                    If ItemList.ContainsKey(key) Then
+                        Dim _item As cItemDrop = ItemList(key)
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, ItemList(key).Position) Then
+                            If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = False Then
+                                Server.Send(CreateItemSpawnPacket(_item), Index_)
+                                PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)
+                            End If
                         End If
                     End If
                 Next
@@ -233,12 +238,14 @@
                 Next
 
 
-                For i = 0 To ItemList.Count - 1
-                    Dim _item As cItemDrop = ItemList(i)
-                    If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = True Then
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, _item.Position) = False Then
-                            Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
-                            PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
+                For Each key In ItemList.Keys.ToList
+                    If ItemList.ContainsKey(key) Then
+                        Dim _item As cItemDrop = ItemList(key)
+                        If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = True Then
+                            If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, _item.Position) = False Then
+                                Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
+                                PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
+                            End If
                         End If
                     End If
                 Next

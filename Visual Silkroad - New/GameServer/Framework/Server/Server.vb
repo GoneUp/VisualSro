@@ -133,13 +133,12 @@ Namespace GameServer
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
             Try
                 Dim socket = ClientList.GetSocket(index)
-                If socket IsNot Nothing And socket.Connected Then
-                    socket.Send(buff)
+                If socket IsNot Nothing Then
+                    If socket.Connected Then
+                        socket.Send(buff)
+                    End If
                 End If
 
-                'If GameServer.Program.Logpackets = True Then
-                '    Log.LogPacket(buff, True)
-                'End If
             Catch ex As Exception
                 If Settings.Log_Detail Then
                     RaiseEvent OnServerError(ex, index)

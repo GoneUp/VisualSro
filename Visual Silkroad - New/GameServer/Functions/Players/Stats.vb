@@ -92,15 +92,24 @@
             writer.DWord(0)
             Server.Send(writer.GetBytes, index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'", PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'", PlayerData(index_).BerserkBar, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub UpdateSpeeds(ByVal index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Speed_Update)
-            writer.Byte(PlayerData(index_).UniqueId)
+            writer.DWord(PlayerData(index_).UniqueId)
             writer.Float(PlayerData(index_).WalkSpeed)
             writer.Float(PlayerData(index_).RunSpeed)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
+        End Sub
+
+        Public Sub UpdateSpeedsBerserk(ByVal index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Speed_Update)
+            writer.DWord(PlayerData(index_).UniqueId)
+            writer.Float(PlayerData(index_).WalkSpeed)
+            writer.Float(PlayerData(index_).BerserkSpeed)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
         End Sub
 
@@ -214,25 +223,6 @@
 
             UpdateSP(index_)
             DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'", PlayerData(index_).Level, PlayerData(index_).Experience, PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
-        End Sub
-
-        Public Sub ReduceXP(ByVal Exp As Long, ByVal Index_ As Integer)
-            If CLng(PlayerData(Index_).Experience) + Exp >= 0 Then
-                PlayerData(Index_).Experience = 1
-
-
-            ElseIf CLng(PlayerData(Index_).Experience) + Exp < 0 Then
-                'Reduce Level...
-
-
-
-
-            End If
-
-
-
-
-            DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'", PlayerData(Index_).Level, PlayerData(Index_).Experience, PlayerData(Index_).SkillPoints, PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub SendLevelUpAnimation(ByVal Index_ As Integer)

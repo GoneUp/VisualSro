@@ -55,7 +55,7 @@
                 Log.WriteSystemLog("Loaded " & RefTeleportPoints.Count & " Teleport-Points.")
 
                 DumpSpecialSectorFile(base_path & "\data\special_sectors.txt")
-                Log.WriteSystemLog("Loaded " & RefSpecialZones.Count & " Speical_Sectors.")
+                Log.WriteSystemLog("Loaded " & RefSpecialZones.Count & " Special_Sectors.")
 
                 DumpNameFiles()
 
@@ -293,6 +293,8 @@
             Public Type As Byte
             Public Type2 As Byte
 
+            Public SpawnPercent As Integer
+
             Public EffectId As String
             Public Effect_1 As Long
             Public Effect_2 As Long
@@ -303,6 +305,13 @@
             Public Effect_7 As Long
             Public Effect_8 As Long
             Public Effect_9 As Long
+            Public Effect_10 As Long
+            Public Effect_11 As Long
+            Public Effect_12 As Long
+            Public Effect_13 As Long
+            Public Effect_14 As Long
+            Public Effect_15 As Long
+            Public Effect_16 As Long
         End Structure
         Public Structure tmpSkill_
             Public Pk2Id As UInteger
@@ -348,6 +357,7 @@
                 tmp.MasteryLevel = Convert.ToUInt32(tmpString(36))
                 tmp.RequiredSp = Convert.ToUInt64(tmpString(46))
                 tmp.RequiredMp = Convert.ToUInt16(tmpString(53))
+                tmp.SpawnPercent = Convert.ToInt32(tmpString(66))
                 tmp.UseDuration = Convert.ToInt32(tmpString(70))
                 tmp.PwrPercent = Convert.ToInt32(tmpString(71))
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
@@ -362,7 +372,14 @@
                 tmp.Effect_7 = Convert.ToInt32(tmpString(76))
                 tmp.Effect_8 = Convert.ToInt32(tmpString(77))
                 tmp.Effect_9 = Convert.ToInt32(tmpString(78))
-
+                tmp.Effect_10 = Convert.ToInt32(tmpString(79))
+                tmp.Effect_11 = Convert.ToInt32(tmpString(80))
+                tmp.Effect_12 = Convert.ToInt32(tmpString(81))
+                tmp.Effect_13 = Convert.ToInt32(tmpString(82))
+                tmp.Effect_14 = Convert.ToInt32(tmpString(83))
+                tmp.Effect_15 = Convert.ToInt32(tmpString(84))
+                tmp.Effect_16 = Convert.ToInt32(tmpString(85))
+              
                 ' tmp.Distance = Convert.ToInt32(tmpString(78))
 
                 If tmp.EffectId = "att" Then
@@ -528,6 +545,7 @@
                 tmp.Skill8 = Convert.ToUInt32(tmpString(91))
                 tmp.Skill9 = Convert.ToUInt32(tmpString(92))
 
+
                 Dim selector As String() = tmp.TypeName.Split("_")
                 Select Case selector(0)
                     Case "MOB"
@@ -610,9 +628,9 @@
                 tmp.Name_Normal = tmpString(3)
                 tmp.Amout = tmpString(6)
 
-                Dim priceFile As String() = IO.File.ReadAllLines(FilePricePath)
-                For d As Integer = 0 To priceFile.Length - 1
-                    Dim tmpString2 As String() = priceFile(d).Split(ControlChars.Tab)
+                Dim ItemPriceFile As String() = IO.File.ReadAllLines(FilePricePath)
+                For d As Integer = 0 To ItemPriceFile.Length - 1
+                    Dim tmpString2 As String() = ItemPriceFile(d).Split(ControlChars.Tab)
                     If tmpString2(2) = tmp.Name_Package And tmpString2(3) = 2 Then
                         tmp.Price = tmpString2(5)
                         Exit For
@@ -670,9 +688,8 @@
 
         Public Sub DumpTeleportData(ByVal Path_Data As String, ByVal Path_Link As String)
             Dim lines As String() = IO.File.ReadAllLines(Path_Data)
-            For i As Integer = 0 To lines.Length - 1
-
-                Try
+            Try
+                For i As Integer = 0 To lines.Length - 1
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                     Dim obj As New TeleportPoint_
 
@@ -680,6 +697,10 @@
                     obj.Name = tmpString(2)
 
                     Dim area As Integer = tmpString(5)
+                    If area < 0 Then
+                        area *= -1
+                    End If
+
                     obj.ToPos = New Position
                     obj.ToPos.XSector = Convert.ToByte((area).ToString("X4").Substring(2, 2), 16)
                     obj.ToPos.YSector = Convert.ToByte((area).ToString("X4").Substring(0, 2), 16)
@@ -699,12 +720,13 @@
                         End If
                     Next
 
-
                     RefTeleportPoints.Add(obj)
-                Catch ex As Exception
 
-                End Try
-            Next
+                Next
+            Catch ex As Exception
+
+            End Try
+
         End Sub
 
         Public Function GetTeleportPoint(ByVal Number As Integer)

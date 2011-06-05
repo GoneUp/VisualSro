@@ -64,7 +64,7 @@
                 End If
             Next
 
-            'Only if no Resapwn Colletor Exitis
+            'Only if no Respawn Colletor Exitis
             Dim tmp As New ReSpawnUnique_
             tmp.Pk2ID = Spot.Pk2ID
             tmp.Spots = New List(Of Position)

@@ -15,21 +15,24 @@
             writer.Float(_mob.Position.Y)
 
             writer.Word(_mob.Angle)
+            writer.Byte(_mob.Pos_Tracker.MoveState) 'dest
+            If _mob.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
+                writer.Byte(0) 'Walking
+            Else
+                writer.Byte(1) 'Running + Zerk
+            End If
 
             If _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
-                writer.Byte(0) 'dest
-                writer.Byte(1) 'walk run flag
-                writer.Byte(0) 'dest   
+                writer.Byte(0)  'dest
                 writer.Word(_mob.Angle)
-            Else
-                writer.Byte(1) 'dest
-                writer.Byte(1) 'walk run flag
+            ElseIf _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
                 writer.Byte(_mob.Pos_Tracker.WalkPos.XSector)
                 writer.Byte(_mob.Pos_Tracker.WalkPos.YSector)
-                writer.Word(_mob.Pos_Tracker.WalkPos.X)
+                writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.X)))
                 writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.Z)))
-                writer.Word(_mob.Pos_Tracker.WalkPos.Y)
+                writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.Y)))
             End If
+
 
             writer.Byte(0) 'unknown
             writer.Byte(0) 'death flag
@@ -46,12 +49,23 @@
             Return writer.GetBytes
         End Function
 
-        Public Sub SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position, ByVal Angle As UInteger, ByVal SpotID As Long)
+        ''' <summary>
+        ''' Spawns a new Mob
+        ''' </summary>
+        ''' <param name="MobID"></param>
+        ''' <param name="Type"></param>
+        ''' <param name="Position"></param>
+        ''' <param name="Angle"></param>
+        ''' <param name="SpotID"></param>
+        ''' <returns>The new Mob Unique Id</returns>
+        ''' <remarks></remarks>
+        Public Function SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position, ByVal Angle As UInteger, ByVal SpotID As Long) As UInteger
             Dim mob_ As Object_ = GetObjectById(MobID)
             Dim tmp As New cMonster
-            tmp.UniqueID = Id_Gen.GetUnqiueID
+            tmp.UniqueID = Id_Gen.GetUnqiueId
             tmp.Pk2ID = mob_.Pk2ID
             tmp.Pos_Tracker = New cPositionTracker(Position, mob_.WalkSpeed, mob_.RunSpeed, mob_.BerserkSpeed)
+            tmp.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
             tmp.Position_Spawn = Position
             tmp.SpotID = SpotID
             tmp.Mob_Type = Type
@@ -104,7 +118,9 @@
                     End If
                 End If
             Next refindex
-        End Sub
+
+            Return tmp.UniqueID
+        End Function
 
         Public Sub RemoveMob(ByVal UniqueID As Integer)
             Dim _mob As cMonster = MobList(UniqueID)

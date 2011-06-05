@@ -23,6 +23,10 @@ Namespace GameServer
         Public UsingSkillId As UInteger
         Public AttackTimer As System.Timers.Timer
 
+        Public SpawnedGuard_80 As Boolean
+        Public SpawnedGuard_60 As Boolean
+        Public SpawnedGuard_40 As Boolean
+        Public SpawnedGuard_20 As Boolean
 
         Public Property Position() As Position
             Get
@@ -40,6 +44,7 @@ Namespace GameServer
                 Return False
             End If
         End Function
+
 
 #Region "Timer"
         Sub New()
@@ -72,19 +77,15 @@ Namespace GameServer
                     If Functions.PlayerData(Index) IsNot Nothing Then
                         If Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
                             If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
+                                Pos_Tracker.SpeedMode = Functions.cPositionTracker.enumSpeedMode.Running
                                 GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
                                 Exit For
                             End If
                         End If
+                    Else
+                        sort(i).AttackingAllowed = False
                     End If
-                Next
 
-                For i = 0 To Server.MaxClients
-                    If Functions.PlayerData(i) IsNot Nothing Then
-                        If Functions.CalculateDistance(Me.Position, Functions.PlayerData(i).Position) < 20 Then
-                            Functions.SendPm(i, "You are in Aggro Range", "Serv")
-                        End If
-                    End If
                 Next
 
             Catch ex As Exception

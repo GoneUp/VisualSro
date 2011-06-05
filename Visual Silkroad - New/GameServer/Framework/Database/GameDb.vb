@@ -31,9 +31,7 @@
 
             Try
                 If First = False Then
-                    Log.WriteSystemLog("Execute all saved Querys. This can take some Time.")
-                    ExecuteSavedQuerys()
-                    Log.WriteSystemLog("Query saving done. Loading Playerdata from DB now.")
+                    Log.WriteSystemLog("Loading Playerdata from DB now.")
 
                     GetUserData()
                     GetCharData() 'Only Update for the First Time! 
@@ -58,19 +56,6 @@
         End Sub
 
 #Region "Get from DB"
-        Public Sub ExecuteSavedQuerys()
-            Try
-                Dim lines() As String = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
-                For Each commando In lines
-                    DataBase.InsertData(commando)
-                Next
-                IO.File.Delete(System.AppDomain.CurrentDomain.BaseDirectory & "save.txt")
-            Catch ex As Exception
-                'Log .WriteLog ("Database Error: " & ex.Message)
-            End Try
-
-        End Sub
-
         Public Sub GetUserData()
 
             Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From Users")

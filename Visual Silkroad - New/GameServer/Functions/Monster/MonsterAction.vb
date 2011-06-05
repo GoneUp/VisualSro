@@ -39,7 +39,7 @@
 
         Public Function MobGetPlayerWithMostDamage(ByVal UniqueID As Integer, ByVal Attacking As Boolean)
             Dim MostIndex As Integer = -1
-            Dim MostDamage As UInteger
+            Dim MostDamage As Long = -1
             Dim Mob_ As cMonster = MobList(UniqueID)
 
             For i = 0 To Mob_.DamageFromPlayer.Count - 1
@@ -84,7 +84,12 @@
                 writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
             End If
 
-            writer.Byte(0) '1= source
+            writer.Byte(1) '1= source
+            writer.Byte(MobList(UniqueID).Position.XSector)
+            writer.Byte(MobList(UniqueID).Position.YSector)
+            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.X * -1)))
+            writer.Byte(BitConverter.GetBytes(MobList(UniqueID).Position.Z))
+            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.Y * -1)))
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(UniqueID).UniqueID)
             MobList(UniqueID).Pos_Tracker.Move(ToPos)
@@ -104,16 +109,18 @@
             Dim distance_y As Double = MobList(UniqueID).Position.ToGameY - ToPos.ToGameY
             Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
 
-            Dim Cosinus As Double = Math.Cos(distance_x / distance)
-            Dim Sinus As Double = Math.Sin(distance_y / distance)
+            If distance > Range Then
+                Dim Cosinus As Double = Math.Cos(distance_x / distance)
+                Dim Sinus As Double = Math.Sin(distance_y / distance)
 
-            Dim distance_x_new As Double = Range * Cosinus
-            Dim distance_y_new As Double = Range * Sinus
+                Dim distance_x_new As Double = Range * Cosinus
+                Dim distance_y_new As Double = Range * Sinus
 
-            ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
-            ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
-            ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
-            ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
+                ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
+                ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
+                ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
+                ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
+            End If
 
             Dim WalkTime As Single
             Select Case MobList(UniqueID).Pos_Tracker.SpeedMode
@@ -144,7 +151,14 @@
                 writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
             End If
 
-            writer.Byte(0) '1= source
+            writer.Byte(1) '1= source
+            writer.Byte(MobList(UniqueID).Position.XSector)
+            writer.Byte(MobList(UniqueID).Position.YSector)
+            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.X * -1)))
+            writer.Byte(BitConverter.GetBytes(MobList(UniqueID).Position.Z))
+            writer.Byte(BitConverter.GetBytes(CShort(MobList(UniqueID).Position.Y * -1)))
+
+
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(UniqueID).UniqueID)
             MobList(UniqueID).Pos_Tracker.Move(ToPos)

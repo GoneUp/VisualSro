@@ -44,7 +44,7 @@ Namespace GameServer.Functions
                 MonsterCheck.Interval = 5000
                 MonsterCheck.Start()
 
-                MonsterMovement.Interval = 5000
+                MonsterMovement.Interval = 3500
                 MonsterMovement.Start()
 
                 MonsterRespawn.Interval = 7500
@@ -239,9 +239,7 @@ Namespace GameServer.Functions
                             RemoveMob(Mob_.UniqueID)
                         ElseIf Mob_.GetsAttacked = True Then
                             'Attack back...
-                            If Mob_.IsAttacking = False Then
-                                MonsterAttackPlayer(Mob_.UniqueID, MobGetPlayerWithMostDamage(Mob_.UniqueID, True))
-                            End If
+                            Mob_.AttackTimer_Start(10)
                         End If
                     End If
                 Next
@@ -258,7 +256,6 @@ Namespace GameServer.Functions
 
         Public Sub MonsterRespawn_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             MonsterRespawn.Stop()
-
             Try
                 Dim stopwatch As New Stopwatch
                 stopwatch.Start()
@@ -286,28 +283,29 @@ Namespace GameServer.Functions
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
                         Dim obj As Object_ = GetObjectById(Mob_.Pk2ID)
+                        If Rand.Next(0, 3) = 0 Then
+                            If Mob_.Death = False And Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
+                                Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
-                        If Mob_.Death = False And Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False Then
-                            Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
+                                If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
+                                    Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
+                                    Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
 
-                            If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
-                                Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-10, +10)
-                                Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-10, +10)
+                                    Dim ToPos As New Position
+                                    ToPos.XSector = GetXSecFromGameX(ToX)
+                                    ToPos.YSector = GetYSecFromGameY(ToY)
+                                    ToPos.X = GetXOffset(ToX)
+                                    ToPos.Z = Mob_.Position.Z
+                                    ToPos.Y = GetYOffset(ToY)
 
-                                Dim ToPos As New Position
-                                ToPos.XSector = GetXSecFromGameX(ToX)
-                                ToPos.YSector = GetYSecFromGameY(ToY)
-                                ToPos.X = GetXOffset(ToX)
-                                ToPos.Z = Mob_.Position.Z
-                                ToPos.Y = GetYOffset(ToY)
+                                    If ToPos.X = Mob_.Position.X And ToPos.Y = Mob_.Position.Y Then
+                                        ToPos.X += 10
+                                    End If
 
-                                If ToPos.X = Mob_.Position.X And ToPos.Y = Mob_.Position.Y Then
-                                    ToPos.X += 10
+                                    MoveMob(Mob_.UniqueID, ToPos)
+                                Else
+                                    MoveMob(Mob_.UniqueID, Mob_.Position_Spawn)
                                 End If
-
-                                MoveMob(Mob_.UniqueID, ToPos)
-                            Else
-                                MoveMob(Mob_.UniqueID, Mob_.Position_Spawn)
                             End If
                         End If
                     End If
@@ -341,6 +339,7 @@ Namespace GameServer.Functions
                         If PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
                             Dim new_pos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
                             ObjectSpawnCheck(Index)
+                            CheckForCaveTeleporter(Index)
 
                             'SendPm(Index, "secx" & new_pos.XSector & "secy" & new_pos.YSector & "X: " & new_pos.X & "Y: " & new_pos.Y & " X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
                             PlayerMoveTimer(Index).Start()
@@ -349,7 +348,7 @@ Namespace GameServer.Functions
                             ObjectSpawnCheck(Index)
                             'SendPm(Index, "Walk End", "hh")
 
-
+                            CheckForCaveTeleporter(Index)
                             PlayerMoveTimer(Index).Interval = 20 * 1000
                             PlayerMoveTimer(Index).Start()
                         End If
@@ -419,7 +418,24 @@ Namespace GameServer.Functions
 
         Public Sub DatabaseTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             DatabaseTimer.Stop()
-            DataBase.ExecuteQuerys()
+
+            Try
+                DataBase.ExecuteQuerys()
+
+                'Check other Timers for Crashed
+                If MonsterRespawn.Enabled = False Then
+                    MonsterRespawn.Start()
+                End If
+                If MonsterCheck.Enabled = False Then
+                    MonsterCheck.Start()
+                End If
+                If MonsterMovement.Enabled = False Then
+                    MonsterMovement.Start()
+                End If
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB") '
+            End Try
+
             DatabaseTimer.Start()
         End Sub
     End Module

@@ -216,6 +216,25 @@
             DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'", PlayerData(index_).Level, PlayerData(index_).Experience, PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 
+        Public Sub ReduceXP(ByVal Exp As Long, ByVal Index_ As Integer)
+            If CLng(PlayerData(Index_).Experience) + Exp >= 0 Then
+                PlayerData(Index_).Experience = 1
+
+
+            ElseIf CLng(PlayerData(Index_).Experience) + Exp < 0 Then
+                'Reduce Level...
+
+
+
+
+            End If
+
+
+
+
+            DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'", PlayerData(Index_).Level, PlayerData(Index_).Experience, PlayerData(Index_).SkillPoints, PlayerData(Index_).CharacterId))
+        End Sub
+
         Public Sub SendLevelUpAnimation(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LevelUp_Animation)

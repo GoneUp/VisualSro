@@ -456,7 +456,7 @@
             Array.Resize(GameDB.AllItems, GameDB.AllItems.Count + 1)
             GameDB.AllItems(GameDB.AllItems.Count - 1) = item
 
-            DataBase.SaveQuery(String.Format("INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability, "item" & item.Slot))
+            DataBase.SaveQuery(String.Format("INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability, GetItemTypeDbString(item)))
         End Sub
 
         Public Sub UpdateItem(ByVal item As cInvItem)
@@ -481,6 +481,8 @@
                     Return "item" & item.Slot
                 Case cInvItem.sUserItemType.Avatar
                     Return "avatar" & item.Slot
+                Case cInvItem.sUserItemType.Storage_User
+                    Return "storage" & item.Slot
             End Select
             Return "WTF"
         End Function

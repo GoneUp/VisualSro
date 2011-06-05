@@ -28,6 +28,7 @@
 
                 OnMoveUser(Index_, to_pos)
             ElseIf tag = 0 Then
+                Dim tag2 As Byte = packet.Byte
                 Dim to_angle As UShort = packet.Word
                 Dim to_grad As Single = (to_angle / 65535) * 360
                 SendPm(Index_, "You are tyring to Angle Move to: " & to_grad, "Debug")
@@ -68,18 +69,16 @@
                     writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
                 End If
 
-                writer.Byte(0) '1= source
-                'writer.Byte(PlayerData(Index_).Position.XSector)
-                'writer.Byte(PlayerData(Index_).Position.YSector)
-                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X)))
-                'writer.Byte(BitConverter.GetBytes(PlayerData(Index_).Position.Z))
-                'writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y)))
+                writer.Byte(1) '1= source
+                writer.Byte(PlayerData(Index_).Position.XSector)
+                writer.Byte(PlayerData(Index_).Position.YSector)
+                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X * -1)))
+                writer.Byte(BitConverter.GetBytes(PlayerData(Index_).Position.Z))
+                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y * -1)))
 
 
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
-
-                CheckForCaveTeleporter(Index_)
 
                 PlayerData(Index_).Pos_Tracker.Move(ToPos)
                 PlayerMoveTimer(Index_).Interval = 250
@@ -100,16 +99,18 @@
             Dim distance_y As Double = PlayerData(Index_).Position.ToGameY - ToPos.ToGameY
             Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
 
-            Dim Cosinus As Double = Math.Cos(distance_x / distance)
-            Dim Sinus As Double = Math.Sin(distance_y / distance)
+            If distance > Range Then
+                Dim Cosinus As Double = Math.Cos(distance_x / distance)
+                Dim Sinus As Double = Math.Sin(distance_y / distance)
 
-            Dim distance_x_new As Double = Range * Cosinus
-            Dim distance_y_new As Double = Range * Sinus
+                Dim distance_x_new As Double = Range * Cosinus
+                Dim distance_y_new As Double = Range * Sinus
 
-            ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
-            ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
-            ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
-            ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
+                ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
+                ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
+                ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
+                ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
+            End If
 
             Dim WalkTime As Single
             Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
@@ -132,7 +133,6 @@
         End Sub
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try
-                Dim range As Integer = Settings.Server_Range
                 ObjectDeSpawnCheck(Index_)
 
                 '=============Players============
@@ -249,30 +249,27 @@
 
         Public Sub CheckForCaveTeleporter(ByVal Index_ As Integer)
             For i = 0 To RefCaveTeleporter.Count - 1
-                If CheckSectors(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) Then
-                    Debug.Print(CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition))
-                    If CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <= RefCaveTeleporter(i).Range Then
-                        'In Range --> Teleport
-                        Dim Point_ As TeleportPoint_ = GetTeleportPoint(RefCaveTeleporter(i).ToTeleporterID)
+                If CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <= RefCaveTeleporter(i).Range Then
+                    'In Range --> Teleport
+                    Dim Point_ As TeleportPoint_ = GetTeleportPoint(RefCaveTeleporter(i).ToTeleporterID)
 
-                        If PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
-                            'Level too low
-                            Dim writer As New PacketWriter
-                            writer.Create(ServerOpcodes.Teleport_Start)
-                            writer.Byte(2)
-                            writer.Byte(&H15)
-                            writer.Byte(&H1C)
-                            Server.Send(writer.GetBytes, Index_)
-                        ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
-                            'Level too high
-                            SendNotice("Cannot Teleport because your Level is too high.", Index_)
-                        Else
-                            PlayerData(Index_).Busy = True
-                            PlayerData(Index_).Position = Point_.ToPos
+                    If PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
+                        'Level too low
+                        Dim writer As New PacketWriter
+                        writer.Create(ServerOpcodes.Teleport_Start)
+                        writer.Byte(2)
+                        writer.Byte(&H15)
+                        writer.Byte(&H1C)
+                        Server.Send(writer.GetBytes, Index_)
+                    ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
+                        'Level too high
+                        SendNotice("Cannot Teleport because your Level is too high.", Index_)
+                    ElseIf PlayerData(Index_).Busy = False Then
+                        PlayerData(Index_).Busy = True
+                        PlayerData(Index_).Position = Point_.ToPos
 
-                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                            OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
-                        End If
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
                 End If
             Next

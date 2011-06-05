@@ -8,8 +8,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "GameServer", "GameServer\Ga
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LoginServer", "LoginServer\LoginServer.vbproj", "{114134D5-E272-4647-924D-D577AE24D7DD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A826A46-7138-435E-B7B9-E3B536FF63F9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

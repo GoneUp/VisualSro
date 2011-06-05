@@ -354,6 +354,7 @@
 
 
                 'ITEMS
+                'Inventory
                 For I = 0 To 44
                     Dim to_add As New cInvItem
                     to_add.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
@@ -363,6 +364,17 @@
                     to_add.Slot = I
                     AddItemToDB(to_add)
                 Next
+                'Avatar
+                'For I = 0 To 5
+                '    Dim to_add As New cInvItem
+                '    to_add.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                '    to_add.Pk2Id = 0
+                '    to_add.Plus = 0
+                '    to_add.Amount = 0
+                '    to_add.Slot = I
+                '    AddItemToDB(to_add)
+                'Next
+
 
                 '1 =  Body
                 '2 = Legs
@@ -693,16 +705,11 @@
 
             writer.Create(ServerOpcodes.JoinWorldUnknown)
             writer.Word(0)
-            Server.Send(writer.GetBytes, Index_)
+            ' Server.Send(writer.GetBytes, Index_)
 
             writer.Create(ServerOpcodes.JoinWorldUnknown2)
             writer.Byte(0)
-            Server.Send(writer.GetBytes, Index_)
-
-            writer.Create(ServerOpcodes.MessageNotice) 'New message
-            writer.Byte(9)
-            writer.Byte(1)
-            'Server.Send(writer.GetBytes, Index_)
+            '    Server.Send(writer.GetBytes, Index_)
 
             'UpdateState(4, 2, Index_) 'Untouchable Status
             ObjectSpawnCheck(Index_)

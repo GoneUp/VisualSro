@@ -73,8 +73,10 @@ Module Log
 
             Case "/dcoff"
                 GameServer.Settings.Server_PingDc = False
+                GameServer.Log.WriteSystemLog("Turned off PingCheck")
             Case "/dcon"
                 GameServer.Settings.Server_PingDc = True
+                GameServer.Log.WriteSystemLog("Turned on PingCheck")
         End Select
 
     End Sub

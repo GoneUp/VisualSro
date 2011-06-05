@@ -21,6 +21,17 @@
             Return ((BasicAP + SkillAP) * (1 + AttackPowerInc) / (1 + EnemyAccAbsorbation) - EnemyDef) * Balance * (1 + DamageInc) * SkillAPRate
         End Function
 
+        Public Function GetRandomPosition(ByVal BasePosition As Position, ByVal Range As Integer)
+            Dim tmp_pos As Position = BasePosition
+            Dim tmp_x As Single = BasePosition.ToGameX + Rand.Next(0 - Range, 0 + Range)
+            Dim tmp_y As Single = BasePosition.ToGameY + Rand.Next(0 - Range, 0 + Range)
+            tmp_pos.X = GetXOffset(tmp_x)
+            tmp_pos.Y = GetYOffset(tmp_y)
+            tmp_pos.XSector = GetXSecFromGameX(tmp_x)
+            tmp_pos.YSector = GetYSecFromGameY(tmp_y)
+            Return tmp_pos
+        End Function
+
 #Region "Pos Help Functions"
         Public Function ToPacketX(ByVal XSec As Byte, ByVal XPos As Single) As Single
             Return (XSec - 135) * 192 + XPos / 10

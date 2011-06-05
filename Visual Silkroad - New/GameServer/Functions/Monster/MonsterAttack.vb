@@ -316,17 +316,6 @@
 
         End Sub
 
-        Private Function GetRandomPosition(ByVal BasePosition As Position, ByVal Range As Integer)
-            Dim tmp_pos As Position = BasePosition
-            Dim tmp_x As Single = BasePosition.ToGameX + Rand.Next(0 - Range, 0 + Range)
-            Dim tmp_y As Single = BasePosition.ToGameY + Rand.Next(0 - Range, 0 + Range)
-            tmp_pos.X = GetXOffset(tmp_x)
-            tmp_pos.Y = GetYOffset(tmp_y)
-            tmp_pos.XSector = GetXSecFromGameX(tmp_x)
-            tmp_pos.YSector = GetYSecFromGameY(tmp_y)
-            Return tmp_pos
-        End Function
-
         Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal AttackingAllowed As Boolean)
             Dim found As Boolean = False
 

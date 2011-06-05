@@ -229,7 +229,7 @@
             Next
         End Sub
 
-        Public Function GetGoldDataByLevel(ByVal level As Byte)
+        Public Function GetGoldData(ByVal level As Byte) As cGoldData
             For i = 0 To RefGoldData.Count - 1
                 If RefGoldData(i).Level = level Then
                     Return RefGoldData(i)
@@ -266,7 +266,7 @@
             Next
         End Sub
 
-        Public Function GetLevelDataByLevel(ByVal level As Byte) As cLevelData
+        Public Function GetLevelData(ByVal level As Byte) As cLevelData
             For i = 0 To RefLevelData.Count - 1
                 If RefLevelData(i).Level = level Then
                     Return RefLevelData(i)

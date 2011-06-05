@@ -161,9 +161,6 @@ Namespace GameServer
 
         Public Shared Sub ExecuteQuerys()
             For i = 0 To Query.Count - 1
-                If i = 120 Then
-                    Debug.Print(i)
-                End If
                 InsertData(Query(i))
             Next
 

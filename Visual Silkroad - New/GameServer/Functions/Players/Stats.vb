@@ -159,7 +159,7 @@
             PlayerData(index_).Experience += exp
 
             Do While True
-                Dim lvldata As cLevelData = GetLevelDataByLevel(PlayerData(index_).Level)
+                Dim lvldata As cLevelData = GetLevelData(PlayerData(index_).Level)
 
                 If PlayerData(index_).Experience >= lvldata.Experience Then
                     'New Level   

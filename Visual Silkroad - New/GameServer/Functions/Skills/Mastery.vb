@@ -26,7 +26,7 @@
                     For i = 0 To GameDB.Masterys.Length - 1
                         If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
 
-                            Dim _lvldata As cLevelData = GetLevelDataByLevel(GameDB.Masterys(i).Level)
+                            Dim _lvldata As cLevelData = GetLevelData(GameDB.Masterys(i).Level)
                             If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
                                 GameDB.Masterys(i).Level += 1
 
@@ -72,7 +72,7 @@
                     For i = 0 To GameDB.Masterys.Length - 1
                         If GameDB.Masterys(i) IsNot Nothing Then
                             If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
-                                Dim _lvldata As cLevelData = GetLevelDataByLevel(GameDB.Masterys(i).Level + 1)
+                                Dim _lvldata As cLevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
                                 If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
                                     GameDB.Masterys(i).Level += 1
 

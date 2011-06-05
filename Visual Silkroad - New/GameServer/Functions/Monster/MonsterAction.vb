@@ -10,6 +10,8 @@
             MobList(UniqueID).DeathRemoveTime = Date.Now.AddSeconds(5)
             UpdateState(0, 2, MobList(UniqueID))
 
+            DropMonsterItems(UniqueID)
+
             Dim tmp_ As Integer = MobGetPlayerWithMostDamage(UniqueID)
             If tmp_ >= 0 Then
                 If MobList(UniqueID).Mob_Type = 3 Then
@@ -206,7 +208,7 @@
                     End If
 
 
-                    Dim EXP As Long = ((ref_.Exp * GetExpMultiplier(mob_.Mob_Type)) * Settings.Server_XPRate * Percent * Balance * GapFactorXP)
+                    Dim EXP As Long = ((ref_.Exp * GetMobExpMultiplier(mob_.Mob_Type)) * Settings.Server_XPRate * Percent * Balance * GapFactorXP)
                     Dim SP As Long = (ref_.Exp * Settings.Server_SPRate * Percent * GapFactorSP)
 
 
@@ -215,7 +217,7 @@
             Next
         End Sub
 
-        Private Function GetExpMultiplier(ByVal Type As Byte) As Byte
+        Public Function GetMobExpMultiplier(ByVal Type As Byte) As Byte
             Select Case Type
                 Case 0
                     Return MobMultiplierExp.Normal

@@ -177,7 +177,11 @@
                         Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 10))
                     Else
                         'Mob is lower then you
-                        Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 100))
+                        If PlayerData(Index_).Level - CSng(ref_.Level) < 100 Then
+                            Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 100))
+                        Else
+                            Balance = 0.01
+                        End If
                     End If
 
                     Dim HigehstMastery As cMastery = GetHighestPlayerMastery(Index_)
@@ -209,7 +213,7 @@
 
 
                     Dim EXP As Long = ((ref_.Exp * GetMobExpMultiplier(mob_.Mob_Type)) * Settings.Server_XPRate * Percent * Balance * GapFactorXP)
-                    Dim SP As Long = (ref_.Exp * Settings.Server_SPRate * Percent * GapFactorSP)
+                    Dim SP As Long = (ref_.Exp * Settings.Server_SPRate * Percent * Balance * GapFactorSP)
 
 
                     GetXP(EXP, SP, Index_, mob_.UniqueID)

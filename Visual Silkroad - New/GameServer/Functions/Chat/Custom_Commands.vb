@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Mod
+﻿Imports GameServer.GameServer.Functions
+
+Namespace GameServer.Mod
     Module Costum_Commands
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
             'This Function is for additional Log from a GM

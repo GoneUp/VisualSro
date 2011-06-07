@@ -14,14 +14,18 @@
             End If
         End Sub
 
-        Public Sub GateWay(ByVal index As Integer)
-            Dim writer As New LoginServer.PacketWriter
-            Dim name As String = "GatewayServer"
-            writer.Create(ServerOpcodes.ServerInfo)
-            writer.Word(name.Length)
-            writer.HexString(name)
-            writer.Byte(0)
-            LoginServer.Server.Send(writer.GetBytes, index)
+        Public Sub GateWay(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
+            Dim ClientString As String = packet.String(packet.Word)
+
+            If ClientString = "SR_Client" Then
+                Dim writer As New LoginServer.PacketWriter
+                Dim name As String = "GatewayServer"
+                writer.Create(ServerOpcodes.ServerInfo)
+                writer.Word(name.Length)
+                writer.HexString(name)
+                writer.Byte(0)
+                LoginServer.Server.Send(writer.GetBytes, Index_)
+            End If
         End Sub
 
         Public Sub SendPatchInfo(ByVal Index_ As Integer)

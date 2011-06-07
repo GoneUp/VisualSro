@@ -1,4 +1,6 @@
-﻿Namespace GameServer
+﻿Imports GameServer.GameServer.Functions
+
+Namespace GameServer
     Module SilkroadData
 
         Public RefItems As New List(Of cItem)
@@ -379,7 +381,7 @@
                 tmp.Effect_14 = Convert.ToInt32(tmpString(83))
                 tmp.Effect_15 = Convert.ToInt32(tmpString(84))
                 tmp.Effect_16 = Convert.ToInt32(tmpString(85))
-              
+
                 ' tmp.Distance = Convert.ToInt32(tmpString(78))
 
                 If tmp.EffectId = "att" Then

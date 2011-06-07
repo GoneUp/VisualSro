@@ -1,14 +1,5 @@
 ﻿Namespace GameServer.Functions
     Module Players
-
-        'Players
-        Public PlayerData(5000) As [cChar]
-        'items
-        Public Inventorys(5000) As cInventory
-        'Exchange
-        Public ExchangeData As New Dictionary(Of UInteger, cExchange)
-
-
         ''' <summary>
         ''' For Players
         ''' </summary>

@@ -1,8 +1,6 @@
 ﻿Namespace GameServer.Functions
     Module MonsterSpawn
 
-        Public MobList As New Dictionary(Of UInteger, cMonster)
-
         Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster, ByVal obj As Object_) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.SingleSpawn)

@@ -21,7 +21,7 @@ Namespace GameServer
                     Case ClientOpcodes.Handshake  'Client accepts
 
                     Case ClientOpcodes.InfoReq  'GateWay
-                        Functions.GateWay(Index_)
+                        Functions.GateWay(packet, Index_)
 
                     Case ClientOpcodes.Login
                         Functions.CheckLogin(Index_, packet)

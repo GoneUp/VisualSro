@@ -1,6 +1,5 @@
 ﻿Namespace GameServer.Functions
     Module NPC
-        Public NpcList As New List(Of cNPC)
 
         Public Function CreateNPCGroupSpawnPacket(ByVal NpcIndex As Integer) As Byte()
             Dim writer As New PacketWriter

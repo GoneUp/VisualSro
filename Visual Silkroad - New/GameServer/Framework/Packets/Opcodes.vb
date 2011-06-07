@@ -70,6 +70,10 @@
         Stall_Data = &H70BA
 
 
+        'SR_ADMIN
+        SR_Admin = &HAD01
+
+
     End Enum
 
     'S --> C 
@@ -192,7 +196,10 @@
 
         'Exit
 		[Exit] = &HB005
-		Exit2 = &H300A
+        Exit2 = &H300A
+
+        'SR_ADMIN
+        SR_Admin = &HBD01
 
 	End Enum
 

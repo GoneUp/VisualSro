@@ -1,29 +1,33 @@
 ﻿Imports Microsoft.VisualBasic
 Imports System, System.Net.Sockets, System.Timers
+
 Namespace GameServer
 
-    Public Module ClientList
-        Public List(1500) As Socket
-        Public LastPingTime(1500) As DateTime
-        Public CharListing(1500) As cCharListing
-        Public WithEvents PingTimer As New Timer
+    Public Class ClientList
+        Public Shared List(1500) As Socket
+        Public Shared LastPingTime(1500) As DateTime
+        Public Shared CharListing(1500) As Functions.cCharListing
+        Public Shared SessionInfo(1500) As _SessionInfo
+        Public Shared WithEvents PingTimer As New Timer
 
-        Public Sub Add(ByVal sock As Socket)
+        Public Shared Sub Add(ByVal sock As Socket)
             For i As Integer = 0 To List.Length - 1
                 If List(i) Is Nothing Then
                     List(i) = sock
+                    SessionInfo(i) = New _SessionInfo
                     Return
                 End If
             Next i
         End Sub
 
-        Public Sub Delete(ByVal index As Integer)
+        Public Shared Sub Delete(ByVal index As Integer)
             If List(index) IsNot Nothing Then
                 List(index) = Nothing
+                SessionInfo(index) = Nothing
             End If
         End Sub
 
-        Public Function FindIndex(ByVal sock As Socket) As Integer
+        Public Shared Function FindIndex(ByVal sock As Socket) As Integer
             For i As Integer = 0 To List.Length - 1
                 If sock Is List(i) Then
                     Return i
@@ -32,7 +36,7 @@ Namespace GameServer
             Return -1
         End Function
 
-        Public Function GetSocket(ByVal index As Integer) As Socket
+        Public Shared Function GetSocket(ByVal index As Integer) As Socket
             Dim socket As Socket = Nothing
             If (List(index) IsNot Nothing) AndAlso List(index).Connected Then
                 socket = List(index)
@@ -40,16 +44,14 @@ Namespace GameServer
             Return socket
         End Function
 
-        Public Sub SetupClientList(ByVal MaxUser As Integer)
+        Public Shared Sub SetupClientList(ByVal MaxUser As Integer)
             ReDim List(MaxUser), LastPingTime(MaxUser), CharListing(MaxUser)
 
             PingTimer.Interval = 30000
             PingTimer.Start()
         End Sub
 
-
-
-        Public Sub CheckUserPings() Handles PingTimer.Elapsed
+        Public Shared Sub CheckUserPings() Handles PingTimer.Elapsed
             PingTimer.Stop()
             Dim Count As Integer = 0
 
@@ -58,7 +60,7 @@ Namespace GameServer
                 If socket IsNot Nothing Then
                     If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
                         If socket.Connected = True And Settings.Server_PingDc Then
-                            Server.Dissconnect(i)
+                            '     Server.Dissconnect(i)
                         End If
                     Else
                         Count += 1
@@ -71,6 +73,20 @@ Namespace GameServer
             PingTimer.Interval = 10000
             PingTimer.Start()
         End Sub
-    End Module
+    End Class
+
+    Public Class _SessionInfo
+        Public Ip As String
+        Public ClientName As String
+        Public ClientType As ConnectionType
+        Public UserName As String
+        Public CharName As String
+        Public Authorized As Boolean
+
+        Enum ConnectionType
+            SR_Client = 0
+            SR_Admin = 1
+        End Enum
+    End Class
 End Namespace
 

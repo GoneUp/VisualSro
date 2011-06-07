@@ -5,8 +5,8 @@ Namespace GameServer.Functions
         Public PlayerMoveTimer As Timer() = New Timer(14999) {}
         Public PlayerBerserkTimer As Timer() = New Timer(14999) {}
         Public PlayerAutoHeal As New Timer
+        Public WorldCheck As New Timer
         Public MonsterMovement As New Timer
-        Public MonsterCheck As New Timer
         Public MonsterRespawn As New Timer
         Public MonsterAttack As Timer() = New Timer(14999) {}
         Public PickUpTimer As Timer() = New Timer(14999) {}
@@ -35,15 +35,15 @@ Namespace GameServer.Functions
                     AddHandler PickUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
                 Next
 
-                AddHandler MonsterCheck.Elapsed, AddressOf MonsterCheck_Elapsed
+                AddHandler WorldCheck.Elapsed, AddressOf WorldCheck_Elapsed
                 AddHandler MonsterRespawn.Elapsed, AddressOf MonsterRespawn_Elapsed
                 AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
                 AddHandler PlayerAutoHeal.Elapsed, AddressOf PlayerAutoHeal_Elapsed
                 AddHandler DatabaseTimer.Elapsed, AddressOf DatabaseTimer_Elapsed
 
                 'Start Timers
-                MonsterCheck.Interval = 5000
-                MonsterCheck.Start()
+                WorldCheck.Interval = 5000
+                WorldCheck.Start()
 
                 MonsterMovement.Interval = 3500
                 MonsterMovement.Start()
@@ -215,14 +215,12 @@ Namespace GameServer.Functions
             End Try
         End Sub
 
-        Public Sub MonsterCheck_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            MonsterCheck.Stop()
+        Public Sub WorldCheck_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            WorldCheck.Stop()
 
             Try
                 Dim stopwatch As New Stopwatch
                 stopwatch.Start()
-
-
 
                 Dim tmplist As Array = MobList.Keys.ToArray
                 For Each key In tmplist
@@ -230,8 +228,7 @@ Namespace GameServer.Functions
                         Dim Mob_ As cMonster = MobList.Item(key)
 
                         If Mob_.Death = True Or Mob_.HP_Cur <= 0 Then
-                            Dim wert As Integer = Date.Compare(Mob_.DeathRemoveTime, Date.Now)
-                            If wert = -1 Then
+                            If Date.Compare(Date.Now, Mob_.DeathRemoveTime) = 1 Then
                                 'Abgelaufen
                                 RemoveMob(Mob_.UniqueID)
                             End If
@@ -244,13 +241,24 @@ Namespace GameServer.Functions
                     End If
                 Next
 
+                tmplist = ItemList.Keys.ToArray
+                For Each key In tmplist
+                    If ItemList.ContainsKey(key) Then
+                        If Date.Compare(Date.Now, ItemList(key).DespawnTime) = 1 Then
+                            RemoveItem(key)
+                        End If
+                    End If
+                Next
+
+
+
                 stopwatch.Stop()
-                Debug.Print("MC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & tmplist.Length)
+                Debug.Print("WC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & tmplist.Length)
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MC") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: WC") '
             End Try
 
-            MonsterCheck.Start() 'restart Timer
+            WorldCheck.Start() 'restart Timer
         End Sub
 
 
@@ -452,8 +460,8 @@ Namespace GameServer.Functions
                 If MonsterRespawn.Enabled = False Then
                     MonsterRespawn.Start()
                 End If
-                If MonsterCheck.Enabled = False Then
-                    MonsterCheck.Start()
+                If WorldCheck.Enabled = False Then
+                    WorldCheck.Start()
                 End If
                 If MonsterMovement.Enabled = False Then
                     MonsterMovement.Start()

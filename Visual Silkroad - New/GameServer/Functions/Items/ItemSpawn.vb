@@ -1,8 +1,6 @@
 ﻿Namespace GameServer.Functions
     Module ItemSpawn
 
-        Public ItemList As New Dictionary(Of UInteger, cItemDrop)
-
         Public Function CreateItemSpawnPacket(ByVal Item_ As cItemDrop) As Byte()
             Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
             Dim writer As New PacketWriter
@@ -40,6 +38,7 @@
             tmp_.DroppedBy = Item.OwnerCharID
             tmp_.Position = Position
             tmp_.Item = FillItem(Item)
+            tmp_.DespawnTime = Date.Now.AddMinutes(3)
 
             If tmp_.Item.Pk2Id = 1 Then
                 'Gold...
@@ -150,11 +149,4 @@
             End If
         End Sub
     End Module
-
-    Class cItemDrop
-        Public UniqueID As UInteger
-        Public DroppedBy As UInteger
-        Public Position As Position
-        Public Item As cInvItem
-    End Class
 End Namespace

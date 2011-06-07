@@ -1,17 +1,13 @@
 ﻿Namespace GameServer.Functions
     Module Stall
 
-        Public Stalls As New List(Of cStall)
-        Public StallIdCounter As UInt32 = 0
-
-
         Public Sub Stall_Open_Own(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim NameLen As UShort = packet.Word
             Dim Name As String = packet.UString(NameLen)
 
             If PlayerData(Index_).Busy = False And PlayerData(Index_).InStall = False Then
                 PlayerData(Index_).InStall = True
-                PlayerData(Index_).StallID = GetStallId()
+                PlayerData(Index_).StallID = Id_Gen.GetStallId
                 PlayerData(Index_).StallOwner = True
                 PlayerData(Index_).Busy = True
 
@@ -457,13 +453,6 @@
                 Server.Send(writer.GetBytes, ToIndex)
             End If
         End Sub
-
-
-        Private Function GetStallId() As UInt32
-            StallIdCounter += 1
-            Return StallIdCounter
-        End Function
-
 
         Public Function GetStallIndex(ByVal StallId As UInt32) As Integer
             For i = 0 To Stalls.Count - 1

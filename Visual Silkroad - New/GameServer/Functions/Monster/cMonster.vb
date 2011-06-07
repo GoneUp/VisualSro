@@ -1,6 +1,6 @@
 ﻿Imports System
 
-Namespace GameServer
+Namespace GameServer.Functions
     Public Class cMonster
         Public Pk2ID As UInt32
         Public UniqueID As UInt32

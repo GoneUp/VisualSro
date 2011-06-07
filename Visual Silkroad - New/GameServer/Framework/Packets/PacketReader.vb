@@ -7,10 +7,12 @@ Namespace GameServer
     Public Class PacketReader
         Private br As BinaryReader
         Private ms As MemoryStream
+        Private Packet_Data() As Byte
 
         Public Sub New(ByVal data() As Byte)
             Me.ms = New MemoryStream(data)
             Me.br = New BinaryReader(Me.ms)
+            Packet_Data = data
         End Sub
 
         Public Function [Byte]() As Byte
@@ -70,6 +72,10 @@ Namespace GameServer
 
         Public Function ByteArray(ByVal Count As Integer) As Byte()
             Return Me.br.ReadBytes(Count)
+        End Function
+
+        Public Function GetData() As Byte()
+            Return Me.Packet_Data
         End Function
     End Class
 End Namespace

@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Settings
+﻿Imports GameServer.GameServer.Functions
+
+Namespace GameServer.Settings
     Module Settings
         'Loading File
         Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_game\settings.ini")

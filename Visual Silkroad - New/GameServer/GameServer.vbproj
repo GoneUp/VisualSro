@@ -106,6 +106,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\AdminControl.vb" />
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Framework\Database\DataBase.vb" />
     <Compile Include="Framework\Database\GameDb.vb" />
@@ -122,7 +123,8 @@
     <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Server\Server.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
-    <Compile Include="Framework\Silkroad\Timers.vb" />
+    <Compile Include="Functions\Global\Global.vb" />
+    <Compile Include="Functions\Global\Timers.vb" />
     <Compile Include="Functions\Guild\cGuild.vb" />
     <Compile Include="Functions\Guild\Guild.vb" />
     <Compile Include="Functions\Items\Alchemy.vb" />

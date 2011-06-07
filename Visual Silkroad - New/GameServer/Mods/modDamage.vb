@@ -5,11 +5,11 @@
         Public Settings(1500) As Settings_
 
         Public Sub SendDamageInfo(ByVal MobUniqueId As Integer)
-            Dim Mob_ As cMonster = Functions.MobList(MobUniqueId)
+            Dim Mob_ As Functions.cMonster = Functions.MobList(MobUniqueId)
             Dim ref_ As Object_ = GetObjectById(Mob_.Pk2ID)
 
             'Sort
-            Dim DmgList As List(Of cDamageDone) = Functions.MobList(MobUniqueId).DamageFromPlayer
+            Dim DmgList As List(Of Functions.cDamageDone) = Functions.MobList(MobUniqueId).DamageFromPlayer
             Dim sort = From elem In DmgList Order By elem.Damage Descending Select elem Take 9
 
             'Build Info

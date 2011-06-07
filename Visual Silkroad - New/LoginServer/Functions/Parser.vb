@@ -18,7 +18,7 @@ Namespace LoginServer
                 Case ClientOpcodes.Handshake  'Client accepts
 
                 Case ClientOpcodes.InfoReq  'GateWay
-                    Functions.GateWay(Index_)
+                    Functions.GateWay(packet, Index_)
 
                 Case ClientOpcodes.PatchReq  'Client sends Patch Info
                     Functions.ClientInfo(packet, Index_)

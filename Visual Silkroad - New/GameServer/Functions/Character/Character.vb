@@ -493,6 +493,7 @@
                     PlayerData(Index_) = ClientList.CharListing(Index_).Chars(i)
                     Dim inventory As New cInventory(ClientList.CharListing(Index_).Chars(i).MaxSlots)
                     Inventorys(Index_) = GameServer.GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
+                    ClientList.SessionInfo(Index_).CharName = SelectedNick
                 End If
             Next
 

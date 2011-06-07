@@ -1,4 +1,6 @@
-﻿Namespace GameServer.GameDB
+﻿Imports GameServer.GameServer.Functions
+
+Namespace GameServer.GameDB
     Module GameDb
 
         'Timer
@@ -348,7 +350,7 @@
             End If
             Return i
         End Function
-        Public Function FillCharList(ByVal CharArray As cCharListing) As cCharListing
+        Public Function FillCharList(ByVal CharArray As cCharListing)
 
             Dim CharCount As Integer = 0
             CharArray.Chars.Clear()
@@ -363,7 +365,6 @@
             Next
 
             CharArray.NumberOfChars = CharCount
-            Return CharArray
         End Function
 
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory

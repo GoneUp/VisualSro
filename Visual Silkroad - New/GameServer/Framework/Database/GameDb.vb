@@ -365,6 +365,7 @@ Namespace GameServer.GameDB
             Next
 
             CharArray.NumberOfChars = CharCount
+            Return CharArray
         End Function
 
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory

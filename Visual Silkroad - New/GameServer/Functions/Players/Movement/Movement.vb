@@ -118,7 +118,7 @@
                 ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
                 ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
                 ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
-                Debug.Print(ToPos.ToString)
+                Debug.Print(ToPos.ToGameX & " Y " & ToPos.ToGameY)
             End If
 
             Dim WalkTime As Single

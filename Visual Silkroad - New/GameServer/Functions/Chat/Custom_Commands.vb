@@ -228,13 +228,34 @@ Namespace GameServer.Mod
                             Next
                         Next
                     End If
-                Case "\\berserk"
+                Case "\\berserkbar"
                     If IsNumeric(tmp(1)) Then
                         If tmp(1) < 6 Then
                             Functions.PlayerData(Index_).BerserkBar = tmp(1)
                             Functions.UpdateBerserk(Index_)
                         End If
                     End If
+                Case "\\berserk"
+                    If PlayerData(Index_).Berserk Then
+                        PlayerData(Index_).Berserk = True
+                        PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking
+
+                        UpdateBerserk(Index_)
+                        UpdateState(4, 1, 0, Index_)
+                        UpdateSpeedsBerserk(Index_)
+
+                        PlayerBerserkTimer(Index_).Interval = 10 * 60 * 1000
+                        PlayerBerserkTimer(Index_).Start()
+
+                    Else
+                        PlayerData(Index_).Berserk = False
+                        PlayerData(Index_).BerserkBar = 5
+                        PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                        UpdateSpeeds(Index_)
+                        UpdateState(4, 0, Index_)
+                        PlayerBerserkTimer(Index_).Stop()
+                    End If
+
             End Select
 
 

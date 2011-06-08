@@ -253,7 +253,7 @@ Namespace GameServer.Functions
 
 
                 stopwatch.Stop()
-                Debug.Print("WC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & tmplist.Length)
+                Debug.Print("WC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & MobList.Count)
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: WC") '
             End Try
@@ -286,6 +286,7 @@ Namespace GameServer.Functions
                 Dim stopwatch As New Stopwatch
                 stopwatch.Start()
 
+                Dim Rnd As New Random
                 Dim tmplist As Array = MobList.Keys.ToArray
                 For Each key In tmplist
                     If MobList.ContainsKey(key) Then
@@ -296,8 +297,8 @@ Namespace GameServer.Functions
                                 Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
                                 If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
-                                    Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
-                                    Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
+                                    Dim ToX As Single = Mob_.Position.ToGameX + Rnd.Next(-15, +15)
+                                    Dim ToY As Single = Mob_.Position.ToGameY + Rnd.Next(-15, +15)
 
                                     Dim ToPos As New Position
                                     ToPos.XSector = GetXSecFromGameX(ToX)

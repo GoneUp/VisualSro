@@ -557,7 +557,7 @@
         Public Sub AddItemDataToPacket(ByVal _item As cInvItem, ByVal writer As PacketWriter)
             Dim refitem As cItem = GetItemByID(_item.Pk2Id)
             writer.DWord(_item.Pk2Id)
-
+            Debug.Print(refitem.ITEM_TYPE_NAME & " Type1: " & refitem.CLASS_A & " Type2: " & refitem.CLASS_B & " Type3: " & refitem.CLASS_C)
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
                     writer.Byte(_item.Plus)
@@ -596,7 +596,17 @@
                     End If
 
                 Case 3 'etc
-                    writer.Word(_item.Amount)
+                    Select Case refitem.CLASS_B
+                        Case 11
+                            Select Case refitem.CLASS_C
+                                Case 7
+                                    writer.Byte(1)
+                                    writer.Word(0)
+                            End Select
+                        Case Else
+                            writer.Word(_item.Amount)
+                    End Select
+
             End Select
         End Sub
 

@@ -1,0 +1,84 @@
+Opcode AD01: C->S
+Opcode BD01: S->C
+
+C-S:
+[TAG]
+1:
+Server Status Request
+[Dword] Online Number
+[Dword] Mob Number
+[Dword] Npc Number
+[Dword] Item Number
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+
+2:
+Server Option Change
+[Byte] PingDc On/off
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+
+3:
+Character Status Request
+//C-S
+[Byte] Tag
+if Tag = 1
+Own Char
+if Tag = 2
+[String] Name
+
+//S-C
+[String] Name
+[Byte] Online 
+[Byte] Ingame /0 = Off, 1= Ingame, 2=CharScreen
+[Byte] Level
+[Dword] Sp
+[Qword] Gold
+[Word] Attributes
+[Word] Str
+[Word] Int
+[Word] Silk
+
+4:
+Character Change:
+[String] Name
+[Byte] Tag New_Name
+if New_Name = 1
+	[String] New_Name
+[Byte] Level
+[Dword] Sp
+[Qword] Gold
+[Word] Attributes
+[Word] Str
+[Word] Int
+[Byte] Tag New_Mastery
+if New_Mastery= 1
+	[Word] New_Mastery Level
+[Word] Silk
+
+
+5:
+Spawn
+[Dword] Pk2Id
+[Byte] Type
+
+6: Create Item
+[String] Name
+[Dword] Pk2Id
+[Byte] Plus
+[Byte] WhiteStats
+if WhiteStats = 1
+	[Byte] Plus
+	[Byte] PerDurability 
+    [Byte] PerPhyRef 
+    [Byte] PerMagRef 
+    [Byte] PerAttackRate 
+    [Byte] PerPhyAtk 
+    [Byte] PerMagAtk 
+    [Byte] PerCritical 

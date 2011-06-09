@@ -8,6 +8,7 @@
             Public FailedLogins As String
             Public Banned As Boolean
             Public LoggedIn As Boolean
+            Public Admin As Boolean
 
             Public Silk As UInteger
             Public Silk_Bonus As UInteger

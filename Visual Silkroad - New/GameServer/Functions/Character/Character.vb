@@ -571,8 +571,9 @@
             writer.Byte(Inventorys(Index_).AvatarCount)  ' Amount of Avatars
             For Each _avatar As cInvItem In Inventorys(Index_).AvatarItems
                 If _avatar.Pk2Id <> 0 Then
-                    writer.DWord(_avatar.Pk2Id)
-                    writer.Byte(_avatar.Plus)
+                    Dim refitem As cItem = GetItemByID(_avatar.Pk2Id)
+                    writer.Byte(GetExternalAvatarSlot(refitem))
+                    AddItemDataToPacket(_avatar, writer)
                 End If
             Next
 

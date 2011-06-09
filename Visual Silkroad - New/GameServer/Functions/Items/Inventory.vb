@@ -28,9 +28,7 @@
                 Case 24 'Buy From Item Mall
                     OnBuyItemFromMall(packet, index_)
                 Case 36 'Equip Avatar 
-                    Dim Old_Slot As Byte = packet.Byte
-                    Dim New_Slot As Byte = packet.Byte
-                    SendNotice("Old: " & Old_Slot & " New: " & New_Slot)
+                    OnAvatarEquip(packet, index_)
                 Case Else
 
                     Console.WriteLine("[INVENTORY][TAG: " & type & "]")
@@ -206,7 +204,7 @@
                     OnStatsPacket(Index_)
                 ElseIf New_Slot <= 12 Then
                     'Equip
-                    Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot), Index_)
+                    Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot, False), Index_)
                     PlayerData(Index_).SetCharGroundStats()
                     PlayerData(Index_).AddItemsToStats(Index_)
                     OnStatsPacket(Index_)
@@ -412,6 +410,102 @@
             End If
         End Sub
 #End Region
+
+
+#Region "Avatar"
+        Public Sub OnAvatarEquip(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim Old_Slot As Byte = packet.Byte
+            Dim New_Slot As Byte = packet.Byte
+            SendNotice("Old: " & Old_Slot & " New: " & New_Slot)
+
+            If PlayerData(Index_).InExchange Or PlayerData(Index_).InStall Or PlayerData(Index_).Alive = False Then
+                Exit Sub
+            End If
+
+
+
+            If Inventorys(Index_).UserItems(Old_Slot).Pk2Id <> 0 Then
+                Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).UserItems(Old_Slot))
+                Dim _SourceRef As cItem = GetItemByID(SourceItem.Pk2Id)
+                New_Slot = GetInternalAvatarSlot(_SourceRef)
+                Dim DestItem As cInvItem = FillItem(Inventorys(Index_).AvatarItems(New_Slot))
+
+                If DestItem.Pk2Id = 0 Then
+                    Inventorys(Index_).AvatarItems(New_Slot) = SourceItem
+                    Inventorys(Index_).AvatarItems(New_Slot).Slot = New_Slot
+                    Inventorys(Index_).AvatarItems(New_Slot).ItemType = cInvItem.sUserItemType.Avatar
+
+                    Inventorys(Index_).UserItems(Old_Slot) = ClearItem(DestItem)
+                    Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
+                    Inventorys(Index_).UserItems(Old_Slot).ItemType = cInvItem.sUserItemType.Inventory
+                ElseIf DestItem.Pk2Id <> 0 Then
+
+                End If
+            End If
+
+            UpdateItem(Inventorys(Index_).UserItems(Old_Slot))
+            UpdateItem(Inventorys(Index_).AvatarItems(New_Slot))
+
+
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.ItemMove)
+            writer.Byte(1) 'success
+            writer.Byte(36) 'type
+            writer.Byte(Old_Slot)
+            writer.Byte(New_Slot)
+            writer.Word(0)
+            writer.Byte(0) 'end
+            Server.Send(writer.GetBytes, Index_)
+
+            Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot, True), Index_)
+        End Sub
+        Public Sub OnAvatarUnEquip(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim Old_Slot As Byte = packet.Byte
+            Dim New_Slot As Byte = packet.Byte
+            SendNotice("UnOld: " & Old_Slot & " New: " & New_Slot)
+
+            If PlayerData(Index_).InExchange Or PlayerData(Index_).InStall Or PlayerData(Index_).Alive = False Then
+                Exit Sub
+            End If
+
+
+
+            If Inventorys(Index_).AvatarItems(Old_Slot).Pk2Id <> 0 Then
+                Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).AvatarItems(Old_Slot))
+                Dim _SourceRef As cItem = GetItemByID(SourceItem.Pk2Id)
+                Dim DestItem As cInvItem = FillItem(Inventorys(Index_).UserItems(New_Slot))
+
+                If DestItem.Pk2Id = 0 Then
+                    Inventorys(Index_).UserItems(New_Slot) = SourceItem
+                    Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
+                    Inventorys(Index_).UserItems(New_Slot).ItemType = cInvItem.sUserItemType.Inventory
+
+                    Inventorys(Index_).AvatarItems(Old_Slot) = ClearItem(DestItem)
+                    Inventorys(Index_).AvatarItems(Old_Slot).Slot = Old_Slot
+                    Inventorys(Index_).AvatarItems(Old_Slot).ItemType = cInvItem.sUserItemType.Avatar
+                ElseIf DestItem.Pk2Id <> 0 Then
+
+                End If
+            End If
+
+            UpdateItem(Inventorys(Index_).UserItems(Old_Slot))
+            UpdateItem(Inventorys(Index_).AvatarItems(New_Slot))
+
+
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.ItemMove)
+            writer.Byte(1) 'success
+            writer.Byte(37) 'type
+            writer.Byte(Old_Slot)
+            writer.Byte(New_Slot)
+            writer.Word(0)
+            writer.Byte(0) 'end
+            Server.Send(writer.GetBytes, Index_)
+
+            Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot, True), Index_)
+        End Sub
+
+#End Region
 #Region "Helper Functions"
         Private Function CheckItemGender(ByVal tmpItem As cItem, ByVal Index_ As Integer) As Boolean
             Dim Gender As Integer = 0
@@ -438,13 +532,69 @@
             End If
         End Function
 
-        Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte) As Byte()
+        Private Function GetInternalAvatarSlot(ByVal _Refitem As cItem) As Byte
+            If _Refitem.CLASS_A = 1 Then
+                Select Case _Refitem.CLASS_B
+                    Case 13
+                        Select Case _Refitem.CLASS_C
+                            Case 1
+                                'Hat
+                                Return 0
+                            Case 2
+                                'Body
+                                Return 1
+                            Case 3
+                                'Attach
+                                Return 3
+                            Case Else
+                                Debug.Print(_Refitem.ITEM_TYPE_NAME)
+                        End Select
+                    Case 14
+                        'Nasrun
+                        Return 2
+                    Case Else
+                        Debug.Print(_Refitem.ITEM_TYPE_NAME)
+                End Select
+            End If
+            Return 255
+        End Function
+
+        Friend Function GetExternalAvatarSlot(ByVal _Refitem As cItem) As Byte
+            If _Refitem.CLASS_A = 1 Then
+                Select Case _Refitem.CLASS_B
+                    Case 13
+                        Select Case _Refitem.CLASS_C
+                            Case 1
+                                'Hat
+                                Return 0
+                            Case 2
+                                'Body
+                                Return 1
+                            Case 3
+                                'Attach
+                                Return 1
+                        End Select
+                    Case 14
+                        'Nasrun
+                        Return 4
+                End Select
+            End If
+            Return 255
+        End Function
+
+        Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte, ByVal Avatar As Boolean) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.EquipItem)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Byte(New_Slot)
-            writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
-            writer.Byte(Inventorys(Index_).UserItems(New_Slot).Plus)
+            If Avatar = False Then
+                writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
+                writer.Byte(Inventorys(Index_).UserItems(New_Slot).Plus)
+            Else
+                writer.DWord(Inventorys(Index_).AvatarItems(New_Slot).Pk2Id)
+                writer.Byte(Inventorys(Index_).AvatarItems(New_Slot).Plus)
+            End If
+
             Return writer.GetBytes
         End Function
 

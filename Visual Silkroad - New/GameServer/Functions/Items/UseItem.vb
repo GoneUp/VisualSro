@@ -35,6 +35,7 @@
                     Case 33 'Add Stall Decoration
                     Case 41 'Globals
                         OnUseGlobal(slot, Index_, packet)
+                    Case 70 'Gender Switch Scroll
                     Case 78 'Skin CHange Scroll
                         OnUseSkinScroll(slot, Index_, packet)
                 End Select

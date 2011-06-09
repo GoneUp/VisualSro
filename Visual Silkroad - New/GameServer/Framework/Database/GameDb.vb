@@ -72,6 +72,7 @@ Namespace GameServer.GameDB
                 Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
                 Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
                 Users(i).Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
+                Users(i).Admin = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
             Next
 
         End Sub
@@ -123,7 +124,7 @@ Namespace GameServer.GameDB
                     Chars(i).WalkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
                     Chars(i).RunSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(33))
                     Chars(i).BerserkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(34))
-                    Chars(i).BerserkBar = CUInt(tmp.Tables(0).Rows(i).ItemArray(35))
+                    Chars(i).BerserkBar = CByte(tmp.Tables(0).Rows(i).ItemArray(35))
                     Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
                     Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
                     Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))

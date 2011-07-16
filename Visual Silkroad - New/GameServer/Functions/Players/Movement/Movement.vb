@@ -170,12 +170,14 @@
                 Next
 
                 '===========NPCS===================
-                For i = 0 To NpcList.Count - 1
-                    Dim _npc As cNPC = NpcList(i)
-                    If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, NpcList(i).Position) Then
-                        If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = False Then
-                            Server.Send(CreateNPCGroupSpawnPacket(i), Index_)
-                            PlayerData(Index_).SpawnedNPCs.Add(_npc.UniqueID)
+                For Each key In NpcList.Keys.ToList
+                    If NpcList.ContainsKey(key) Then
+                        Dim Npc_ As cNPC = NpcList.Item(key)
+                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Npc_.Position) Then
+                            If PlayerData(Index_).SpawnedNPCs.Contains(Npc_.UniqueID) = False Then
+                                Server.Send(CreateNPCGroupSpawnPacket(Npc_.UniqueID), Index_)
+                                PlayerData(Index_).SpawnedNPCs.Add(Npc_.UniqueID)
+                            End If
                         End If
                     End If
                 Next
@@ -184,11 +186,11 @@
                 '===========ITEMS===================
                 For Each key In ItemList.Keys.ToList
                     If ItemList.ContainsKey(key) Then
-                        Dim _item As cItemDrop = ItemList(key)
+                        Dim Item_ As cItemDrop = ItemList(key)
                         If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, ItemList(key).Position) Then
-                            If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = False Then
-                                Server.Send(CreateItemSpawnPacket(_item), Index_)
-                                PlayerData(Index_).SpawnedItems.Add(_item.UniqueID)
+                            If PlayerData(Index_).SpawnedItems.Contains(Item_.UniqueID) = False Then
+                                Server.Send(CreateItemSpawnPacket(Item_), Index_)
+                                PlayerData(Index_).SpawnedItems.Add(Item_.UniqueID)
                             End If
                         End If
                     End If
@@ -227,12 +229,14 @@
                     End If
                 Next
 
-                For i = 0 To NpcList.Count - 1
-                    Dim _npc As cNPC = NpcList(i)
-                    If PlayerData(Index_).SpawnedNPCs.Contains(_npc.UniqueID) = True Then
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, _npc.Position) = False Then
-                            Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
-                            PlayerData(Index_).SpawnedNPCs.Remove(_npc.UniqueID)
+                For Each key In NpcList.Keys.ToList
+                    If NpcList.ContainsKey(key) Then
+                        Dim Npc_ As cNPC = NpcList.Item(key)
+                        If PlayerData(Index_).SpawnedNPCs.Contains(Npc_.UniqueID) = True Then
+                            If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Npc_.Position) = False Then
+                                Server.Send(CreateDespawnPacket(Npc_.UniqueID), Index_)
+                                PlayerData(Index_).SpawnedNPCs.Remove(Npc_.UniqueID)
+                            End If
                         End If
                     End If
                 Next

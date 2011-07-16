@@ -18,6 +18,13 @@
                             If MobList.ContainsKey(ObjectID) And MobList(ObjectID).Death = False Then
                                 PlayerAttackNormal(Index_, ObjectID)
                             End If
+                            For i = 0 To Server.MaxClients
+                                If PlayerData(i) IsNot Nothing Then
+                                    If PlayerData(i).UniqueId = ObjectID Then
+                                        PlayerAttackNormal(Index_, ObjectID)
+                                    End If
+                                End If
+                            Next
 
                         End If
                     Case 2
@@ -26,7 +33,7 @@
                         Dim ObjectID As UInt32 = packet.DWord
 
                         If ItemList.ContainsKey(ObjectID) Then
-                            PickUp(ObjectID, Index_)
+                            OnPickUp(ObjectID, Index_)
                         End If
 
                     Case 4

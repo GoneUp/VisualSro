@@ -21,10 +21,6 @@
                     writer.Byte(5) '1 sekunde
                     writer.Byte(2) 'mode 
                     Server.Send(writer.GetBytes, Index_)
-
-                    writer = New PacketWriter
-                    writer.Create(ServerOpcodes.Exit2)
-                    Server.Send(writer.GetBytes, Index_)
             End Select
 
             [Mod].Damage.OnPlayerLogoff(Index_)

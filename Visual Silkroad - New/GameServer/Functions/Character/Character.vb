@@ -79,7 +79,23 @@
                         End If
                     Next
 
-                    writer.Byte(0) 'Char End
+                    'Avatars
+
+                    Dim AvatarItemCount As Integer = 0
+                    For b = 0 To 4
+                        If inventory.AvatarItems(b).Pk2Id <> 0 Then
+                            AvatarItemCount += 1
+                        End If
+                    Next
+
+                    writer.Byte(AvatarItemCount)
+
+                    For b = 0 To 4
+                        If inventory.AvatarItems(b).Pk2Id <> 0 Then
+                            writer.DWord(inventory.AvatarItems(b).Pk2Id)
+                            writer.Byte(inventory.AvatarItems(b).Plus)
+                        End If
+                    Next
 
                 Next
                 Server.Send(writer.GetBytes, Index_)

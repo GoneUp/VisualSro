@@ -29,6 +29,8 @@ Namespace GameServer
             Console.Clear()
             Console.Title = "GAMESERVER ALPHA"
 
+
+
             Log.WriteSystemLog("Loading Settings.")
             Settings.LoadSettings()
             Settings.SetToServer()

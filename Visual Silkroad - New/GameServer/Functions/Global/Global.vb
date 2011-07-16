@@ -8,7 +8,7 @@
         'Monster
         Public MobList As New Dictionary(Of UInteger, cMonster)
         'NPC
-        Public NpcList As New List(Of cNPC)
+        Public NpcList As New Dictionary(Of UInteger, cNPC)
         'Exchange
         Public ExchangeData As New Dictionary(Of UInteger, cExchange)
         'Stall

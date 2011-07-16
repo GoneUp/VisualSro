@@ -817,21 +817,14 @@ Namespace GameServer
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
 
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                    Dim obj As Object_ = GetObjectById(tmpString(1))
+                    ReDim obj.ChatBytes(tmpString.Length - 3)
 
-                    Dim tmplist As Array = RefObjects.Keys.ToArray
-                    For Each key In tmplist
-                        If RefObjects.ContainsKey(key) Then
-                            ReDim RefObjects(key).ChatBytes(tmpString.Length - 3)
-
-                            For c = 0 To RefObjects(key).ChatBytes.Count - 1
-                                RefObjects(key).ChatBytes(c) = tmpString(c + 2)
-                            Next
-
-                            Exit For
-                        End If
+                    For c = 0 To obj.ChatBytes.Count - 1
+                        obj.ChatBytes(c) = tmpString(c + 2)
                     Next
                 End If
-            Next i
+            Next
         End Sub
 
         Public Sub DumpAbuseListFile(ByVal path As String)

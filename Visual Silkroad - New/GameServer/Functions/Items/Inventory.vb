@@ -27,6 +27,8 @@
                     OnExchangeAddGold(packet, index_)
                 Case 24 'Buy From Item Mall
                     OnBuyItemFromMall(packet, index_)
+                Case 35 'Unqequip Avatar
+                    OnAvatarUnEquip(packet, index_)
                 Case 36 'Equip Avatar 
                     OnAvatarEquip(packet, index_)
                 Case Else
@@ -218,7 +220,7 @@
 
         End Sub
 
-#Region "Drop"
+#Region "Drop/PickUp"
         Public Sub OnDropItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
                 Exit Sub
@@ -271,6 +273,70 @@
                 writer.Byte(10)
                 writer.QWord(amout)
                 Server.Send(writer.GetBytes, index_)
+            End If
+        End Sub
+
+        Public Sub OnPickUp(ByVal UniqueId As UInteger, ByVal Index_ As Integer)
+            Dim _item As cItemDrop = ItemList(UniqueId)
+            Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, _item.Position)
+
+            If distance >= 5 Then
+                'Out Of Range
+                Dim TravelTime As Single = MoveUserToObject(Index_, _item.Position, 5)
+                PickUpTimer(Index_).Interval = TravelTime
+                PickUpTimer(Index_).Start()
+
+            Else
+                UpdateState(1, 1, Index_)
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.PickUp_Move)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.Byte(_item.Position.XSector)
+                writer.Byte(_item.Position.YSector)
+                writer.Float(_item.Position.X)
+                writer.Float(_item.Position.Z)
+                writer.Float(_item.Position.Y)
+                writer.Word(0)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+
+                writer.Create(ServerOpcodes.PickUp_Item)
+                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.Byte(0)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+
+                RemoveItem(UniqueId)
+
+                If _item.Item.Pk2Id = 1 Or _item.Item.Pk2Id = 2 Or _item.Item.Pk2Id = 3 Then
+                    If _item.Item.Amount > 0 Then
+                        PlayerData(Index_).Gold += _item.Item.Amount
+                        UpdateGold(Index_)
+                    End If
+                Else
+                    Dim slot As Byte = GetFreeItemSlot(Index_)
+                    If slot <> -1 Then
+                        Dim ref As cItem = GetItemByID(_item.Item.Pk2Id)
+                        Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
+
+                        temp_item.Pk2Id = _item.Item.Pk2Id
+                        temp_item.OwnerCharID = PlayerData(Index_).CharacterId
+                        temp_item.Durability = _item.Item.Durability
+                        temp_item.Plus = _item.Item.Plus
+                        temp_item.Amount = _item.Item.Amount
+                        temp_item.Blues = New List(Of cInvItem.sBlue)
+
+                        UpdateItem(Inventorys(Index_).UserItems(slot)) 'SAVE IT
+
+                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Byte(1)
+                        writer.Byte(6) 'type = new item
+                        writer.Byte(Inventorys(Index_).UserItems(slot).Slot)
+
+                        AddItemDataToPacket(Inventorys(Index_).UserItems(slot), writer)
+
+                        Server.Send(writer.GetBytes, Index_)
+                    End If
+                End If
             End If
         End Sub
 #End Region
@@ -469,7 +535,6 @@
             End If
 
 
-
             If Inventorys(Index_).AvatarItems(Old_Slot).Pk2Id <> 0 Then
                 Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).AvatarItems(Old_Slot))
                 Dim _SourceRef As cItem = GetItemByID(SourceItem.Pk2Id)
@@ -488,21 +553,21 @@
                 End If
             End If
 
-            UpdateItem(Inventorys(Index_).UserItems(Old_Slot))
-            UpdateItem(Inventorys(Index_).AvatarItems(New_Slot))
+            UpdateItem(Inventorys(Index_).AvatarItems(Old_Slot))
+            UpdateItem(Inventorys(Index_).UserItems(New_Slot))
 
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.ItemMove)
             writer.Byte(1) 'success
-            writer.Byte(37) 'type
+            writer.Byte(35) 'type
             writer.Byte(Old_Slot)
             writer.Byte(New_Slot)
             writer.Word(0)
             writer.Byte(0) 'end
             Server.Send(writer.GetBytes, Index_)
 
-            Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot, True), Index_)
+            Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, Old_Slot, New_Slot), Index_)
         End Sub
 
 #End Region
@@ -661,6 +726,7 @@
             tmp_.Amount = From_item.Amount
             tmp_.Durability = From_item.Durability
             tmp_.Blues = From_item.Blues
+            tmp_.ItemType = From_item.ItemType
 
             'WhiteStats
             tmp_.PerDurability = From_item.PerDurability

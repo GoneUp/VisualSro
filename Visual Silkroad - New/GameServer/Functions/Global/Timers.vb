@@ -206,7 +206,7 @@ Namespace GameServer.Functions
                     PickUpTimer(Index).Stop()
 
                     If ItemList.ContainsKey(PlayerData(Index).PickUpId) Then
-                        PickUp(PlayerData(Index).PickUpId, Index)
+                        OnPickUp(PlayerData(Index).PickUpId, Index)
                     End If
 
                 End If

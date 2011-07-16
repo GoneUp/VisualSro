@@ -1,13 +1,13 @@
 ﻿Namespace GameServer.Functions
     Module NPC
 
-        Public Function CreateNPCGroupSpawnPacket(ByVal NpcIndex As Integer) As Byte()
+        Public Function CreateNPCGroupSpawnPacket(ByVal NpcUniqueId As UInteger) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GroupSpawnStart)
             writer.Byte(1) 'spawn
             writer.Word(1)
             Dim bytes1 As Byte() = writer.GetBytes
-            Dim bytes2 As Byte() = CreateNPCSpawnPacket(NpcIndex)
+            Dim bytes2 As Byte() = CreateNPCSpawnPacket(NpcUniqueId)
             writer.Create(ServerOpcodes.GroupSpawnEnd)
             Dim bytes3 As Byte() = writer.GetBytes
             Dim finalbytes((bytes1.Length + bytes2.Length + bytes3.Length) - 1) As Byte
@@ -18,8 +18,8 @@
         End Function
 
 
-        Public Function CreateNPCSpawnPacket(ByVal NpcIndex As Integer) As Byte()
-            Dim npc As cNPC = NpcList(NpcIndex)
+        Public Function CreateNPCSpawnPacket(ByVal NpcUniqueId As UInteger) As Byte()
+            Dim npc As cNPC = NpcList(NpcUniqueId)
             Dim obj As Object_ = GetObjectById(npc.Pk2ID)
 
             Dim writer As New PacketWriter
@@ -46,7 +46,7 @@
                     writer.DWord(0)
                     writer.Float(100) 'berserker speed
                     writer.Word(0)
-                    
+
 
                 Case Object_.Type_.Teleport
                     writer.Word(0)
@@ -58,28 +58,41 @@
 
         Public Sub SpawnNPC(ByVal ItemId As UInteger, ByVal Position As Position, ByVal Angle As UInt16)
             Dim npc_ As Object_ = GetObjectById(ItemId)
-            Dim toadd As New cNPC
-            toadd.UniqueID = Id_Gen.GetUnqiueID
-            toadd.Pk2ID = npc_.Pk2ID
-            toadd.Angle = Angle
+            Dim tmp As New cNPC
+            tmp.UniqueID = Id_Gen.GetUnqiueID
+            tmp.Pk2ID = npc_.Pk2ID
+            tmp.Angle = Angle
             If npc_.Type = Object_.Type_.Npc Then
-                toadd.Position = Position
+                tmp.Position = Position
             ElseIf npc_.Type = Object_.Type_.Teleport Then
-                toadd.Position = npc_.T_Position
+                tmp.Position = npc_.T_Position
             End If
 
-            NpcList.Add(toadd)
-            Dim MyIndex As UInteger = NpcList.IndexOf(toadd)
+            NpcList.Add(tmp.UniqueID, tmp)
+
+
+            For refindex As Integer = 0 To Server.MaxClients
+                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
+                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
+                    If CheckRange(player.Position, Position) Then
+                        If PlayerData(refindex).SpawnedNPCs.Contains(tmp.UniqueID) = False Then
+                            Server.Send(CreateNPCGroupSpawnPacket(tmp.UniqueID), refindex)
+                            PlayerData(refindex).SpawnedNPCs.Add(tmp.UniqueID)
+                        End If
+                    End If
+                End If
+            Next refindex
         End Sub
 
-        Public Sub OnNpcChat(ByVal NpcIndex As Integer, ByVal Index_ As Integer)
+        Public Sub OnNpcChat(ByVal NpcUniqueId As UInteger, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            Dim obj As Object_ = GetObjectById(NpcList(NpcIndex).Pk2ID)
+            Dim obj As Object_ = GetObjectById(NpcList(NpcUniqueId).Pk2ID)
             Dim name As String() = obj.TypeName.Split("_")
 
             writer.Create(ServerOpcodes.Target)
             writer.Byte(1) 'Sucess
-            writer.DWord(NpcList(NpcIndex).UniqueID)
+            writer.DWord(NpcList(NpcUniqueId).UniqueID)
 
             If obj.ChatBytes IsNot Nothing Then
                 For i = 0 To obj.ChatBytes.Length - 1

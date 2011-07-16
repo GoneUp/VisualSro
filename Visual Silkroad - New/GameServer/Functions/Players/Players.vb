@@ -42,7 +42,23 @@
             Next
 
             writer.Byte(4) 'Avatar Slots
-            writer.Byte(0) '0 avatars fro now
+
+            Dim AvatarItemCount As Integer = 0
+            For b = 0 To 4
+                If inventory.AvatarItems(b).Pk2Id <> 0 Then
+                    AvatarItemCount += 1
+                End If
+            Next
+
+            writer.Byte(AvatarItemCount)
+
+            For b = 0 To 4
+                If inventory.AvatarItems(b).Pk2Id <> 0 Then
+                    writer.DWord(inventory.AvatarItems(b).Pk2Id)
+                    writer.Byte(inventory.AvatarItems(b).Plus)
+                End If
+            Next
+
             writer.Byte(0) 'Duplicate List
 
             writer.DWord(chari.UniqueId)
@@ -171,11 +187,13 @@
                 End If
             Next
 
-            For i = 0 To NpcList.Count - 1
-                If PlayerData(Index_).SpawnedNPCs.Contains(NpcList(i).UniqueID) = True Then
-                    Dim _npc As cNPC = NpcList(i)
-                    Server.Send(CreateDespawnPacket(_npc.UniqueID), Index_)
-                    PlayerData(Index_).SpawnedNPCs.Remove(NpcList(i).UniqueID)
+            For Each key In NpcList.Keys.ToList
+                If NpcList.ContainsKey(key) Then
+                    Dim Npc_ As cNPC = NpcList.Item(key)
+                    If PlayerData(Index_).SpawnedNPCs.Contains(Npc_.UniqueID) = True Then
+                        Server.Send(CreateDespawnPacket(Npc_.UniqueID), Index_)
+                        PlayerData(Index_).SpawnedNPCs.Remove(Npc_.UniqueID)
+                    End If
                 End If
             Next
 

@@ -56,6 +56,40 @@
             Return CInt(Math.Round(CDbl((((((Y / 192.0!) - GetYSecFromGameY(Y)) + 92.0!) * 192.0!) * 10.0!))))
         End Function
 #End Region
+#Region "Angle"
+        Public Function GetAngle(ByVal Pos_From As Position, ByVal Pos_To As Position)
+            Dim Grad As Single
+            Dim AK As Double = Pos_From.ToGameX - Pos_To.ToGameX 'distance_x
+            Dim GK As Double = Pos_From.ToGameY - Pos_To.ToGameY 'distance_y
+
+            If GK > 0 And AK > 0 Then
+                Grad = Math.Atan(DegreesToRadians(GK / AK))
+            ElseIf GK > 0 And AK < 0 Then
+                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 90
+            ElseIf GK < 0 And AK < 0 Then
+                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 180
+            ElseIf GK < 0 And AK > 0 Then
+                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 270
+            End If
+
+
+            'Dim i As Microsoft .
+
+
+        End Function
+
+        ' convert from degrees to radians
+        Function DegreesToRadians(ByVal degrees As Single) As Single
+            DegreesToRadians = degrees * 10 '/ 57.29578
+        End Function
+
+        ' convert from radians to degrees
+        Function RadiansToDegrees(ByVal radians As Single) As Single
+            RadiansToDegrees = radians * 57.29578
+        End Function
+
+#End Region
+
 
         Public Function GetMinPhy(ByVal stat As UShort) As Integer
             Return Convert.ToInt32(6 + ((stat - 20) \ 3))

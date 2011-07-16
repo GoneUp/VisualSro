@@ -36,8 +36,9 @@
                     Case 41 'Globals
                         OnUseGlobal(slot, Index_, packet)
                     Case 70 'Gender Switch Scroll
-                    Case 78 'Skin CHange Scroll
+                    Case 78 'Skin Change Scroll
                         OnUseSkinScroll(slot, Index_, packet)
+                    Case 118 'Premium
                 End Select
             End If
         End Sub

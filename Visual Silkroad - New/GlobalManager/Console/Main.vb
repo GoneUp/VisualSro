@@ -1,6 +1,6 @@
 ﻿Imports Microsoft.VisualBasic
 Imports System
-Namespace GlobalManger
+Namespace GlobalManager
 
     Friend Class Program
 
@@ -24,7 +24,7 @@ Namespace GlobalManger
             Console.BackgroundColor = ConsoleColor.White
             Console.ForegroundColor = ConsoleColor.DarkGreen
             Console.Clear()
-            Console.Title = "GlobalManger ALPHA"
+            Console.Title = "GlobalManager ALPHA"
             Log.WriteSystemLog("Starting Server")
 
             Log.WriteSystemLog("Loading Settings.")
@@ -55,9 +55,10 @@ read:
             Log.WriteSystemLog("Client Connected : " & ip)
             Server.OnlineClient += 1
 
-            Dim writer As New GlobalManger.PacketWriter
+            ClientList.SessionInfo(index).BaseKey = Functions.GenarateKey
+            Dim writer As New GlobalManager.PacketWriter
             writer.Create(ServerOpcodes.Handshake)
-            writer.Byte(1)
+            writer.Word(Functions.GenarateKey)
             Server.Send(writer.GetBytes, index)
 
         End Sub

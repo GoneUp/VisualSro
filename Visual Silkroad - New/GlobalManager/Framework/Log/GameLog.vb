@@ -1,4 +1,4 @@
-﻿Namespace GlobalManger.Log
+﻿Namespace GlobalManager.Log
     Module GameLog
 
         Public Sub WriteGameLog(ByVal Index_ As Integer, ByVal Action As String, ByVal Action2 As String, ByVal Message As String)

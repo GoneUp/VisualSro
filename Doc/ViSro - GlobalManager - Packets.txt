@@ -1,0 +1,66 @@
+============ Handshake: ============ 
+
+S->C
+Opcode: 5000
+[Word] BaseKey 
+
+
+C->S
+Opcode: 5000
+[DWord] CalculatedKey
+
+How to calculate the Key:
+Base *= 1.1
+Base *= Date.Now.DayOfYear
+Base *= Date.Now.DayOfWeek
+
+S->C
+Opcode: 5000
+[Byte] Success (01 = Ok, 02 = Fail)
+
+
+============ ClientInfo: ============ 
+C->S
+Opcode: 6100
+
+[Word] Clientname len
+[String] Clientname
+[Dword] Protocol Version (To make sure that GLobalManager and Server is on the same Packet Version)
+
+
+S->C
+Opcode: 2001
+[Word] Servername len
+[String] Servername 
+[Byte] Success (01 = Ok, 02 = Fail)
+	if fail
+	[Byte] (01 = Handshake Failed, 02 = Wrong Servername, 03 = Wrong ProtocolVersion)
+
+============ InitServer: ============ 
+C->S
+Opcode: 1000
+if gatewayserver:
+if gameserver:
+[Word] GameServerId
+[Word] Online Clients
+[Word] Max Clients
+[Dword] Mob Number
+[Dword] Npc Number
+[Dword] Item Number
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+if downloadserver:
+
+S->C 
+Opcode: C000
+[Byte] Success
+
+
+
+
+
+
+

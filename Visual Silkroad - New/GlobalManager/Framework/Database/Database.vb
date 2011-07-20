@@ -3,7 +3,7 @@ Imports MySql.Data.MySqlClient
 Imports System
 Imports System.Data
 Imports System.Runtime.CompilerServices
-Namespace GlobalManger
+Namespace GlobalManager
 
     Public Class DataBase
         Private Shared Connection As MySqlConnection

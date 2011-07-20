@@ -1,4 +1,4 @@
-﻿Namespace GlobalManger
+﻿Namespace GlobalManager
     Module Opcodes
 
         'All Opcodes for now
@@ -6,10 +6,9 @@
         'C --> S
 
         Enum ClientOpcodes As UShort
-            Handshake = &H9000
+            Handshake = &H5000
             PatchReq = &H6100
-            InfoReq = &H2001 'cleint whoami
-            LauncherReq = &H6104
+            WhoAmI = &H2001 'cleint whoami
             Ping = &H2002
 
             ServerListReq = &H6101

@@ -6,7 +6,6 @@
 
         'Server
         Public Servers As New List(Of Server_)
-        Public News As New List(Of News_)
         Public Users As New List(Of UserArray)
 
         Private First As Boolean
@@ -21,7 +20,6 @@
                     Log.WriteSystemLog("Load Data from Database.")
 
                     GetServerData()
-                    GetNewsData()
                     GetUserData()
 
                     Log.WriteSystemLog("Loading Completed.")
@@ -29,7 +27,6 @@
 
                 Else
                     GetServerData()
-                    GetNewsData()
                     GetUserData()
                 End If
 
@@ -66,28 +63,6 @@
                 Servers.Add(tmp_server)
             Next
         End Sub
-
-        Structure News_
-            Public NewsNumber As Integer
-            Public Title As String
-            Public Text As String
-            Public Time As Date
-        End Structure
-
-        Public Sub GetNewsData()
-            Dim tmp As DataSet = LoginServer.Database.GetDataSet("SELECT * From News")
-            News.Clear()
-
-            For i = 0 To tmp.Tables(0).Rows.Count - 1
-                Dim tmp_news As New News_
-                tmp_news.Title = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                tmp_news.Text = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_news.Time = CDate(tmp.Tables(0).Rows(i).ItemArray(3))
-
-                News.Add(tmp_news)
-            Next
-        End Sub
-
 
         Structure UserArray
             Public AccountId As Integer

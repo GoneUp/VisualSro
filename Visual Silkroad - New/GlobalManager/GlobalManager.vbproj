@@ -9,7 +9,7 @@
     </SchemaVersion>
     <ProjectGuid>{161A834E-C717-4489-85FF-1359246AB1AD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>GlobalManager.GlobalManger.Program</StartupObject>
+    <StartupObject>GlobalManager.GlobalManager.Program</StartupObject>
     <RootNamespace>GlobalManager</RootNamespace>
     <AssemblyName>GlobalManager</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -50,6 +50,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.3.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -85,6 +86,10 @@
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
+    <Compile Include="Functions\AgentService\AgentDb.vb" />
+    <Compile Include="Functions\Auth.vb" />
+    <Compile Include="Functions\GateWayService\ServerDb.vb" />
+    <Compile Include="Functions\Parser.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -120,6 +125,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

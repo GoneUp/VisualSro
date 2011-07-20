@@ -1,5 +1,5 @@
 ﻿Imports System.Timers
-Namespace GlobalManger
+Namespace GlobalManager
     Module Timers
 
 

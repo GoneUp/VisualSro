@@ -3,9 +3,8 @@ Imports System
 Imports System.Runtime.InteropServices
 Namespace LoginServer
 
-    Public Class Parser
-
-        Public Shared Sub Parse(ByVal packet As LoginServer.PacketReader, ByVal Index_ As Integer)
+    Public Module Parser
+        Public Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim length As UInteger = packet.Word
             Dim opcode As UInteger = packet.Word
             Dim security As UInteger = packet.Word
@@ -37,6 +36,6 @@ Namespace LoginServer
                     Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
             End Select
         End Sub
-    End Class
+    End Module
 End Namespace
 

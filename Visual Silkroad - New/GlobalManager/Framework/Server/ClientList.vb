@@ -1,5 +1,5 @@
 ﻿Imports System.Net.Sockets, System.Timers
-Namespace GlobalManger
+Namespace GlobalManager
 
     Public Class ClientList
         Public Shared List(1500) As Socket
@@ -81,9 +81,24 @@ Namespace GlobalManger
     End Class
 
     Public Class _SessionInfo
-        Public Version As UInt32
         Public ClientName As String
-        Public Locale As Byte
+        Public ProtocolVersion As UInt32
+        Public BaseKey As UInt16
+        Public ServerId As UInt16
+
+        Public HandshakeComplete As Boolean
+        Public Authorized As Boolean
+
+        Public Type As _ServerTypes
+
+        Enum _ServerTypes
+            Unknown = 0
+            GlobalManager = 1
+            GateWayServer = 2
+            GameServer = 3
+            DownloadServer = 4
+            AdminTool = 5
+        End Enum
     End Class
 End Namespace
 

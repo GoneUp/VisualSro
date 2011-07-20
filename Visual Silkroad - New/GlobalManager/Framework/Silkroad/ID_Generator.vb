@@ -1,4 +1,4 @@
-﻿Namespace GlobalManger.Id_Gen
+﻿Namespace GlobalManager.Id_Gen
     Module ID_Generator
 
         '=================Account Id's

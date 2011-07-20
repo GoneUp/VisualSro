@@ -3,7 +3,7 @@
 	Imports System.Net
 	Imports System.Net.Sockets
 	Imports System.Runtime.CompilerServices
-Namespace GlobalManger
+Namespace GlobalManager
 
     Public Class Server
         Private Shared buffer(&H1000 - 1) As Byte
@@ -19,6 +19,9 @@ Namespace GlobalManger
         Public Shared Event OnReceiveData As dReceive
         Public Shared Event OnServerError As dError
         Public Shared Event OnServerStarted As dServerStarted
+
+        Private Shared _ReceivedBytes As ULong
+        Private Shared _SentBytes As ULong
 
 
         Public Shared Sub Start()
@@ -78,7 +81,7 @@ Namespace GlobalManger
 
         Private Shared Sub ReceiveData(ByVal Index_ As Integer)
             Dim socket As Socket = ClientList.GetSocket(Index_)
-            Dim buffer(&H10000 - 1) As Byte
+            Dim buffer(8192) As Byte
 
 
             Do While True
@@ -117,9 +120,9 @@ Namespace GlobalManger
 
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
             ClientList.GetSocket(index).Send(buff)
+            _SentBytes += buff.Length
 
-            If GlobalManger.Program.Logpackets = True Then
-
+            If GlobalManager.Program.Logpackets = True Then
                 Log.LogPacket(buff, True)
             End If
         End Sub

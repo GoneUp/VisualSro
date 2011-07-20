@@ -1,4 +1,4 @@
-﻿Namespace GlobalManger
+﻿Namespace GlobalManager.Settings
     Module Settings
         'Loading File
         Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
@@ -13,11 +13,7 @@
         Public Server_Port As UShort = 15580
         Public Server_Slots As UInteger = 100
 
-        Public Auto_Register As Boolean = False
-        Public Max_FailedLogins As Integer = 5
-        Public Max_RegistersPerDay As Integer = 3
-        Public Server_CurrectVersion As UInteger = 0
-        Public Server_Local As Byte = 0
+        Public Server_ProtocolVersion As UInteger = 1
 
         Public Log_Connect As Boolean = False
         Public Log_Register As Boolean = False
@@ -34,11 +30,7 @@
             Database_User = File.Read("DATABASE", "User", "root")
             Database_Password = File.Read("DATABASE", "Password", "")
 
-            Auto_Register = CBool(File.Read("SERVER", "Auto_Register", "0"))
-            Max_FailedLogins = File.Read("SERVER", "Max_FailedLogins", "5")
-            Max_RegistersPerDay = File.Read("SERVER", "Max_RegistersPerDay", "3")
-            Server_CurrectVersion = File.Read("SERVER", "Server_CurrectVersion", "0")
-            Server_Local = File.Read("SERVER", "Server_Local", "0")
+            'Server_ProtocolVersion = File.Read("SERVER", "Server_ProtocolVersion", "0")
 
             Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
             Log_Login = CBool(File.Read("LOG", "Login", "0"))
@@ -52,7 +44,7 @@
             DataBase.DB_USERNAME = Database_User
             DataBase.DB_PASSWORD = Database_Password
 
-            Server.Ip = Server_Ip
+            Server.ip = Server_Ip
             Server.Port = Server_Port
             Server.MaxClients = Server_Slots
         End Sub

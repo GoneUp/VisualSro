@@ -1,4 +1,4 @@
-﻿Namespace GlobalManger
+﻿Namespace GlobalManager
     Module LoginDb
 
         'Timer
@@ -50,7 +50,7 @@
             Public Port As UInt16
         End Structure
         Public Sub GetServerData()
-            Dim tmp As DataSet = GlobalManger.Database.GetDataSet("SELECT * From Servers")
+            Dim tmp As DataSet = GlobalManager.Database.GetDataSet("SELECT * From Servers")
             Servers.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
@@ -75,7 +75,7 @@
         End Structure
 
         Public Sub GetNewsData()
-            Dim tmp As DataSet = GlobalManger.Database.GetDataSet("SELECT * From News")
+            Dim tmp As DataSet = GlobalManager.Database.GetDataSet("SELECT * From News")
             News.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
@@ -100,7 +100,7 @@
         End Structure
         Public Sub GetUserData()
 
-            Dim tmp As DataSet = GlobalManger.Database.GetDataSet("SELECT * From Users")
+            Dim tmp As DataSet = GlobalManager.Database.GetDataSet("SELECT * From Users")
             Users.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1

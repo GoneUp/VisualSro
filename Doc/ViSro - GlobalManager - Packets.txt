@@ -25,7 +25,7 @@ Opcode: 6100
 
 [Word] Clientname len
 [String] Clientname
-[Dword] Protocol Version (To make sure that GLobalManager and Server is on the same Packet Version)
+[Dword] Protocol Version (To make sure that GlobalManager and Server is on the same Packet Version)
 
 
 S->C
@@ -33,8 +33,9 @@ Opcode: 2001
 [Word] Servername len
 [String] Servername 
 [Byte] Success (01 = Ok, 02 = Fail)
-	if fail
-	[Byte] (01 = Handshake Failed, 02 = Wrong Servername, 03 = Wrong ProtocolVersion)
+	if fail(
+	[Byte] (01 = Handshake Failed, 02 = Wrong Servername, 03 =      Wrong ProtocolVersion)
+)
 
 ============ InitServer: ============ 
 //Is sended when Server is fully loaded and ready for the game (Note: Server Info must be sended before)
@@ -44,10 +45,16 @@ Opcode: 1000
 
 S->C 
 Opcode: C000
-[Byte] Success
+[Byte] Success (01 = Ok, 02 = Fail)
 
 ============ Server Shutdown: ============
+//Is sended when the Server Shutdowns
+C->S
+Opcode: 1001
 
+S->C 
+Opcode: C001
+[Byte] Success (01 = Ok, 02 = Fail)
 ============ Server Info: ============
 //Should be sended all 5 Secounds
 
@@ -74,4 +81,45 @@ if downloadserver:
 [Word] Online Clients
 [Word] Max Clients
 
+============ ShardInfo: ============ 
 
+S->C
+Opcode: C002
+[Word] GateWayServer Count
+foreach GateWayServer
+(
+[Word] ServerId
+[Word] Ip Len
+[String] Ip
+[Word] Port
+[Word] Online Clients
+[Word] Max Clients
+)
+[Word] DownloadServer Count
+foreach DownloadServer
+(
+[Word] ServerId
+[Word] Ip Len
+[String] Ip
+[Word] Port
+[Word] Online Clients
+[Word] Max Clients
+)
+[Word] GameServer Count
+foreach GameServer
+(
+[Word] ServerId
+[Word] Ip Len
+[String] Ip
+[Word] Port
+[Word] Online Clients
+[Word] Max Clients
+[Dword] Mob Number
+[Dword] Npc Number
+[Dword] Item Number
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+)

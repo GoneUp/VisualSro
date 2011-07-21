@@ -37,11 +37,28 @@ Opcode: 2001
 	[Byte] (01 = Handshake Failed, 02 = Wrong Servername, 03 = Wrong ProtocolVersion)
 
 ============ InitServer: ============ 
+//Is sended when Server is fully loaded and ready for the game (Note: Server Info must be sended before)
+
 C->S
 Opcode: 1000
+
+S->C 
+Opcode: C000
+[Byte] Success
+
+============ Server Shutdown: ============
+
+============ Server Info: ============
+//Should be sended all 5 Secounds
+
+C->S 
+Opcode: 1002
 if gatewayserver:
+[Word] ServerId
+[Word] Online Clients
+[Word] Max Clients
 if gameserver:
-[Word] GameServerId
+[Word] ServerId
 [Word] Online Clients
 [Word] Max Clients
 [Dword] Mob Number
@@ -53,14 +70,8 @@ if gameserver:
 [Word] Server_Drop
 [Word] Server_SpawnRate
 if downloadserver:
-
-S->C 
-Opcode: C000
-[Byte] Success
-
-
-
-
-
+[Word] ServerId
+[Word] Online Clients
+[Word] Max Clients
 
 

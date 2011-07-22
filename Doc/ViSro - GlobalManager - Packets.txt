@@ -76,6 +76,7 @@ if gameserver:
 [Word] Server_Gold
 [Word] Server_Drop
 [Word] Server_SpawnRate
+[Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
 if downloadserver:
 [Word] ServerId
 [Word] Online Clients
@@ -108,7 +109,6 @@ foreach DownloadServer
 [Word] GameServer Count
 foreach GameServer
 (
-[Word] ServerId
 [Word] Ip Len
 [String] Ip
 [Word] Port
@@ -122,4 +122,11 @@ foreach GameServer
 [Word] Server_Gold
 [Word] Server_Drop
 [Word] Server_SpawnRate
+[Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
 )
+
+
+============ AdminAuth: ============
+
+C->S
+Opcode: 1003

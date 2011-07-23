@@ -96,6 +96,7 @@ foreach GateWayServer
 [Word] Online Clients
 [Word] Max Clients
 )
+
 [Word] DownloadServer Count
 foreach DownloadServer
 (
@@ -106,6 +107,7 @@ foreach DownloadServer
 [Word] Online Clients
 [Word] Max Clients
 )
+
 [Word] GameServer Count
 foreach GameServer
 (
@@ -125,8 +127,79 @@ foreach GameServer
 [Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
 )
 
+============ UpdateServer: ============
+//Update of Server Options from the GlobalManager
+S->C
+Opcode: C003
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+[Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
+
+
+C->S
+Opcode: 1003
+[Byte] Success (01 = Ok, 02 = Fail)
+
+
 
 ============ AdminAuth: ============
 
 C->S
-Opcode: 1003
+Opcode: 1004
+[Word] Username Len
+[String] Username
+[Word] Password Len
+[String] Password
+
+
+S->C
+Opcode: C004
+[Byte] Success (01 = Ok, 02 = Fail)
+
+============ Admin UpdateServer: ============
+//Update of Server Options from a Admin to the GlobalManager, the Manager send it to the Server
+
+C->S
+Opcode: 1005
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+[Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
+
+
+S->C
+Opcode: C005
+[Byte] Success (01 = Ok, 02 = Fail)
+
+//Server sends now UpdateServer
+
+
+============ Admin GetAccountInfo: ============
+//Update of Server Options from a Admin to the GlobalManager, the Manager send it to the Server
+
+C->S
+Opcode: 1005
+[Word] Username len
+[String] Username
+
+
+
+S->C
+Opcode: C005
+[Byte] Success (01 = Found, 02 = Not Found)
+[Byte] Failed Logins
+[Byte] Banned
+[Word] Banreason len
+[String] Banreason
+[Word] Bantime len
+[String] Bantime
+[Dword] Silk
+[Byte] Admin Flag (00 = False, 01 = True)
+
+
+//Server sends now UpdateServer

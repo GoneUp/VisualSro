@@ -83,7 +83,7 @@ if downloadserver:
 [Word] Max Clients
 
 ============ ShardInfo: ============ 
-
+//Is sended all 5 Seconds
 S->C
 Opcode: C002
 [Word] GateWayServer Count
@@ -111,6 +111,7 @@ foreach DownloadServer
 [Word] GameServer Count
 foreach GameServer
 (
+[Word] ServerId
 [Word] Ip Len
 [String] Ip
 [Word] Port
@@ -163,7 +164,8 @@ Opcode: C004
 //Update of Server Options from a Admin to the GlobalManager, the Manager send it to the Server
 
 C->S
-Opcode: 1005
+Opcode: 1005 
+[Word] ServerId
 [Word] Server_XP
 [Word] Server_SP
 [Word] Server_Gold
@@ -180,17 +182,17 @@ Opcode: C005
 
 
 ============ Admin GetAccountInfo: ============
-//Update of Server Options from a Admin to the GlobalManager, the Manager send it to the Server
+// Sends Account Info to a Admin
 
 C->S
-Opcode: 1005
+Opcode: 1006
 [Word] Username len
 [String] Username
 
 
 
 S->C
-Opcode: C005
+Opcode: C006
 [Byte] Success (01 = Found, 02 = Not Found)
 [Byte] Failed Logins
 [Byte] Banned
@@ -202,4 +204,27 @@ Opcode: C005
 [Byte] Admin Flag (00 = False, 01 = True)
 
 
-//Server sends now UpdateServer
+
+============ Admin UpdateAccountInfo: ============
+//Update of Account Details from a Admin to the GlobalManager, the Manager save it to the Db
+
+
+C->S
+Opcode: 1007
+[Word] Username len
+[String] Username
+[Byte] Failed Logins
+[Byte] Banned
+[Word] Banreason len
+[String] Banreason
+[Word] Bantime len
+[String] Bantime
+[Dword] Silk
+[Byte] Admin Flag (00 = False, 01 = True)
+
+S->C
+Opcode: C007
+[Byte] Success (01 = Ok, 02 = Fail)
+
+//Server updates Db
+

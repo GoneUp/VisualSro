@@ -181,36 +181,30 @@ Opcode: C005
 //Server sends now UpdateServer
 
 
-============ Admin GetAccountInfo: ============
-// Sends Account Info to a Admin
+============ Admin GetInfo: ============
+// Sends Info from Game Details to a Admin
 
 C->S
 Opcode: 1006
+[Byte] Tag
+if tag 1: //GetAccountInfo
+(
 [Word] Username len
 [String] Username
-
+)
+if tag 2: //GetCharInfo
+(
+[Word] Name len
+[String] Name
+)
 
 
 S->C
 Opcode: C006
+[Byte] Tag
+if tag 1: //GetAccountInfo
+(
 [Byte] Success (01 = Found, 02 = Not Found)
-[Byte] Failed Logins
-[Byte] Banned
-[Word] Banreason len
-[String] Banreason
-[Word] Bantime len
-[String] Bantime
-[Dword] Silk
-[Byte] Admin Flag (00 = False, 01 = True)
-
-
-
-============ Admin UpdateAccountInfo: ============
-//Update of Account Details from a Admin to the GlobalManager, the Manager save it to the Db
-
-
-C->S
-Opcode: 1007
 [Word] Username len
 [String] Username
 [Byte] Failed Logins
@@ -221,10 +215,57 @@ Opcode: 1007
 [String] Bantime
 [Dword] Silk
 [Byte] Admin Flag (00 = False, 01 = True)
+)
+if tag 2: //GetCharInfo
+(
+[Word] Name len
+[String] Name
+[Byte] Level
+[Dword] Sp
+[Qword] Gold
+[Word] Attributes
+[Word] Str
+[Word] Int
+)
+
+
+============ Admin UpdateInfo: ============
+//Update of Game Details from a Admin to the GlobalManager, the Manager save it to the Db
+
+
+C->S
+Opcode: 1007
+[Byte] Tag
+if tag 1: //GetAccountInfo
+(
+[Word] Username len
+[String] Username
+[Byte] Failed Logins
+[Byte] Banned
+[Word] Banreason len
+[String] Banreason
+[Word] Bantime len
+[String] Bantime
+[Dword] Silk
+[Byte] Admin Flag (00 = False, 01 = True)
+)
+if tag 2: //GetCharInfo
+(
+[Word] Name len
+[String] Name
+[Byte] Level
+[Dword] Sp
+[Qword] Gold
+[Word] Attributes
+[Word] Str
+[Word] Int
+)
 
 S->C
 Opcode: C007
 [Byte] Success (01 = Ok, 02 = Fail)
 
 //Server updates Db
+
+
 

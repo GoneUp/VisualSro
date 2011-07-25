@@ -102,9 +102,11 @@
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
     <Compile Include="Functions\AgentService\AgentDb.vb" />
+    <Compile Include="Functions\AgentService\AgentService.vb" />
     <Compile Include="Functions\Auth.vb" />
-    <Compile Include="Functions\GateWayService\ServerDb.vb" />
+    <Compile Include="Functions\ShardService\ServerDb.vb" />
     <Compile Include="Functions\Parser.vb" />
+    <Compile Include="Functions\ShardService\ShardControl.vb" />
     <Compile Include="Functions\ShardService\ShardService.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

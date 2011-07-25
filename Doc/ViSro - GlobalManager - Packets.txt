@@ -64,8 +64,11 @@ if gatewayserver:
 [Word] ServerId
 [Word] Online Clients
 [Word] Max Clients
+
 if gameserver:
 [Word] ServerId
+[Word] ServerName Len
+[String] ServerName
 [Word] Online Clients
 [Word] Max Clients
 [Dword] Mob Number
@@ -77,6 +80,7 @@ if gameserver:
 [Word] Server_Drop
 [Word] Server_SpawnRate
 [Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
+
 if downloadserver:
 [Word] ServerId
 [Word] Online Clients

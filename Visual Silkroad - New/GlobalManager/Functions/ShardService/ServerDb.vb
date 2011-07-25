@@ -1,11 +1,12 @@
 ﻿Imports GlobalManager.Framework
 
-Namespace GateWay
+Namespace Shard
     Module ServerDb
-        Public Server_GateWay As New List(Of _GateWayServer)
-        Public Server_Game As New List(Of _GameServer)
-        Public Server_Download As New List(Of _GameServer)
+        Public Server_GateWay As New Dictionary(Of UInt16, _GateWayServer)
+        Public Server_Game As New Dictionary(Of UInt16, _GameServer)
+        Public Server_Download As New Dictionary(Of UInt16, _DownloadServer)
     End Module
+
 
     Public Class _GateWayServer
         Public ServerId As UInt32
@@ -28,7 +29,7 @@ Namespace GateWay
         Public ActualUser As UInt16
         Public MaxUser As UInt16
         Public StartTime As DateTime
-        Public State As _ServerState
+        Public State As _ServerState = _ServerState.Check
 
         'General Server Data
         Public MobCount As UInt32 = 0
@@ -43,7 +44,9 @@ Namespace GateWay
         Public Server_SPRate As Long = 1
         Public Server_GoldRate As Long = 1
         Public Server_DropRate As Long = 1
-        Public Server_PingDc As Boolean = True
+        Public Server_SpawnRate As Long = 1
+        Public Server_Debug As Boolean = False
+
 
         Enum _ServerState
             Check = 0
@@ -62,6 +65,4 @@ Namespace GateWay
         Public MaxUser As UInt16
         Public StartTime As DateTime
     End Class
-
-
 End Namespace

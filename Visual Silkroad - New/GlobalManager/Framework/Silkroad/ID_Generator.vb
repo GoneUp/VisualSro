@@ -1,22 +1,19 @@
-﻿Namespace GlobalManager.Id_Gen
+﻿Namespace Id_Gen
     Module ID_Generator
 
-        '=================Account Id's
-        Public Function GetNewAccountId() As UInteger
-            For NewID As UInteger = 1 To UInteger.MaxValue
-                Dim free As Boolean = True
-                For c = 0 To LoginDb.Users.Count - 1
-                    If LoginDb.Users(c).AccountId = NewID Then
-                        free = False
-                    End If
-                Next
+        '=================Session Id
+        Private SessionIdCounter As UInteger = 1
 
-                If free = True Then
-                    Return NewID
-                End If
-            Next
+        Public Function GetSessionId() As UInteger
+            Dim toreturn As UInteger = SessionIdCounter
+            If SessionIdCounter < UInteger.MaxValue Then
+                SessionIdCounter += 1
+            ElseIf SessionIdCounter = UInteger.MaxValue Then
+                SessionIdCounter = 0
+                Log.WriteSystemLog("Reached SessionId Max")
+            End If
 
-            Throw New Exception("Cannot find a new Acc ID!")
+            Return toreturn
         End Function
 
 

@@ -3,7 +3,7 @@ Imports MySql.Data.MySqlClient
 Imports System
 Imports System.Data
 Imports System.Runtime.CompilerServices
-Namespace GlobalManager
+Namespace Framework
 
     Public Class DataBase
         Private Shared Connection As MySqlConnection
@@ -41,12 +41,12 @@ Namespace GlobalManager
         End Sub
 
         Public Shared Sub ReConnect()
-            If connection IsNot Nothing Then
-                connection.Close()
+            If Connection IsNot Nothing Then
+                Connection.Close()
             End If
             Try
-                connection = New MySqlConnection(ConnectionString)
-                connection.Open()
+                Connection = New MySqlConnection(ConnectionString)
+                Connection.Open()
                 RaiseEvent OnConnectedToDatabase()
             Catch exception As Exception
                 RaiseEvent OnDatabaseError(exception, ConnectionString)
@@ -77,7 +77,7 @@ Namespace GlobalManager
         Public Shared Function GetRowsCount(ByVal command As String) As Integer
             Dim count As Integer = 0
             Try
-                da = New MySqlDataAdapter(command, connection)
+                da = New MySqlDataAdapter(command, Connection)
                 Dim dataSet As New DataSet()
                 da.Fill(dataSet)
                 count = dataSet.Tables(0).Rows.Count
@@ -89,7 +89,7 @@ Namespace GlobalManager
 
         Public Shared Sub TableList()
             Dim reader As MySqlDataReader = Nothing
-            Dim command As New MySqlCommand("SHOW TABLES", connection)
+            Dim command As New MySqlCommand("SHOW TABLES", Connection)
             Try
                 Log.WriteSystemLog("****** Tables ******")
                 reader = command.ExecuteReader()

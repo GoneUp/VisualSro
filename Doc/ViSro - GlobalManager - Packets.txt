@@ -37,7 +37,7 @@ Opcode: 2001
 	[Byte] (01 = Handshake Failed, 02 = Wrong Servername, 03 =      Wrong ProtocolVersion)
 )
 
-============ InitServer: ============ 
+============ Server Init: ============ 
 //Is sended when Server is fully loaded and ready for the game (Note: Server Info must be sended before)
 
 C->S
@@ -112,6 +112,8 @@ foreach DownloadServer
 foreach GameServer
 (
 [Word] ServerId
+[Word] ServerName Len
+[String] ServerName
 [Word] Ip Len
 [String] Ip
 [Word] Port
@@ -194,6 +196,7 @@ if tag 1: //GetAccountInfo
 )
 if tag 2: //GetCharInfo
 (
+[Word] ServerId
 [Word] Name len
 [String] Name
 )
@@ -218,6 +221,8 @@ if tag 1: //GetAccountInfo
 )
 if tag 2: //GetCharInfo
 (
+[Word] ServerId
+[Dword] CharacterId
 [Word] Name len
 [String] Name
 [Byte] Level
@@ -236,7 +241,7 @@ if tag 2: //GetCharInfo
 C->S
 Opcode: 1007
 [Byte] Tag
-if tag 1: //GetAccountInfo
+if tag 1: //UpdateAccountInfo
 (
 [Word] Username len
 [String] Username
@@ -249,8 +254,10 @@ if tag 1: //GetAccountInfo
 [Dword] Silk
 [Byte] Admin Flag (00 = False, 01 = True)
 )
-if tag 2: //GetCharInfo
+if tag 2: //UpdateCharInfo
 (
+[Word] ServerId
+[Dword] CharacterId
 [Word] Name len
 [String] Name
 [Byte] Level
@@ -265,7 +272,43 @@ S->C
 Opcode: C007
 [Byte] Success (01 = Ok, 02 = Fail)
 
-//Server updates Db
+//Server updates Accountdb, Server sends new CharInfo to the Gameservers
 
 
+============ Gateway SendUserAuth: ============
+//Is sent from the Gatewayserver to the Globalmanager, contains user Id and Gameserver Id.
+//The Manager sends a SessionId back
 
+
+C->S
+Opcode: 1010
+[Word] ServerId
+[Word] Username len
+[String] Username
+[Word] Password len
+[String] Password
+
+
+S->C
+Opcode: C010
+[Byte] Success (01 = Ok, 02 = Fail)
+[Dword] SessionId
+
+============ GameServer CheckUserAuth: ============
+//GlobalManager checks the Id, Pw and SessionId against the Cache
+
+C->S
+Opcode: 1011
+[Dword] SessionId
+[Word] Username len
+[String] Username
+[Word] Password len
+[String] Password
+
+S->C
+Opcode: C011
+[Byte] Success (01 = Ok, 02 = Fail)
+	if fail
+	(
+	[Byte] (01 = Wrong Session, 02 = Wrong User/Pw)
+	)

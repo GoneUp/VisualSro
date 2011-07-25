@@ -23,7 +23,7 @@
 
             Case "/packets"
 
-                GlobalManager.Program.Logpackets = True
+                GlobalManager.Settings.Log_Packets = True
                 GlobalManager.Log.WriteSystemLog("GlobalManager.Log Packets started!")
 
 
@@ -32,13 +32,13 @@
 
 
             Case "/end"
-                For i = 0 To GlobalManager.ClientList.SessionInfo.Count - 1
-                    If GlobalManager.ClientList.SessionInfo(i) IsNot Nothing Then
-                        GlobalManager.Server.Dissconnect(i)
+                For i = 0 To Framework.ClientList.SessionInfo.Count - 1
+                    If Framework.ClientList.SessionInfo(i) IsNot Nothing Then
+                        Framework.Server.Dissconnect(i)
                     End If
                 Next
                 ' GameServer.Server.stop()
-                GlobalManager.DataBase.ExecuteQuerys()
+                Framework.DataBase.ExecuteQuerys()
                 End
 
         End Select

@@ -3,7 +3,7 @@
 	Imports System.Net
 	Imports System.Net.Sockets
 	Imports System.Runtime.CompilerServices
-Namespace GlobalManager
+Namespace Framework
 
     Public Class Server
         Private Shared buffer(&H1000 - 1) As Byte
@@ -122,7 +122,7 @@ Namespace GlobalManager
             ClientList.GetSocket(index).Send(buff)
             _SentBytes += buff.Length
 
-            If GlobalManager.Program.Logpackets = True Then
+            If Settings.Log_Packets = True Then
                 Log.LogPacket(buff, True)
             End If
         End Sub

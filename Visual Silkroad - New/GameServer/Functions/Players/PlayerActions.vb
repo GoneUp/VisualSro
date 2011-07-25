@@ -258,13 +258,13 @@
             End If
 
 
-            For i = 0 To NpcList.Count - 1
-                If NpcList(i).UniqueID = ObjectID Then
-                    Dim npc = NpcList(i)
-                    OnNpcChat(i, Index_)
-                    Exit Sub
-                End If
-            Next
+
+            If NpcList.ContainsKey(ObjectID) Then
+                Dim npc = NpcList(ObjectID)
+                OnNpcChat(ObjectID, Index_)
+                Exit Sub
+            End If
+
         End Sub
 
         Public Sub OnClientStatusUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)

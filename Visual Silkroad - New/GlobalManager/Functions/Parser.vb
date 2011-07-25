@@ -1,4 +1,6 @@
-﻿Namespace GlobalManager.Functions
+﻿Imports GlobalManager.Framework
+
+Namespace Functions
     Module Parser
 
         Public Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)

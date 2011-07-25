@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Agent
+﻿Imports GlobalManager.Framework
+
+Namespace Agent
     Module AgentDb
 
         Public UserAuthCache As New Dictionary(Of UInt32, _UserAuth) 'Key = SessionId

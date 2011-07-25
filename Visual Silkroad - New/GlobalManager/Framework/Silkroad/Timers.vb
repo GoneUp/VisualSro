@@ -1,12 +1,12 @@
 ﻿Imports System.Timers
-Namespace GlobalManager
+Namespace Timers
     Module Timers
 
 
-        Public QueryTimer As New Timer
+        Friend QueryTimer As New Timer
 
 
-        Public Sub LoadTimers()
+        Friend Sub LoadTimers()
             'Handlers
 
             AddHandler QueryTimer.Elapsed, AddressOf QueryTimer_Elapsed
@@ -19,12 +19,12 @@ Namespace GlobalManager
         End Sub
 
 
-        Public Sub QueryTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Friend Sub QueryTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             QueryTimer.Stop()
 
             Try
 
-                DataBase.ExecuteQuerys()
+                Framework.DataBase.ExecuteQuerys()
 
 
             Catch ex As Exception

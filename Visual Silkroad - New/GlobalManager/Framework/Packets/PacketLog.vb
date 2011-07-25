@@ -1,4 +1,4 @@
-﻿Namespace GlobalManager.Log
+﻿Namespace Log
     Module PacketLog
 
         Public Sub LogPacket(ByVal buffer As Byte(), ByVal FromServer As Boolean)

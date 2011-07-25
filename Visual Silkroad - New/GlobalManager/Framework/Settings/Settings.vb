@@ -1,4 +1,6 @@
-﻿Namespace GlobalManager.Settings
+﻿Imports GlobalManager.Framework
+
+Namespace Settings
     Module Settings
         'Loading File
         Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
@@ -18,6 +20,7 @@
         Public Log_Connect As Boolean = False
         Public Log_Register As Boolean = False
         Public Log_Login As Boolean = False
+        Public Log_Packets As Boolean = False
 
         Public Sub LoadSettings()
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")

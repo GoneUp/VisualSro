@@ -7,19 +7,24 @@
             Dim lines As String() = IO.File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False Then
-
-                    If My.Computer.Info.OSFullName.Contains("x64") = True Then
-                        lines(i) = lines(i).Replace(",", ".")
-                    End If
-                    Dim r = My.Computer.Info.OSFullName
-                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-
                     Dim pos As New Position
                     Dim tmp As New ReSpawn_
+                    Dim Angle As UShort = 0
+
+                    'If My.Computer.Info.OSFullName.Contains("x64") = True Then
+                    '    lines(i) = lines(i).Replace(",", ".")
+                    'End If
+                    lines(i) = lines(i).Replace(".", ",")
+
+                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
                     Dim Pk2ID As UInt32 = tmpString(0)
-                    Dim Angle As UShort = Math.Round((CInt(tmpString(5)) * 65535) / 360)
                     Dim obj_ As Object_ = GetObjectById(Pk2ID)
+                    If tmpString.Length = 6 Then
+                        Angle = Math.Round((CInt(tmpString(5)) * 65535) / 360)
+                    End If
+
+
                     pos.X = CSng(tmpString(2))
                     pos.Z = CSng(tmpString(3))
                     pos.Y = CSng(tmpString(4))

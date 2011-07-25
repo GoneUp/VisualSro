@@ -1,4 +1,4 @@
-﻿Namespace GlobalManager.Log
+﻿Namespace Log
     Module SystemLog
         Public Sub WriteSystemLog(ByVal Message As String)
             Try

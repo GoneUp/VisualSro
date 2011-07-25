@@ -114,31 +114,24 @@
         Public Sub OnNpcChatSelect(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim UniqueID As UInteger = packet.DWord
             Dim ChatId As Byte = packet.Byte
-            Dim NpcIndex As Integer
             Dim RefObj As New Object_
 
-            For i = 0 To NpcList.Count - 1
-                If NpcList(i).UniqueID = UniqueID Then
-                    NpcIndex = i
-                    RefObj = GetObjectById(NpcList(NpcIndex).Pk2ID)
-                    Exit For
+            If NpcList.ContainsKey(UniqueID) Then
+                RefObj = GetObjectById(NpcList(UniqueID).Pk2ID)
+
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.Npc_Chat)
+                writer.Byte(1) 'Sucess
+                If RefObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
+                    writer.Byte(ChatId) 'Type
+                Else
+                    writer.Byte(17)
                 End If
-            Next
 
+                Server.Send(writer.GetBytes, Index_)
 
-
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Npc_Chat)
-            writer.Byte(1) 'Sucess
-            If RefObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
-                writer.Byte(ChatId) 'Type
-            Else
-                writer.Byte(17)
+                PlayerData(Index_).Busy = True
             End If
-
-            Server.Send(writer.GetBytes, Index_)
-
-            PlayerData(Index_).Busy = True
         End Sub
 
         Public Sub OnNpcChatLeft(ByVal packet As PacketReader, ByVal Index_ As Integer)

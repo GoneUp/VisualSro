@@ -2,7 +2,7 @@
 	Imports System
 	Imports System.IO
 	Imports System.Text
-Namespace GlobalManager
+Namespace Framework
 
     Public Class PacketReader
         Private br As BinaryReader

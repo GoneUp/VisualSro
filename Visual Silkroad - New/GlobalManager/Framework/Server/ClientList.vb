@@ -1,7 +1,7 @@
 ﻿Imports System.Net.Sockets, System.Timers
-Namespace GlobalManager
+Namespace Framework
 
-    Public Class ClientList
+    Friend Class ClientList
         Public Shared List(1500) As Socket
         Public Shared LastPingTime(1500) As DateTime
         Public Shared SessionInfo(1500) As _SessionInfo

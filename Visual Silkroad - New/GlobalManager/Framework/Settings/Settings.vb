@@ -3,7 +3,7 @@
 Namespace Settings
     Module Settings
         'Loading File
-        Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
+        Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_manager\settings.ini")
 
         Public Database_IP As String
         Public Database_Port As UShort
@@ -32,8 +32,6 @@ Namespace Settings
             Database_Database = File.Read("DATABASE", "Database", "visualsro")
             Database_User = File.Read("DATABASE", "User", "root")
             Database_Password = File.Read("DATABASE", "Password", "")
-
-            'Server_ProtocolVersion = File.Read("SERVER", "Server_ProtocolVersion", "0")
 
             Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
             Log_Login = CBool(File.Read("LOG", "Login", "0"))

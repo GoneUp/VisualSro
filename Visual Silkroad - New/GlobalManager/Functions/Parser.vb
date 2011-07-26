@@ -23,8 +23,18 @@ Namespace Functions
             ElseIf ClientList.SessionInfo(Index_).Authorized Then
                 '===SECURE===
                 Select Case opcode
+                    Case ClientOpcodes.Server_Init
+                        Shard.OnInitServer(packet, Index_)
+                    Case ClientOpcodes.Server_Shutdown
+                        Shard.OnShutdownServer(packet, Index_)
 
+                    Case ClientOpcodes.Server_Info
+                        Shard.OnServerInfo(packet, Index_)
 
+                    Case ClientOpcodes.GateWay_SendUserAuth
+                        Agent.OnSendUserAuth(packet, Index_)
+                    Case ClientOpcodes.GameServer_CheckUserAuth
+                        Agent.OnCheckUserAuth(packet, Index_)
                 End Select
 
             End If

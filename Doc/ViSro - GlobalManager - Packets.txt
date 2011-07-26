@@ -34,7 +34,7 @@ Opcode: 2001
 [String] Servername 
 [Byte] Success (01 = Ok, 02 = Fail)
 	if fail(
-	[Byte] (01 = Handshake Failed, 02 = Wrong Servername, 03 =      Wrong ProtocolVersion)
+	[Byte] (01 = Handshake Failed, 02 = Wrong Servername, 03 = Wrong ProtocolVersion, 04 = Server Certification Table Error)
 )
 
 ============ Server Init: ============ 

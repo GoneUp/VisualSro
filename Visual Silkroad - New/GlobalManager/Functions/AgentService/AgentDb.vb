@@ -3,9 +3,7 @@
 Namespace Agent
     Module AgentDb
 
-        Public UserAuthCache As New Dictionary(Of UInt32, _UserAuth) 'Key = SessionId
-
-
+        Public UserAuthCache As New Dictionary(Of UInt32, _UserAuth)
 
     End Module
 
@@ -14,5 +12,6 @@ Namespace Agent
         Public UserName As String
         Public UserPw As String
         Public GameServerId As UInt16
+        Public ExpireTime As Date
     End Class
 End Namespace

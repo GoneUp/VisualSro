@@ -60,11 +60,16 @@ Namespace Auth
             If tmp.HandshakeComplete = True Then
                 If tmp.Type <> _SessionInfo._ServerTypes.Unknown Then
                     If tmp.ProtocolVersion = Settings.Server_ProtocolVersion Then
-                        writer.Byte(True)
-                        tmp.Authorized = True
+                        If GlobalDb.CheckIfServerCertExitis(tmp.ServerId, tmp.ClientName) Then
+                            writer.Byte(True)
+                            tmp.Authorized = True
+                        Else
+                            writer.Byte(2)
+                            writer.Byte(4) 'Server Cert Error
+                        End If
                     Else
                         writer.Byte(2)
-                        writer.Byte(3) 'Wrong ProtoclVersion
+                        writer.Byte(3) 'Wrong ProtocolVersion
                     End If
                 Else
                     writer.Byte(2)

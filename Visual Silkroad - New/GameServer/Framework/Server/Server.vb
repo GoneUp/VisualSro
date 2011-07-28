@@ -7,10 +7,10 @@ Imports GameServer.GameServer.Functions
 Namespace GameServer
 
     Public Class Server
-        Private Shared IP_ As IPAddress
-        Private Shared MaxClients_ As Integer
-        Private Shared OnlineClient_ As Integer
-        Private Shared ServerPort As Integer
+        Private Shared _Ip As IPAddress
+        Private Shared _MaxClients As Integer
+        Private Shared _OnlineClients As Integer
+        Private Shared _ServerPort As Integer
         Private Shared ServerSocket As Socket
         Public Shared RevTheard(1) As Threading.Thread
 
@@ -22,7 +22,7 @@ Namespace GameServer
         Public Shared Event OnServerStopped As dServerStopped
 
         Public Shared Sub Start()
-            Dim localEP As New IPEndPoint(IPAddress.Any, ServerPort)
+            Dim localEP As New IPEndPoint(IPAddress.Any, _ServerPort)
             ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             Try
                 ServerSocket.Bind(localEP)
@@ -62,12 +62,13 @@ Namespace GameServer
                     RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
                     RevTheard(index) = New Threading.Thread(AddressOf ReceiveData)
                     RevTheard(index).Start(index)
-                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
                 Else
                     'More then 1500 Sockets
                     sock.Disconnect(False)
                     Log.WriteSystemLog("Socket Stack Full!")
                 End If
+
+                ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
 
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -1)
@@ -119,9 +120,11 @@ Namespace GameServer
                         ClientList.Delete(Index_)
                         RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                     End If
+                    Exit Do
                 Catch exception1 As Threading.ThreadAbortException
                     ClientList.Delete(Index_)
                     RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+                    Exit Do
                 Catch exception2 As Exception
                     RaiseEvent OnServerError(exception2, Index_)
                     Array.Clear(buffer, 0, buffer.Length)
@@ -271,37 +274,37 @@ Namespace GameServer
 #Region "Propertys"
         Public Shared Property Ip() As String
             Get
-                Return IP_.ToString()
+                Return _Ip.ToString()
             End Get
             Set(ByVal value As String)
-                IP_ = IPAddress.Parse(value)
+                _Ip = IPAddress.Parse(value)
             End Set
         End Property
 
         Public Shared Property MaxClients() As Integer
             Get
-                Return MaxClients_
+                Return _MaxClients
             End Get
             Set(ByVal value As Integer)
-                MaxClients_ = value
+                _MaxClients = value
             End Set
         End Property
 
         Public Shared Property OnlineClient() As Integer
             Get
-                Return OnlineClient_
+                Return _OnlineClients
             End Get
             Set(ByVal value As Integer)
-                OnlineClient_ = value
+                _OnlineClients = value
             End Set
         End Property
 
         Public Shared Property Port() As Integer
             Get
-                Return ServerPort
+                Return _ServerPort
             End Get
             Set(ByVal value As Integer)
-                ServerPort = value
+                _ServerPort = value
             End Set
         End Property
 

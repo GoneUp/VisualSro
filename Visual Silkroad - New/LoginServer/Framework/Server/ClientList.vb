@@ -1,5 +1,5 @@
 ﻿Imports System.Net.Sockets, System.Timers
-Namespace LoginServer
+Namespace Framework
 
     Public Class ClientList
         Public Shared List(1500) As Socket

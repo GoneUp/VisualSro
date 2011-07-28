@@ -1,7 +1,7 @@
 ﻿Imports Microsoft.VisualBasic
 	Imports System
 	Imports System.IO
-Namespace LoginServer
+Namespace Framework
 
     Friend Class PacketWriter
         Private bw As BinaryWriter

@@ -2,7 +2,7 @@
 	Imports System
 	Imports System.IO
 	Imports System.Text
-Namespace LoginServer
+Namespace Framework
 
     Public Class PacketReader
         Private br As BinaryReader
@@ -63,6 +63,19 @@ Namespace LoginServer
         Public Function [Boolean]() As Boolean
             Return Me.br.ReadBoolean()
         End Function
+
+
+        Public Property DataLen() As String
+            Get
+                Return ms.Length
+            End Get
+            Set(ByVal value As String)
+
+            End Set
+        End Property
+
+
+
 
     End Class
 End Namespace

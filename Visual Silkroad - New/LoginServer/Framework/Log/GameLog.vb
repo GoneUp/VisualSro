@@ -1,4 +1,6 @@
-﻿Namespace LoginServer.Log
+﻿Imports LoginServer.Framework
+
+Namespace Log
     Module GameLog
 
         Public Sub WriteGameLog(ByVal Index_ As Integer, ByVal Action As String, ByVal Action2 As String, ByVal Message As String)

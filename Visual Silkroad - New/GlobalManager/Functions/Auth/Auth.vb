@@ -39,6 +39,7 @@ Namespace Auth
             Dim tmp As _SessionInfo = ClientList.SessionInfo(Index_)
             tmp.ClientName = packet.String(packet.Word)
             tmp.ProtocolVersion = packet.DWord
+            tmp.ServerId = packet.Word
 
             Select Case tmp.ClientName
                 Case "GateWayServer"

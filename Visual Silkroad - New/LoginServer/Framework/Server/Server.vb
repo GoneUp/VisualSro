@@ -3,14 +3,13 @@
 	Imports System.Net
 	Imports System.Net.Sockets
 	Imports System.Runtime.CompilerServices
-Namespace LoginServer
+Namespace Framework
 
     Public Class Server
-        Private Shared buffer(&H1000 - 1) As Byte
-        Private Shared IP_Renamed As IPAddress
-        Private Shared MaxClients_ As Integer
-        Private Shared OnlineClients_ As Integer
-        Private Shared ServerPort As Integer
+        Private Shared _Ip As IPAddress
+        Private Shared _MaxClients As Integer
+        Private Shared _OnlineClients As Integer
+        Private Shared _ServerPort As Integer
         Private Shared ServerSocket As Socket
         Public Shared RevTheard(1) As Threading.Thread
 
@@ -19,10 +18,11 @@ Namespace LoginServer
         Public Shared Event OnReceiveData As dReceive
         Public Shared Event OnServerError As dError
         Public Shared Event OnServerStarted As dServerStarted
+        Public Shared Event OnServerStopped As dServerStopped
 
-
+#Region "Start/Stop"
         Public Shared Sub Start()
-            Dim localEP As New IPEndPoint(IPAddress.Any, ServerPort)
+            Dim localEP As New IPEndPoint(IPAddress.Any, _ServerPort)
             ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             Try
                 ServerSocket.Bind(localEP)
@@ -35,6 +35,21 @@ Namespace LoginServer
             Finally
                 Dim time As String = DateTime.Now.ToString()
                 RaiseEvent OnServerStarted(time)
+            End Try
+        End Sub
+#End Region
+
+        Public Shared Sub [Stop]()
+
+            Try
+                ServerSocket.Shutdown(SocketShutdown.Both)
+                ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+                ReDim RevTheard(MaxClients + 1)
+            Catch exception As Exception
+                RaiseEvent OnServerError(exception, -3)
+            Finally
+                Dim time As String = DateTime.Now.ToString()
+                RaiseEvent OnServerStopped(time)
             End Try
         End Sub
 
@@ -78,7 +93,7 @@ Namespace LoginServer
 
         Private Shared Sub ReceiveData(ByVal Index_ As Integer)
             Dim socket As Socket = ClientList.GetSocket(Index_)
-            Dim buffer(&H10000 - 1) As Byte
+            Dim buffer(8192) As Byte
 
 
             Do While True
@@ -119,7 +134,6 @@ Namespace LoginServer
             ClientList.GetSocket(index).Send(buff)
 
             If LoginServer.Program.Logpackets = True Then
-
                 Log.LogPacket(buff, True)
             End If
         End Sub
@@ -143,39 +157,40 @@ Namespace LoginServer
             Next i
         End Sub
 
-        Public Shared Property ip() As String
+#Region "Propertys"
+        Public Shared Property Ip() As String
             Get
-                Return IP_Renamed.ToString()
+                Return _Ip.ToString()
             End Get
             Set(ByVal value As String)
-                IP_Renamed = IPAddress.Parse(value)
+                _Ip = IPAddress.Parse(value)
             End Set
         End Property
 
         Public Shared Property MaxClients() As Integer
             Get
-                Return MaxClients_
+                Return _MaxClients
             End Get
             Set(ByVal value As Integer)
-                MaxClients_ = value
+                _MaxClients = value
             End Set
         End Property
 
         Public Shared Property OnlineClient() As Integer
             Get
-                Return OnlineClients_
+                Return _OnlineClients
             End Get
             Set(ByVal value As Integer)
-                OnlineClients_ = value
+                _OnlineClients = value
             End Set
         End Property
 
         Public Shared Property Port() As Integer
             Get
-                Return ServerPort
+                Return _ServerPort
             End Get
             Set(ByVal value As Integer)
-                ServerPort = value
+                _ServerPort = value
             End Set
         End Property
 
@@ -184,6 +199,8 @@ Namespace LoginServer
         Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
         Public Delegate Sub dServerStarted(ByVal time As String)
+        Public Delegate Sub dServerStopped(ByVal time As String)
+#End Region
 
     End Class
 End Namespace

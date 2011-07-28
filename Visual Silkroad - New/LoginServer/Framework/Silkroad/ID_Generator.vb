@@ -1,4 +1,4 @@
-﻿Namespace LoginServer.Id_Gen
+﻿Namespace Id_Gen
     Module ID_Generator
 
         '=================Account Id's

@@ -1,30 +1,32 @@
-﻿Module Commands
+﻿Imports LoginServer.Framework
+
+Module Commands
 
     Public Sub CheckCommand(ByVal msg As String)
 
         Select Case msg
 
             Case "/info"
-                LoginServer.Log.WriteSystemLog("This Emulator is from GoneUp. ")
-                LoginServer.Log.WriteSystemLog("Specical Thanks to:")
-                LoginServer.Log.WriteSystemLog("Drew Benton")
-                LoginServer.Log.WriteSystemLog("manneke for the great help")
-                LoginServer.Log.WriteSystemLog("Windrius for the Framework.")
-                LoginServer.Log.WriteSystemLog("SREmu Team")
-                LoginServer.Log.WriteSystemLog("Dickernoob for CSREmu")
-                LoginServer.Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
+                Log.WriteSystemLog("This Emulator is from GoneUp. ")
+                Log.WriteSystemLog("Specical Thanks to:")
+                Log.WriteSystemLog("Drew Benton")
+                Log.WriteSystemLog("manneke for the great help")
+                Log.WriteSystemLog("Windrius for the Framework.")
+                Log.WriteSystemLog("SREmu Team")
+                Log.WriteSystemLog("Dickernoob for CSREmu")
+                Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
             Case "/help"
-                LoginServer.Log.WriteSystemLog("Commands: ")
-                LoginServer.Log.WriteSystemLog("/info for the credits")
-                LoginServer.Log.WriteSystemLog("/packets to enable packetLoginServer.Log")
-                LoginServer.Log.WriteSystemLog("/clear")
+                Log.WriteSystemLog("Commands: ")
+                Log.WriteSystemLog("/info for the credits")
+                Log.WriteSystemLog("/packets to enable packetLoginServer.Log")
+                Log.WriteSystemLog("/clear")
 
             Case "/packets"
 
-                LoginServer.Program.Logpackets = True
-                LoginServer.Log.WriteSystemLog("LoginServer.Log Packets started!")
+                Program.Logpackets = True
+                Log.WriteSystemLog("LoginServer.Log Packets started!")
 
 
             Case "/clear"
@@ -32,15 +34,15 @@
 
 
             Case "/end"
-                For i = 0 To LoginServer.ClientList.SessionInfo.Count - 1
-                    If LoginServer.ClientList.SessionInfo(i) IsNot Nothing Then
-                        LoginServer.Server.Dissconnect(i)
+                For i = 0 To ClientList.SessionInfo.Count - 1
+                    If ClientList.SessionInfo(i) IsNot Nothing Then
+                        Server.Dissconnect(i)
                     End If
                 Next
                 ' GameServer.Server.stop()
-                LoginServer.DataBase.ExecuteQuerys()
+                DataBase.ExecuteQuerys()
                 End
-    
+
         End Select
 
 

@@ -1,5 +1,7 @@
 ﻿Imports System.Timers
-Namespace LoginServer
+Imports LoginServer.Framework
+
+Namespace Timers
     Module Timers
 
 

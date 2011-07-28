@@ -1,4 +1,6 @@
-﻿Namespace LoginServer.Functions
+﻿Imports LoginServer.Framework
+
+Namespace Functions
     Module Register
 
         Public RegisterList As New List(Of Register_)
@@ -23,7 +25,7 @@
 
             DataBase.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
-            Dim tmp As New UserArray
+            Dim tmp As New LoginDb.UserArray
             tmp.AccountId = Id_Gen.GetNewAccountId
             tmp.Name = Name
             tmp.Pw = Password
@@ -31,7 +33,7 @@
             tmp.Banned = True
             tmp.BannReason = "Please wait for Activation."
             tmp.BannTime = Date.Now.AddMinutes(2)
-            Users.Add(tmp)
+            LoginDb.Users.Add(tmp)
 
             Dim tmp_2 As New Register_
             tmp_2.IP = ClientList.GetIP(Index_)
@@ -40,7 +42,7 @@
             tmp_2.Time = Date.Now
             RegisterList.Add(tmp_2)
 
-            If Log_Register Then
+            If Settings.Log_Register Then
                 Log.WriteGameLog(Index_, "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
             End If
 
@@ -67,7 +69,7 @@
                 End If
             Next
 
-            If Count >= Max_RegistersPerDay Then
+            If Count >= Settings.Max_RegistersPerDay Then
                 Return False
             End If
 

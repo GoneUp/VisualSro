@@ -26,6 +26,7 @@ Opcode: 6100
 [Word] Clientname len
 [String] Clientname
 [Dword] Protocol Version (To make sure that GlobalManager and Server is on the same Packet Version)
+[Word] ServerId
 
 
 S->C

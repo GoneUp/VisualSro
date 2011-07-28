@@ -1,4 +1,6 @@
-﻿Namespace LoginServer
+﻿Imports LoginServer.Framework
+
+Namespace Settings
     Module Settings
         'Loading File
         Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
@@ -9,9 +11,14 @@
         Public Database_Password As String
         Public Database_Database As String
 
+        Public GlobalManger_Ip As String = "0.0.0.0"
+        Public GlobalManger_Port As UShort = 32000
+        Public GlobalManager_ProtocolVersion As UInteger = 1
+
         Public Server_Ip As String = "0.0.0.0"
-        Public Server_Port As UShort = 15580
+        Public Server_Port As UShort = 15780
         Public Server_Slots As UInteger = 100
+        Public Server_Id As UShort = 0
 
         Public Auto_Register As Boolean = False
         Public Max_FailedLogins As Integer = 5
@@ -22,17 +29,22 @@
         Public Log_Connect As Boolean = False
         Public Log_Register As Boolean = False
         Public Log_Login As Boolean = False
+        Public Log_Packets As Boolean = False
 
         Public Sub LoadSettings()
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
             Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
             Server_Slots = File.Read("SERVER_INTERNAL", "Max_Slots", "1000")
+            Server_Ip = File.Read("SERVER_INTERNAL", "ServerId", "0")
 
             Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
             Database_Port = File.Read("DATABASE", "Port", "3306")
             Database_Database = File.Read("DATABASE", "Database", "visualsro")
             Database_User = File.Read("DATABASE", "User", "root")
             Database_Password = File.Read("DATABASE", "Password", "")
+
+            GlobalManger_Ip = File.Read("GLOBALMANAGER", "Ip", "127.0.0.1")
+            GlobalManger_Port = File.Read("GLOBALMANAGER", "Port", "32000")
 
             Auto_Register = CBool(File.Read("SERVER", "Auto_Register", "0"))
             Max_FailedLogins = File.Read("SERVER", "Max_FailedLogins", "5")
@@ -52,7 +64,7 @@
             DataBase.DB_USERNAME = Database_User
             DataBase.DB_PASSWORD = Database_Password
 
-            Server.Ip = Server_Ip
+            Server.ip = Server_Ip
             Server.Port = Server_Port
             Server.MaxClients = Server_Slots
         End Sub

@@ -9,7 +9,7 @@
         Enum ClientOpcodes As UShort
             Handshake = &H5000
             Ping = &H2002
-            WhoAmI = &H2001 'cleint whoami
+            WhoAmI = &H6100 'cleint whoami
 
             Server_Init = &H1000
             Server_Shutdown = &H1001

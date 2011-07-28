@@ -1,7 +1,9 @@
 ﻿Imports Microsoft.VisualBasic
 Imports System
 Imports System.Runtime.InteropServices
-Namespace LoginServer
+Imports LoginServer.Framework
+
+Namespace Functions
 
     Public Module Parser
         Public Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -14,28 +16,61 @@ Namespace LoginServer
             Select Case opcode
                 Case ClientOpcodes.Ping
 
-                Case ClientOpcodes.Handshake  'Client accepts
+                Case ClientOpcodes.Handshake_Confirm  'Client accepts
 
-                Case ClientOpcodes.InfoReq  'GateWay
+                Case ClientOpcodes.Login_InfoReq  'GateWay
                     Functions.GateWay(packet, Index_)
 
-                Case ClientOpcodes.PatchReq  'Client sends Patch Info
+                Case ClientOpcodes.Login_PatchReq  'Client sends Patch Info
                     Functions.ClientInfo(packet, Index_)
                     Functions.SendPatchInfo(Index_)
 
-                Case ClientOpcodes.LauncherReq
+                Case ClientOpcodes.Login_LauncherReq
                     Functions.SendLauncherInfo(Index_)
 
-                Case ClientOpcodes.ServerListReq
+                Case ClientOpcodes.Login_ServerListReq
                     Functions.SendServerList(Index_)
 
-                Case ClientOpcodes.Login
+                Case ClientOpcodes.Login_LoginReq
                     Functions.HandleLogin(packet, Index_)
 
                 Case Else
                     Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
             End Select
         End Sub
+
+        Public Sub ParseGlobalManager(ByVal packet As PacketReader)
+            Dim length As UInteger = packet.Word
+            Dim opcode As UInteger = packet.Word
+            Dim security As UInteger = packet.Word
+
+            Select Case opcode
+                Case ClientOpcodes.Ping
+
+                Case ClientOpcodes.Handshake_Confirm  'Client accepts
+                    GlobalManager.OnHandshake(packet)
+
+                Case ClientOpcodes.Login_InfoReq  'GateWay
+                    Functions.GateWay(packet, Index_)
+
+                Case ClientOpcodes.Login_PatchReq  'Client sends Patch Info
+                    Functions.ClientInfo(packet, Index_)
+                    Functions.SendPatchInfo(Index_)
+
+                Case ClientOpcodes.Login_LauncherReq
+                    Functions.SendLauncherInfo(Index_)
+
+                Case ClientOpcodes.Login_ServerListReq
+                    Functions.SendServerList(Index_)
+
+                Case ClientOpcodes.Login_LoginReq
+                    Functions.HandleLogin(packet, Index_)
+
+                Case Else
+                    Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
+            End Select
+        End Sub
+
     End Module
 End Namespace
 

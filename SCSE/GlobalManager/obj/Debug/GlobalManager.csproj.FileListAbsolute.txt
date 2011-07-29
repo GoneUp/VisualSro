@@ -1,0 +1,6 @@
+C:\Users\Henry\Desktop\SCSE\GlobalManager\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\SCSE\bin\Debug\Server.ini
+C:\Users\Henry\Desktop\SCSE\bin\Debug\GlobalManager.exe
+C:\Users\Henry\Desktop\SCSE\bin\Debug\GlobalManager.pdb
+C:\Users\Henry\Desktop\SCSE\GlobalManager\obj\Debug\GlobalManager.exe
+C:\Users\Henry\Desktop\SCSE\GlobalManager\obj\Debug\GlobalManager.pdb

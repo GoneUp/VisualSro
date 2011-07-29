@@ -1,0 +1,5 @@
+C:\Users\Henry\Desktop\SCSE\Framework\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\SCSE\bin\Debug\Framework.dll
+C:\Users\Henry\Desktop\SCSE\bin\Debug\Framework.pdb
+C:\Users\Henry\Desktop\SCSE\Framework\obj\Debug\Framework.dll
+C:\Users\Henry\Desktop\SCSE\Framework\obj\Debug\Framework.pdb

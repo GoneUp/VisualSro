@@ -1,0 +1,8 @@
+C:\Users\Henry\Desktop\SCSE\bin\Debug\SilkroadEditor.exe
+C:\Users\Henry\Desktop\SCSE\bin\Debug\SilkroadEditor.pdb
+C:\Users\Henry\Desktop\SCSE\SilkroadEditor\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Henry\Desktop\SCSE\SilkroadEditor\obj\Debug\SilkroadEditor.Properties.Resources.resources
+C:\Users\Henry\Desktop\SCSE\SilkroadEditor\obj\Debug\GenerateResource.read.1.tlog
+C:\Users\Henry\Desktop\SCSE\SilkroadEditor\obj\Debug\GenerateResource.write.1.tlog
+C:\Users\Henry\Desktop\SCSE\SilkroadEditor\obj\Debug\SilkroadEditor.exe
+C:\Users\Henry\Desktop\SCSE\SilkroadEditor\obj\Debug\SilkroadEditor.pdb

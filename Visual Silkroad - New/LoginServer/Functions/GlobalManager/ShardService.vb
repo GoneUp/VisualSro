@@ -32,13 +32,20 @@ Namespace GlobalManager
             If success = 1 Then
                 Log.WriteSystemLog("GlobalManager: Shutdown Complete!")
             Else
-                Log.WriteSystemLog("GlobalManager: Init failed!")
-                Log.WriteSystemLog("Cannot start GameServer!")
+                Log.WriteSystemLog("GlobalManager: WTF: Shutdown failed!")
+                Log.WriteSystemLog("Cannot close GameServer ^^")
             End If
         End Sub
 
         Public Sub OnSendClientInfo()
+            Dim writer As New Framework.PacketWriter
+            writer.Create(ClientOpcodes.Server_Info)
+            writer.Word(Settings.Server_Id)
+            writer.Word(Server.OnlineClient)
+            writer.Word(Server.MaxClients)
 
+
+            GlobalManager.Send(writer.GetBytes)
         End Sub
 
         Public Sub OnShardInfo(ByVal packet As PacketReader)

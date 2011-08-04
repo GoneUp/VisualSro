@@ -1,5 +1,0 @@
-C:\Users\Henry\Desktop\SCSE\DownloadServer\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Henry\Desktop\SCSE\bin\Debug\DownloadServer.exe
-C:\Users\Henry\Desktop\SCSE\bin\Debug\DownloadServer.pdb
-C:\Users\Henry\Desktop\SCSE\DownloadServer\obj\Debug\DownloadServer.exe
-C:\Users\Henry\Desktop\SCSE\DownloadServer\obj\Debug\DownloadServer.pdb

@@ -89,6 +89,8 @@
 		Character = &HB007
 		IngameReqRepley = &HB001
 
+        Capatcha = &H2322
+
         LoadingStart = &H34A5
         LoadingEnd = &H34A6
         LoadingStart2 = &H34B5

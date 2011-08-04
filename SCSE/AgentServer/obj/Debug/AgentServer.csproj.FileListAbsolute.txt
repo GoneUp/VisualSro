@@ -1,5 +1,0 @@
-C:\Users\Henry\Desktop\SCSE\AgentServer\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Henry\Desktop\SCSE\bin\Debug\AgentServer.exe
-C:\Users\Henry\Desktop\SCSE\bin\Debug\AgentServer.pdb
-C:\Users\Henry\Desktop\SCSE\AgentServer\obj\Debug\AgentServer.exe
-C:\Users\Henry\Desktop\SCSE\AgentServer\obj\Debug\AgentServer.pdb

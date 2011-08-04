@@ -1,5 +1,0 @@
-C:\Users\Henry\Desktop\SCSE\GameServer\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Henry\Desktop\SCSE\bin\Debug\GameServer.exe
-C:\Users\Henry\Desktop\SCSE\bin\Debug\GameServer.pdb
-C:\Users\Henry\Desktop\SCSE\GameServer\obj\Debug\GameServer.exe
-C:\Users\Henry\Desktop\SCSE\GameServer\obj\Debug\GameServer.pdb

@@ -123,6 +123,7 @@
     <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Server\Server.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
+    <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\Global.vb" />
     <Compile Include="Functions\Global\Timers.vb" />
     <Compile Include="Functions\Guild\cGuild.vb" />

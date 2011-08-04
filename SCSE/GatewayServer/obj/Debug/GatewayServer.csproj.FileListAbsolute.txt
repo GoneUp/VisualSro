@@ -1,5 +1,0 @@
-C:\Users\Henry\Desktop\SCSE\GatewayServer\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Henry\Desktop\SCSE\bin\Debug\GatewayServer.exe
-C:\Users\Henry\Desktop\SCSE\bin\Debug\GatewayServer.pdb
-C:\Users\Henry\Desktop\SCSE\GatewayServer\obj\Debug\GatewayServer.exe
-C:\Users\Henry\Desktop\SCSE\GatewayServer\obj\Debug\GatewayServer.pdb

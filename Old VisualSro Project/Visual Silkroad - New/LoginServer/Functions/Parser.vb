@@ -50,21 +50,21 @@ Namespace Functions
                 Case ClientOpcodes.Handshake_Confirm  'Client accepts
                     GlobalManager.OnHandshake(packet)
 
-                Case ClientOpcodes.Login_InfoReq  'GateWay
-                    Functions.GateWay(packet, Index_)
+                    'Case ClientOpcodes.Login_InfoReq  'GateWay
+                    '    GlobalManager.GateWa()
 
-                Case ClientOpcodes.Login_PatchReq  'Client sends Patch Info
-                    Functions.ClientInfo(packet, Index_)
-                    Functions.SendPatchInfo(Index_)
+                    'Case ClientOpcodes.Login_PatchReq  'Client sends Patch Info
+                    '    Functions.ClientInfo(packet, Index_)
+                    '    Functions.SendPatchInfo(Index_)
 
-                Case ClientOpcodes.Login_LauncherReq
-                    Functions.SendLauncherInfo(Index_)
+                    'Case ClientOpcodes.Login_LauncherReq
+                    '    Functions.SendLauncherInfo(Index_)
 
-                Case ClientOpcodes.Login_ServerListReq
-                    Functions.SendServerList(Index_)
+                    'Case ClientOpcodes.Login_ServerListReq
+                    '    Functions.SendServerList(Index_)
 
-                Case ClientOpcodes.Login_LoginReq
-                    Functions.HandleLogin(packet, Index_)
+                    'Case ClientOpcodes.Login_LoginReq
+                    '    Functions.HandleLogin(packet, Index_)
 
                 Case Else
                     Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)

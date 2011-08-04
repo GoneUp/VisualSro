@@ -8,6 +8,9 @@ Namespace GameServer.Mod
             Dim tmp As String() = Msg.Split(" ")
 
             Select Case tmp(0)
+                Case "\\capatcha"
+                    SendCaptcha(Index_)
+
                 Case "\\gold"
                     If IsNumeric(tmp(1)) Then
                         Functions.PlayerData(Index_).Gold += CULng(tmp(1))

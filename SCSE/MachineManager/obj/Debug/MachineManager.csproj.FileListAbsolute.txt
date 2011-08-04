@@ -1,5 +1,0 @@
-C:\Users\Henry\Desktop\SCSE\MachineManager\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Henry\Desktop\SCSE\bin\Debug\MachineManager.exe
-C:\Users\Henry\Desktop\SCSE\bin\Debug\MachineManager.pdb
-C:\Users\Henry\Desktop\SCSE\MachineManager\obj\Debug\MachineManager.exe
-C:\Users\Henry\Desktop\SCSE\MachineManager\obj\Debug\MachineManager.pdb

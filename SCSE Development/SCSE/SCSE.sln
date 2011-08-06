@@ -28,9 +28,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentServer", "AgentServer\AgentServer.csproj", "{CEA2A296-0A46-428E-9246-3DD102F8611D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{E24C37F2-BB66-4D09-BC7C-0CBE4D2A6304}"
-	ProjectSection(SolutionItems) = preProject
-		GlobalManager.txt = GlobalManager.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packets", "Packets", "{F4432A6B-06C0-4D90-B0CC-4E7979C6ACCE}"
 EndProject
@@ -100,10 +97,10 @@ Global
 		{F4432A6B-06C0-4D90-B0CC-4E7979C6ACCE} = {E24C37F2-BB66-4D09-BC7C-0CBE4D2A6304}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_UseGlobalSettings = True
-		BuildVersion_StartDate = 2000/1/1
-		BuildVersion_UpdateFileVersion = False
-		BuildVersion_UpdateAssemblyVersion = True
 		BuildVersion_BuildVersioningStyle = None.None.Increment.None
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = False
+		BuildVersion_StartDate = 2000/1/1
+		BuildVersion_UseGlobalSettings = True
 	EndGlobalSection
 EndGlobal

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace SilkroadSecurityApi
+namespace Framework.SilkroadSecurityApi
 {
     internal class PacketReader : System.IO.BinaryReader
     {

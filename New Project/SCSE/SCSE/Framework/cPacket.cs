@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-
+//#NOT_COMPILE
 namespace Framework
 {
     /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SilkroadSecurityApi
+namespace Framework.SilkroadSecurityApi
 {
 	public class DrewBlowfish
 	{

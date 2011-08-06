@@ -11,6 +11,9 @@ namespace GlobalManager
     {
         public static string root;
 
+        public const string IdentityName = "GlobalServer";
+        public const byte IdentityFlag = 1;
+
         #region Settings
 
         public static string MySQL_Ip;
@@ -19,7 +22,7 @@ namespace GlobalManager
         public static string MySQL_Password;
 
         public static int MaxConnections;
-        
+
         #endregion
 
         //Logs

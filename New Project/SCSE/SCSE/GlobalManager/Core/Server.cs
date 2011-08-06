@@ -4,113 +4,130 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+
 using Framework;
-using SilkroadSecurityApi;
+using Framework.Opcodes;
+using Framework.SilkroadSecurityApi;
 
 
 namespace GlobalManager.Core
 {
-    public class Server 
+    public class Server
     {
+        private static Sockets.ServerSocket m_serverSocket;
 
-        public static event OnServerStartHandler OnServerStart;
-        public static event OnServerStopHandler OnServerStop;
-        public static event OnServerErrorHandler OnServerError;
-        public static event OnClientConnectHandler OnClientConnect;
-        public static event OnClientDisconnectHandler OnClientDisconnect;
-
-        public static Socket ServerSocket;
-        public static Socket[] SocketList = new Socket[50]; //[Codes.MaxConnections];
-        public static cClientKontext[] ClientList = new cClientKontext[50]; //[Codes.MaxConnections]; 
+        private static int m_clientCounter;
+        private static Dictionary<int, Sockets.ClientSocket> m_clientSockets;
 
         public static void Start()
         {
-            try
-            {
-                ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                ServerSocket.Bind(new IPEndPoint(IPAddress.Any, 0));
-                ServerSocket.Listen(10);
-                ServerSocket.BeginAccept(OnAccept, ServerSocket);
-            }
-            catch (Exception ex)
-            {
-                OnServerError(ex);
-            }
-            finally
-            {
-                OnServerStart();
-            }
-                   
+            m_serverSocket = new Sockets.ServerSocket();
+            m_serverSocket.Listen();
+
+            m_clientSockets = new Dictionary<int, Sockets.ClientSocket>();
+
+            //Start PacketProcessor
+            thPacketProcessor = new System.Threading.Thread(ThreadedPacketProcessing);
+            thPacketProcessor.IsBackground = true;
+            thPacketProcessor.Start();
         }
 
         public static void Shutdown()
         {
-            try
-            {
-                ServerSocket.Shutdown(SocketShutdown.Both);
-                ServerSocket.Dispose();
 
-                for (int i = 0; i <= SocketList.Length;  i++)
-                {
-                    SocketList[i].Shutdown(SocketShutdown.Both);
-                    SocketList[i].Dispose();
-                }
-            }
-            catch (Exception ex)
+        }
+
+        public static void Connect(Socket connectingSocket)
+        {
+            lock (m_clientSockets)
             {
-                OnServerError(ex);
-            }
-            finally
-            {
-                OnServerStop();
+                m_clientCounter++;
+                m_clientSockets.Add(m_clientCounter++, new Sockets.ClientSocket(m_clientCounter, connectingSocket));
+
+                //increase capacity counter
             }
         }
 
-        public static void OnAccept(IAsyncResult ar)
+        public static void Disconnect(int index)
         {
-
-            try
+            lock (m_clientSockets)
             {
-                Socket sock = ServerSocket.EndAccept(ar);
-               
-                if (cClientKontext.FindIndex() != -1)
+                if (m_clientSockets.ContainsKey(index))
                 {
-                    sock.be
-                    cClientKontext.Add(sock);
-                    OnClientConnect();
+                    m_clientSockets[index].Dispose();
+                    m_clientSockets.Remove(index);
+
+                    //Decrease capacity counter
                 }
                 else
-                {  
-                    if (sock.Connected)
-                    {
-                        sock.Disconnect(false);
-                    }
-                    sock.Shutdown(SocketShutdown.Both);
-                    sock.Dispose();
-
-                    throw (new Exception ("Max Connections reached!"));
+                {
+                    Codes.Logger.LogThis("ClientIndex " + index + " was not found, this could interfere the login system (AlreadyLoggedIn,Maximum IP)", 2);
                 }
             }
-            catch (Exception ex)
+        }
+
+        public static void HandlePacket(int index, Packet packet)
+        {
+            var opcode = (ClientOpcodes)packet.Opcode;
+            var displayName = opcode.ToString("G");
+            switch (opcode)
             {
-                OnServerError(ex);
+                case ClientOpcodes.AcceptHandshake:
+
+                    break;
+                case ClientOpcodes.ClientInfo:
+
+                    break;
+                case ClientOpcodes.Ping:
+
+                    break;
+
+                default:
+
+                    break;
             }
         }
 
-        public static void OnReceive()
-        {
+        #region PacketProcessor
 
+        private static System.Threading.Thread thPacketProcessor;
+        private static void ThreadedPacketProcessing()
+        {
+            while (true)
+            {
+                var clientList = m_clientSockets;
+                //Process Incoming
+                foreach (var client in clientList)
+                {
+                    try
+                    {
+                        client.Value.ProcessIncoming();
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw ex;
+                    }
+                }
+
+                //Process Outgoing
+                foreach (var client in clientList)
+                {
+                    try
+                    {
+                        client.Value.ProcessOutgoing();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+
+                System.Threading.Thread.Sleep(1);
+            }
         }
 
-        public static void Send(int Index_, Packet packet)
-        {
+        #endregion
 
-        }
-
-        public delegate void OnServerStartHandler();
-        public delegate void OnServerStopHandler();
-        public delegate void OnServerErrorHandler(Exception ex);
-        public delegate void OnClientConnectHandler();
-        public delegate void OnClientDisconnectHandler();
     }
 }

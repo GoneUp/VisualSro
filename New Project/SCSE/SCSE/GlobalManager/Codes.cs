@@ -12,9 +12,14 @@ namespace GlobalManager
         public static string root;
 
         #region Settings
+
+        public static string MySQL_Ip;
+        public static string MySQL_Db;
+        public static string MySQL_Username;
+        public static string MySQL_Password;
+
+        public static int MaxConnections;
         
-
-
         #endregion
 
         //Logs

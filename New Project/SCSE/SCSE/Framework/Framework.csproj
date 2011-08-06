@@ -85,7 +85,7 @@
     <Reference Include="FreeImageNET">
       <HintPath>..\..\..\Controls &amp; DLLs\DLL\FreeImageNET.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.3.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data, Version=6.3.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -106,6 +106,7 @@
     <Compile Include="Navmesh\sNavmeshEntry.cs" />
     <Compile Include="Navmesh\sNavmeshEntryExtra.cs" />
     <Compile Include="Navmesh\sNavmeshZone1.cs" />
+    <Compile Include="Packet\cOpcodes.cs" />
     <Compile Include="PK2\Blowfish.cs" />
     <Compile Include="cINI.cs" />
     <Compile Include="cLog.cs" />
@@ -155,7 +156,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.Increment.None" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="False" BuildVersion_StartDate="2000/1/1" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2000/1/1" BuildVersion_UpdateFileVersion="False" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.Increment.None" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -403,6 +403,7 @@ namespace SilkroadSecurityApi
             m_security_flag = FromSecurityFlags(flags);
             m_security_flags = flags;
             m_client_security = true;
+            
 
             Packet response = new Packet(0x5000);
 

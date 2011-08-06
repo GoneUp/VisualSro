@@ -71,6 +71,7 @@ namespace GlobalManager
                 catch (Exception ex)
                 {
                     Codes.Logger.LogThis(ex.Message, 1);
+                    
                 }
                 finally
                 {

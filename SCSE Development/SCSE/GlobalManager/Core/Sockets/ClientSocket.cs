@@ -23,6 +23,12 @@ namespace GlobalManager.Core.Sockets
             get { return m_IP; }
         }
 
+        private ushort m_Port;
+        public ushort Port
+        {
+            get { return m_Port; }
+        }
+
         private Framework.SilkroadSecurityApi.Security m_security;
         //public Framework.SilkroadSecurityApi.Security Security
         //{
@@ -38,7 +44,7 @@ namespace GlobalManager.Core.Sockets
             m_index = index;
             m_socket = connectingSocket;
             m_IP = m_socket.RemoteEndPoint.ToString().Split(':')[0];
-
+            m_Port =  Convert .ToUInt16(m_socket.RemoteEndPoint.ToString().Split(':')[1]);
 
             m_recv_buffer = new TransferBuffer(8192, 0, 0);
 

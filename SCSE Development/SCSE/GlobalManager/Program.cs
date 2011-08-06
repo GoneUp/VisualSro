@@ -92,7 +92,17 @@ namespace GlobalManager
 
         private static void LoadSettings(cINI INI)
         {
+            Codes.Port = Convert.ToUInt16(INI.ReadInt("GlobalManager", "Port", 19000));
+            Codes.Capacity = INI.ReadInt("GlobalManager", "Capacity", 100);
+            Codes.ServerPassword = INI.Read("GlobalManager", "Password", null);
+           
+            int CertCount = INI.ReadInt("GlobalManager", "ServerCount", 0);
+            Codes.CertificationTable = new ushort[CertCount];
 
+            for (int i = 0; i < CertCount ; i++)
+            {
+                Codes.CertificationTable[i] = Convert .ToUInt16(INI.ReadInt("GlobalManager", "ServerId_" + (i + 1), 0));
+            }
         }
 
     }

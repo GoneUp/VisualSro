@@ -13,16 +13,19 @@ namespace GlobalManager
 
         public const string IdentityName = "GlobalServer";
         public const byte IdentityFlag = 1;
-
+        
         #region Settings
+        public static ushort Port;
 
         public static string MySQL_Ip;
         public static string MySQL_Db;
         public static string MySQL_Username;
         public static string MySQL_Password;
 
-        public static int MaxConnections;
+        public static int Capacity;
+        public static string ServerPassword;
 
+        public static ushort[] CertificationTable;
         #endregion
 
         //Logs

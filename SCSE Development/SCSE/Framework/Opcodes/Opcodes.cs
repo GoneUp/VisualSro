@@ -39,7 +39,12 @@ namespace Framework.Opcodes
         PatchRequest = 0x6100,
         ServerListRequest = 0x6101,
         LoginRequest = 0x6102,
-        NewsRequest = 0x6104
+        NewsRequest = 0x6104,
+
+        Server_Init = 0x1000,
+	    Server_Shutdown = 0x1001,
+	    Server_Info = 0x1002,
+	    Server_UpdateReply = 0x1003
     }
 
     public enum ServerOpcodes
@@ -52,7 +57,12 @@ namespace Framework.Opcodes
         MassiveMessage = 0x600D,
 
         ServerList = 0xA101,
-        LoginResponse = 0xA102
+        LoginResponse = 0xA102,
+
+        Server_Init = 0xC000,
+        Server_Shutdown = 0xC001,
+        ShardInfo = 0xC002,
+        Server_Update = 0xC003
     }
 
 

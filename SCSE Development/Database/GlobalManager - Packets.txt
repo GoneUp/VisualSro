@@ -1,0 +1,296 @@
+============ ClientInfo: ============ 
+C->S
+Opcode: 6100
+
+[Word] Clientname len
+[String] Clientname
+[Word] Passowrd len
+[String] Passowrd 
+[Word] ServerId
+
+
+S->C
+Opcode: 2001
+[Word] Servername len
+[String] Servername 
+[Byte] Success (01 = Ok, 02 = Fail)
+
+============ Server Init: ============ 
+//Is sended when Server is fully loaded and ready for the game (Note: Server Info must be sended before)
+
+C->S
+Opcode: 1000
+[Word] ServerId
+
+S->C 
+Opcode: C000
+[Byte] Success (01 = Ok, 00 = Fail)
+
+============ Server Shutdown: ============
+//Is sended when the Server Shutdowns
+C->S
+Opcode: 1001
+[Word] ServerId
+
+S->C 
+Opcode: C001
+[Byte] Success (01 = Ok, 00 = Fail)
+============ Server Info: ============
+//Should be sended all 5 Secounds
+
+C->S 
+Opcode: 1002
+if gatewayserver:
+[Word] ServerId
+[Word] Online Clients
+[Word] Max Clients
+
+if gameserver:
+[Word] ServerId
+[Word] ServerName Len
+[String] ServerName
+[Word] Online Clients
+[Word] Max Clients
+[Dword] Mob Number
+[Dword] Npc Number
+[Dword] Item Number
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+
+if downloadserver:
+[Word] ServerId
+[Word] Online Clients
+[Word] Max Clients
+
+============ ShardInfo: ============ 
+//Is sended all 5 Seconds
+S->C
+Opcode: C002
+[Word] GateWayServer Count
+foreach GateWayServer
+(
+[Word] ServerId
+[Word] Ip Len
+[String] Ip
+[Word] Port
+[Word] Online Clients
+[Word] Max Clients
+)
+
+[Word] DownloadServer Count
+foreach DownloadServer
+(
+[Word] ServerId
+[Word] Ip Len
+[String] Ip
+[Word] Port
+[Word] Online Clients
+[Word] Max Clients
+)
+
+[Word] GameServer Count
+foreach GameServer
+(
+[Word] ServerId
+[Word] ServerName Len
+[String] ServerName
+[Word] Ip Len
+[String] Ip
+[Word] Port
+[Word] Online Clients
+[Word] Max Clients
+[Dword] Mob Number
+[Dword] Npc Number
+[Dword] Item Number
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+[Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
+)
+
+============ UpdateServer: ============
+//Update of Server Options from the GlobalManager
+S->C
+Opcode: C003
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+
+
+
+C->S
+Opcode: 1003
+[Byte] Success (01 = Ok, 02 = Fail)
+
+
+
+============ AdminAuth: ============
+
+C->S
+Opcode: 1004
+[Word] Username Len
+[String] Username
+[Word] Password Len
+[String] Password
+
+
+S->C
+Opcode: C004
+[Byte] Success (01 = Ok, 02 = Fail)
+
+============ Admin UpdateServer: ============
+//Update of Server Options from a Admin to the GlobalManager, the Manager send it to the Server
+
+C->S
+Opcode: 1005 
+[Word] ServerId
+[Word] Server_XP
+[Word] Server_SP
+[Word] Server_Gold
+[Word] Server_Drop
+[Word] Server_SpawnRate
+
+
+S->C
+Opcode: C005
+[Byte] Success (01 = Ok, 02 = Fail)
+
+//Server sends now UpdateServer
+
+
+============ Admin GetInfo: ============
+// Sends Info from Game Details to a Admin
+
+C->S
+Opcode: 1006
+[Byte] Tag
+if tag 1: //GetAccountInfo
+(
+[Word] Username len
+[String] Username
+)
+if tag 2: //GetCharInfo
+(
+[Word] ServerId
+[Word] Name len
+[String] Name
+)
+
+
+S->C
+Opcode: C006
+[Byte] Tag
+if tag 1: //GetAccountInfo
+(
+[Byte] Success (01 = Found, 02 = Not Found)
+[Word] Username len
+[String] Username
+[Byte] Failed Logins
+[Byte] Banned
+[Word] Banreason len
+[String] Banreason
+[Word] Bantime len
+[String] Bantime
+[Dword] Silk
+[Byte] Admin Flag (00 = False, 01 = True)
+)
+if tag 2: //GetCharInfo
+(
+[Word] ServerId
+[Dword] CharacterId
+[Word] Name len
+[String] Name
+[Byte] Level
+[Dword] Sp
+[Qword] Gold
+[Word] Attributes
+[Word] Str
+[Word] Int
+)
+
+
+============ Admin UpdateInfo: ============
+//Update of Game Details from a Admin to the GlobalManager, the Manager save it to the Db
+
+
+C->S
+Opcode: 1007
+[Byte] Tag
+if tag 1: //UpdateAccountInfo
+(
+[Word] Username len
+[String] Username
+[Byte] Failed Logins
+[Byte] Banned
+[Word] Banreason len
+[String] Banreason
+[Word] Bantime len
+[String] Bantime
+[Dword] Silk
+[Byte] Admin Flag (00 = False, 01 = True)
+)
+if tag 2: //UpdateCharInfo
+(
+[Word] ServerId
+[Dword] CharacterId
+[Word] Name len
+[String] Name
+[Byte] Level
+[Dword] Sp
+[Qword] Gold
+[Word] Attributes
+[Word] Str
+[Word] Int
+)
+
+S->C
+Opcode: C007
+[Byte] Success (01 = Ok, 02 = Fail)
+
+//Server updates Accountdb, Server sends new CharInfo to the Gameservers
+
+
+============ Gateway SendUserAuth: ============
+//Is sent from the Gatewayserver to the Globalmanager, contains user Id and Gameserver Id.
+//The Manager sends a SessionId back
+
+
+C->S
+Opcode: 1010
+[Word] ServerId
+[Word] Username len
+[String] Username
+[Word] Password len
+[String] Password
+
+
+S->C
+Opcode: C010
+[Byte] Success (01 = Ok, 02 = Fail)
+[Dword] SessionId
+
+============ GameServer CheckUserAuth: ============
+//GlobalManager checks the Id, Pw and SessionId against the Cache
+
+C->S
+Opcode: 1011
+[Dword] SessionId
+[Word] Username len
+[String] Username
+[Word] Password len
+[String] Password
+
+S->C
+Opcode: C011
+[Byte] Success (01 = Ok, 02 = Fail)
+	if fail
+	(
+	[Byte] (01 = Wrong Session, 02 = Wrong User/Pw)
+	)

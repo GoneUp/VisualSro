@@ -18,6 +18,7 @@ namespace GlobalManager.Core
 
         private static int m_clientCounter;
         private static Dictionary<int, Sockets.ClientSocket> m_clientSockets;
+        public static Packets.ServerManager Manager;
 
         public static void Start()
         {
@@ -25,6 +26,7 @@ namespace GlobalManager.Core
             m_serverSocket.Listen();
 
             m_clientSockets = new Dictionary<int, Sockets.ClientSocket>();
+
 
             //Start PacketProcessor
             thPacketProcessor = new System.Threading.Thread(ThreadedPacketProcessing);
@@ -76,10 +78,17 @@ namespace GlobalManager.Core
 
                     break;
                 case ClientOpcodes.ClientInfo:
-
+                    Packets.Gateway.decodeServerLogin(index, packet);
                     break;
                 case ClientOpcodes.Ping:
+                    break;
+                    
+                case ClientOpcodes .Server_Init:
+                    Packets.Gateway.decodeServerInit(index, packet);
+                    break;
 
+                case ClientOpcodes.Server_Shutdown:
+                    Packets.Gateway.decodeServerShutdown(index, packet);
                     break;
 
                 default:
@@ -128,6 +137,18 @@ namespace GlobalManager.Core
         }
 
         #endregion
+        #region "Helper Functions"
+        public static Sockets.ClientSocket GetClientSocket(int index)
+        {
+            if (m_clientSockets.ContainsKey(index))
+            {
+                return m_clientSockets[index];
+            }
+            return null;
+        }
+
+        #endregion
+
 
     }
 }

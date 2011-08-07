@@ -19,9 +19,10 @@ namespace GlobalManager.Core.Components
         public int CurrectUser;
         public int MaxUser;
 
+        public bool RequestedShutdown;
         public void Shutdown()
         {
-
+            RequestedShutdown = true;
             this.Dispose();
         }
 

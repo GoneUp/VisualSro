@@ -15,7 +15,6 @@ namespace GlobalManager.Core.Sockets
         private Socket m_socket;
 
         private bool m_closing;
-        private bool m_disposed;
 
         private string m_IP;
         public string IP
@@ -44,7 +43,7 @@ namespace GlobalManager.Core.Sockets
             m_index = index;
             m_socket = connectingSocket;
             m_IP = m_socket.RemoteEndPoint.ToString().Split(':')[0];
-            m_Port =  Convert .ToUInt16(m_socket.RemoteEndPoint.ToString().Split(':')[1]);
+            m_Port = Convert.ToUInt16(m_socket.RemoteEndPoint.ToString().Split(':')[1]);
 
             m_recv_buffer = new TransferBuffer(8192, 0, 0);
 
@@ -74,7 +73,7 @@ namespace GlobalManager.Core.Sockets
 
         private void WaitForData(IAsyncResult ar)
         {
-            if (m_closing || m_disposed)
+            if (m_closing || disposed)
             {
                 throw new ObjectDisposedException("ClientSocket", "[ClientSocket::WaitForData] Can not WaitForData because socket is closing or already disposed.");
             }
@@ -119,7 +118,7 @@ namespace GlobalManager.Core.Sockets
 
         public void ProcessIncoming()
         {
-            if (m_disposed || m_closing)
+            if (disposed || m_closing)
             {
                 throw new ObjectDisposedException("ClientSocket", "[ClientSocket::ProcessIncoming] Not allowed to ProcessIncoming because closing or already disposed.");
             }
@@ -140,7 +139,7 @@ namespace GlobalManager.Core.Sockets
 
         public void ProcessOutgoing()
         {
-            if (m_disposed || m_closing)
+            if (disposed || m_closing)
             {
                 throw new ObjectDisposedException("m_socket,m_security", "[ClientSocket::ProcessOutgoing] Not allowed to ProcessOutgoing because closing or already disposed.");
             }
@@ -162,20 +161,30 @@ namespace GlobalManager.Core.Sockets
         }
 
 
-
-
+        private bool disposed = false;
         public void Dispose()
         {
-            lock (this)
-            {
-                m_closing = true;
-                if (m_socket.Connected)
-                {
-                    m_socket.Shutdown(SocketShutdown.Both);
-                }
-                m_socket.Close();
-                m_socket = null;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    //Free other state (managed objects)
+                    m_closing = true;
+                    if (m_socket.Connected)
+                    {
+                        m_socket.Shutdown(SocketShutdown.Both);
+                    }
+                    m_socket.Close();
+                    m_socket = null;
+                }
+                //Free your own state (unmanaged objects)
+                //Set large filed to null.
                 m_IP = null;
 
                 m_security = null;
@@ -183,8 +192,15 @@ namespace GlobalManager.Core.Sockets
                 m_recv_packets = null;
                 m_send_buffers = null;
 
-                m_disposed = true;
+                disposed = true;
             }
+        }
+
+        // Use C# destructor syntax for finalization code.
+        ~ClientSocket()
+        {
+            // Simply call Dispose(false).
+            Dispose(false);
         }
     }
 }

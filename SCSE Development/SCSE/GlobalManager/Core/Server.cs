@@ -31,7 +31,7 @@ namespace GlobalManager.Core
             m_serverSocket = new Sockets.ServerSocket();
             m_clientSockets = new Dictionary<int, Sockets.ClientSocket>();
 
-            m_serverManager = new Components.ServerManager();            
+            m_serverManager = new Components.ServerManager();
             if (m_serverSocket.Listen())
             {
                 //Start Components.
@@ -68,6 +68,16 @@ namespace GlobalManager.Core
             {
                 if (m_clientSockets.ContainsKey(index))
                 {
+                    var server = m_serverManager.GetServerByIndex(index);
+                    if (server != null)
+                    {
+                        if (!server.RequestedShutdown)
+                        {
+                            Codes.Logger.LogThis("Warning Server " + server.ID + "crashed or lost the connection.", 2);
+                        }
+                    }
+
+                    //Close the Socket
                     m_clientSockets[index].Dispose();
                     m_clientSockets.Remove(index);
 

@@ -24,14 +24,41 @@ namespace GlobalManager.Core.Components
             m_lock = new object();
         }
 
-        public void Add(int index, ushort serverID)
+        public void Add(int index, ushort serverID, string clientname)
         {
-            using (cServer server = new cServer())
+            lock (m_lock)
             {
-                server.Index = index;
-                server.ID = serverID;
-                server.Authorized = true;
-
+                switch (clientname)
+                {
+                    case "GatewayServer":
+                        cGatewayServer tmp_gw = new cGatewayServer();
+                        tmp_gw.Index = index;
+                        tmp_gw.ID = serverID;
+                        tmp_gw.Authorized = true;
+                        m_gatewayServers.Add(serverID, tmp_gw);
+                        break;
+                    case "DownloadServer":
+                        cDownloadServer tmp_dl = new cDownloadServer();
+                        tmp_dl.Index = index;
+                        tmp_dl.ID = serverID;
+                        tmp_dl.Authorized = true;
+                        m_downloadServers.Add(serverID, tmp_dl);
+                        break;
+                    case "Agentserver":
+                        cAgentServer tmp_ag = new cAgentServer();
+                        tmp_ag.Index = index;
+                        tmp_ag.ID = serverID;
+                        tmp_ag.Authorized = true;
+                        m_agentServers.Add(serverID, tmp_ag);
+                        break;
+                    case "GameServer":
+                        cGatewayServer tmp_gs = new cGatewayServer();
+                        tmp_gs.Index = index;
+                        tmp_gs.ID = serverID;
+                        tmp_gs.Authorized = true;
+                        m_gatewayServers.Add(serverID, tmp_gs);
+                        break;
+                }
             }
         }
 

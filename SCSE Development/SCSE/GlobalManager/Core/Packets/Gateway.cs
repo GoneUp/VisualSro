@@ -33,7 +33,7 @@ namespace GlobalManager.Core.Packets
                         case "GameServer":
                         case "AgentServer":
                         case "DownloadServer":
-                            Server.Manager.Add(index, ServerID);
+                            Server.Manager.Add(index, ServerID, clientname);
 
                             Codes.Logger.LogThis(string.Format("[Manager:Auth] : Authorized " + clientname + " [Id: {0}, Ip: {1}]", ServerID, client.IP), 3);
                             SendServerInfo(index, true);

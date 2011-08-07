@@ -52,11 +52,11 @@ namespace GlobalManager.Core.Components
                         m_agentServers.Add(serverID, tmp_ag);
                         break;
                     case "GameServer":
-                        cGatewayServer tmp_gs = new cGatewayServer();
+                        cGameServer tmp_gs = new cGameServer();
                         tmp_gs.Index = index;
                         tmp_gs.ID = serverID;
                         tmp_gs.Authorized = true;
-                        m_gatewayServers.Add(serverID, tmp_gs);
+                        m_gameServers.Add(serverID, tmp_gs);
                         break;
                 }
             }

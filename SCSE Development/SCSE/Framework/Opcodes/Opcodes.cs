@@ -41,10 +41,18 @@ namespace Framework.Opcodes
         LoginRequest = 0x6102,
         NewsRequest = 0x6104,
 
-        Server_Init = 0x1000,
-	    Server_Shutdown = 0x1001,
-	    Server_Info = 0x1002,
-	    Server_UpdateReply = 0x1003
+        Server_Init = 0x3001,
+	    Server_Shutdown = 0x3002,
+	    Server_Info = 0x3003,
+	    Server_UpdateReply = 0x3004,
+
+        Admin_Auth = 0x3005,
+        Admin_UpdateServer = 0x3006,
+        Admin_GetInfo = 0x3007,
+        Admin_UpdateInfo = 0x3008,
+         
+        GateWay_SendUserAuth = 0x3010,
+        AgentServer_CheckUserAuth = 0x3011,
     }
 
     public enum ServerOpcodes
@@ -59,10 +67,19 @@ namespace Framework.Opcodes
         ServerList = 0xA101,
         LoginResponse = 0xA102,
 
-        Server_Init = 0xC000,
-        Server_Shutdown = 0xC001,
-        ShardInfo = 0xC002,
-        Server_Update = 0xC003
+        Server_Auth = 0xC000,
+        Server_Init = 0xC001,
+        Server_Shutdown = 0xC002,
+        ShardInfo = 0xC003,
+        Server_Update = 0xC004,
+
+        Admin_Auth = 0xC005,
+        Admin_UpdateServer = 0xC006,
+        Admin_GetInfo = 0xC007,
+        Admin_UpdateInfo = 0xC008,
+         
+        GateWay_SendUserAuth = 0xC010,
+        AgentServer_CheckUserAuth = 0xC011,
     }
 
 

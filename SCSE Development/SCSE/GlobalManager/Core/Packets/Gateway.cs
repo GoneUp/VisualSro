@@ -65,11 +65,9 @@ namespace GlobalManager.Core.Packets
 
         private static void SendServerInfo(int index, bool AuthSucceed)
         {
-            throw new Exception("BÖSE !! ServerInfo wird bereits vom Handshake benutzt und kann nicht manuell gesendet werden dies würde ihn abfangen");
-            //Packet packet = new Packet(Convert.ToUInt16(ServerOpcodes.ServerInfo), false);
-            //packet.WriteString("GlobalManger");
-            //packet.WriteByte(AuthSucceed);
-            //Server.GetClientSocket(index).Send(packet);
+            Packet packet = new Packet(Convert.ToUInt16(ServerOpcodes.Server_Auth), false);
+            packet.WriteByte(AuthSucceed);
+            Server.GetClientSocket(index).Send(packet);
         }
 
         private static bool CheckCertification(ushort ServerId)

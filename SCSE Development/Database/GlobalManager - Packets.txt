@@ -10,36 +10,34 @@ Opcode: 6100
 
 
 S->C
-Opcode: 2001
-[Word] Servername len
-[String] Servername 
-[Byte] Success (01 = Ok, 02 = Fail)
+Opcode: C000
+[Byte] Success (01 = Ok, 00 = Fail) //Auth succeed
 
 ============ Server Init: ============ 
 //Is sended when Server is fully loaded and ready for the game (Note: Server Info must be sended before)
 
 C->S
-Opcode: 1000
-[Word] ServerId
-
-S->C 
-Opcode: C000
-[Byte] Success (01 = Ok, 00 = Fail)
-
-============ Server Shutdown: ============
-//Is sended when the Server Shutdowns
-C->S
-Opcode: 1001
+Opcode: 3001
 [Word] ServerId
 
 S->C 
 Opcode: C001
 [Byte] Success (01 = Ok, 00 = Fail)
+
+============ Server Shutdown: ============
+//Is sended when the Server Shutdowns
+C->S
+Opcode: 3002
+[Word] ServerId
+
+S->C 
+Opcode: C002
+[Byte] Success (01 = Ok, 00 = Fail)
 ============ Server Info: ============
 //Should be sended all 5 Secounds
 
 C->S 
-Opcode: 1002
+Opcode: 3003
 if gatewayserver:
 [Word] ServerId
 [Word] Online Clients
@@ -68,7 +66,7 @@ if downloadserver:
 ============ ShardInfo: ============ 
 //Is sended all 5 Seconds
 S->C
-Opcode: C002
+Opcode: C003
 [Word] GateWayServer Count
 foreach GateWayServer
 (
@@ -110,13 +108,12 @@ foreach GameServer
 [Word] Server_Gold
 [Word] Server_Drop
 [Word] Server_SpawnRate
-[Byte] DebugMode (0 = Off, 1 = On) [Will log Packets and turns PingDc On/Off)
 )
 
 ============ UpdateServer: ============
 //Update of Server Options from the GlobalManager
 S->C
-Opcode: C003
+Opcode: C004
 [Word] Server_XP
 [Word] Server_SP
 [Word] Server_Gold
@@ -126,7 +123,7 @@ Opcode: C003
 
 
 C->S
-Opcode: 1003
+Opcode: 3004
 [Byte] Success (01 = Ok, 02 = Fail)
 
 
@@ -134,7 +131,7 @@ Opcode: 1003
 ============ AdminAuth: ============
 
 C->S
-Opcode: 1004
+Opcode: 3005
 [Word] Username Len
 [String] Username
 [Word] Password Len
@@ -142,14 +139,14 @@ Opcode: 1004
 
 
 S->C
-Opcode: C004
+Opcode: C005
 [Byte] Success (01 = Ok, 02 = Fail)
 
 ============ Admin UpdateServer: ============
 //Update of Server Options from a Admin to the GlobalManager, the Manager send it to the Server
 
 C->S
-Opcode: 1005 
+Opcode: 3006 
 [Word] ServerId
 [Word] Server_XP
 [Word] Server_SP
@@ -159,7 +156,7 @@ Opcode: 1005
 
 
 S->C
-Opcode: C005
+Opcode: C006
 [Byte] Success (01 = Ok, 02 = Fail)
 
 //Server sends now UpdateServer
@@ -169,7 +166,7 @@ Opcode: C005
 // Sends Info from Game Details to a Admin
 
 C->S
-Opcode: 1006
+Opcode: 3007
 [Byte] Tag
 if tag 1: //GetAccountInfo
 (
@@ -185,7 +182,7 @@ if tag 2: //GetCharInfo
 
 
 S->C
-Opcode: C006
+Opcode: C007
 [Byte] Tag
 if tag 1: //GetAccountInfo
 (
@@ -221,7 +218,7 @@ if tag 2: //GetCharInfo
 
 
 C->S
-Opcode: 1007
+Opcode: 1008
 [Byte] Tag
 if tag 1: //UpdateAccountInfo
 (
@@ -251,7 +248,7 @@ if tag 2: //UpdateCharInfo
 )
 
 S->C
-Opcode: C007
+Opcode: C008
 [Byte] Success (01 = Ok, 02 = Fail)
 
 //Server updates Accountdb, Server sends new CharInfo to the Gameservers
@@ -263,7 +260,7 @@ Opcode: C007
 
 
 C->S
-Opcode: 1010
+Opcode: 3010
 [Word] ServerId
 [Word] Username len
 [String] Username
@@ -276,11 +273,11 @@ Opcode: C010
 [Byte] Success (01 = Ok, 02 = Fail)
 [Dword] SessionId
 
-============ GameServer CheckUserAuth: ============
+============ Agentserver CheckUserAuth: ============
 //GlobalManager checks the Id, Pw and SessionId against the Cache
 
 C->S
-Opcode: 1011
+Opcode: 3011
 [Dword] SessionId
 [Word] Username len
 [String] Username

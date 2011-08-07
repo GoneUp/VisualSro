@@ -9,34 +9,46 @@ using Framework;
 using Framework.Opcodes;
 using Framework.SilkroadSecurityApi;
 
-
 namespace GlobalManager.Core
 {
     public class Server
     {
         private static Sockets.ServerSocket m_serverSocket;
-
-        private static int m_clientCounter;
         private static Dictionary<int, Sockets.ClientSocket> m_clientSockets;
-        public static Packets.ServerManager Manager;
+        private static int m_clientCounter;
+
+        private static Components.ServerManager m_serverManager;
+        public static Components.ServerManager Manager
+        {
+            get
+            {
+                return m_serverManager;
+            }
+        }
 
         public static void Start()
         {
             m_serverSocket = new Sockets.ServerSocket();
-            m_serverSocket.Listen();
-
             m_clientSockets = new Dictionary<int, Sockets.ClientSocket>();
 
+            m_serverManager = new Components.ServerManager();            
+            if (m_serverSocket.Listen())
+            {
+                //Start Components.
+                StartPacketProcessor();
 
-            //Start PacketProcessor
-            thPacketProcessor = new System.Threading.Thread(ThreadedPacketProcessing);
-            thPacketProcessor.IsBackground = true;
-            thPacketProcessor.Start();
+            }
+            else
+            {
+                throw new Exception("Server start faild (Can not Listen for Clients)");
+            }
         }
 
         public static void Shutdown()
         {
-
+            StopPacketProcessor();
+            m_serverSocket.Shutdown();
+            m_serverManager.Shutdown();
         }
 
         public static void Connect(Socket connectingSocket)
@@ -46,7 +58,7 @@ namespace GlobalManager.Core
                 m_clientCounter++;
                 m_clientSockets.Add(m_clientCounter++, new Sockets.ClientSocket(m_clientCounter, connectingSocket));
 
-                //increase capacity counter
+                Codes.Current++;
             }
         }
 
@@ -59,7 +71,7 @@ namespace GlobalManager.Core
                     m_clientSockets[index].Dispose();
                     m_clientSockets.Remove(index);
 
-                    //Decrease capacity counter
+                    Codes.Current--;
                 }
                 else
                 {
@@ -72,6 +84,7 @@ namespace GlobalManager.Core
         {
             var opcode = (ClientOpcodes)packet.Opcode;
             var displayName = opcode.ToString("G");
+
             switch (opcode)
             {
                 case ClientOpcodes.AcceptHandshake:
@@ -82,8 +95,8 @@ namespace GlobalManager.Core
                     break;
                 case ClientOpcodes.Ping:
                     break;
-                    
-                case ClientOpcodes .Server_Init:
+
+                case ClientOpcodes.Server_Init:
                     Packets.Gateway.decodeServerInit(index, packet);
                     break;
 
@@ -99,10 +112,28 @@ namespace GlobalManager.Core
 
         #region PacketProcessor
 
+        private static void StartPacketProcessor()
+        {
+            doPacketProcessing = true;
+
+            thPacketProcessor = new System.Threading.Thread(ThreadedPacketProcessing);
+            thPacketProcessor.IsBackground = true;
+            thPacketProcessor.Start();
+        }
+
+        private static void StopPacketProcessor()
+        {
+            doPacketProcessing = false;
+            while (thPacketProcessor != null)
+            {
+                System.Threading.Thread.Sleep(1);
+            }
+        }
+        private static bool doPacketProcessing;
         private static System.Threading.Thread thPacketProcessor;
         private static void ThreadedPacketProcessing()
         {
-            while (true)
+            while (doPacketProcessing)
             {
                 var clientList = m_clientSockets;
                 //Process Incoming
@@ -138,6 +169,7 @@ namespace GlobalManager.Core
 
         #endregion
         #region "Helper Functions"
+
         public static Sockets.ClientSocket GetClientSocket(int index)
         {
             if (m_clientSockets.ContainsKey(index))

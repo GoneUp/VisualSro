@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Framework.PK2;
+using Framework.Navmesh;
 
 namespace MapTool
 {
@@ -11,6 +12,8 @@ namespace MapTool
     {
         public static cPK2Reader MediaPK2;
         public static cPK2Reader DataPK2;
+
+        public static NavmeshEngine nvmEngine;
 
     }
 }

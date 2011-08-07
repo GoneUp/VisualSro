@@ -13,42 +13,71 @@ namespace Framework.Navmesh
         private byte m_Y;
 
         public Bitmap m_image;
-        private Graphics g;
+        private Graphics m_g;
 
-        public cSector(PK2.cPK2Reader MediaPK2, PK2.cPK2Reader DataPK2, byte XSec, byte YSec)
+        private bool m_readyToLoad;
+        private bool m_readyToDraw;
+
+        public cSector(ref PK2.cPK2Reader MediaPK2, ref PK2.cPK2Reader DataPK2, byte XSec, byte YSec)
         {
             m_X = XSec;
             m_Y = YSec;
 
-            m_image = new Bitmap(256, 256);
-            g = Graphics.FromImage(m_image);
-            g.Clear(Color.Black);
+            m_g = null;
 
-            //Check Media
-            if (MediaPK2.IsLoaded() == false)
+            #region Check Media
+
+            if (MediaPK2 != null)
             {
-                g.DrawString("[cSector::ctor] Media.pk2 is not loaded.", new Font("Arial", 8), Brushes.Red, 0.0f, 0.0f);
-            }
-            else
-            {
-                byte[] buffer = MediaPK2["\\minimap\\" + m_X + "x" + m_Y + ".ddj"];
-                if (buffer != null)
+                if (MediaPK2.IsLoaded)
                 {
-                    m_image = PK2.DDSLoader.LoadDDJ(buffer);
+                    byte[] buffer = MediaPK2["\\minimap\\" + m_X + "x" + m_Y + ".ddj"];
+                    if (buffer != null)
+                    {
+                        m_image = PK2.DDSLoader.LoadDDJ(buffer);
+                        m_g = Graphics.FromImage(m_image);
+                        m_readyToDraw = true;
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Check Data
+
+            if (DataPK2 != null)
+            {
+                if (DataPK2.IsLoaded)
+                {
+                    m_readyToLoad = true;
+                    m_readyToDraw = true; //But without image.
                 }
                 else
                 {
-                    g.DrawString("[cSector::ctor] buffer is null.", new Font("Arial", 8), Brushes.White, 0.0f, 0.0f);
+                    throw new Exception("[cSector::ctor] Data.pk2 is not loaded");
                 }
-
             }
-
-            //Check data
-            if (DataPK2.IsLoaded() == false)
+            else
             {
                 throw new Exception("[cSector::ctor] Data.pk2 is not loaded");
             }
 
+            #endregion
+        }
+
+        public void LoadNavmesh(ref PK2.cPK2Reader DataPK2)
+        {
+            var buffer = DataPK2["\navmesh\nv_" + m_Y.ToString("X2") + m_X.ToString("X2") + ".nvm"];
+            if (buffer != null)
+            {
+                MemoryStream ms = new MemoryStream(buffer);
+                BinaryReader br = new BinaryReader(ms);
+
+            }
+            else
+            {
+                throw new Exception("Navmesh file was not found X:" + m_X + " Y:" + m_Y + " (" + m_Y.ToString("X2") + m_X.ToString("X2") + ")");
+            }
 
         }
 

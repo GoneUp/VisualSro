@@ -6,6 +6,8 @@ using System.Text;
 using Framework.Opcodes;
 using Framework.SilkroadSecurityApi;
 
+using GlobalManager.Core.Components;
+
 namespace GlobalManager.Core.Packets
 {
     public class Gateway
@@ -17,10 +19,10 @@ namespace GlobalManager.Core.Packets
             string password = packet.ReadString();
             ushort ServerId = packet.ReadUShort();
 
-            Sockets .ClientSocket client;
+            Sockets.ClientSocket client;
             client = Server.GetClientSocket(index);
 
-            
+
             if (password == Codes.ServerPassword)
             {
                 if (CheckCertification(ServerId))
@@ -28,27 +30,27 @@ namespace GlobalManager.Core.Packets
                     switch (clientname)
                     {
                         case "GateWayServer":
-                            ServerManager.cGatewayServer tmp_gw = new ServerManager.cGatewayServer();
+                            var tmp_gw = new cGatewayServer();
                             tmp_gw.Index = index;
-                            tmp_gw.ServerId = ServerId;
+                            tmp_gw.ID = ServerId;
                             tmp_gw.Online = false;
                             tmp_gw.Authorized = true;
-                            tmp_gw.ServerIp = client.IP;
-                            tmp_gw.ServerPort = client.Port;
-                            Server.Manager.GateWayServers.Add(ServerId, tmp_gw);
+                            tmp_gw.IP = client.IP;
+                            tmp_gw.Port = client.Port;
+                            Server.Manager.GatewayServers.Add(ServerId, tmp_gw);
 
-                            Codes.Logger.LogThis(string .Format ("[Manager:Auth] : Authorized GateWayServer [Id: {0}, Ip: {1}]",  ServerId , client.IP), 3);
+                            Codes.Logger.LogThis(string.Format("[Manager:Auth] : Authorized GateWayServer [Id: {0}, Ip: {1}]", ServerId, client.IP), 3);
                             SendServerInfo(index, true);
                             break;
 
                         case "GameServer":
-                            ServerManager.cGameServer tmp_game = new ServerManager.cGameServer();
+                            var tmp_game = new cGameServer();
                             tmp_game.Index = index;
-                            tmp_game.ServerId = ServerId;
+                            tmp_game.ID = ServerId;
                             tmp_game.Online = false;
                             tmp_game.Authorized = true;
-                            tmp_game.ServerIp = client.IP;
-                            tmp_game.ServerPort = client.Port;
+                            tmp_game.IP = client.IP;
+                            tmp_game.Port = client.Port;
                             Server.Manager.GameServers.Add(ServerId, tmp_game);
 
                             Codes.Logger.LogThis(string.Format("[Manager:Auth] : Authorized GameServer [Id: {0}, Ip: {1}]", ServerId, client.IP), 3);
@@ -56,13 +58,13 @@ namespace GlobalManager.Core.Packets
                             break;
 
                         case "AgentServer":
-                            ServerManager.cAgentServer tmp_agent = new ServerManager.cAgentServer();
+                            var tmp_agent = new cAgentServer();
                             tmp_agent.Index = index;
-                            tmp_agent.ServerId = ServerId;
+                            tmp_agent.ID = ServerId;
                             tmp_agent.Online = false;
                             tmp_agent.Authorized = true;
-                            tmp_agent.ServerIp = client.IP;
-                            tmp_agent.ServerPort = client.Port;
+                            tmp_agent.IP = client.IP;
+                            tmp_agent.Port = client.Port;
                             Server.Manager.AgentServers.Add(ServerId, tmp_agent);
 
                             Codes.Logger.LogThis(string.Format("[Manager:Auth] : Authorized AgentServer [Id: {0}, Ip: {1}]", ServerId, client.IP), 3);
@@ -70,15 +72,15 @@ namespace GlobalManager.Core.Packets
                             break;
 
                         case "DownloadServer":
-                            ServerManager.cDownloadServer tmp_down = new ServerManager.cDownloadServer();
+                            var tmp_down = new cDownloadServer();
                             tmp_down.Index = index;
-                            tmp_down.ServerId = ServerId;
+                            tmp_down.ID = ServerId;
                             tmp_down.Online = false;
                             tmp_down.Authorized = true;
-                            tmp_down.ServerIp = client.IP;
-                            tmp_down.ServerPort = client.Port;
+                            tmp_down.IP = client.IP;
+                            tmp_down.Port = client.Port;
                             Server.Manager.DownloadServers.Add(ServerId, tmp_down);
-                            
+
                             Codes.Logger.LogThis(string.Format("[Manager:Auth] : Authorized DownloadServer [Id: {0}, Ip: {1}]", ServerId, client.IP), 3);
                             SendServerInfo(index, true);
                             break;
@@ -93,7 +95,7 @@ namespace GlobalManager.Core.Packets
                 else
                 {
                     //Not in Cert
-                    Codes.Logger.LogThis("[Manager:Auth] Unknown ServerId: " +  ServerId, 2);
+                    Codes.Logger.LogThis("[Manager:Auth] Unknown ServerId: " + ServerId, 2);
                     SendServerInfo(index, false);
                     Server.Disconnect(index);
                 }
@@ -109,11 +111,11 @@ namespace GlobalManager.Core.Packets
 
         private static void SendServerInfo(int index, bool AuthSucceed)
         {
-            Packet packet = new Packet(Convert.ToUInt16(ServerOpcodes.ServerInfo), false);
-            packet.WriteString("GlobalManger");
-            packet.WriteByte(AuthSucceed);
-            Server.GetClientSocket(index).Send(packet);
-
+            throw new Exception("BÖSE !! ServerInfo wird bereits vom Handshake benutzt und kann nicht manuell gesendet werden dies würde ihn abfangen");
+            //Packet packet = new Packet(Convert.ToUInt16(ServerOpcodes.ServerInfo), false);
+            //packet.WriteString("GlobalManger");
+            //packet.WriteByte(AuthSucceed);
+            //Server.GetClientSocket(index).Send(packet);
         }
 
         private static bool CheckCertification(ushort ServerId)
@@ -129,11 +131,11 @@ namespace GlobalManager.Core.Packets
         public static void decodeServerInit(int index, Packet packet)
         {
             ushort ServerId = packet.ReadUShort();
-            if (Server.Manager.GateWayServers.ContainsKey(ServerId))
+            if (Server.Manager.GatewayServers.ContainsKey(ServerId))
             {
-                Server.Manager.GateWayServers[ServerId].Online = true;
-                Server.Manager.GateWayServers[ServerId].StartTime = DateTime.Now;
-                SendServerInit(index ,true);
+                Server.Manager.GatewayServers[ServerId].Online = true;
+                Server.Manager.GatewayServers[ServerId].StartTime = DateTime.Now;
+                SendServerInit(index, true);
             }
             else if (Server.Manager.GameServers.ContainsKey(ServerId))
             {
@@ -172,12 +174,13 @@ namespace GlobalManager.Core.Packets
         public static void decodeServerShutdown(int index, Packet packet)
         {
             ushort ServerId = packet.ReadUShort();
-            if (Server.Manager.GateWayServers.ContainsKey(ServerId))
+            if (Server.Manager.GatewayServers.ContainsKey(ServerId))
             {
-                Server.Manager.GateWayServers[ServerId].Online = false;
-                Server.Manager.GateWayServers.Remove(ServerId);
-                SendServerShutdown(index, true);
-                
+                Server.Manager.GatewayServers[ServerId].Online = false;
+                Server.Manager.GatewayServers[ServerId].Shutdown();
+                //Server.Manager.GatewayServers.Remove(ServerId);
+                //SendServerShutdown(index, true);
+
                 Codes.Logger.LogThis("[Manager:Shutdown] Turned off GatewayServer: " + ServerId, 3);
             }
             else if (Server.Manager.GameServers.ContainsKey(ServerId))
@@ -211,7 +214,7 @@ namespace GlobalManager.Core.Packets
             }
 
 
-            
+
             Server.Disconnect(index);
         }
 

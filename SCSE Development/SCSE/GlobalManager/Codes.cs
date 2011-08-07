@@ -17,15 +17,17 @@ namespace GlobalManager
         #region Settings
         public static ushort Port;
 
-        public static string MySQL_Ip;
-        public static string MySQL_Db;
+        public static string MySQL_IP;
+        public static string MySQL_DB;
         public static string MySQL_Username;
         public static string MySQL_Password;
 
-        public static int Capacity;
+        public static ushort Current;
+        public static ushort Capacity;
         public static string ServerPassword;
 
         public static ushort[] CertificationTable;
+
         #endregion
 
         //Logs

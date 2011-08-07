@@ -107,9 +107,12 @@ namespace Framework.PK2
             return Load();
         }
 
-        public bool IsLoaded()
+        public bool IsLoaded
         {
-            return m_isLoaded;
+            get
+            {
+                return m_isLoaded;
+            }
         }
 
         private string m_level = "\\";

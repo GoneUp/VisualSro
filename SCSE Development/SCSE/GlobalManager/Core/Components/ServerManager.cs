@@ -182,7 +182,7 @@ namespace GlobalManager.Core.Components
                 }
                 else
                 {
-
+                    throw new Exception("Unknow serverID");
                 }
             }
         }

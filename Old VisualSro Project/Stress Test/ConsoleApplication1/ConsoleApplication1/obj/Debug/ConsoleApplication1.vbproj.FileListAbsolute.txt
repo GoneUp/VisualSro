@@ -34,3 +34,6 @@ Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleAppl
 Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
 Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
 Z:\Henry\Desktop\Emulator\VisualSro2\Stress Test\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.xml
+C:\Users\Henry\Desktop\Emulator\Old Development\VisualSro Rev 102\Old VisualSro Project\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Users\Henry\Desktop\Emulator\Old Development\VisualSro Rev 102\Old VisualSro Project\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.xml
+C:\Users\Henry\Desktop\Emulator\Old Development\VisualSro Rev 102\Old VisualSro Project\Stress Test\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb

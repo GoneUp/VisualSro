@@ -595,6 +595,7 @@
 
             writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
 
+
             For i = 0 To GameDB.Masterys.Length - 1
                 If (GameDB.Masterys(i) IsNot Nothing) AndAlso GameDB.Masterys(i).OwnerID = chari.CharacterId Then
                     writer.Byte(1) 'mastery start
@@ -738,7 +739,7 @@
             '    Server.Send(writer.GetBytes, Index_)
 
             'UpdateState(4, 2, Index_) 'Untouchable Status
-            ObjectSpawnCheck(Index_)
+            'ObjectSpawnCheck(Index_)
             OnStatsPacket(Index_)
             OnSendSilks(Index_)
             If PlayerData(Index_).InGuild = True Then

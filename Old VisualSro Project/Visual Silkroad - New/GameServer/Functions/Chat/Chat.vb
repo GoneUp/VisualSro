@@ -127,7 +127,8 @@
 
             If PlayerData(Index_).GM = True Then
                 Dim counter As Byte = Packet.Byte
-                Dim messagelength As UInt16 = Packet.Word
+                Packet.Byte()
+                Dim messagelength As UShort = Packet.Word
                 Dim message As String = Packet.UString(messagelength)
 
                 Dim writer As New PacketWriter 'Reply to sender
@@ -195,7 +196,7 @@
         ''' Only to Specific Player Index
         ''' </summary>
         ''' <param name="message"></param>
-        ''' <param name="index"></param>
+        ''' <param name="Index_"></param>
         ''' <remarks></remarks>
         Public Sub SendNotice(ByVal message As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter

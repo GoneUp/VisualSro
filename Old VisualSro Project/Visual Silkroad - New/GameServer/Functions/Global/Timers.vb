@@ -347,14 +347,14 @@ Namespace GameServer.Functions
                     If PlayerData(Index) IsNot Nothing Then
                         If PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
                             Dim new_pos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
-                            ObjectSpawnCheck(Index)
+                            'ObjectSpawnCheck(Index)
                             CheckForCaveTeleporter(Index)
 
                             'SendPm(Index, "secx" & new_pos.XSector & "secy" & new_pos.YSector & "X: " & new_pos.X & "Y: " & new_pos.Y & " X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
                             PlayerMoveTimer(Index).Start()
 
                         ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
-                            ObjectSpawnCheck(Index)
+                            'ObjectSpawnCheck(Index)
                             'SendPm(Index, "Walk End", "hh")
 
                             CheckForCaveTeleporter(Index)

@@ -43,7 +43,7 @@ Namespace GameServer
             SilkroadData.DumpDataFiles()
             TheardDB.Start()
             TheardTimer.Start(1500)
-            [Mod].Damage.OnServerStart(Server.MaxClients)
+            GameMod.Damage.OnServerStart(Server.MaxClients)
             Log.WriteSystemLog("Data Loaded. Starting Server.")
 
             TheardServer.Start()

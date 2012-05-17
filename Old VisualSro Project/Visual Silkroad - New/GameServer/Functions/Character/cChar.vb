@@ -1,15 +1,13 @@
 ﻿Namespace GameServer.Functions
-    Public Class [cChar]
+    Public Class [cChar] : Inherits cGameObject
 
         Public AccountID As UInteger
         Public CharacterName As String
         Public CharacterId As UInteger
-        Public UniqueId As UInteger
         Public HP As UInteger
         Public MP As UInteger
         Public CHP As Integer
         Public CMP As Integer
-        Public Model As UInteger
         Public Volume As Byte
         Public Level As Byte
         Public Experience As ULong
@@ -41,8 +39,14 @@
         Public Strength As UShort
         Public Intelligence As UShort
 
+        'Job
+        Public AliasName As String = ""
+        Public JobType As Byte = 0
+        Public JobLevel As Byte = 1
+        Public JobExperience As ULong = 0
+
         'Flags
-        Public GM As Boolean
+        Public GM As Boolean = False
         Public PVP As Byte
         Public MaxSlots As Byte
         Public Angle As UInt16
@@ -78,9 +82,12 @@
         Public InExchangeWith As Integer = -1
         Public ExchangeID As Integer = -1
 
-        Public InStall As Boolean
+        Public InStall As Boolean = False
         Public StallID As UInteger = 0
-        Public StallOwner As Boolean
+        Public StallOwner As Boolean = False
+
+        Public InParty As Boolean = False
+        Public PartyID As Long = -1
 
         Public PickUpId As UInteger = 0
         Public Attacking As Boolean = False
@@ -307,7 +314,7 @@
                 If Buffs.ContainsKey(key) Then
                     Select Case Buffs(key).Type
                         Case BuffType_.ItemBuff
-                            ' Dim Ref As cItem = GameServer.GetItemByID(Buffs(key).ItemID)
+                            Dim Ref As cItem = GameServer.GetItemByID(Buffs(key).ItemID)
 
 
                         Case BuffType_.SkillBuff

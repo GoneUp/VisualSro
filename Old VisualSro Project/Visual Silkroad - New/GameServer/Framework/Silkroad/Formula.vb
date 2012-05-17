@@ -22,13 +22,25 @@
         End Function
 
         Public Function GetRandomPosition(ByVal BasePosition As Position, ByVal Range As Integer)
+            If BasePosition Is Nothing Then
+                Exit Function
+            End If
+
             Dim tmp_pos As Position = BasePosition
             Dim tmp_x As Single = BasePosition.ToGameX + Rand.Next(0 - Range, 0 + Range)
             Dim tmp_y As Single = BasePosition.ToGameY + Rand.Next(0 - Range, 0 + Range)
             tmp_pos.X = GetXOffset(tmp_x)
             tmp_pos.Y = GetYOffset(tmp_y)
-            tmp_pos.XSector = GetXSecFromGameX(tmp_x)
-            tmp_pos.YSector = GetYSecFromGameY(tmp_y)
+
+            Dim tmpXsec As Int16 = GetXSecFromGameX(tmp_x)
+            Dim tmpYsec As Int16 = GetYSecFromGameY(tmp_y)
+            If tmpXsec > 0 And tmpXsec < 255 And tmpYsec > 0 And tmpYsec < 255 Then
+                tmp_pos.XSector = tmpXsec
+                tmp_pos.YSector = tmpYsec
+            Else
+                Return BasePosition
+            End If
+
             Return tmp_pos
         End Function
 

@@ -59,16 +59,16 @@
 
             Dim counter As Byte = Packet.Byte
             Dim senderlength As UInt16 = Packet.Word
-            Dim sender As String = Packet.String(senderlength)
-            Dim senderindex As Integer = -1
+            Dim receiver As String = Packet.String(senderlength)
+            Dim receiverIndex As Integer = -1
 
             Dim messagelength As UInt16 = Packet.Word
             Dim message As String = Packet.UString(messagelength)
 
             For i = 0 To Server.OnlineClient - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).CharacterName = sender Then
-                        senderindex = i
+                    If PlayerData(i).CharacterName = receiver Then
+                        receiverIndex = i
                         Exit For
                     End If
                 End If
@@ -76,7 +76,7 @@
 
             Dim writer As New PacketWriter
 
-            If senderindex <> -1 Then
+            If receiverIndex <> -1 Then
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(1)
                 writer.Byte(ChatModes.PmIncome)
@@ -91,13 +91,15 @@
                 writer.Word(messagelength)
                 writer.UString(message)
 
-                Server.Send(writer.GetBytes, senderindex)
+                Server.Send(writer.GetBytes, receiverIndex)
 
                 If Settings.Log_Chat Then
-                    Log.WriteGameLog(Index_, "Chat", "Whisper", String.Format("Sender: {0} Message: {1}", sender, message))
+                    Log.WriteGameLog(Index_, "Chat", "Whisper", String.Format("Sender: {0} Message: {1}", receiver, message))
                 End If
-            ElseIf sender = "[DAMAGE_MOD]" Then
-                [Mod].Damage.ParseMessage(Index_, message)
+            ElseIf receiver = "[DAMAGE_MOD]" Then
+                GameMod.Damage.ParseMessage(Index_, message)
+            ElseIf receiver = "[Vagina]" And PlayerData(Index_).InStall Then
+                SendNotice(message, Index_)
             Else
                 'Opposite not online
                 writer.Create(ServerOpcodes.Chat_Accept)
@@ -125,7 +127,7 @@
 
         Public Sub OnGameMasterChat(ByVal Packet As PacketReader, ByVal Index_ As Integer)
 
-            If PlayerData(Index_).GM = True Then
+            If PlayerData(Index_).GM Then
                 Dim counter As Byte = Packet.Byte
                 Packet.Byte()
                 Dim messagelength As UShort = Packet.Word
@@ -140,12 +142,12 @@
 
                 writer.Create(ServerOpcodes.Chat)
                 writer.Byte(ChatModes.GameMaster)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(messagelength)
                 writer.UString(message)
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
 
-                [Mod].CheckForCoustum(message, Index_)
+                GameMod.CheckForCoustum(message, Index_)
 
                 If Settings.Log_Chat Then
                     Log.WriteGameLog(Index_, "Chat", "GM", "Message: " & message)
@@ -168,6 +170,12 @@
 
             End If
         End Sub
+
+        ''' <summary>
+        ''' A notice to the whole server
+        ''' </summary>
+        ''' <param name="message"></param>
+        ''' <remarks></remarks>
         Public Sub SendNotice(ByVal message As String)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Chat)

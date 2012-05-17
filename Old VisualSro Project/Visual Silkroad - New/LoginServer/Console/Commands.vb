@@ -28,10 +28,11 @@ Module Commands
                 Program.Logpackets = True
                 Log.WriteSystemLog("LoginServer.Log Packets started!")
 
+            Case "/count"
+                Log.WriteSystemLog("Sockets online: " & Server.OnlineClient)
 
             Case "/clear"
                 Console.Clear()
-
 
             Case "/end"
                 For i = 0 To ClientList.SessionInfo.Count - 1

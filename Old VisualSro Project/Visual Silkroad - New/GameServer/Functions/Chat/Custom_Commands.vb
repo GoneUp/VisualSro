@@ -1,6 +1,6 @@
 ﻿Imports GameServer.GameServer.Functions
 
-Namespace GameServer.Mod
+Namespace GameServer.GameMod
     Module Costum_Commands
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
             'This Function is for additional Log from a GM
@@ -65,7 +65,7 @@ Namespace GameServer.Mod
                     For i As Integer = 0 To Server.MaxClients
                         If Functions.PlayerData(i) IsNot Nothing Then
                             If Functions.PlayerData(i).CharacterName = tmp(1) Then
-                                Server.Dissconnect(i)
+                                Server.Disconnect(i)
                             End If
                         End If
                     Next
@@ -198,7 +198,6 @@ Namespace GameServer.Mod
 
 
                 Case "\\moba"
-
                     If tmp(1) <> "" And Functions.PlayerData(Index_).LastSelected <> 0 Then
                         For Each key In Functions.MobList.Keys.ToList
                             If Functions.MobList.ContainsKey(key) Then
@@ -209,6 +208,7 @@ Namespace GameServer.Mod
                             End If
                         Next
                     End If
+
                 Case "\\respawn"
                     If Functions.PlayerData(Index_).Alive = False Then
                         Functions.PlayerData(Index_).CHP = Functions.PlayerData(Index_).HP / 2
@@ -220,26 +220,27 @@ Namespace GameServer.Mod
                     End If
 
                 Case "\\dropgold"
-                    '\\dropgold [amout] [how much drops]
-                    If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) Then
-                        Dim side As Integer = Math.Sqrt(tmp(2))
+                    '\\dropgold [gold_amout] [drop_amout] [range]
+                    If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) And IsNumeric(tmp(3)) Then
                         Dim tmpitem As New cInvItem
                         tmpitem.OwnerCharID = Functions.PlayerData(Index_).UniqueId
                         tmpitem.Amount = tmp(1)
                         tmpitem.Pk2Id = 1
 
-                        For x = 1 To side
-                            For y = 1 To side
-                                Dim tmp_pos As Position = Functions.PlayerData(Index_).Position
-                                Dim tmpX As Single = tmp_pos.ToGameX + x
-                                Dim tmpY As Single = tmp_pos.ToGameY + y
-                                tmp_pos.XSector = Functions.GetXSecFromGameX(tmpX)
-                                tmp_pos.YSector = Functions.GetYSecFromGameY(tmpY)
-                                tmp_pos.X = Functions.GetXOffset(tmpX)
-                                tmp_pos.Y = Functions.GetYOffset(tmpY)
-                                Functions.DropItem(tmpitem, tmp_pos)
-                            Next
+
+                        Dim tmp_pos As Position = Functions.PlayerData(Index_).Position
+                        Dim random As New Random
+                        'Drop that shiat
+                        For i = 1 To CInt(tmp(2))
+                            Dim tmpX As Single = tmp_pos.ToGameX + random.Next(tmp(3) * -1, tmp(3))
+                            Dim tmpY As Single = tmp_pos.ToGameY + random.Next(tmp(3) * -1, tmp(3))
+                            tmp_pos.XSector = Functions.GetXSecFromGameX(tmpX)
+                            tmp_pos.YSector = Functions.GetYSecFromGameY(tmpY)
+                            tmp_pos.X = Functions.GetXOffset(tmpX)
+                            tmp_pos.Y = Functions.GetYOffset(tmpY)
+                            Functions.DropItem(tmpitem, tmp_pos)
                         Next
+
                     End If
                 Case "\\berserkbar"
                     If IsNumeric(tmp(1)) Then

@@ -19,7 +19,7 @@
                 End If
 
                 If Settings.ModGeneral And Settings.ModDamage Then
-                    [Mod].Damage.SendDamageInfo(UniqueID)
+                    GameMod.Damage.SendDamageInfo(UniqueID)
                 End If
             End If
         End Sub

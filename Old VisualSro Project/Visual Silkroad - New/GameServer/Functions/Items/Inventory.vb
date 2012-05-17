@@ -575,10 +575,10 @@
         Private Function CheckItemGender(ByVal tmpItem As cItem, ByVal Index_ As Integer) As Boolean
             Dim Gender As Integer = 0
 
-            If (PlayerData(Index_).Model >= 1907 And PlayerData(Index_).Model <= 1919) Or (PlayerData(Index_).Model >= 14717 And PlayerData(Index_).Model <= 14729) Then
+            If (PlayerData(Index_).Pk2Id >= 1907 And PlayerData(Index_).Pk2Id <= 1919) Or (PlayerData(Index_).Pk2Id >= 14717 And PlayerData(Index_).Pk2Id <= 14729) Then
                 Gender = 1
             End If
-            If (PlayerData(Index_).Model >= 1920 And PlayerData(Index_).Model <= 1932) Or (PlayerData(Index_).Model >= 14730 And PlayerData(Index_).Model <= 14742) Then
+            If (PlayerData(Index_).Pk2Id >= 1920 And PlayerData(Index_).Pk2Id <= 1932) Or (PlayerData(Index_).Pk2Id >= 14730 And PlayerData(Index_).Pk2Id <= 14742) Then
                 Gender = 0
             End If
 
@@ -772,6 +772,7 @@
 
         Public Sub AddItemDataToPacket(ByVal _item As cInvItem, ByVal writer As PacketWriter)
             Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+            writer.DWord(0)
             writer.DWord(_item.Pk2Id)
             Debug.Print(refitem.ITEM_TYPE_NAME & " Type1: " & refitem.CLASS_A & " Type2: " & refitem.CLASS_B & " Type3: " & refitem.CLASS_C)
             Select Case refitem.CLASS_A
@@ -788,6 +789,7 @@
 
                     writer.Word(1)
                     writer.Word(2)
+                    writer.Word(3)
                 Case 2 'Pets
                     If refitem.CLASS_B = 1 Then
                         Dim name As String = "Test"

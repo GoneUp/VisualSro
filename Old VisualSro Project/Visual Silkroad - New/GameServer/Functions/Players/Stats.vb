@@ -192,7 +192,7 @@
 
             'Error Prevention
             If PlayerData(index_).SkillPoints + Gained_SP >= UInteger.MaxValue Or PlayerData(index_).SkillPointBar + Gained_SPX >= UInteger.MaxValue Then
-                Log.WriteSystemLog("SP OVERFLOW. Index: " & index_)
+                Log.WriteSystemLog("SP OVERFLOW. Index: " & index_ & " Char:" & PlayerData(index_).CharacterName)
                 Exit Sub
             End If
 

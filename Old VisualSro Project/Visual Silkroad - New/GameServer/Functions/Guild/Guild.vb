@@ -47,7 +47,7 @@
 
                     writer.Word(guild.Member(i).GrantName.Length)
                     writer.String(guild.Member(i).GrantName)
-                    writer.DWord(char_.Model)
+                    writer.DWord(char_.Pk2Id)
                     writer.Word(0)
                 Next
 

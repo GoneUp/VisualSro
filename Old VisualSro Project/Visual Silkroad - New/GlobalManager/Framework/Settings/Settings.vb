@@ -18,8 +18,6 @@ Namespace Settings
         Public Server_ProtocolVersion As UInteger = 1
 
         Public Log_Connect As Boolean = False
-        Public Log_Register As Boolean = False
-        Public Log_Login As Boolean = False
         Public Log_Packets As Boolean = False
 
         Public Sub LoadSettings()
@@ -31,11 +29,9 @@ Namespace Settings
             Database_Port = File.Read("DATABASE", "Port", "3306")
             Database_Database = File.Read("DATABASE", "Database", "visualsro")
             Database_User = File.Read("DATABASE", "User", "root")
-            Database_Password = File.Read("DATABASE", "Password", "")
+            Database_Password = File.Read("DATABASE", "Password", "sremu")
 
             Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
-            Log_Login = CBool(File.Read("LOG", "Login", "0"))
-            Log_Register = CBool(File.Read("LOG", "Register", "0"))
         End Sub
 
         Public Sub SetToServer()

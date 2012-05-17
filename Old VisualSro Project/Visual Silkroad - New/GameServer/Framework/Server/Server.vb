@@ -75,7 +75,7 @@ Namespace GameServer
             End Try
         End Sub
 
-        Public Shared Sub Dissconnect(ByVal index As Integer)
+        Public Shared Sub Disconnect(ByVal index As Integer)
             Try
                 Dim socket As Socket = ClientList.GetSocket(index)
                 ClientList.Delete(index)
@@ -210,7 +210,7 @@ Namespace GameServer
         Public Shared Sub SendIfPlayerIsSpawned(ByVal buff() As Byte, ByVal Index_ As Integer)
             For i = 0 To MaxClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).SpawnedPlayers.Contains(Index_) = True Or Index_ = i Then
+                    If PlayerData(i).SpawnedPlayers.Contains(Index_) Or Index_ = i Then
                         If PlayerData(i).Ingame = True Then
                             Send(buff, i)
                         End If
@@ -224,7 +224,7 @@ Namespace GameServer
                 Dim socket As Socket = ClientList.GetSocket(i)
                 Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) = True Then
+                    If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) Then
                         Send(buff, i)
                     End If
                 End If
@@ -234,7 +234,7 @@ Namespace GameServer
         Public Shared Sub SendIfItemIsSpawned(ByVal buff() As Byte, ByVal ItemUniqueID As Integer)
             For i = 0 To MaxClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).SpawnedItems.Contains(ItemUniqueID) = True Then
+                    If PlayerData(i).SpawnedItems.Contains(ItemUniqueID) Then
                         Send(buff, i)
                     End If
                 End If

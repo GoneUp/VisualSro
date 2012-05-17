@@ -31,7 +31,7 @@
                         Dim _Refitem As cItem = GetItemByName(RefObject.Name_Normal)
                         Dim slot As Byte = GetFreeItemSlot(index_)
                         Dim item As cInvItem = Inventorys(index_).UserItems(slot)
-                        item.Pk2Id = _Refitem.ITEM_TYPE
+                        item.Pk2Id = _Refitem.Pk2Id
 
                         Select Case _Refitem.CLASS_A
                             Case 1

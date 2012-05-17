@@ -64,7 +64,7 @@
                 writer.Byte(2)
                 writer.Byte(2) 'Server Full aka User is already logged in
                 Server.Send(writer.GetBytes, index_)
-                Server.Dissconnect(index_)
+                Server.Disconnect(index_)
             ElseIf GameDB.Users(UserIndex).Name = Name And GameDB.Users(UserIndex).Pw = Password And Key = Real_Key And ClientList.SessionInfo(index_).Authorized Then
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, index_)
@@ -76,7 +76,7 @@
                 writer.Byte(2)
                 writer.Byte(2)
                 Server.Send(writer.GetBytes, index_)
-                Server.Dissconnect(index_)
+                Server.Disconnect(index_)
             End If
 
 

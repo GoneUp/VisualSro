@@ -41,7 +41,7 @@
                         OnInvisible(Index_)
                 End Select
             Else
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
 
                 Log.WriteGameLog(Index_, "GM", "Unautorized", "Gm_Command_Try:" & tag)
                 'Hack Versuch
@@ -187,7 +187,7 @@
             For i As Integer = 0 To Server.OnlineClient
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
-                        Server.Dissconnect(i)
+                        Server.Disconnect(i)
                     End If
                 End If
             Next i

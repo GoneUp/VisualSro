@@ -24,12 +24,17 @@
                         Angle = Math.Round((CInt(tmpString(5)) * 65535) / 360)
                     End If
 
+                    Dim tmpSectors As String = Hex(tmpString(1))
+                    If tmpSectors.Length = 8 Then
+                        tmpSectors = tmpSectors.Substring(tmpSectors.Length - 4, 4)
+                    End If
 
+                    pos.XSector = Byte.Parse(tmpSectors.Substring(2, 2), System.Globalization.NumberStyles.HexNumber)
+                    pos.YSector = Byte.Parse(tmpSectors.Substring(0, 2), System.Globalization.NumberStyles.HexNumber)
                     pos.X = CSng(tmpString(2))
                     pos.Z = CSng(tmpString(3))
                     pos.Y = CSng(tmpString(4))
-                    pos.XSector = Byte.Parse(Convert.ToUInt16(tmpString(1)).ToString("X").Substring(2, 2), System.Globalization.NumberStyles.HexNumber)
-                    pos.YSector = Byte.Parse(Convert.ToUInt16(tmpString(1)).ToString("X").Substring(0, 2), System.Globalization.NumberStyles.HexNumber)
+
 
                     tmp.Pk2ID = Pk2ID
                     tmp.SpotID = i + 10

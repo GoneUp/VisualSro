@@ -46,7 +46,7 @@
 
                     If Slot <> -1 Then
                         Dim temp_item As cInvItem = Inventorys(index_).UserItems(Slot)
-                        temp_item.Pk2Id = BuyItem.ITEM_TYPE
+                        temp_item.Pk2Id = BuyItem.Pk2Id
                         temp_item.OwnerCharID = PlayerData(index_).CharacterId
 
                         If BuyItem.CLASS_A = 1 Then

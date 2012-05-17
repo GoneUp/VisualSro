@@ -64,7 +64,7 @@ Module Log
                 GameServer.Log.WriteSystemLog("Ending Server....")
                 For i = 0 To GameServer.Functions.PlayerData.Count - 1
                     If GameServer.Functions.PlayerData(i) IsNot Nothing Then
-                        GameServer.Server.Dissconnect(i)
+                        GameServer.Server.Disconnect(i)
                     End If
                 Next
                 GameServer.Server.Stop()
@@ -77,6 +77,15 @@ Module Log
             Case "/dcon"
                 GameServer.Settings.Server_PingDc = True
                 GameServer.Log.WriteSystemLog("Turned on PingCheck")
+            Case "/killmobs"
+                For Each key In GameServer.Functions.MobList.Keys.ToList
+                    If GameServer.Functions.MobList.ContainsKey(key) Then
+                        GameServer.Functions.RemoveMob(key)
+                    End If
+                Next
+
+            Case "/respawnoff"
+                GameServer.Settings.Server_SpawnRate = 0
         End Select
 
     End Sub

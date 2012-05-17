@@ -37,7 +37,7 @@
             ElseIf ClientList.CharListing(Index_).NumberOfChars > 0 Then
                 For i = 0 To (ClientList.CharListing(Index_).NumberOfChars - 1)
 
-                    writer.DWord(ClientList.CharListing(Index_).Chars(i).Model)
+                    writer.DWord(ClientList.CharListing(Index_).Chars(i).Pk2Id)
                     writer.Word(ClientList.CharListing(Index_).Chars(i).CharacterName.Length)
                     writer.String(ClientList.CharListing(Index_).Chars(i).CharacterName)
                     writer.Byte(ClientList.CharListing(Index_).Chars(i).Volume)
@@ -98,6 +98,10 @@
                     Next
 
                 Next
+
+                'unknown byte thief - hunterr flag?
+                writer.Byte(1)
+
                 Server.Send(writer.GetBytes, Index_)
 
             End If
@@ -182,7 +186,7 @@
 
             If IsCharChinese(model) = False And IsCharEurope(model) = False Then
                 'Wrong Model Code! 
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
                 Log.WriteSystemLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
             End If
 
@@ -194,7 +198,7 @@
 
             For i = 1 To 4
                 If _refitems(i).ITEM_TYPE_NAME.EndsWith("_DEF") = False Then
-                    Server.Dissconnect(Index_)
+                    Server.Disconnect(Index_)
                     Log.WriteSystemLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]", _refitems(i).ITEM_TYPE_NAME, Index_))
                 End If
                 Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
@@ -204,7 +208,7 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Character)
             writer.Byte(1) 'create
-        
+
 
             If GameDB.CheckNick(nick) And CheckForAbuse(nick) = True Then
                 writer.Byte(2)
@@ -229,7 +233,7 @@
                     .MP = 200
                     .CHP = 200
                     .CMP = 200
-                    .Model = model
+                    .Pk2Id = model
                     .Volume = volume
                     .Level = Settings.Player_StartLevel
                     .Gold = Settings.Player_StartGold
@@ -272,7 +276,7 @@
                     .SetCharGroundStats()
                 End With
 
-                DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", GameDB.Chars(NewCharacterIndex).CharacterId, GameDB.Chars(NewCharacterIndex).AccountID, GameDB.Chars(NewCharacterIndex).CharacterName, GameDB.Chars(NewCharacterIndex).Model, GameDB.Chars(NewCharacterIndex).Volume, GameDB.Chars(NewCharacterIndex).Level, GameDB.Chars(NewCharacterIndex).Gold, GameDB.Chars(NewCharacterIndex).SkillPoints, CInt(GameDB.Chars(NewCharacterIndex).GM)))
+                DataBase.SaveQuery(String.Format("INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')", GameDB.Chars(NewCharacterIndex).CharacterId, GameDB.Chars(NewCharacterIndex).AccountID, GameDB.Chars(NewCharacterIndex).CharacterName, GameDB.Chars(NewCharacterIndex).Pk2Id, GameDB.Chars(NewCharacterIndex).Volume, GameDB.Chars(NewCharacterIndex).Level, GameDB.Chars(NewCharacterIndex).Gold, GameDB.Chars(NewCharacterIndex).SkillPoints, CInt(GameDB.Chars(NewCharacterIndex).GM)))
                 DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", GameDB.Chars(NewCharacterIndex).Position.XSector, GameDB.Chars(NewCharacterIndex).Position.YSector, Math.Round(GameDB.Chars(NewCharacterIndex).Position.X), Math.Round(GameDB.Chars(NewCharacterIndex).Position.Z), Math.Round(GameDB.Chars(NewCharacterIndex).Position.Y), GameDB.Chars(NewCharacterIndex).CharacterId))
                 DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')", GameDB.Chars(NewCharacterIndex).CharacterId))
                 DataBase.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')", GameDB.Chars(NewCharacterIndex).CharacterId))
@@ -475,7 +479,7 @@
                 Next
 
                 'Mods
-                [Mod].Damage.OnPlayerCreate(GameDB.Chars(NewCharacterIndex).CharacterId, Index_)
+                GameMod.Damage.OnPlayerCreate(GameDB.Chars(NewCharacterIndex).CharacterId, Index_)
 
 
                 'Finish
@@ -507,16 +511,26 @@
             For i = 0 To ClientList.CharListing(Index_).Chars.Count - 1
                 If ClientList.CharListing(Index_).Chars(i).CharacterName = SelectedNick Then
                     PlayerData(Index_) = ClientList.CharListing(Index_).Chars(i)
+                    PlayerData(Index_).UniqueId = Id_Gen.GetUnqiueId()
+
                     Dim inventory As New cInventory(ClientList.CharListing(Index_).Chars(i).MaxSlots)
                     Inventorys(Index_) = GameServer.GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
+
                     ClientList.SessionInfo(Index_).CharName = SelectedNick
+                    Exit For
                 End If
             Next
+
+            'No Char....
+            If ClientList.SessionInfo(Index_).CharName = "" Then
+                Server.Disconnect(Index_)
+                Exit Sub
+            End If
 
             'Prepare
             CleanUpPlayer(Index_)
             Player_CheckDeath(Index_, True)
-            [Mod].Damage.OnPlayerLogon(Index_)
+            GameMod.Damage.OnPlayerLogon(Index_)
 
             'Packet's
             writer = New PacketWriter
@@ -546,8 +560,8 @@
             Dim chari As [cChar] = PlayerData(Index_)
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterInfo)
-            writer.DWord(1273064057)  '@@@@@@@@@@@@@@@@@
-            writer.DWord(chari.Model)  ' Character Model
+            writer.DWord(3912288588)  '@@@@@@@@@@@@@@@@@
+            writer.DWord(chari.Pk2Id)  ' Character Model
             writer.Byte(chari.Volume)  ' Volume & Height
             writer.Byte(chari.Level)  ' Level
             writer.Byte(chari.Level)  ' Highest Level
@@ -566,6 +580,7 @@
             writer.Word(0)  ' Total PK
             writer.DWord(0)  ' PK Penalty Point
             writer.Byte(0)  ' Rank
+            writer.Byte(0)  ' Unknown
             '''''''''''''''''''/
 
             'INVENTORY HERE
@@ -593,8 +608,10 @@
                 End If
             Next
 
-            writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
-
+            'writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
+            writer.Word(8)
+            writer.Word(11)
+            writer.Word(0)
 
             For i = 0 To GameDB.Masterys.Length - 1
                 If (GameDB.Masterys(i) IsNot Nothing) AndAlso GameDB.Masterys(i).OwnerID = chari.CharacterId Then
@@ -626,20 +643,21 @@
 
             '''''''''''''''''''''/
             ' ID, Position, State, Speed
-
+            writer.DWord(0)
             writer.DWord(chari.UniqueId)  ' Unique ID
             writer.Byte(chari.Position.XSector)  ' X Sector
             writer.Byte(chari.Position.YSector)  ' Y Sector
             writer.Float(chari.Position.X)  ' X
             writer.Float(chari.Position.Z)  ' Z
             writer.Float(chari.Position.Y)  ' Y
-            writer.Word(0)  ' Angle
+            writer.Word(chari.Angle)  ' Angle
             writer.Byte(0)  ' Destination
             writer.Byte(1)  ' Walk & Run Flag
             writer.Byte(0)  ' No Destination
-            writer.Word(0)  ' Angle
+            writer.Word(chari.Angle)  ' Angle
             writer.Byte(0)  ' Death Flag
             writer.Byte(0)  ' Movement Flag
+            writer.Byte(0)  ' Unknown
             writer.Byte(chari.Berserk)  ' Berserker Flag
             writer.Float(chari.WalkSpeed)  ' Walking Speed
             writer.Float(chari.RunSpeed)  ' Running Speed
@@ -653,16 +671,13 @@
             ' Name, Job, PK
             writer.Word(chari.CharacterName.Length)  ' Player Name Length
             writer.String(chari.CharacterName)  ' Player Name
-            writer.Word(0)  ' Alias Name Length
-            'writer.String("")  ' Alias Name
-            writer.Byte(0)  ' Job Level
-            writer.Byte(1)  ' Job Type
-            writer.DWord(0)  ' @@@@@@@@@@@@@ ' TRADER || CURRENT EXP
-            writer.DWord(0)  ' @@@@@@@@@@@@@ ' THIEF  ||
-            writer.DWord(0)  ' @@@@@@@@@@@@@ ' HUNTER ||
-            writer.Byte(0)  ' @@@@@@@@@@@@@ ' TRADER LEVEL??
-            writer.Byte(0)  ' @@@@@@@@@@@@@ ' THIEF LEVEL ??   ALL THESE RELATED TO OLD JOB SYSTEM?
-            writer.Byte(0)  ' @@@@@@@@@@@@@ ' HUNTER LEVEL ??
+            writer.Word(chari.AliasName.Length)  ' Alias Name Length
+            writer.String(chari.AliasName)  ' Alias Name
+            writer.Word(0)
+            writer.Byte(2)
+            writer.Byte(1)
+            writer.QWord(chari.JobExperience)
+            writer.DWord(0)
             writer.Byte(&HFF)  ' PK Flag
             '''''''''''''''''''''/
 
@@ -710,7 +725,7 @@
 
 
             writer.Byte(0)  ' Amount of Players Blocked
-
+            writer.Byte(0) 'Other Block Shit (Trade or PTM)
 
             ' Other
             writer.Word(1)  'unknown

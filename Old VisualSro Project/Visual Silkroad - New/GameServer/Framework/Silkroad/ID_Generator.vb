@@ -81,7 +81,7 @@
             Return toreturn
         End Function
 
-        '======================Exchange ID's
+        '======================Stall ID's
         Private StallIdCounter As UInteger = 10
 
         Public Function GetStallId() As UInteger
@@ -91,6 +91,21 @@
             ElseIf StallIdCounter = UInteger.MaxValue Then
                 StallIdCounter = 0
                 Log.WriteSystemLog("Reached StallID Max")
+            End If
+
+            Return toreturn
+        End Function
+
+        '======================Stall ID's
+        Private PartyIdCounter As UInteger = 10
+
+        Public Function GetPartyId() As UInteger
+            Dim toreturn As UInteger = ExchangeIdCounter
+            If PartyIdCounter < UInteger.MaxValue Then
+                PartyIdCounter += 1
+            ElseIf PartyIdCounter = UInteger.MaxValue Then
+                PartyIdCounter = 0
+                Log.WriteSystemLog("Reached PartyId Max")
             End If
 
             Return toreturn

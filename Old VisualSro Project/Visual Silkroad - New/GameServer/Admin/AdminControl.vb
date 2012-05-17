@@ -18,7 +18,7 @@ Namespace GameServer.Admin
 
 
                 Else
-                    Server.Dissconnect(Index_)
+                    Server.Disconnect(Index_)
 
                     Log.WriteGameLog(Index_, "ADMIN", "Unautorized", "Gm_Command_Try: " & BitConverter.ToString(Packet.GetData()))
                 End If

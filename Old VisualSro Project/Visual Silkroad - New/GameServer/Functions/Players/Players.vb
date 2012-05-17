@@ -12,7 +12,7 @@
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.SingleSpawn)
-            writer.DWord(chari.Model)
+            writer.DWord(chari.Pk2Id)
             writer.Byte(chari.Volume)
             writer.Byte(0)
             writer.Byte(chari.HelperIcon)

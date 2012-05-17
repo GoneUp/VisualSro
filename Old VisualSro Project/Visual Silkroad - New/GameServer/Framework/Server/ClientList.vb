@@ -60,7 +60,7 @@ Namespace GameServer
                 If socket IsNot Nothing Then
                     If DateDiff(DateInterval.Second, LastPingTime(i), DateTime.Now) > 30 Then
                         If socket.Connected = True And Settings.Server_PingDc Then
-                            Server.Dissconnect(i)
+                            Server.Disconnect(i)
                         End If
                     Else
                         Count += 1

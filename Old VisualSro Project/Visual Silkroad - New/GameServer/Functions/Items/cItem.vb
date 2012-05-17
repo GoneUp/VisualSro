@@ -38,7 +38,7 @@
     End Class
 
     Public Class cItem
-        Public ITEM_TYPE As UInteger
+        Public Pk2Id As UInteger
         Public ITEM_TYPE_NAME As String
         Public ITEM_MALL As Byte
         Public CLASS_A As Byte

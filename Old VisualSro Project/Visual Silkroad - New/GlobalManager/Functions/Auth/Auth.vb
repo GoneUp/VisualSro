@@ -58,10 +58,10 @@ Namespace Auth
             writer.Word(name.Length)
             writer.HexString(name)
 
-            If tmp.HandshakeComplete = True Then
+            If tmp.HandshakeComplete Then
                 If tmp.Type <> _SessionInfo._ServerTypes.Unknown Then
                     If tmp.ProtocolVersion = Settings.Server_ProtocolVersion Then
-                        If GlobalDb.CheckIfServerCertExitis(tmp.ServerId, tmp.ClientName) Then
+                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, ClientList.GetIp(Index_)) Then
                             writer.Byte(True)
                             tmp.Authorized = True
                         Else

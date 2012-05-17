@@ -299,6 +299,22 @@ Namespace GameServer.Functions
                                 If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
                                     Dim ToX As Single = Mob_.Position.ToGameX + Rnd.Next(-15, +15)
                                     Dim ToY As Single = Mob_.Position.ToGameY + Rnd.Next(-15, +15)
+                                    Dim vaildCords As Boolean = False
+                                    Dim validCordTrys As Integer = 0
+
+                                    Do
+                                        Dim tmpXsec As Int16 = GetXSecFromGameX(ToX)
+                                        Dim tmpYsec As Int16 = GetYSecFromGameY(ToY)
+                                        If tmpXsec > 0 And tmpXsec < 255 And tmpYsec > 0 And tmpYsec < 255 Then
+                                            vaildCords = True
+                                        ElseIf validCordTrys > 5 Then
+                                            Continue For
+                                        Else
+                                            ToX = Mob_.Position.ToGameX + Rnd.Next(-15, +15)
+                                            ToY = Mob_.Position.ToGameY + Rnd.Next(-15, +15)
+                                            validCordTrys += 1
+                                        End If
+                                    Loop While vaildCords = False
 
                                     Dim ToPos As New Position
                                     ToPos.XSector = GetXSecFromGameX(ToX)
@@ -306,10 +322,6 @@ Namespace GameServer.Functions
                                     ToPos.X = GetXOffset(ToX)
                                     ToPos.Z = Mob_.Position.Z
                                     ToPos.Y = GetYOffset(ToY)
-
-                                    If ToPos.X = Mob_.Position.X And ToPos.Y = Mob_.Position.Y Then
-                                        ToPos.X += 10
-                                    End If
 
                                     MoveMob(Mob_.UniqueID, ToPos)
                                 Else

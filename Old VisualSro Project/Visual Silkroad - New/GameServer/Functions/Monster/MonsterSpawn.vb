@@ -69,26 +69,31 @@
             tmp.Mob_Type = Type
             tmp.HP_Cur = mob_.Hp
 
-            Select Case Type
-                Case 0
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Normal
-                Case 1
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
-                Case 3
-                    tmp.HP_Cur = mob_.Hp
-                Case 4
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
-                Case 5
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Titan
-                Case 6
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
-                Case 16
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Normal
-                Case 17
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Champ
-                Case 20
-                    tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
-            End Select
+            Try
+                'Try Catch, due to several spawn errors from gm's
+                Select Case Type
+                    Case 0
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Normal
+                    Case 1
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
+                    Case 3
+                        tmp.HP_Cur = mob_.Hp
+                    Case 4
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
+                    Case 5
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Titan
+                    Case 6
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
+                    Case 16
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Normal
+                    Case 17
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Champ
+                    Case 20
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
+                End Select
+            Catch ex As Exception
+                tmp.HP_Cur = mob_.Hp
+            End Try
 
             tmp.HP_Max = tmp.HP_Cur
             MobList.Add(tmp.UniqueID, tmp)

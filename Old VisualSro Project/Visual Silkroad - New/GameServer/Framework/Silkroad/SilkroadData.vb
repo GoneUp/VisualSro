@@ -3,7 +3,7 @@
 Namespace GameServer
     Module SilkroadData
 
-        Public RefItems As New List(Of cItem)
+        Public RefItems As New Dictionary(Of UInteger, cItem)
         Public RefGoldData As New List(Of cGoldData)
         Public RefLevelData As New List(Of cLevelData)
 
@@ -103,7 +103,7 @@ Namespace GameServer
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
                 Dim tmp As New cItem
-                tmp.ITEM_TYPE = Convert.ToUInt32(tmpString(1))
+                tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
                 tmp.ITEM_TYPE_NAME = tmpString(2)
                 tmp.ITEM_MALL = Convert.ToByte(tmpString(7))
                 tmp.CLASS_A = Convert.ToByte(tmpString(10))
@@ -189,23 +189,23 @@ Namespace GameServer
                 tmp.USE_TIME_HP_PER = Convert.ToInt32(tmpString(120))
                 tmp.USE_TIME_MP = Convert.ToInt32(tmpString(122))
                 tmp.USE_TIME_MP_PER = Convert.ToInt32(tmpString(124))
-                RefItems.Add(tmp)
+                RefItems.Add(tmp.Pk2Id, tmp)
             Next
 
         End Sub
         Public Function GetItemByID(ByVal id As UInteger) As cItem
-            For Each e As cItem In RefItems
-                If e.ITEM_TYPE = id Then
-                    Return e
-                End If
-            Next
+            If RefItems.ContainsKey(id) Then
+                Return RefItems(id)
+            End If
             Throw New Exception("Item couldn't be found!")
         End Function
 
         Public Function GetItemByName(ByVal Name As String) As cItem
-            For Each e As cItem In RefItems
-                If e.ITEM_TYPE_NAME = Name Then
-                    Return e
+            For Each key In RefItems.Keys.ToList
+                If RefItems.ContainsKey(key) Then
+                    If RefItems(key).ITEM_TYPE_NAME = Name Then
+                        Return RefItems(key)
+                    End If
                 End If
             Next
             Throw New Exception("Item couldn't be found!")

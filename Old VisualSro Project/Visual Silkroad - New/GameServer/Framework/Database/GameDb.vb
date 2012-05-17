@@ -92,7 +92,7 @@ Namespace GameServer.GameDB
                     Chars(i).CharacterId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                     Chars(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                     Chars(i).CharacterName = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                    Chars(i).Model = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                    Chars(i).Pk2Id = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
                     Chars(i).Volume = CUInt(tmp.Tables(0).Rows(i).ItemArray(4))
                     Chars(i).Level = CUInt(tmp.Tables(0).Rows(i).ItemArray(5))
                     Chars(i).Experience = CULng(tmp.Tables(0).Rows(i).ItemArray(6))
@@ -139,9 +139,6 @@ Namespace GameServer.GameDB
                     If Chars(i).CHP = 0 Then
                         Chars(i).Alive = False
                     End If
-
-
-                    Chars(i).UniqueId = Id_Gen.GetUnqiueId()
                 Next
 
             Else

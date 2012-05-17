@@ -23,9 +23,6 @@
             tmp_item.Pk2Id = 1
             tmp_item.Amount = Gold
             DropItem(tmp_item, GetRandomPosition(MobList(MobUniqueId).Position, 3))
-
-
-
         End Sub
 
 

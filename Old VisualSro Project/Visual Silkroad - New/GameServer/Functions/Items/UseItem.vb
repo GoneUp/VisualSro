@@ -68,7 +68,7 @@
                     writer.Byte(&H8)
                     Server.Send(writer.GetBytes, Index_)
 
-                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+                    ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
                 End If
             End If
         End Sub
@@ -98,7 +98,7 @@
                     writer.Byte(&H10)
                     Server.Send(writer.GetBytes, Index_)
 
-                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+                    ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
                 End If
             End If
         End Sub
@@ -131,7 +131,7 @@
                     writer.Byte(&H19)
                     Server.Send(writer.GetBytes, Index_)
 
-                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+                    ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
                     Timers.UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
                     Timers.UsingItemTimer(Index_).Start()
@@ -179,7 +179,7 @@
                     writer.Byte(&H9)
                     Server.Send(writer.GetBytes, Index_)
 
-                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+                    ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
                     Timers.UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
                     Timers.UsingItemTimer(Index_).Start()
@@ -212,7 +212,7 @@
                     writer.Byte(&H29)
                     Server.Send(writer.GetBytes, Index_)
 
-                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+                    ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
                     OnGlobalChat(message, Index_)
                 End If
@@ -261,13 +261,13 @@
                     writer.Byte(&H29)
                     Server.Send(writer.GetBytes, Index_)
 
-                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+                    ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
 
-                    PlayerData(Index_).Model = NewModel
+                    PlayerData(Index_).Pk2Id = NewModel
                     PlayerData(Index_).Volume = NewVolume
 
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'", PlayerData(Index_).Model, PlayerData(Index_).Volume, PlayerData(Index_).CharacterId))
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'", PlayerData(Index_).Pk2Id, PlayerData(Index_).Volume, PlayerData(Index_).CharacterId))
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                 End If
             End If
@@ -294,7 +294,7 @@
                     writer.Byte(&H10)
                     Server.Send(writer.GetBytes, Index_)
 
-                    ShowOtherPlayerItemUse(refitem.ITEM_TYPE, Index_)
+                    ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
                 End If
             End If
         End Sub

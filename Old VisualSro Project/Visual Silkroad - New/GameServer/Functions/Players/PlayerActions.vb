@@ -23,8 +23,8 @@
                     Server.Send(writer.GetBytes, Index_)
             End Select
 
-            [Mod].Damage.OnPlayerLogoff(Index_)
-            Server.Dissconnect(Index_)
+            GameMod.Damage.OnPlayerLogoff(Index_)
+            Server.Disconnect(Index_)
         End Sub
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim action As Byte = packet.Byte
@@ -352,6 +352,7 @@
                     PlayerData(Index_).Position_Return = GetTeleportPoint(ref.Pk2ID)
 
                     DataBase.SaveQuery(String.Format("UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index_).Position_Return.XSector, PlayerData(Index_).Position_Return.YSector, Math.Round(PlayerData(Index_).Position_Return.X), Math.Round(PlayerData(Index_).Position_Return.Z), Math.Round(PlayerData(Index_).Position_Return.Y), PlayerData(Index_).CharacterId))
+                    Exit For
                 End If
             Next
         End Sub
@@ -360,7 +361,7 @@
             Dim tag As Byte = packet.Byte
 
             If tag = 1 Then
-                If PlayerData(Index_).Ingame = True And PlayerData(Index_).Berserk = False And PlayerData(Index_).BerserkBar = 5 Then
+                If PlayerData(Index_).Ingame And PlayerData(Index_).Berserk = False And PlayerData(Index_).BerserkBar = 5 Then
                     PlayerData(Index_).BerserkBar = 0
                     PlayerData(Index_).Berserk = True
                     PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking

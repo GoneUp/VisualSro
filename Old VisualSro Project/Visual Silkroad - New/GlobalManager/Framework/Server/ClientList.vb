@@ -43,7 +43,7 @@ Namespace Framework
             Return socket
         End Function
 
-        Public Shared Function GetIP(ByVal index As Integer) As String
+        Public Shared Function GetIp(ByVal index As Integer) As String
             Return GetSocket(index).RemoteEndPoint.ToString
         End Function
 

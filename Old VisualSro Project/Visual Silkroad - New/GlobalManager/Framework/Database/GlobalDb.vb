@@ -4,7 +4,7 @@ Namespace GlobalDb
     Module GlobalDb
 
         'Timer
-        Public WithEvents LoginDbUpdate As New System.Timers.Timer
+        Public WithEvents GlobalDbUpdate As New System.Timers.Timer
 
         'Server
         Public Servers As New List(Of Server_)
@@ -12,15 +12,15 @@ Namespace GlobalDb
 
         Private First As Boolean
 
-        Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
-            LoginDbUpdate.Stop()
-            LoginDbUpdate.Interval = 20000 '20 secs
+        Public Sub UpdateData() Handles GlobalDbUpdate.Elapsed
+            GlobalDbUpdate.Stop()
+            GlobalDbUpdate.Interval = 20000 '20 secs
 
             Try
 
                 Log.WriteSystemLog("Loading Certification Data from Database.")
 
-                'GetServerData()
+                GetServerData()
                 GetCertData()
 
                 Log.WriteSystemLog("Loading Completed.")
@@ -64,31 +64,40 @@ Namespace GlobalDb
         Structure _CertServer
             Public ServerId As UInteger
             Public TypeName As String
+            Public Ip As String
         End Structure
         Public Sub GetCertData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From certification")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From Certification")
             Servers.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
                 Dim tmp_server As New _CertServer
                 tmp_server.ServerId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmp_server.TypeName = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmp_server.Ip = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
 
                 CertServers.Add(tmp_server)
             Next
         End Sub
 
-        Public Function CheckIfServerCertExitis(ByVal ServerId As UInt16, ByVal ClientName As String) As Boolean
-            Dim ToReturn As Boolean = False
+        ''' <summary>
+        ''' Matches the data from the client with the database
+        ''' </summary>
+        ''' <param name="ServerId"></param>
+        ''' <param name="ClientName"></param>
+        ''' <param name="Ip"></param>
+        ''' <returns>True is valid</returns>
+        ''' <remarks></remarks>
+        Public Function CheckServerCert(ByVal ServerId As UInt16, ByVal ClientName As String, ByVal Ip As String) As Boolean
 
             For i = 0 To CertServers.Count - 1
-                If CertServers(i).ServerId = ServerId And CertServers(i).TypeName = ClientName Then
-                    ToReturn = True
+                If CertServers(i).ServerId = ServerId And CertServers(i).TypeName = ClientName And CertServers(i).Ip = Ip Then
+                    Return True
                 End If
             Next
 
 
-            Return ToReturn
+            Return False
         End Function
     End Module
 End Namespace

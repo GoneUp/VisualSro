@@ -18,7 +18,7 @@
                     End If
                 End If
             Next
-            If PlayerData(index_).Model >= 1907 And PlayerData(index_).Model <= 1932 Then
+            If PlayerData(index_).Pk2Id >= 1907 And PlayerData(index_).Pk2Id <= 1932 Then
                 'Chinese Char
                 If masterycount < Settings.Server_MasteryCap Then
                     'Free mastery
@@ -62,7 +62,7 @@
                 End If
 
 
-            ElseIf PlayerData(index_).Model >= 14717 And PlayerData(index_).Model <= 14743 Then
+            ElseIf PlayerData(index_).Pk2Id >= 14717 And PlayerData(index_).Pk2Id <= 14743 Then
                 'Europe Char = Diffrent Mastery Max system
                 Dim maxmastery As UInteger = PlayerData(index_).Level * 2
 

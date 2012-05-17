@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Mod.Damage
+﻿Namespace GameServer.GameMod.Damage
     Module modDamage
 
         Public Mod_Name As String = "mod_Damage"

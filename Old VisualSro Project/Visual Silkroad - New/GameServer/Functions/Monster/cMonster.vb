@@ -1,9 +1,7 @@
 ﻿Imports System
 
 Namespace GameServer.Functions
-    Public Class cMonster
-        Public Pk2ID As UInt32
-        Public UniqueID As UInt32
+    Public Class cMonster : Inherits cGameObject
         Public SpotID As Long
 
         Public Mob_Type As Byte

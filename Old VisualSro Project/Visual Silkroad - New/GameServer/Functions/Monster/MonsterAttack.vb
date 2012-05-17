@@ -33,7 +33,7 @@
 
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
-            Dim AttObject As Object_ = GetObjectById(PlayerData(Index_).Model)
+            Dim AttObject As Object_ = GetObjectById(PlayerData(Index_).Pk2Id)
             Dim RefMonster As Object_ = GetObjectById(Mob_.Pk2ID)
 
 

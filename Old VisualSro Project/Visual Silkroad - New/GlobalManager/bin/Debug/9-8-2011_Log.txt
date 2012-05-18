@@ -1,0 +1,12 @@
+[09.08.2011 23:07:52]       Starting Server
+[09.08.2011 23:07:52]       Loading Settings.
+[09.08.2011 23:07:52]       Loaded Settings. Conneting Database.
+[09.08.2011 23:07:56]       Database error: Access denied for user 'root'@'localhost' (using password: NO) Command: server=127.0.0.1;port=3306;user id=root; password=; database=visualsro; pooling=false;
+[09.08.2011 23:07:56]       Connected Database. Starting Server now.
+[09.08.2011 23:07:56]       Loading Certification Data from Database.
+[09.08.2011 23:07:56]       Database error: Access denied for user 'root'@'localhost' (using password: NO) Command: SELECT * From certification
+[09.08.2011 23:07:57]       [REFRESH ERROR][Die Tabelle 0 kann nicht gefunden werden. Stack:    bei System.Data.DataTableCollection.get_Item(Int32 index)
+   bei GlobalManager.GlobalDb.GlobalDb.GetCertData() in C:\Users\Henry\Desktop\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\GlobalManager\Framework\Database\GlobalDb.vb:Zeile 72.
+   bei GlobalManager.GlobalDb.GlobalDb.UpdateData() in C:\Users\Henry\Desktop\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\GlobalManager\Framework\Database\GlobalDb.vb:Zeile 24.]
+[09.08.2011 23:07:57]       Server Started: 09.08.2011 23:07:57
+[09.08.2011 23:07:57]       Inital Loading complete!

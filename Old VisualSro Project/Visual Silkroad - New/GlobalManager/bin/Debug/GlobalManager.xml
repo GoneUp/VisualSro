@@ -1,0 +1,33 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+GlobalManager
+</name>
+</assembly>
+<members>
+<member name="M:GlobalManager.GlobalDb.GlobalDb.CheckServerCert(System.UInt16,System.String,System.String)">
+	<summary>
+ Matches the data from the client with the database
+ </summary>
+	<param name="ServerId"></param>
+	<param name="ClientName"></param>
+	<param name="Ip"></param>
+	<returns>True is valid</returns>
+	<remarks></remarks>
+</member><member name="P:GlobalManager.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:GlobalManager.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:GlobalManager.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+</members>
+</doc>

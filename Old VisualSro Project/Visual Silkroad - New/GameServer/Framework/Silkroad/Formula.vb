@@ -3,10 +3,12 @@
         Public Function CalculateDistance(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
             Dim distance_x As Double = Pos_1.ToGameX - Pos_2.ToGameX
             Dim distance_y As Double = Pos_1.ToGameY - Pos_2.ToGameY
-            Return (Math.Sqrt(distance_x * distance_x) + Math.Sqrt(distance_y * distance_y))
+            Return (Math.Sqrt(distance_x*distance_x) + Math.Sqrt(distance_y*distance_y))
         End Function
 
-        Public Function CalculateDamage(ByVal BasicAP As Double, ByVal SkillAP As Double, ByVal AttackPowerInc As Double, ByVal EnemyAccAbsorbation As Double, ByVal EnemyDef As Double, ByVal Balance As Double, ByVal DamageInc As Double, ByVal SkillAPRate As Double)
+        Public Function CalculateDamage(ByVal BasicAP As Double, ByVal SkillAP As Double, ByVal AttackPowerInc As Double,
+                                        ByVal EnemyAccAbsorbation As Double, ByVal EnemyDef As Double,
+                                        ByVal Balance As Double, ByVal DamageInc As Double, ByVal SkillAPRate As Double)
             'A = Basic Attack Power
             'B = Skill Attack Power
             'C = Attack Power Increasing rate
@@ -18,7 +20,9 @@
             'A final damage formula:
 
             'Damage = ((A + B) * (1 + C) / (1 + D) - E) * F * (1 + G) * H
-            Return ((BasicAP + SkillAP) * (1 + AttackPowerInc) / (1 + EnemyAccAbsorbation) - EnemyDef) * Balance * (1 + DamageInc) * SkillAPRate
+            Return _
+                ((BasicAP + SkillAP)*(1 + AttackPowerInc)/(1 + EnemyAccAbsorbation) - EnemyDef)*Balance*(1 + DamageInc)*
+                SkillAPRate
         End Function
 
         Public Function GetRandomPosition(ByVal BasePosition As Position, ByVal Range As Integer)
@@ -45,147 +49,157 @@
         End Function
 
 #Region "Pos Help Functions"
+
         Public Function ToPacketX(ByVal XSec As Byte, ByVal XPos As Single) As Single
-            Return (XSec - 135) * 192 + XPos / 10
+            Return (XSec - 135)*192 + XPos/10
         End Function
 
         Public Function ToPacketY(ByVal YSec As Byte, ByVal YPos As Single) As Single
-            Return (YSec - 92) * 192 + YPos / 10
+            Return (YSec - 92)*192 + YPos/10
         End Function
 
         Public Function GetXSecFromGameX(ByVal X As Single) As Single
-            Return CSng(Math.Floor(CDbl(((X / 192.0!) + 135.0!))))
+            Return CSng(Math.Floor(CDbl(((X/192.0!) + 135.0!))))
         End Function
+
         Public Function GetYSecFromGameY(ByVal Y As Single) As Single
-            Return CSng(Math.Floor(CDbl(((Y / 192.0!) + 92.0!))))
+            Return CSng(Math.Floor(CDbl(((Y/192.0!) + 92.0!))))
         End Function
 
         Public Function GetXOffset(ByVal X As Single) As Double
-            Return CInt(Math.Round(CDbl((((((X / 192.0!) - GetXSecFromGameX(X)) + 135.0!) * 192.0!) * 10.0!))))
+            Return CInt(Math.Round(CDbl((((((X/192.0!) - GetXSecFromGameX(X)) + 135.0!)*192.0!)*10.0!))))
         End Function
 
         Public Function GetYOffset(ByVal Y As Single) As Double
-            Return CInt(Math.Round(CDbl((((((Y / 192.0!) - GetYSecFromGameY(Y)) + 92.0!) * 192.0!) * 10.0!))))
+            Return CInt(Math.Round(CDbl((((((Y/192.0!) - GetYSecFromGameY(Y)) + 92.0!)*192.0!)*10.0!))))
         End Function
+
 #End Region
+
 #Region "Angle"
+
         Public Function GetAngle(ByVal Pos_From As Position, ByVal Pos_To As Position)
             Dim Grad As Single
-            Dim AK As Double = Pos_From.ToGameX - Pos_To.ToGameX 'distance_x
-            Dim GK As Double = Pos_From.ToGameY - Pos_To.ToGameY 'distance_y
+            Dim AK As Double = Pos_From.ToGameX - Pos_To.ToGameX
+            'distance_x
+            Dim GK As Double = Pos_From.ToGameY - Pos_To.ToGameY
+            'distance_y
 
             If GK > 0 And AK > 0 Then
-                Grad = Math.Atan(DegreesToRadians(GK / AK))
+                Grad = Math.Atan(DegreesToRadians(GK/AK))
             ElseIf GK > 0 And AK < 0 Then
-                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 90
+                Grad = (Math.Atan(DegreesToRadians(GK/AK)))*- 1 + 90
             ElseIf GK < 0 And AK < 0 Then
-                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 180
+                Grad = (Math.Atan(DegreesToRadians(GK/AK)))*- 1 + 180
             ElseIf GK < 0 And AK > 0 Then
-                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 270
+                Grad = (Math.Atan(DegreesToRadians(GK/AK)))*- 1 + 270
             End If
 
 
             'Dim i As Microsoft .
-
-
         End Function
 
         ' convert from degrees to radians
         Function DegreesToRadians(ByVal degrees As Single) As Single
-            DegreesToRadians = degrees * 10 '/ 57.29578
+            DegreesToRadians = degrees*10
+            '/ 57.29578
         End Function
 
         ' convert from radians to degrees
         Function RadiansToDegrees(ByVal radians As Single) As Single
-            RadiansToDegrees = radians * 57.29578
+            RadiansToDegrees = radians*57.29578
         End Function
 
 #End Region
 
 
         Public Function GetMinPhy(ByVal stat As UShort) As Integer
-            Return Convert.ToInt32(6 + ((stat - 20) \ 3))
+            Return Convert.ToInt32(6 + ((stat - 20)\3))
         End Function
+
         Public Function GetMaxPhy(ByVal stat As UShort, ByVal level As Byte) As Integer
-            Return Convert.ToInt32(9 + ((stat - 20) \ 3) + level)
+            Return Convert.ToInt32(9 + ((stat - 20)\3) + level)
         End Function
+
         Public Function GetMinMag(ByVal stat As UShort, ByVal level As Byte) As Integer
             If level = 1 Then
-                Return Convert.ToInt32(6 + ((stat - 20) \ 3))
+                Return Convert.ToInt32(6 + ((stat - 20)\3))
             Else
-                Return Convert.ToInt32(7 + ((stat - 20) \ 3))
+                Return Convert.ToInt32(7 + ((stat - 20)\3))
             End If
         End Function
+
         Public Function GetMaxMag(ByVal stat As UShort, ByVal level As Byte) As Integer
             If level = 1 Then
-                Return Convert.ToInt32(10 + ((stat - 20) \ 2))
+                Return Convert.ToInt32(10 + ((stat - 20)\2))
             Else
-                Return Convert.ToInt32(11 + ((stat - 20) \ 2))
+                Return Convert.ToInt32(11 + ((stat - 20)\2))
             End If
         End Function
+
         Public Function GetMagDef(ByVal stat As Integer) As Integer
-            Return Convert.ToInt32(6 + ((stat - 20) \ 3))
+            Return Convert.ToInt32(6 + ((stat - 20)\3))
         End Function
+
         Public Function GetPhyDef(ByVal stat As Integer, ByVal level As Integer) As Integer
-            Return Convert.ToInt32(3 + ((stat - 20) \ 3))
+            Return Convert.ToInt32(3 + ((stat - 20)\3))
         End Function
 
         Public Function GetWeaponMasteryLevel(ByVal Index_) As Byte
-            Dim _item As cInvItem = GameServer.Functions.Inventorys(Index_).UserItems(6)
+            Dim _item As cInvItem = Inventorys(Index_).UserItems(6)
             Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
             '8-11
             If _refitem.CLASS_A = 1 And _refitem.CLASS_B = 6 Then
                 Select Case _refitem.CLASS_C
                     '=============CH
                     Case 2 'Sword
-                        Return GameServer.Functions.GetMasteryByID(257, Index_).Level
+                        Return GetMasteryByID(257, Index_).Level
                     Case 3 'Blade
-                        Return GameServer.Functions.GetMasteryByID(257, Index_).Level
+                        Return GetMasteryByID(257, Index_).Level
                     Case 4 'Spear
-                        Return GameServer.Functions.GetMasteryByID(258, Index_).Level
+                        Return GetMasteryByID(258, Index_).Level
                     Case 5 'Glavie
-                        Return GameServer.Functions.GetMasteryByID(258, Index_).Level
+                        Return GetMasteryByID(258, Index_).Level
                     Case 6 'Bow
-                        Return GameServer.Functions.GetMasteryByID(259, Index_).Level
+                        Return GetMasteryByID(259, Index_).Level
 
                         '=========EU (6 diffs)
                     Case 7
                         'Long Sword (1 hand) == Warrior
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        Return GetMasteryByID(513, Index_).Level
                     Case 8
                         'War Sword (2 Hand)  == Warrior
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        Return GetMasteryByID(513, Index_).Level
                     Case 9
                         'Axe == Warrior
-                        Return GameServer.Functions.GetMasteryByID(513, Index_).Level
+                        Return GetMasteryByID(513, Index_).Level
                     Case 10
                         'Warlock == Warlock
-                        Return GameServer.Functions.GetMasteryByID(516, Index_).Level
+                        Return GetMasteryByID(516, Index_).Level
                     Case 11
                         'Long Staff (Wizard) == Wizard
-                        Return GameServer.Functions.GetMasteryByID(514, Index_).Level
+                        Return GetMasteryByID(514, Index_).Level
                     Case 12
                         'Crossbow == Rouge
-                        Return GameServer.Functions.GetMasteryByID(515, Index_).Level
+                        Return GetMasteryByID(515, Index_).Level
                     Case 13
                         'Dagger == ROuge
-                        Return GameServer.Functions.GetMasteryByID(515, Index_).Level
+                        Return GetMasteryByID(515, Index_).Level
                     Case 14
                         'Harp  == Bard
-                        Return GameServer.Functions.GetMasteryByID(517, Index_).Level
+                        Return GetMasteryByID(517, Index_).Level
                     Case 15
                         'Cleric --> Clweric
-                        Return GameServer.Functions.GetMasteryByID(518, Index_).Level
+                        Return GetMasteryByID(518, Index_).Level
                 End Select
             End If
         End Function
 
 
-
         Public Function HexToString(ByVal ToConvert As String) As String
             Dim tmp As String = ""
             Try
-                Dim IstGerade As Boolean = (ToConvert.Count / 2 - Math.Truncate(ToConvert.Count / 2)) = 0
+                Dim IstGerade As Boolean = (ToConvert.Count/2 - Math.Truncate(ToConvert.Count/2)) = 0
                 If ToConvert.Count >= 2 And IstGerade Then
                     For i = 0 To ToConvert.Count - 1 Step 2
                         tmp += Chr("&H" & (ToConvert.Substring(i, 2)))

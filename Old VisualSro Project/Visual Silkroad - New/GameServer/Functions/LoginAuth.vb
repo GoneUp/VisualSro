@@ -1,8 +1,5 @@
 ﻿Namespace GameServer.Functions
-
-
     Module LoginAuth
-
         Public Sub GateWay(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ClientString As String = packet.String(packet.Word)
 
@@ -23,7 +20,9 @@
                 Dim Password As String = packet.String(packet.Word)
 
                 Dim UserIndex As Integer = GameDB.GetUserWithAccName(UserName)
-                If GameDB.Users(UserIndex).Name = UserName And GameDB.Users(UserIndex).Pw = Password And GameDB.Users(UserIndex).Admin Then
+                If _
+                    GameDB.Users(UserIndex).Name = UserName And GameDB.Users(UserIndex).Pw = Password And
+                    GameDB.Users(UserIndex).Admin Then
                     ClientList.SessionInfo(Index_).Authorized = True
                     ClientList.SessionInfo(Index_).UserName = UserName
                 End If
@@ -62,25 +61,26 @@
 
             If Logged_In = True Or GameDB.Users(UserIndex).Banned = True Then
                 writer.Byte(2)
-                writer.Byte(2) 'Server Full aka User is already logged in
+                writer.Byte(2)
+                'Server Full aka User is already logged in
                 Server.Send(writer.GetBytes, index_)
                 Server.Disconnect(index_)
-            ElseIf GameDB.Users(UserIndex).Name = Name And GameDB.Users(UserIndex).Pw = Password And Key = Real_Key And ClientList.SessionInfo(index_).Authorized Then
+            ElseIf _
+                GameDB.Users(UserIndex).Name = Name And GameDB.Users(UserIndex).Pw = Password And Key = Real_Key And
+                ClientList.SessionInfo(index_).Authorized Then
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, index_)
                 ClientList.CharListing(index_) = New cCharListing
                 ClientList.CharListing(index_).LoginInformation = New cCharListing.UserArray
                 ClientList.CharListing(index_).LoginInformation = GameDB.Users(UserIndex)
                 ClientList.CharListing(index_).LoginInformation.LoggedIn = True
-            ElseIf GameDB.Users(UserIndex).Name <> Name Or GameDB.Users(UserIndex).Pw <> Password Or Key <> Real_Key Then
+            ElseIf GameDB.Users(UserIndex).Name <> Name Or GameDB.Users(UserIndex).Pw <> Password Or Key <> Real_Key _
+                Then
                 writer.Byte(2)
                 writer.Byte(2)
                 Server.Send(writer.GetBytes, index_)
                 Server.Disconnect(index_)
             End If
-
-
-
         End Sub
 
         Private Function GetKey(ByVal Index_ As Integer) As UInt32

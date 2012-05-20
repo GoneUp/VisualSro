@@ -1,10 +1,8 @@
 ﻿Namespace GameServer.Functions
     Module MonsterAttack
-
-        Dim Random As New Random
-
-        Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer, Optional ByVal SkillID As UInteger = 0)
-            If MobList.ContainsKey(MobUniqueID) = False Or Index_ = -1 Or PlayerData(Index_) Is Nothing Then
+        Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer,
+                                       Optional ByVal SkillID As UInteger = 0)
+            If MobList.ContainsKey(MobUniqueID) = False Or Index_ = - 1 Or PlayerData(Index_) Is Nothing Then
                 Exit Sub
             End If
             If MobList(MobUniqueID).IsAttacking = True Then
@@ -12,7 +10,7 @@
             End If
 
             Dim Mob_ As cMonster = MobList(MobUniqueID)
-            Dim RefSkill As Skill_
+            Dim RefSkill As Skill
 
             Mob_.AttackingId = PlayerData(Index_).UniqueId
 
@@ -23,18 +21,18 @@
                 Mob_.UsingSkillId = SkillID
             End If
 
-            RefSkill = GetSkillById(Mob_.UsingSkillId)
+            RefSkill = GetSkill(Mob_.UsingSkillId)
 
             Do Until RefSkill.EffectId = "att"
                 CheckForSkillEffects(MobUniqueID, RefSkill, Index_)
                 Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
-                RefSkill = GetSkillById(Mob_.UsingSkillId)
+                RefSkill = GetSkill(Mob_.UsingSkillId)
             Loop
 
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
-            Dim AttObject As Object_ = GetObjectById(PlayerData(Index_).Pk2Id)
-            Dim RefMonster As Object_ = GetObjectById(Mob_.Pk2ID)
+            Dim AttObject As Object_ = GetObject(PlayerData(Index_).Pk2Id)
+            Dim RefMonster As Object_ = GetObject(Mob_.Pk2ID)
 
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
@@ -59,7 +57,8 @@
 
             writer.Byte(1)
             writer.Byte(NumberAttack)
-            writer.Byte(NumberVictims) '1 victim
+            writer.Byte(NumberVictims)
+            '1 victim
 
             For d = 0 To NumberVictims - 1
                 writer.DWord(PlayerData(Index_).UniqueId)
@@ -68,7 +67,7 @@
                     Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Pk2Id)
                     Dim Crit As Byte = Attack_GetCritical()
                     If Crit = True Then
-                        Damage = Damage * 2
+                        Damage = Damage*2
                         Crit = 2
                     End If
 
@@ -100,8 +99,8 @@
                 MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, False)
             Else
                 UpdateHP(Index_)
-                Mob_.AttackTimer_Start(RefSkill.UseDuration * 250)
-                Mob_.AttackEndTime = Date.Now.AddMilliseconds(RefSkill.UseDuration * 250)
+                Mob_.AttackTimer_Start(RefSkill.UseDuration*250)
+                Mob_.AttackEndTime = Date.Now.AddMilliseconds(RefSkill.UseDuration*250)
             End If
         End Sub
 
@@ -111,9 +110,9 @@
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList(key)
                     For i = 0 To Server.MaxClients
-                        If Functions.PlayerData(i) IsNot Nothing Then
-                            If Functions.CalculateDistance(Mob_.Position, Functions.PlayerData(i).Position) < 20 Then
-                                Functions.SendPm(i, "You are in Aggro Range", "Serv")
+                        If PlayerData(i) IsNot Nothing Then
+                            If CalculateDistance(Mob_.Position, PlayerData(i).Position) < 20 Then
+                                SendPm(i, "You are in Aggro Range", "Serv")
                             End If
                         End If
                     Next
@@ -123,7 +122,6 @@
 
         Public Sub MonsterAttackObject(ByVal MobIndex As Integer, ByVal OtherUniqueID As Integer)
             'is for horses and pet's
-
         End Sub
 
         ''' <summary>
@@ -134,12 +132,13 @@
         ''' <param name="SkillID"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Function CalculateDamagePlayer(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) As UInteger
-            Dim RefSkill As Skill_ = GetSkillById(SkillID)
+        Function CalculateDamagePlayer(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) _
+            As UInteger
+            Dim RefSkill As Skill = GetSkill(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
-            If (CSng(Mob.Level) - PlayerData(Index_).Level) > -99 Then
-                Balance = (1 + (CSng(Mob.Level) - PlayerData(Index_).Level) / 100)
+            If (CSng(Mob.Level) - PlayerData(Index_).Level) > - 99 Then
+                Balance = (1 + (CSng(Mob.Level) - PlayerData(Index_).Level)/100)
             Else
                 Balance = 0.01
             End If
@@ -148,8 +147,12 @@
             Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                DamageMin = ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 500)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
-                DamageMax = ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 510)) - PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
+                DamageMin =
+                    ((Mob.ParryRatio + RefSkill.PwrMin)*(1 + 0)/(1 + (PlayerData(Index_).PhyAbs/500)) -
+                     PlayerData(Index_).PhyDef)*Balance*(1 + 0)*(RefSkill.PwrPercent/100)
+                DamageMax =
+                    ((Mob.ParryRatio + RefSkill.PwrMax)*(1 + 0)/(1 + (PlayerData(Index_).PhyAbs/510)) -
+                     PlayerData(Index_).PhyDef)*Balance*(1 + 0)*(RefSkill.PwrPercent/100)
             ElseIf RefSkill.Type = TypeTable.Mag Then
                 'UNUSED FOR NOW
                 '  DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
@@ -164,8 +167,8 @@
                 DamageMax = 2
             End If
 
-            Dim Radmon As Integer = Rnd() * 100
-            FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
+            Dim Radmon As Integer = Rnd()*100
+            FinalDamage = DamageMin + (((DamageMax - DamageMin)/100)*Radmon)
 
             'A = Basic Attack Power
             'B = Skill Attack Power
@@ -183,7 +186,7 @@
         End Function
 
         Private Function Monster_GetNextSkill(ByVal SkillID As UInteger, ByVal ObjectID As UInteger)
-            Dim Ref_ As Object_ = GetObjectById(ObjectID)
+            Dim Ref_ As Object_ = GetObject(ObjectID)
 
 
             Select Case SkillID
@@ -252,13 +255,13 @@
             Return 0
         End Function
 
-        Public Sub CheckForSkillEffects(ByVal MobUniqueId As UInteger, ByVal RefSkill As Skill_, ByVal Index_ As Integer)
+        Public Sub CheckForSkillEffects(ByVal MobUniqueId As UInteger, ByVal RefSkill As Skill, ByVal Index_ As Integer)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
 
             Select Case RefSkill.EffectId
                 Case "ssou"
                     Dim Spawn_Mobs As Boolean = False
-                    Dim Hp_Percent = ((Mob_.HP_Cur / Mob_.HP_Max) * 100)
+                    Dim Hp_Percent = ((Mob_.HP_Cur/Mob_.HP_Max)*100)
                     Select Case RefSkill.SpawnPercent
                         Case 80
                             If Mob_.SpawnedGuard_80 = False And Hp_Percent < 80 And Hp_Percent > 60 Then
@@ -285,38 +288,41 @@
                     If Spawn_Mobs = True Then
                         If RefSkill.Effect_1 <> 0 Then
                             For i = 1 To RefSkill.Effect_4 'Effect_4 = Count of Mobs, 2 = Type  
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_1, RefSkill.Effect_2, GetRandomPosition(Mob_.Position, 1), 0, -1)
+                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_1, RefSkill.Effect_2,
+                                                                       GetRandomPosition(Mob_.Position, 1), 0, - 1)
                                 MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
                             Next
                         End If
 
                         If RefSkill.Effect_5 <> 0 Then
                             For i = 1 To RefSkill.Effect_8
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_5, RefSkill.Effect_6, GetRandomPosition(Mob_.Position, 1), 0, -1)
+                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_5, RefSkill.Effect_6,
+                                                                       GetRandomPosition(Mob_.Position, 1), 0, - 1)
                                 MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
                             Next
                         End If
 
                         If RefSkill.Effect_9 <> 0 Then
                             For i = 1 To RefSkill.Effect_12
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_9, RefSkill.Effect_10, GetRandomPosition(Mob_.Position, 1), 0, -1)
+                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_9, RefSkill.Effect_10,
+                                                                       GetRandomPosition(Mob_.Position, 1), 0, - 1)
                                 MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
                             Next
                         End If
 
                         If RefSkill.Effect_13 <> 0 Then
                             For i = 1 To RefSkill.Effect_16
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_13, RefSkill.Effect_14, GetRandomPosition(Mob_.Position, 1), 0, -1)
+                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_13, RefSkill.Effect_14,
+                                                                       GetRandomPosition(Mob_.Position, 1), 0, - 1)
                                 MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
                             Next
                         End If
                     End If
             End Select
-
-
         End Sub
 
-        Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal AttackingAllowed As Boolean)
+        Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger,
+                                          ByVal AttackingAllowed As Boolean)
             Dim found As Boolean = False
 
             'Search for an exits Entery
@@ -339,7 +345,8 @@
             End If
         End Sub
 
-        Public Sub MobSetAttackingFromPlayer(ByVal Index_ As Integer, ByVal MobUniqueID As UInteger, ByVal AttackingAllowed As Boolean)
+        Public Sub MobSetAttackingFromPlayer(ByVal Index_ As Integer, ByVal MobUniqueID As UInteger,
+                                             ByVal AttackingAllowed As Boolean)
             Dim found As Boolean = False
 
             If MobList.ContainsKey(MobUniqueID) Then

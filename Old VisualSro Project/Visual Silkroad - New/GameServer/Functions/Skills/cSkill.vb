@@ -1,4 +1,6 @@
-﻿Namespace GameServer
+﻿Imports System.Timers
+
+Namespace GameServer
     Public Class cSkill
         Public SkillID As UInteger
         Public OwnerID As UInteger
@@ -18,10 +20,10 @@
         Public ItemID As UInteger
 
         'Timer
-        Public ElaspedTimer As Timers.Timer
+        Public ElaspedTimer As Timer
 
         Sub New()
-            ElaspedTimer = New Timers.Timer
+            ElaspedTimer = New Timer
             AddHandler ElaspedTimer.Elapsed, AddressOf ElapsedTimerElapsed
         End Sub
 
@@ -47,7 +49,8 @@
                 Next
 
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE")
+                '
             End Try
         End Sub
 

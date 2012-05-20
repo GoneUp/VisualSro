@@ -1,12 +1,12 @@
-﻿Imports Microsoft.VisualBasic
-Imports System, System.Net.Sockets, System.Timers
+﻿Imports System.Net.Sockets
+Imports GameServer.GameServer.Functions
+Imports System.Timers
 
 Namespace GameServer
-
     Public Class ClientList
         Public Shared List(1500) As Socket
         Public Shared LastPingTime(1500) As DateTime
-        Public Shared CharListing(1500) As Functions.cCharListing
+        Public Shared CharListing(1500) As cCharListing
         Public Shared SessionInfo(1500) As _SessionInfo
         Public Shared WithEvents PingTimer As New Timer
 
@@ -33,7 +33,7 @@ Namespace GameServer
                     Return i
                 End If
             Next i
-            Return -1
+            Return - 1
         End Function
 
         Public Shared Function GetSocket(ByVal index As Integer) As Socket

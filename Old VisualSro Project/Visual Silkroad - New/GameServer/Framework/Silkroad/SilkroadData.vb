@@ -1,26 +1,26 @@
 ﻿Imports GameServer.GameServer.Functions
+Imports System.IO
 
 Namespace GameServer
     Module SilkroadData
-
         Public RefItems As New Dictionary(Of UInteger, cItem)
         Public RefGoldData As New List(Of cGoldData)
-        Public RefLevelData As New List(Of cLevelData)
+        Public RefLevelData As New List(Of LevelData)
 
-        Public RefTmpSkills As New Dictionary(Of UInteger, tmpSkill_)
-        Public RefSkills As New Dictionary(Of UInteger, Skill_)
+        Public RefTmpSkills As New Dictionary(Of UInteger, TmpSkill)
+        Public RefSkills As New Dictionary(Of UInteger, Skill)
         Public RefObjects As New Dictionary(Of UInteger, Object_)
         Public RefMallItems As New List(Of MallPackage_)
         Public RefReversePoints As New List(Of ReversePoint_)
         Public RefTeleportPoints As New List(Of TeleportPoint_)
         Public RefSpecialZones As New List(Of SpecialSector_)
-        Public RefRespawns As New List(Of Functions.ReSpawn_)
-        Public RefRespawnsUnique As New List(Of Functions.ReSpawnUnique_)
+        Public RefRespawns As New List(Of ReSpawn_)
+        Public RefRespawnsUnique As New List(Of ReSpawnUnique_)
         Public RefUniques As New List(Of UInteger)
         Public RefAbuseList As New List(Of String)
         Public RefCaveTeleporter As New List(Of CaveTeleporter_)
 
-        Public base_path As String = System.AppDomain.CurrentDomain.BaseDirectory
+        Public base_path As String = AppDomain.CurrentDomain.BaseDirectory
 
         Public Sub DumpDataFiles()
 
@@ -70,31 +70,28 @@ Namespace GameServer
                 DumpCaveTeleporterFile(base_path & "\data\cave_teleport.txt")
                 Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
-                Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
-                Log.WriteSystemLog("Loaded " & Functions.MobList.Count & " Autospawn Monster.")
-                Log.WriteSystemLog("Loaded " & Functions.NpcList.Count & " Autospawn Npc's.")
+                ' Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
+                Log.WriteSystemLog("Loaded " & MobList.Count & " Autospawn Monster.")
+                Log.WriteSystemLog("Loaded " & NpcList.Count & " Autospawn Npc's.")
 
                 Log.WriteSystemLog("Loading took " & DateDiff(DateInterval.Second, time, Date.Now) & " Seconds.")
 
             Catch ex As Exception
                 Log.WriteSystemLog("Error at Loading Data! Message: " & ex.Message & " Stack: " & ex.StackTrace)
             End Try
-
-
-
         End Sub
 
         Public Sub DumpItemFiles()
-            Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\itemdata.txt")
+            Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\itemdata.txt")
             For i As Integer = 0 To paths.Length - 1
-                DumpItemFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+                DumpItemFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
             Next
         End Sub
 
         Public Sub DumpItemFile(ByVal path As String)
 
 
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If My.Computer.Info.OSFullName.Contains("x64") = False Then
                     lines(i) = lines(i).Replace(".", ",")
@@ -191,8 +188,8 @@ Namespace GameServer
                 tmp.USE_TIME_MP_PER = Convert.ToInt32(tmpString(124))
                 RefItems.Add(tmp.Pk2Id, tmp)
             Next
-
         End Sub
+
         Public Function GetItemByID(ByVal id As UInteger) As cItem
             If RefItems.ContainsKey(id) Then
                 Return RefItems(id)
@@ -220,7 +217,7 @@ Namespace GameServer
 
         Public Sub DumpGoldData(ByVal path As String)
 
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim gold As New cGoldData
@@ -240,7 +237,7 @@ Namespace GameServer
             Throw New Exception("Level couldn't be found!")
         End Function
 
-        Structure cLevelData
+        Structure LevelData
             Public Level As Byte
             Public Base As UInteger
             Public Experience As ULong
@@ -250,11 +247,11 @@ Namespace GameServer
 
         Public Sub DumpLevelData(ByVal path As String)
 
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim level As New cLevelData
+                Dim level As New LevelData
                 level.Level = tmpString(0)
                 level.Base = tmpString(1)
                 level.Experience = tmpString(2)
@@ -268,7 +265,7 @@ Namespace GameServer
             Next
         End Sub
 
-        Public Function GetLevelData(ByVal level As Byte) As cLevelData
+        Public Function GetLevelData(ByVal level As Byte) As LevelData
             For i = 0 To RefLevelData.Count - 1
                 If RefLevelData(i).Level = level Then
                     Return RefLevelData(i)
@@ -277,9 +274,10 @@ Namespace GameServer
         End Function
 
 
-        Public Structure Skill_
+        Public Class Skill
             Public Name As String
             Public Pk2Id As UInteger
+            Public PreviousId As UInteger
             Public NextId As UInteger
             Public MasteryID As UInteger
             Public MasteryLevel As Byte
@@ -314,27 +312,37 @@ Namespace GameServer
             Public Effect_14 As Long
             Public Effect_15 As Long
             Public Effect_16 As Long
-        End Structure
-        Public Structure tmpSkill_
+        End Class
+
+        Public Structure TmpSkill
             Public Pk2Id As UInteger
             Public NextId As UInteger
         End Structure
 
+        Public Class TypeTable
+            Public Const Phy As Byte = &H1,
+                         Mag As Byte = &H2,
+                         Bicheon As Byte = &H3,
+                         Heuksal As Byte = &H4,
+                         Bow As Byte = &H5,
+                         All As Byte = &H6
+        End Class
+
 
         Public Sub DumpSkillFiles()
-            Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\skilldata.txt")
+            Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\skilldata.txt")
             For i As Integer = 0 To paths.Length - 1
-                DumpTmpSkillFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
-                DumpSkillFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+                DumpTmpSkillFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+                DumpSkillFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
             Next
         End Sub
 
         Public Sub DumpTmpSkillFile(ByVal path As String)
 
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim tmp As New tmpSkill_()
+                Dim tmp As New TmpSkill()
                 tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
                 RefTmpSkills.Add(tmp.Pk2Id, tmp)
@@ -342,7 +350,7 @@ Namespace GameServer
         End Sub
 
         Private Sub DumpSkillFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
 
             For i As Integer = 0 To lines.Length - 1
                 If My.Computer.Info.OSFullName.Contains("x64") = False Then
@@ -350,7 +358,7 @@ Namespace GameServer
                 End If
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim tmp As New Skill_()
+                Dim tmp As New Skill()
                 tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
                 tmp.Name = tmpString(3)
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
@@ -364,7 +372,7 @@ Namespace GameServer
                 tmp.PwrPercent = Convert.ToInt32(tmpString(71))
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
                 tmp.PwrMax = Convert.ToInt32(tmpString(73))
-                tmp.EffectId = Functions.HexToString(Hex(tmpString(69)))
+                tmp.EffectId = HexToString(Hex(tmpString(69)))
                 tmp.Effect_1 = Convert.ToInt32(tmpString(70))
                 tmp.Effect_2 = Convert.ToInt32(tmpString(71))
                 tmp.Effect_3 = Convert.ToInt32(tmpString(72))
@@ -382,14 +390,11 @@ Namespace GameServer
                 tmp.Effect_15 = Convert.ToInt32(tmpString(84))
                 tmp.Effect_16 = Convert.ToInt32(tmpString(85))
 
-                ' tmp.Distance = Convert.ToInt32(tmpString(78))
 
                 If tmp.EffectId = "att" Then
                     tmp.Distance = 21
                 End If
 
-
-                tmp.NumberOfAttacks = GetNumberOfAttacks(GetTmpSkillById(tmp.Pk2Id))
                 If tmpString(3).Contains("SWORD") Then
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.Bicheon
@@ -402,7 +407,9 @@ Namespace GameServer
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.Bow
                 End If
-                If tmpString(3).Contains("FIRE") OrElse tmpString(3).Contains("LIGHTNING") OrElse tmpString(3).Contains("COLD") OrElse tmpString(3).Contains("WATER") Then
+                If _
+                    tmpString(3).Contains("FIRE") OrElse tmpString(3).Contains("LIGHTNING") OrElse
+                    tmpString(3).Contains("COLD") OrElse tmpString(3).Contains("WATER") Then
                     tmp.Type = TypeTable.Mag
                     tmp.Type2 = TypeTable.All
                 End If
@@ -410,11 +417,16 @@ Namespace GameServer
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.All
                 End If
-                If tmpString(3).Contains("ROG") OrElse tmpString(3).Contains("WARRIOR") OrElse tmpString(3).Contains("AXE") Then
+                If _
+                    tmpString(3).Contains("ROG") OrElse tmpString(3).Contains("WARRIOR") OrElse
+                    tmpString(3).Contains("AXE") Then
                     tmp.Type = TypeTable.Phy
                     tmp.Type2 = TypeTable.All
                 End If
-                If tmpString(3).Contains("WIZARD") OrElse tmpString(3).Contains("STAFF") OrElse tmpString(3).Contains("WARLOCK") OrElse tmpString(3).Contains("BARD") OrElse tmpString(3).Contains("HARP") OrElse tmpString(3).Contains("CLERIC") Then
+                If _
+                    tmpString(3).Contains("WIZARD") OrElse tmpString(3).Contains("STAFF") OrElse
+                    tmpString(3).Contains("WARLOCK") OrElse tmpString(3).Contains("BARD") OrElse
+                    tmpString(3).Contains("HARP") OrElse tmpString(3).Contains("CLERIC") Then
                     tmp.Type = TypeTable.Mag
                     tmp.Type2 = TypeTable.All
                 End If
@@ -426,16 +438,19 @@ Namespace GameServer
 
                 RefSkills.Add(tmp.Pk2Id, tmp)
             Next
+
+            For Each key In RefSkills.Keys.ToList
+                If RefSkills.ContainsKey(key) Then
+                    RefSkills(key).NumberOfAttacks = GetSkillNumberOfAttacks(GetTmpSkill(RefSkills(key).Pk2Id))
+                    RefSkills(key).PreviousId = GetSkillPreviosId(key)
+                End If
+            Next
         End Sub
 
-        Public Class TypeTable
-            Public Const Phy As Byte = &H1, Mag As Byte = &H2, Bicheon As Byte = &H3, Heuksal As Byte = &H4, Bow As Byte = &H5, All As Byte = &H6
-        End Class
-
-        Private Function GetNumberOfAttacks(ByVal tmp As tmpSkill_) As Byte
+        Private Function GetSkillNumberOfAttacks(ByVal tmp As TmpSkill) As Byte
             For i As Byte = 0 To 9
                 If tmp.NextId <> 0 Then
-                    tmp = GetTmpSkillById(tmp.NextId)
+                    tmp = GetTmpSkill(tmp.NextId)
                 Else
                     Return CByte(i + 1)
                 End If
@@ -443,19 +458,28 @@ Namespace GameServer
             Return 1
         End Function
 
-        Public Function GetSkillById(ByVal Pk2Id As UInteger) As Skill_
+        Private Function GetSkillPreviosId(ByVal pk2id As UInteger) As UInteger
+            For Each key In RefSkills.Keys.ToList
+                If RefSkills(key).NextId = pk2id Then
+                    Return RefSkills(key).Pk2Id
+                End If
+            Next
+            Return 0
+        End Function
+
+        Public Function GetSkill(ByVal Pk2Id As UInteger) As Skill
             If RefSkills.ContainsKey(Pk2Id) Then
                 Return RefSkills(Pk2Id)
             Else
-                Return New Skill_
+                Return Nothing
             End If
         End Function
 
-        Private Function GetTmpSkillById(ByVal NextId As UInteger) As tmpSkill_
+        Private Function GetTmpSkill(ByVal NextId As UInteger) As TmpSkill
             If RefTmpSkills.ContainsKey(NextId) Then
                 Return RefTmpSkills(NextId)
             Else
-                Return New tmpSkill_
+                Return Nothing
             End If
         End Function
 
@@ -489,12 +513,14 @@ Namespace GameServer
             Public Skill7 As UInteger
             Public Skill8 As UInteger
             Public Skill9 As UInteger
-            Public ChatBytes() As Byte 'For the NPC Chat
+            Public ChatBytes() As Byte
+            'For the NPC Chat
 
-            Public Shop As Functions.ShopData_
+            Public Shop As ShopData_
 
             'These Fileds are for Teleports
             Public T_Position As Position
+
             Enum Type_
                 Mob_Normal = 0
                 Npc = 1
@@ -508,14 +534,14 @@ Namespace GameServer
         End Class
 
         Public Sub DumpObjectFiles()
-            Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\characterdata.txt")
+            Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\characterdata.txt")
             For i As Integer = 0 To paths.Length - 1
-                DumpObjectFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+                DumpObjectFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
             Next
         End Sub
 
         Private Sub DumpObjectFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If My.Computer.Info.OSFullName.Contains("x64") = False Then
                     lines(i) = lines(i).Replace(".", ",")
@@ -577,11 +603,11 @@ Namespace GameServer
             Next
         End Sub
 
-        Public Function GetObjectById(ByVal Pk2Id As UInteger) As Object_
+        Public Function GetObject(ByVal Pk2Id As UInteger) As Object_
             If RefObjects.ContainsKey(Pk2Id) Then
                 Return RefObjects(Pk2Id)
             Else
-                Return New Object_()
+                Return Nothing
             End If
         End Function
 
@@ -591,7 +617,7 @@ Namespace GameServer
         End Class
 
         Public Sub DumpReversePoints(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New ReversePoint_
@@ -605,13 +631,13 @@ Namespace GameServer
             Next
         End Sub
 
-        Public Function GetReversePointByID(ByVal id As UInteger)
+        Public Function GetReversePoint(ByVal id As UInteger)
             For i = 0 To RefReversePoints.Count - 1
                 If RefReversePoints(i).TeleportID = id Then
                     Return RefReversePoints(i)
                 End If
             Next
-            Return New ReversePoint_
+            Return Nothing
         End Function
 
         Structure MallPackage_
@@ -622,7 +648,7 @@ Namespace GameServer
         End Structure
 
         Public Sub DumpItemMall(ByVal FileAmoutPath As String, ByVal FilePricePath As String)
-            Dim lines As String() = IO.File.ReadAllLines(FileAmoutPath)
+            Dim lines As String() = File.ReadAllLines(FileAmoutPath)
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim tmp As New MallPackage_
@@ -630,7 +656,7 @@ Namespace GameServer
                 tmp.Name_Normal = tmpString(3)
                 tmp.Amout = tmpString(6)
 
-                Dim ItemPriceFile As String() = IO.File.ReadAllLines(FilePricePath)
+                Dim ItemPriceFile As String() = File.ReadAllLines(FilePricePath)
                 For d As Integer = 0 To ItemPriceFile.Length - 1
                     Dim tmpString2 As String() = ItemPriceFile(d).Split(ControlChars.Tab)
                     If tmpString2(2) = tmp.Name_Package And tmpString2(3) = 2 Then
@@ -643,18 +669,18 @@ Namespace GameServer
             Next
         End Sub
 
-        Public Function GetItemMallItemByName(ByVal Name As String) As MallPackage_
+        Public Function GetItemMallItem(ByVal Code_Name As String) As MallPackage_
             For i = 0 To RefMallItems.Count - 1
-                If RefMallItems(i).Name_Package = Name Then
+                If RefMallItems(i).Name_Package = Code_Name Then
                     Return RefMallItems(i)
                 End If
             Next
-            Return New MallPackage_
+            Return Nothing
         End Function
 
 
         Public Sub DumpTeleportBuildings(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim obj As New Object_
@@ -674,7 +700,7 @@ Namespace GameServer
 
                 RefObjects.Add(obj.Pk2ID, obj)
 
-                Functions.SpawnNPC(obj.Pk2ID, obj.T_Position, 0)
+                SpawnNPC(obj.Pk2ID, obj.T_Position, 0)
             Next
         End Sub
 
@@ -689,7 +715,7 @@ Namespace GameServer
         End Structure
 
         Public Sub DumpTeleportData(ByVal Path_Data As String, ByVal Path_Link As String)
-            Dim lines As String() = IO.File.ReadAllLines(Path_Data)
+            Dim lines As String() = File.ReadAllLines(Path_Data)
             Try
                 For i As Integer = 0 To lines.Length - 1
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -700,7 +726,7 @@ Namespace GameServer
 
                     Dim area As Integer = tmpString(5)
                     If area < 0 Then
-                        area *= -1
+                        area *= - 1
                     End If
 
                     obj.ToPos = New Position
@@ -711,7 +737,7 @@ Namespace GameServer
                     obj.ToPos.Z = tmpString(7)
                     obj.ToPos.Y = tmpString(8)
 
-                    Dim link_lines As String() = IO.File.ReadAllLines(Path_Link)
+                    Dim link_lines As String() = File.ReadAllLines(Path_Link)
                     For b As Integer = 0 To link_lines.Length - 1
                         Dim tmpString2 As String() = link_lines(b).Split(ControlChars.Tab)
                         If tmpString2(2) = obj.Number Then
@@ -728,7 +754,6 @@ Namespace GameServer
             Catch ex As Exception
 
             End Try
-
         End Sub
 
         Public Function GetTeleportPoint(ByVal Number As Integer)
@@ -754,13 +779,14 @@ Namespace GameServer
             Public XSec As Byte
             Public YSec As Byte
         End Structure
+
         Enum SpecialSector_Types
             Safe_Zone = 1
             Cave_Zone = 2
         End Enum
 
         Public Sub DumpSpecialSectorFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -774,9 +800,12 @@ Namespace GameServer
                 End If
             Next i
         End Sub
+
         Public Function IsInSaveZone(ByVal Pos As Position) As Boolean
             For i = 0 To RefSpecialZones.Count - 1
-                If RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And RefSpecialZones(i).Type = SpecialSector_Types.Safe_Zone Then
+                If _
+                    RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And
+                    RefSpecialZones(i).Type = SpecialSector_Types.Safe_Zone Then
                     Return True
                 End If
             Next
@@ -785,7 +814,9 @@ Namespace GameServer
 
         Public Function IsInCave(ByVal Pos As Position) As Boolean
             For i = 0 To RefSpecialZones.Count - 1
-                If RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And RefSpecialZones(i).Type = SpecialSector_Types.Cave_Zone Then
+                If _
+                    RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And
+                    RefSpecialZones(i).Type = SpecialSector_Types.Cave_Zone Then
                     Return True
                 End If
             Next
@@ -793,7 +824,7 @@ Namespace GameServer
         End Function
 
         Public Sub DumpUniqueFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
                     RefUniques.Add(lines(i))
@@ -812,12 +843,12 @@ Namespace GameServer
 
 
         Public Sub DumpNpcChatFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
 
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                    Dim obj As Object_ = GetObjectById(tmpString(1))
+                    Dim obj As Object_ = GetObject(tmpString(1))
                     ReDim obj.ChatBytes(tmpString.Length - 3)
 
                     For c = 0 To obj.ChatBytes.Count - 1
@@ -828,7 +859,7 @@ Namespace GameServer
         End Sub
 
         Public Sub DumpAbuseListFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                     RefAbuseList.Add(lines(i))
@@ -838,7 +869,7 @@ Namespace GameServer
 
         Public Sub DumpShopDataFile()
 
-            Dim lines As String() = IO.File.ReadAllLines(base_path & "data\shopdata.txt")
+            Dim lines As String() = File.ReadAllLines(base_path & "data\shopdata.txt")
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -848,9 +879,9 @@ Namespace GameServer
                     End If
 
                     If (tmpString(5) > 0) Then
-                        Dim obj As Object_ = GetObjectById(tmpString(5))
+                        Dim obj As Object_ = GetObject(tmpString(5))
 
-                        obj.Shop = New Functions.ShopData_
+                        obj.Shop = New ShopData_
                         obj.Shop.Pk2ID = obj.Pk2ID
                         obj.Shop.StoreName = tmpString(2)
                         obj.Shop.Init()
@@ -860,7 +891,7 @@ Namespace GameServer
 
 
             'Dump Tabs
-            lines = IO.File.ReadAllLines(base_path & "data\refshoptab.txt")
+            lines = File.ReadAllLines(base_path & "data\refshoptab.txt")
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -870,9 +901,12 @@ Namespace GameServer
                         Dim Pk2Id As Integer = GetNpc(StoreName)
                         Dim TabIndex As Integer = tmpString(3).Remove(0, tmpString(3).Length - 1)
 
-                        If Pk2Id <> -1 Then
+                        If Pk2Id <> - 1 Then
                             If RefObjects(Pk2Id).Shop IsNot Nothing Then
-                                If StoreName.StartsWith("STORE_KT_SMITH") = False Or StoreName.StartsWith("STORE_KT_ARMOR") = False Or StoreName.StartsWith("STORE_KT_ACCESSORY") = False Then
+                                If _
+                                    StoreName.StartsWith("STORE_KT_SMITH") = False Or
+                                    StoreName.StartsWith("STORE_KT_ARMOR") = False Or
+                                    StoreName.StartsWith("STORE_KT_ACCESSORY") = False Then
                                     RefObjects(Pk2Id).Shop.Tab(TabIndex - 1).TabName = tmpString(3)
                                 End If
                             End If
@@ -884,7 +918,7 @@ Namespace GameServer
             CorrectHotanData()
 
             'Dump Items
-            lines = IO.File.ReadAllLines(base_path & "data\refshopgoods.txt")
+            lines = File.ReadAllLines(base_path & "data\refshopgoods.txt")
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -892,7 +926,7 @@ Namespace GameServer
                     Dim Pk2Id As Integer = GetNpc2(TabName)
                     Dim ItemLine As Byte = tmpString(4)
 
-                    If Pk2Id <> -1 Then
+                    If Pk2Id <> - 1 Then
                         For r = 0 To RefObjects(Pk2Id).Shop.Tab.Count - 1
                             If RefObjects(Pk2Id).Shop.Tab(r) IsNot Nothing Then
                                 If RefObjects(Pk2Id).Shop.Tab(r).TabName = TabName Then
@@ -901,7 +935,7 @@ Namespace GameServer
                                         Debug.Print(9)
                                     End If
 
-                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine) = New Functions.ShopData_.ShopItem_
+                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine) = New ShopData_.ShopItem_
                                     RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine).ItemLine = ItemLine
                                     RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine).PackageName = tmpString(3)
                                 End If
@@ -914,7 +948,7 @@ Namespace GameServer
         End Sub
 
         Public Sub CorrectHotanData()
-            Dim obj As Object_ = GetObjectById(2072)
+            Dim obj As Object_ = GetObject(2072)
             obj.Shop.Tab(0).TabName = "STORE_KT_SMITH_EU_TAB1"
             obj.Shop.Tab(1).TabName = "STORE_KT_SMITH_EU_TAB2"
             obj.Shop.Tab(2).TabName = "STORE_KT_SMITH_EU_TAB3"
@@ -922,7 +956,7 @@ Namespace GameServer
             obj.Shop.Tab(4).TabName = "STORE_KT_SMITH_TAB2"
             obj.Shop.Tab(5).TabName = "STORE_KT_SMITH_TAB3"
 
-            obj = GetObjectById(2073)
+            obj = GetObject(2073)
             obj.Shop.Tab(0).TabName = "STORE_KT_ARMOR_EU_TAB1"
             obj.Shop.Tab(1).TabName = "STORE_KT_ARMOR_EU_TAB2"
             obj.Shop.Tab(2).TabName = "STORE_KT_ARMOR_EU_TAB3"
@@ -936,7 +970,7 @@ Namespace GameServer
             obj.Shop.Tab(10).TabName = "STORE_KT_ARMOR_TAB5"
             obj.Shop.Tab(11).TabName = "STORE_KT_ARMOR_TAB6"
 
-            obj = GetObjectById(2075)
+            obj = GetObject(2075)
             obj.Shop.Tab(0).TabName = "STORE_KT_ACCESSORY_EU_TAB1"
             obj.Shop.Tab(1).TabName = "STORE_KT_ACCESSORY_EU_TAB2"
             obj.Shop.Tab(2).TabName = "STORE_KT_ACCESSORY_EU_TAB3"
@@ -956,7 +990,7 @@ Namespace GameServer
                     End If
                 End If
             Next
-            Return -1
+            Return - 1
         End Function
 
         Public Function GetNpc2(ByVal TabName As String)
@@ -974,7 +1008,7 @@ Namespace GameServer
                     End If
                 End If
             Next
-            Return -1
+            Return - 1
         End Function
 
 
@@ -986,7 +1020,7 @@ Namespace GameServer
 
 
         Public Sub DumpCaveTeleporterFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1004,14 +1038,14 @@ Namespace GameServer
         End Sub
 
         Public Sub DumpNameFiles()
-            Dim paths As String() = IO.File.ReadAllLines(System.AppDomain.CurrentDomain.BaseDirectory & "data\textdataname.txt")
+            Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\textdataname.txt")
             For i As Integer = 0 To paths.Length - 1
-                DumpNameFile(System.AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+                DumpNameFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
             Next
         End Sub
 
         Public Sub DumpNameFile(ByVal path As String)
-            Dim lines As String() = IO.File.ReadAllLines(path)
+            Dim lines As String() = File.ReadAllLines(path)
 
             For i As Integer = 0 To lines.Length - 1
                 If lines(i).StartsWith("//") = False Then
@@ -1043,7 +1077,6 @@ Namespace GameServer
                     End Try
                 End If
             Next
-
         End Sub
     End Module
 End Namespace

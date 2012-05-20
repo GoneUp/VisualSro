@@ -1,6 +1,7 @@
-﻿Namespace GameServer.Functions
-    Module Movement
+﻿Imports System.Net.Sockets
 
+Namespace GameServer.Functions
+    Module Movement
         Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
 
             If PlayerData(Index_).Busy = True Or PlayerData(Index_).Attacking = True Then
@@ -30,7 +31,7 @@
             ElseIf tag = 0 Then
                 Dim tag2 As Byte = packet.Byte
                 Dim to_angle As UShort = packet.Word
-                Dim to_grad As Single = (to_angle / 65535) * 360
+                Dim to_grad As Single = (to_angle/65535)*360
                 SendPm(Index_, "You are tyring to Angle Move to: " & to_grad, "Debug")
 
             End If
@@ -42,11 +43,11 @@
                 Dim WalkTime As Single
                 Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
                     Case cPositionTracker.enumSpeedMode.Walking
-                        WalkTime = (Distance / PlayerData(Index_).WalkSpeed) * 10000
+                        WalkTime = (Distance/PlayerData(Index_).WalkSpeed)*10000
                     Case cPositionTracker.enumSpeedMode.Running
-                        WalkTime = (Distance / PlayerData(Index_).RunSpeed) * 10000
+                        WalkTime = (Distance/PlayerData(Index_).RunSpeed)*10000
                     Case cPositionTracker.enumSpeedMode.Zerking
-                        WalkTime = (Distance / PlayerData(Index_).BerserkSpeed) * 10000
+                        WalkTime = (Distance/PlayerData(Index_).BerserkSpeed)*10000
                 End Select
 
                 'If Distance < 10000 Then
@@ -54,7 +55,8 @@
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Movement)
                 writer.DWord(PlayerData(Index_).UniqueId)
-                writer.Byte(1) 'destination
+                writer.Byte(1)
+                'destination
                 writer.Byte(ToPos.XSector)
                 writer.Byte(ToPos.YSector)
 
@@ -69,15 +71,21 @@
                     writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
                 End If
 
-                writer.Byte(1) '1= source
+                writer.Byte(1)
+                '1= source
                 writer.Byte(PlayerData(Index_).Position.XSector)
                 writer.Byte(PlayerData(Index_).Position.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X * -1)))
+                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X*- 1)))
                 writer.Byte(BitConverter.GetBytes(PlayerData(Index_).Position.Z))
-                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y * -1)))
+                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y*- 1)))
 
 
-                DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                DataBase.SaveQuery(
+                    String.Format(
+                        "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                        PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
+                        Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
+                        Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
                 PlayerData(Index_).Pos_Tracker.Move(ToPos)
@@ -89,7 +97,6 @@
                 Console.WriteLine("OnMoveUser::error...")
                 Debug.Write(ex)
             End Try
-
         End Sub
 
         ''' <summary>
@@ -100,19 +107,20 @@
         ''' <param name="Range"></param>
         ''' <returns>The Walktime in ms</returns>
         ''' <remarks></remarks>
-        Public Function MoveUserToObject(ByVal Index_ As Integer, ByVal ObjectPos As Position, ByVal Range As Integer) As Single
+        Public Function MoveUserToObject(ByVal Index_ As Integer, ByVal ObjectPos As Position, ByVal Range As Integer) _
+            As Single
             Dim ToPos As Position = ObjectPos
 
             Dim distance_x As Double = PlayerData(Index_).Position.ToGameX - ToPos.ToGameX
             Dim distance_y As Double = PlayerData(Index_).Position.ToGameY - ToPos.ToGameY
-            Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
+            Dim distance As Double = Math.Sqrt((distance_x*distance_x) + (distance_y*distance_y))
 
             If distance > Range Then
-                Dim Cosinus As Double = Math.Cos(distance_x / distance)
-                Dim Sinus As Double = Math.Sin(distance_y / distance)
+                Dim Cosinus As Double = Math.Cos(distance_x/distance)
+                Dim Sinus As Double = Math.Sin(distance_y/distance)
 
-                Dim distance_x_new As Double = Range * Cosinus
-                Dim distance_y_new As Double = Range * Sinus
+                Dim distance_x_new As Double = Range*Cosinus
+                Dim distance_y_new As Double = Range*Sinus
 
                 ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
                 ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
@@ -124,26 +132,31 @@
             Dim WalkTime As Single
             Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
-                    WalkTime = (distance / PlayerData(Index_).WalkSpeed) * 10000
+                    WalkTime = (distance/PlayerData(Index_).WalkSpeed)*10000
                 Case cPositionTracker.enumSpeedMode.Running
-                    WalkTime = (distance / PlayerData(Index_).RunSpeed) * 10000
+                    WalkTime = (distance/PlayerData(Index_).RunSpeed)*10000
                 Case cPositionTracker.enumSpeedMode.Zerking
-                    WalkTime = (distance / PlayerData(Index_).BerserkSpeed) * 10000
+                    WalkTime = (distance/PlayerData(Index_).BerserkSpeed)*10000
             End Select
 
             OnMoveUser(Index_, ToPos)
             Return WalkTime
         End Function
+
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
             Try
                 ObjectDeSpawnCheck(Index_)
 
                 '=============Players============
                 For refindex As Integer = 0 To Server.MaxClients
-                    Dim othersock As Net.Sockets.Socket = ClientList.GetSocket(refindex)
-                    If (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso (othersock.Connected) AndAlso Index_ <> refindex Then
+                    Dim othersock As Socket = ClientList.GetSocket(refindex)
+                    If _
+                        (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso
+                        (othersock.Connected) AndAlso Index_ <> refindex Then
                         If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, PlayerData(refindex).Position) Then
-                            If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
+                            If _
+                                PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And
+                                PlayerData(Index_).Invisible = False Then
                                 Server.Send(CreateSpawnPacket(Index_), refindex)
                                 PlayerData(refindex).SpawnedPlayers.Add(Index_)
                             End If
@@ -160,7 +173,7 @@
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
                         If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Mob_.Position) Then
-                            Dim obj As Object = GetObjectById(Mob_.Pk2ID)
+                            Dim obj As Object = GetObject(Mob_.Pk2ID)
                             If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = False Then
                                 Server.Send(CreateMonsterSpawnPacket(Mob_, obj), Index_)
                                 PlayerData(Index_).SpawnedMonsters.Add(Mob_.UniqueID)
@@ -206,8 +219,11 @@
         Public Sub ObjectDeSpawnCheck(ByVal Index_ As Integer)
             Try
                 For Other_Index = 0 To Server.MaxClients
-                    If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) Then
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, PlayerData(Other_Index).Position) = False Then
+                    If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) _
+                        Then
+                        If _
+                            CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, PlayerData(Other_Index).Position) =
+                            False Then
                             'Despawn for both
                             Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
                             PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
@@ -260,7 +276,9 @@
 
         Public Sub CheckForCaveTeleporter(ByVal Index_ As Integer)
             For i = 0 To RefCaveTeleporter.Count - 1
-                If CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <= RefCaveTeleporter(i).Range Then
+                If _
+                    CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <=
+                    RefCaveTeleporter(i).Range Then
                     'In Range --> Teleport
                     Dim Point_ As TeleportPoint_ = GetTeleportPoint(RefCaveTeleporter(i).ToTeleporterID)
 
@@ -279,7 +297,12 @@
                         PlayerData(Index_).Busy = True
                         PlayerData(Index_).Position = Point_.ToPos
 
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                        DataBase.SaveQuery(
+                            String.Format(
+                                "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                                PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
+                                Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
+                                Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                         OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
                 End If
@@ -309,8 +332,8 @@
             '# 7 # 8 # 9#
             '############
             Dim PossibleSectors As New List(Of Position)
-            For x = -1 To 1
-                For y = -1 To 1
+            For x = - 1 To 1
+                For y = - 1 To 1
                     Dim pos As New Position
                     pos.XSector = Pos_1.XSector + x
                     pos.YSector = Pos_1.YSector + y

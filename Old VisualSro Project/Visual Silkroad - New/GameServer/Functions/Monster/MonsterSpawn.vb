@@ -1,6 +1,7 @@
-﻿Namespace GameServer.Functions
-    Module MonsterSpawn
+﻿Imports System.Net.Sockets
 
+Namespace GameServer.Functions
+    Module MonsterSpawn
         Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster, ByVal obj As Object_) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.SingleSpawn)
@@ -13,15 +14,19 @@
             writer.Float(_mob.Position.Y)
 
             writer.Word(_mob.Angle)
-            writer.Byte(_mob.Pos_Tracker.MoveState) 'dest
+            writer.Byte(_mob.Pos_Tracker.MoveState)
+            'dest
             If _mob.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
-                writer.Byte(0) 'Walking
+                writer.Byte(0)
+                'Walking
             Else
-                writer.Byte(1) 'Running + Zerk
+                writer.Byte(1)
+                'Running + Zerk
             End If
 
             If _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
-                writer.Byte(0)  'dest
+                writer.Byte(0)
+                'dest
                 writer.Word(_mob.Angle)
             ElseIf _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
                 writer.Byte(_mob.Pos_Tracker.WalkPos.XSector)
@@ -31,18 +36,31 @@
                 writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.Y)))
             End If
 
+            Dim alive As Boolean = True
+            If _mob.Death = True Then alive = False
+            writer.Byte(Convert.ToByte(alive))
+            ' alive flag
+            writer.Byte(0)
+            'action flag 
+            writer.Byte(0)
+            'jobmode? 3=normal?
+            writer.Byte(0)
+            'berserk activated
 
-            writer.Byte(0) 'unknown
-            writer.Byte(0) 'death flag
-            writer.Byte(0) 'berserker
+            writer.Float(obj.WalkSpeed)
+            'walkspeed
+            writer.Float(obj.RunSpeed)
+            'runspeed
+            writer.Float(obj.BerserkSpeed)
+            'berserkerspeed
 
-            writer.Float(obj.WalkSpeed) 'walkspeed
-            writer.Float(obj.RunSpeed) 'runspeed
-            writer.Float(obj.BerserkSpeed) 'berserkerspeed
-
-            writer.Word(0) 'unknwown  
+            writer.Byte(0)
+            'unknwown  
+            writer.Byte(2)
+            'unknwown  
             writer.Byte(_mob.Mob_Type)
-            writer.Byte(0) 'mhm
+            writer.Word(5)
+            'mhm
 
             Return writer.GetBytes
         End Function
@@ -57,8 +75,9 @@
         ''' <param name="SpotID"></param>
         ''' <returns>The new Mob Unique Id</returns>
         ''' <remarks></remarks>
-        Public Function SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position, ByVal Angle As UInteger, ByVal SpotID As Long) As UInteger
-            Dim mob_ As Object_ = GetObjectById(MobID)
+        Public Function SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position,
+                                 ByVal Angle As UInteger, ByVal SpotID As Long) As UInteger
+            Dim mob_ As Object_ = GetObject(MobID)
             Dim tmp As New cMonster
             tmp.UniqueID = Id_Gen.GetUnqiueId
             tmp.Pk2ID = mob_.Pk2ID
@@ -73,23 +92,23 @@
                 'Try Catch, due to several spawn errors from gm's
                 Select Case Type
                     Case 0
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Normal
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Normal
                     Case 1
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Champion
                     Case 3
                         tmp.HP_Cur = mob_.Hp
                     Case 4
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Giant
                     Case 5
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Titan
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Titan
                     Case 6
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Elite
                     Case 16
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Normal
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Party_Normal
                     Case 17
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Champ
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Party_Champ
                     Case 20
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
+                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Party_Giant
                 End Select
             Catch ex As Exception
                 tmp.HP_Cur = mob_.Hp
@@ -110,8 +129,9 @@
 
 
             For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
-                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
+                Dim socket As Socket = ClientList.GetSocket(refindex)
+                Dim player As [cChar] = PlayerData(refindex)
+                'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedMonsters.Contains(tmp.UniqueID) = False Then
@@ -147,7 +167,8 @@
         Public Sub SendUniqueSpawn(ByVal PK2ID As UInteger)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.UniqueAnnonce)
-            writer.Byte(5) 'Spawn
+            writer.Byte(5)
+            'Spawn
             writer.Byte(&HC)
             writer.DWord(PK2ID)
             Server.SendToAllIngame(writer.GetBytes)
@@ -156,7 +177,8 @@
         Public Sub SendUniqueKill(ByVal PK2ID As UInteger, ByVal KillName As String)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.UniqueAnnonce)
-            writer.Byte(6) 'Kill
+            writer.Byte(6)
+            'Kill
             writer.Byte(&HC)
             writer.DWord(PK2ID)
             writer.Word(KillName.Length)

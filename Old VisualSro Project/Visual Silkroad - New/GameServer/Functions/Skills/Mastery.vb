@@ -24,16 +24,22 @@
                     'Free mastery
 
                     For i = 0 To GameDB.Masterys.Length - 1
-                        If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
+                        If _
+                            GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And
+                            GameDB.Masterys(i).MasteryID = MasteryID Then
 
-                            Dim _lvldata As cLevelData = GetLevelData(GameDB.Masterys(i).Level)
+                            Dim _lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level)
                             If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
                                 GameDB.Masterys(i).Level += 1
 
                                 PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                 UpdateSP(index_)
 
-                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
+                                DataBase.SaveQuery(
+                                    String.Format(
+                                        "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ",
+                                        GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
+                                        GameDB.Masterys(i).MasteryID))
 
                                 writer.Create(ServerOpcodes.Mastery_Up)
                                 writer.Byte(1)
@@ -50,7 +56,6 @@
                             End If
 
 
-
                             Exit For
                         End If
                     Next
@@ -64,22 +69,28 @@
 
             ElseIf PlayerData(index_).Pk2Id >= 14717 And PlayerData(index_).Pk2Id <= 14743 Then
                 'Europe Char = Diffrent Mastery Max system
-                Dim maxmastery As UInteger = PlayerData(index_).Level * 2
+                Dim maxmastery As UInteger = PlayerData(index_).Level*2
 
                 If masterycount < maxmastery Then
                     'Free mastery
 
                     For i = 0 To GameDB.Masterys.Length - 1
                         If GameDB.Masterys(i) IsNot Nothing Then
-                            If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
-                                Dim _lvldata As cLevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
+                            If _
+                                GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And
+                                GameDB.Masterys(i).MasteryID = MasteryID Then
+                                Dim _lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
                                 If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
                                     GameDB.Masterys(i).Level += 1
 
                                     PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                     UpdateSP(index_)
 
-                                    DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}'", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
+                                    DataBase.SaveQuery(
+                                        String.Format(
+                                            "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}'",
+                                            GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
+                                            GameDB.Masterys(i).MasteryID))
 
                                     writer.Create(ServerOpcodes.Mastery_Up)
                                     writer.Byte(1)
@@ -117,10 +128,17 @@
             End If
             PlayerData(Index_).Skilling = True
 
-            Dim _skill As Skill_ = GetSkillById(SkillID)
+            Dim _skill As Skill = GetSkill(SkillID)
             Dim _refmastery As cMastery = GetMasteryByID(_skill.MasteryID, Index_)
 
-            If PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 And CheckIfUserOwnSkill(SkillID, Index_) = False And _refmastery.Level >= _skill.MasteryLevel Then
+            If _skill Is Nothing Or _refmastery Is Nothing Then
+
+            End If
+
+
+            If _
+                PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 And CheckIfUserOwnSkill(SkillID, Index_) = False And
+                _refmastery.Level >= _skill.MasteryLevel Then
                 Dim skill As New cSkill
                 skill.OwnerID = PlayerData(Index_).CharacterId
                 skill.SkillID = SkillID
@@ -139,7 +157,6 @@
 
             End If
             PlayerData(Index_).Skilling = False
-
         End Sub
 
 
@@ -148,29 +165,32 @@
             Array.Resize(GameDB.Skills, NewIndex)
             GameDB.Skills(NewIndex - 1) = toadd
 
-            DataBase.SaveQuery(String.Format("INSERT INTO skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID, toadd.SkillID))
+            DataBase.SaveQuery(String.Format("INSERT INTO skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
+                                             toadd.SkillID))
         End Sub
 
 
         Public Function GetMasteryByID(ByVal MasteryID As UInteger, ByVal Index_ As Integer) As cMastery
-            Dim ToReturn As New cMastery
             For i = 0 To GameDB.Masterys.Length - 1
 
                 If GameDB.Masterys(i) IsNot Nothing Then
-                    If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
-                        ToReturn = GameDB.Masterys(i)
+                    If _
+                        GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And
+                        GameDB.Masterys(i).MasteryID = MasteryID Then
+                        Return GameDB.Masterys(i)
                     End If
                 Else
                     Debug.Print("Mastery is notihing = " & Index_)
                 End If
             Next
-            Return ToReturn
+            Return Nothing
         End Function
 
         Public Function CheckIfUserOwnSkill(ByVal SkillID As UInteger, ByVal Index_ As Integer) As Boolean
             For i = 0 To GameDB.Skills.Length - 1
                 If GameDB.Skills(i) IsNot Nothing Then
-                    If GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Skills(i).SkillID = SkillID Then
+                    If GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Skills(i).SkillID = SkillID _
+                        Then
                         Return True
                     End If
                 End If
@@ -180,22 +200,22 @@
 
 
         Public Function GetHighestPlayerMastery(ByVal Index_ As Integer) As cMastery
-            Dim ToReturn As cMastery
+            Dim tmpMastery As cMastery
             For i = 0 To GameDB.Masterys.Length - 1
 
                 If GameDB.Masterys(i) IsNot Nothing Then
                     If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId Then
-                        If ToReturn Is Nothing Then
-                            ToReturn = GameDB.Masterys(i)
-                        ElseIf ToReturn.Level < GameDB.Masterys(i).Level Then
-                            ToReturn = GameDB.Masterys(i)
+                        If tmpMastery Is Nothing Then
+                            tmpMastery = GameDB.Masterys(i)
+                        ElseIf tmpMastery.Level < GameDB.Masterys(i).Level Then
+                            tmpMastery = GameDB.Masterys(i)
                         End If
 
                     End If
 
                 End If
             Next
-            Return ToReturn
+            Return tmpMastery
         End Function
     End Module
 End Namespace

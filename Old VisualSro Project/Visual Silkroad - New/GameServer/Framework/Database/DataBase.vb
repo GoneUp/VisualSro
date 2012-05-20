@@ -1,10 +1,6 @@
-﻿Imports Microsoft.VisualBasic
-Imports MySql.Data.MySqlClient
-	Imports System
-	Imports System.Data
-	Imports System.Runtime.CompilerServices
-Namespace GameServer
+﻿Imports MySql.Data.MySqlClient
 
+Namespace GameServer
     Public Class DataBase
         Private Shared Connection As MySqlConnection
         Private Shared ConnectionString As String
@@ -24,14 +20,18 @@ Namespace GameServer
         Public Shared Event OnDatabaseError As dError
 
         Public Delegate Sub dConnected()
+
         Public Delegate Sub dError(ByVal ex As Exception, ByVal command As String)
 
 #Region "Connect"
+
         Public Shared Sub Connect()
             If Connection IsNot Nothing Then
                 Connection.Close()
             End If
-            ConnectionString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; pooling=false;", DB_IP, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE)
+            ConnectionString =
+                String.Format("server={0};port={1};user id={2}; password={3}; database={4}; pooling=false;", DB_IP,
+                              DB_PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE)
             Try
                 Connection = New MySqlConnection(ConnectionString)
                 Connection.Open()
@@ -53,9 +53,11 @@ Namespace GameServer
                 RaiseEvent OnDatabaseError(exception, ConnectionString)
             End Try
         End Sub
+
 #End Region
 
 #Region "Unused"
+
         Public Shared Function GetDataSet(ByVal command As String) As DataSet
             Dim tmpset As New DataSet
 
@@ -106,9 +108,11 @@ Namespace GameServer
                 End If
             End Try
         End Sub
+
 #End Region
 
 #Region "Insert/update"
+
         Public Shared Sub InsertData(ByVal command As String)
             SyncLock mysql_lock
                 Try
@@ -139,7 +143,7 @@ Namespace GameServer
                 tmp_con.Dispose()
 
             Catch exception As MySqlException
-                If exception.ErrorCode = -2147467259 Then
+                If exception.ErrorCode = - 2147467259 Then
 
                 End If
 
@@ -147,6 +151,7 @@ Namespace GameServer
                 RaiseEvent OnDatabaseError(exception, command)
             End Try
         End Sub
+
 #End Region
 
 #Region "Query"
@@ -171,6 +176,7 @@ Namespace GameServer
 #End Region
 
 #Region "Check"
+
         Public Shared Function CheckForInjection(ByVal command As String)
             If command.Contains(";") Then
                 Return True

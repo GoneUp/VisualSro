@@ -1,11 +1,12 @@
 ﻿Namespace GameServer.Functions
     Module PlayerBuff
-
         Public Sub PlayerBuff_BeginnCasting(ByVal SkillID As UInt32, ByVal Index_ As Integer)
-            Dim RefSkill As Skill_ = GetSkillById(SkillID)
+            Dim RefSkill As Skill = GetSkill(SkillID)
             Dim RefWeapon As New cItem
 
-            If PlayerData(Index_).Busy Or CheckIfUserOwnSkill(SkillID, Index_) = False Or PlayerData(Index_).CastingId <> 0 Then
+            If _
+                PlayerData(Index_).Busy Or CheckIfUserOwnSkill(SkillID, Index_) = False Or
+                PlayerData(Index_).CastingId <> 0 Then
                 Exit Sub
             End If
 
@@ -71,7 +72,7 @@
             PlayerBuff_Iconpacket(Index_)
             Attack_SendAttackEnd(Index_)
 
-           
+
             'Clean Up
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Attacking = False
@@ -116,7 +117,7 @@
         End Sub
 
 
-        Private Sub AddBuffToList(ByVal refskill As Skill_, ByVal buff As cBuff, ByVal Index_ As Integer)
+        Private Sub AddBuffToList(ByVal refskill As Skill, ByVal buff As cBuff, ByVal Index_ As Integer)
             PlayerData(Index_).Buffs.Add(buff.OverID, buff)
             PlayerData(Index_).Buffs(buff.OverID).ElaspedTimer_Start(refskill.UseDuration)
 

@@ -1,6 +1,5 @@
 ﻿Namespace GameServer.Functions
     Public Class cCharListing
-
         Public Structure UserArray
             Public Id As Integer
             Public Name As String

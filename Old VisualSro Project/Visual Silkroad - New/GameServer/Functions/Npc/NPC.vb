@@ -1,10 +1,12 @@
-﻿Namespace GameServer.Functions
-    Module NPC
+﻿Imports System.Net.Sockets
 
+Namespace GameServer.Functions
+    Module NPC
         Public Function CreateNPCGroupSpawnPacket(ByVal NpcUniqueId As UInteger) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GroupSpawnStart)
-            writer.Byte(1) 'spawn
+            writer.Byte(1)
+            'spawn
             writer.Word(1)
             Dim bytes1 As Byte() = writer.GetBytes
             Dim bytes2 As Byte() = CreateNPCSpawnPacket(NpcUniqueId)
@@ -20,7 +22,7 @@
 
         Public Function CreateNPCSpawnPacket(ByVal NpcUniqueId As UInteger) As Byte()
             Dim npc As cNPC = NpcList(NpcUniqueId)
-            Dim obj As Object_ = GetObjectById(npc.Pk2ID)
+            Dim obj As Object_ = GetObject(npc.Pk2ID)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GroupSpawnData)
@@ -31,10 +33,10 @@
             writer.Float(npc.Position.X)
             writer.Float(npc.Position.Z)
             writer.Float(npc.Position.Y)
+            writer.Word(npc.Angle)
 
             Select Case obj.Type
                 Case Object_.Type_.Npc
-                    writer.Word(npc.Angle)
                     writer.Byte(0)
                     writer.Byte(1)
                     writer.Byte(0)
@@ -42,22 +44,35 @@
                     writer.Byte(1)
                     writer.Byte(0)
                     writer.Byte(0)
-                    writer.DWord(0) 'speeds
                     writer.DWord(0)
-                    writer.Float(100) 'berserker speed
+                    'speeds
+                    writer.DWord(0)
+                    writer.Float(100)
+                    'berserker speed
                     writer.Word(0)
 
 
                 Case Object_.Type_.Teleport
-                    writer.Word(0)
+                    writer.Byte(1)
+                    writer.Byte(0)
+                    writer.Byte(0)
+                    writer.Byte(1)
+                    writer.DWord(0)
+                    writer.DWord(0)
 
             End Select
 
             Return writer.GetBytes
         End Function
 
-        Public Sub SpawnNPC(ByVal ItemId As UInteger, ByVal Position As Position, ByVal Angle As UInt16)
-            Dim npc_ As Object_ = GetObjectById(ItemId)
+        Public Sub SpawnNPC(ByVal Pk2Id As UInteger, ByVal Position As Position, ByVal Angle As UInt16)
+            Dim npc_ As Object_ = GetObject(Pk2Id)
+
+            If npc_ Is Nothing Then
+                Throw New Exception("Npc Spawn failed, id: " & Pk2Id)
+                Exit Sub
+            End If
+
             Dim tmp As New cNPC
             tmp.UniqueID = Id_Gen.GetUnqiueID
             tmp.Pk2ID = npc_.Pk2ID
@@ -72,8 +87,9 @@
 
 
             For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
-                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
+                Dim socket As Socket = ClientList.GetSocket(refindex)
+                Dim player As [cChar] = PlayerData(refindex)
+                'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedNPCs.Contains(tmp.UniqueID) = False Then
@@ -87,11 +103,12 @@
 
         Public Sub OnNpcChat(ByVal NpcUniqueId As UInteger, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            Dim obj As Object_ = GetObjectById(NpcList(NpcUniqueId).Pk2ID)
+            Dim obj As Object_ = GetObject(NpcList(NpcUniqueId).Pk2ID)
             Dim name As String() = obj.TypeName.Split("_")
 
             writer.Create(ServerOpcodes.Target)
-            writer.Byte(1) 'Sucess
+            writer.Byte(1)
+            'Sucess
             writer.DWord(NpcList(NpcUniqueId).UniqueID)
 
             If obj.ChatBytes IsNot Nothing Then
@@ -117,13 +134,15 @@
             Dim RefObj As New Object_
 
             If NpcList.ContainsKey(UniqueID) Then
-                RefObj = GetObjectById(NpcList(UniqueID).Pk2ID)
+                RefObj = GetObject(NpcList(UniqueID).Pk2ID)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Npc_Chat)
-                writer.Byte(1) 'Sucess
+                writer.Byte(1)
+                'Sucess
                 If RefObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
-                    writer.Byte(ChatId) 'Type
+                    writer.Byte(ChatId)
+                    'Type
                 Else
                     writer.Byte(17)
                 End If
@@ -139,7 +158,8 @@
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Npc_Chat_Left)
-            writer.Byte(1) 'Sucess
+            writer.Byte(1)
+            'Sucess
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = False
@@ -148,7 +168,8 @@
 
         Public Sub OnNpcTeleport(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ObjectID As UInteger = packet.DWord
-            Dim type As Byte = packet.Byte() '2=normal teleport; 5=special point; 
+            Dim type As Byte = packet.Byte()
+            '2=normal teleport; 5=special point; 
 
             Select Case type
                 Case 2
@@ -190,26 +211,29 @@
                         Server.Send(writer.GetBytes, Index_)
 
 
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector, Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z), Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                        DataBase.SaveQuery(
+                            String.Format(
+                                "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                                PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
+                                Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
+                                Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                         OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
 
 
                 Case 5
-                    Dim TeleportNumber As Integer = packet.Byte '0x02=recall point, 0x03=move to dead point
+                    Dim TeleportNumber As Integer = packet.Byte
+                    '0x02=recall point, 0x03=move to dead point
             End Select
         End Sub
-
 
 
         Private Sub CheckForTax(ByVal Model_Name As String, ByVal writer As PacketWriter)
             Select Case Model_Name
-                Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY", _
-                 "STORE_CH_GATE", "NPC_CH_FERRY", "NPC_CH_FERRY2"
+                Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY",
+                    "STORE_CH_GATE", "NPC_CH_FERRY", "NPC_CH_FERRY2"
                     writer.Word(Settings.Server_TaxRate)
             End Select
         End Sub
-
-
     End Module
 End Namespace

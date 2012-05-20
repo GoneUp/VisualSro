@@ -1,11 +1,6 @@
-﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.Runtime.InteropServices
+﻿
 Namespace GameServer
-
     Public Class Parser
-
-
         Public Shared Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Try
                 Dim length As UInteger = packet.Word
@@ -19,9 +14,9 @@ Namespace GameServer
                     Case ClientOpcodes.Ping
 
                         '=============Login=============
-                    Case ClientOpcodes.Handshake  'Client accepts
+                    Case ClientOpcodes.Handshake 'Client accepts
 
-                    Case ClientOpcodes.InfoReq  'GateWay
+                    Case ClientOpcodes.InfoReq 'GateWay
                         Functions.GateWay(packet, Index_)
 
                     Case ClientOpcodes.Login
@@ -168,14 +163,15 @@ Namespace GameServer
                         Functions.Stall_Close_Other(Index_)
 
                     Case Else
-                        Log.WriteSystemLog("opCode: " & opcode & " Packet : " & BitConverter.ToString(packet.ByteArray(length), 0, length))
+                        Log.WriteSystemLog(
+                            "opCode: " & opcode & " Packet : " &
+                            BitConverter.ToString(packet.ByteArray(length), 0, length))
                 End Select
 
             Catch ex As Exception
                 Log.WriteSystemLog("Parsing Error:  " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index_)
             End Try
         End Sub
-
     End Class
 End Namespace
 

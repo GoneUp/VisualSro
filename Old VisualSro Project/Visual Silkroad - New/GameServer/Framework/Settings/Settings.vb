@@ -3,10 +3,10 @@
 Namespace GameServer.Settings
     Module Settings
         'Loading File
-        Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_game\settings.ini")
+        Private File As New cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_game\settings.ini")
 
         'Here is Place for Settings like Xp Rates, etc...
-        Public Player_StartPos_Ch As New Position
+        Public PlayerStartPosCh As New Position
         Public Player_StartPos_Eu As New Position
         Public Player_StartReturnPos As New Position
         Public Player_StartLevel As Byte
@@ -75,11 +75,11 @@ Namespace GameServer.Settings
             Player_StartSP = File.Read("PLAYER_START", "Sp", "0")
             Player_StartGM = CBool(File.Read("PLAYER_START", "Gm", "0"))
 
-            Player_StartPos_Ch.XSector = File.Read("PLAYER_START_POS", "Ch_Xsec", "168")
-            Player_StartPos_Ch.YSector = File.Read("PLAYER_START_POS", "Ch_Ysec", "98")
-            Player_StartPos_Ch.X = File.Read("PLAYER_START_POS", "Ch_X", "978")
-            Player_StartPos_Ch.Z = File.Read("PLAYER_START_POS", "Ch_Z", "0")
-            Player_StartPos_Ch.Y = File.Read("PLAYER_START_POS", "Ch_Y", "40")
+            PlayerStartPosCh.XSector = File.Read("PLAYER_START_POS", "Ch_Xsec", "168")
+            PlayerStartPosCh.YSector = File.Read("PLAYER_START_POS", "Ch_Ysec", "98")
+            PlayerStartPosCh.X = File.Read("PLAYER_START_POS", "Ch_X", "978")
+            PlayerStartPosCh.Z = File.Read("PLAYER_START_POS", "Ch_Z", "0")
+            PlayerStartPosCh.Y = File.Read("PLAYER_START_POS", "Ch_Y", "40")
 
             Player_StartPos_Eu.XSector = File.Read("PLAYER_START_POS", "EU_Xsec", "168")
             Player_StartPos_Eu.YSector = File.Read("PLAYER_START_POS", "EU_Ysec", "98")
@@ -100,7 +100,6 @@ Namespace GameServer.Settings
 
             ModGeneral = CBool(File.Read("MOD", "General", "0"))
             ModDamage = CBool(File.Read("MOD", "Damage", "0"))
-
         End Sub
 
 

@@ -1,10 +1,12 @@
 ﻿Imports GameServer.GameServer.Functions
+
 Namespace GameServer.Admin
     Module AdminControl
-
         Public Sub Parse(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Try
-                If ClientList.SessionInfo(Index_).ClientType = _SessionInfo.ConnectionType.SR_Admin And ClientList.SessionInfo(Index_).Authorized Then
+                If _
+                    ClientList.SessionInfo(Index_).ClientType = _SessionInfo.ConnectionType.SR_Admin And
+                    ClientList.SessionInfo(Index_).Authorized Then
 
                     Dim tag As Byte = Packet.Byte
                     Select Case tag
@@ -20,14 +22,14 @@ Namespace GameServer.Admin
                 Else
                     Server.Disconnect(Index_)
 
-                    Log.WriteGameLog(Index_, "ADMIN", "Unautorized", "Gm_Command_Try: " & BitConverter.ToString(Packet.GetData()))
+                    Log.WriteGameLog(Index_, "ADMIN", "Unautorized",
+                                     "Gm_Command_Try: " & BitConverter.ToString(Packet.GetData()))
                 End If
 
 
             Catch ex As Exception
                 Log.WriteSystemLog("Admin Error: " & ex.Message & " Stack: " & ex.StackTrace)
             End Try
-
         End Sub
 
         Public Sub SendServerInfo(ByVal Index_ As Integer)
@@ -95,13 +97,16 @@ Namespace GameServer.Admin
                 writer.Word(iChar.CharacterName.Length)
                 writer.String(iChar.CharacterName)
                 If Ingame Then
-                    writer.Byte(True) 'Online
+                    writer.Byte(True)
+                    'Online
                     writer.Byte(1)
                 ElseIf CharList Then
-                    writer.Byte(True) 'Online
+                    writer.Byte(True)
+                    'Online
                     writer.Byte(2)
                 Else
-                    writer.Byte(False) 'Offline
+                    writer.Byte(False)
+                    'Offline
                     writer.Byte(0)
                 End If
                 writer.Byte(iChar.Level)
@@ -127,13 +132,16 @@ Namespace GameServer.Admin
                 writer.Word(iChar.CharacterName.Length)
                 writer.String(iChar.CharacterName)
                 If Ingame Then
-                    writer.Byte(True) 'Online
+                    writer.Byte(True)
+                    'Online
                     writer.Byte(1)
                 ElseIf CharList Then
-                    writer.Byte(True) 'Online
+                    writer.Byte(True)
+                    'Online
                     writer.Byte(2)
                 Else
-                    writer.Byte(False) 'Offline
+                    writer.Byte(False)
+                    'Offline
                     writer.Byte(0)
                 End If
                 writer.Byte(iChar.Level)
@@ -147,6 +155,5 @@ Namespace GameServer.Admin
 
             Server.Send(writer.GetBytes, Index_)
         End Sub
-
     End Module
 End Namespace

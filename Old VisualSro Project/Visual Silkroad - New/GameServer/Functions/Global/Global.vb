@@ -13,7 +13,5 @@
         Public ExchangeData As New Dictionary(Of UInteger, cExchange)
         'Stall
         Public Stalls As New List(Of cStall)
-
-
     End Module
 End Namespace

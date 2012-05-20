@@ -42,11 +42,16 @@ Friend Class Program
 
         Server.Start()
         Log.WriteSystemLog("Inital Loading complete!")
+        Log.WriteSystemLog("Latest Version: " & Settings.Server_CurrectVersion)
+        Log.WriteSystemLog("Slotcount: " & Settings.Server_Slots)
 
-read:
-        Dim msg As String = Console.ReadLine()
-        CheckCommand(msg)
-        GoTo read
+
+        Do While True
+            Dim msg As String = Console.ReadLine()
+            CheckCommand(msg)
+            Threading.Thread.Sleep(10)
+        Loop
+
 
 
     End Sub

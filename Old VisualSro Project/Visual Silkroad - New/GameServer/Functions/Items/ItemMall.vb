@@ -1,7 +1,7 @@
 ﻿Namespace GameServer.Functions
     Module ItemMall
         Public Sub OnSendSilks(ByVal Index_ As Integer)
-            Dim UserIndex As Integer = GameServer.GameDB.GetUserWithAccID(PlayerData(Index_).AccountID)
+            Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(Index_).AccountID)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Silk)
             writer.DWord(GameDB.Users(UserIndex).Silk)
@@ -17,14 +17,14 @@
             Dim type4 As Byte = packet.Byte
             Dim type5 As Byte = packet.Byte
             Dim LongName As String = packet.String(packet.Word)
-            Dim RefObject As MallPackage_ = GetItemMallItemByName(LongName)
+            Dim RefObject As MallPackage_ = GetItemMallItem(LongName)
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
             Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(index_).AccountID)
 
             If LongName = RefObject.Name_Package Then
-                If GameDB.Users(UserIndex).Silk - (RefObject.Price * amout) >= 0 And GetFreeItemSlot(index_) <> -1 Then
+                If GameDB.Users(UserIndex).Silk - (RefObject.Price*amout) >= 0 And GetFreeItemSlot(index_) <> - 1 Then
                     Dim ItemSlots As New List(Of Byte)
 
                     For i = 1 To amout
@@ -48,7 +48,8 @@
                         ItemSlots.Add(slot)
 
                         GameDB.Users(UserIndex).Silk -= RefObject.Price
-                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", GameDB.Users(UserIndex).Silk, PlayerData(index_).AccountID))
+                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
+                                                         GameDB.Users(UserIndex).Silk, PlayerData(index_).AccountID))
                         OnSendSilks(index_)
                     Next
 
@@ -67,7 +68,8 @@
                     writer.Word(amout)
                     Server.Send(writer.GetBytes, index_)
 
-                    Log.WriteGameLog(index_, "Item_Mall", "Buy", String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, RefObject.Price))
+                    Log.WriteGameLog(index_, "Item_Mall", "Buy",
+                                     String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, RefObject.Price))
                 Else
                     writer.Create(ServerOpcodes.ItemMove)
                     writer.Byte(2)

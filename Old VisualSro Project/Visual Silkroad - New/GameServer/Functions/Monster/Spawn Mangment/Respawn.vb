@@ -26,22 +26,24 @@
             Catch ex As Exception
 
             End Try
-
         End Sub
 
 
         Public Sub ReSpawnMob(ByVal SpotIndex As Integer)
             Try
                 Dim re = RefRespawns(SpotIndex)
-                Dim obj_ As Object_ = GetObjectById(RefRespawns(SpotIndex).Pk2ID)
+                Dim obj_ As Object_ = GetObject(RefRespawns(SpotIndex).Pk2ID)
 
                 Select Case obj_.Type
                     Case Object_.Type_.Mob_Normal
-                        SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, re.SpotID)
+                        SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0,
+                                 re.SpotID)
                     Case Object_.Type_.Mob_Cave
-                        SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0, re.SpotID)
+                        SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0,
+                                 re.SpotID)
                     Case Object_.Type_.Npc
-                        SpawnNPC(RefRespawns(SpotIndex).Pk2ID, RefRespawns(SpotIndex).Position, RefRespawns(SpotIndex).Angle)
+                        SpawnNPC(RefRespawns(SpotIndex).Pk2ID, RefRespawns(SpotIndex).Position,
+                                 RefRespawns(SpotIndex).Angle)
                 End Select
             Catch ex As Exception
 
@@ -52,7 +54,7 @@
             Dim tmp As ReSpawnUnique_ = RefRespawnsUnique(UniqueListID)
             Dim selector As Integer = Random.Next(0, tmp.Spots.Count - 1)
 
-            SpawnMob(tmp.Pk2ID, 3, tmp.Spots(selector), 0, -2)
+            SpawnMob(tmp.Pk2ID, 3, tmp.Spots(selector), 0, - 2)
         End Sub
 
 
@@ -72,13 +74,14 @@
         End Sub
 
 #Region "Helper Functions"
+
         Public Function GetRespawn(ByVal SpotId As Integer) As ReSpawn_
             For SpotIndex = 0 To RefRespawns.Count - 1
                 If RefRespawns(SpotIndex).SpotID = SpotId Then
                     Return RefRespawns(SpotIndex)
                 End If
             Next
-            Return New ReSpawn_ With {.SpotID = -1}
+            Return New ReSpawn_ With {.SpotID = - 1}
         End Function
 
         Private Function GetSpawnCount(ByVal SpotID As Long) As Integer
@@ -101,7 +104,7 @@
             For Each key In tmplist
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList.Item(key)
-                    If Mob_.Pk2ID = Pk2ID And Mob_.SpotID <> -1 Then
+                    If Mob_.Pk2ID = Pk2ID And Mob_.SpotID <> - 1 Then
                         Return True
                     End If
                 End If
@@ -123,6 +126,7 @@
             Next
             Return Count
         End Function
+
 #End Region
 
         Class ReSpawn_
@@ -137,6 +141,5 @@
             Public Pk2ID As UInteger
             Public Spots As List(Of Position)
         End Class
-
     End Module
 End Namespace

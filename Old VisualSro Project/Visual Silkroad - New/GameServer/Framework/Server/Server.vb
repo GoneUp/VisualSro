@@ -1,18 +1,16 @@
-﻿Imports Microsoft.VisualBasic
-Imports System
-Imports System.Net
+﻿Imports System.Net
 Imports System.Net.Sockets
-Imports System.Runtime.CompilerServices
+Imports System.Threading
 Imports GameServer.GameServer.Functions
-Namespace GameServer
 
+Namespace GameServer
     Public Class Server
         Private Shared _Ip As IPAddress
         Private Shared _MaxClients As Integer
         Private Shared _OnlineClients As Integer
         Private Shared _ServerPort As Integer
         Private Shared ServerSocket As Socket
-        Public Shared RevTheard(1) As Threading.Thread
+        Public Shared RevTheard(1) As Thread
 
         Public Shared Event OnClientConnect As dConnection
         Public Shared Event OnClientDisconnect As dDisconnected
@@ -27,11 +25,11 @@ Namespace GameServer
             Try
                 ServerSocket.Bind(localEP)
                 ServerSocket.Listen(5)
-                ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+                ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
                 ReDim RevTheard(MaxClients + 1)
             Catch exception As Exception
-                RaiseEvent OnServerError(exception, -2)
+                RaiseEvent OnServerError(exception, - 2)
             Finally
                 Dim time As String = DateTime.Now.ToString()
                 RaiseEvent OnServerStarted(time)
@@ -45,7 +43,7 @@ Namespace GameServer
                 ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
                 ReDim RevTheard(MaxClients + 1)
             Catch exception As Exception
-                RaiseEvent OnServerError(exception, -3)
+                RaiseEvent OnServerError(exception, - 3)
             Finally
                 Dim time As String = DateTime.Now.ToString()
                 RaiseEvent OnServerStopped(time)
@@ -60,7 +58,7 @@ Namespace GameServer
                     ClientList.Add(sock)
                     Dim index As Integer = ClientList.FindIndex(sock)
                     RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
-                    RevTheard(index) = New Threading.Thread(AddressOf ReceiveData)
+                    RevTheard(index) = New Thread(AddressOf ReceiveData)
                     RevTheard(index).Start(index)
                 Else
                     'More then 1500 Sockets
@@ -68,10 +66,10 @@ Namespace GameServer
                     Log.WriteSystemLog("Socket Stack Full!")
                 End If
 
-                ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
+                ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
             Catch exception As Exception
-                RaiseEvent OnServerError(exception, -1)
+                RaiseEvent OnServerError(exception, - 1)
             End Try
         End Sub
 
@@ -100,7 +98,7 @@ Namespace GameServer
                                 RaiseEvent OnReceiveData(buffer, Index_)
                                 Array.Clear(buffer, 0, buffer.Length)
                             Else
-                                Threading.Thread.Sleep(10)
+                                Thread.Sleep(10)
                             End If
 
                         Else
@@ -121,7 +119,7 @@ Namespace GameServer
                         RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                     End If
                     Exit Do
-                Catch exception1 As Threading.ThreadAbortException
+                Catch exception1 As ThreadAbortException
                     ClientList.Delete(Index_)
                     RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                     Exit Do
@@ -153,7 +151,8 @@ Namespace GameServer
         Public Shared Sub SendToAllIngame(ByVal buff() As Byte)
             For i As Integer = 0 To OnlineClient
                 Dim socket As Socket = ClientList.GetSocket(i)
-                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                Dim player As [cChar] = PlayerData(i)
+                'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If player.Ingame = True Then
                         Send(buff, i)
@@ -165,8 +164,10 @@ Namespace GameServer
         Public Shared Sub SendToAllIngameExpectMe(ByVal buff() As Byte, ByVal index As Integer)
             For i As Integer = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)
-                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
-                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> index) Then
+                Dim player As [cChar] = PlayerData(i)
+                'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> index) _
+                    Then
                     If player.Ingame = True Then
                         Send(buff, i)
                     End If
@@ -177,9 +178,11 @@ Namespace GameServer
         Public Shared Sub SendToAllInRange(ByVal buff() As Byte, ByVal Position As Position)
             For i As Integer = 0 To OnlineClient
                 Dim socket As Socket = ClientList.GetSocket(i)
-                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                Dim player As [cChar] = PlayerData(i)
+                'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    Dim distance As Long = CalculateDistance(Position, player.Position) 'Calculate Distance
+                    Dim distance As Long = CalculateDistance(Position, player.Position)
+                    'Calculate Distance
                     If distance < Settings.Server_Range Then
                         'In Rage 
                         If player.Ingame = True Then
@@ -194,9 +197,12 @@ Namespace GameServer
 
             For i As Integer = 0 To OnlineClient
                 Dim socket As Socket = ClientList.GetSocket(i)
-                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
-                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) Then
-                    Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position) 'Calculate Distance
+                Dim player As [cChar] = PlayerData(i)
+                'Check if Player is ingame
+                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) _
+                    Then
+                    Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position)
+                    'Calculate Distance
                     If distance < Settings.Server_Range Then
                         'In Rage 
                         If player.Ingame = True Then
@@ -222,7 +228,8 @@ Namespace GameServer
         Public Shared Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobUniqueID As Integer)
             For i = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)
-                Dim player As [cChar] = PlayerData(i) 'Check if Player is ingame
+                Dim player As [cChar] = PlayerData(i)
+                'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) Then
                         Send(buff, i)
@@ -258,12 +265,12 @@ Namespace GameServer
                 If Stalls(i).StallID = StallID Then
                     'Send to Visitors
                     For v = 0 To Stalls(i).Visitors.Count - 1
-                        Server.Send(buff, Stalls(i).Visitors(v))
+                        Send(buff, Stalls(i).Visitors(v))
                     Next
 
                     'Send To Owner
                     If Owner Then
-                        Server.Send(buff, Stalls(i).OwnerIndex)
+                        Send(buff, Stalls(i).OwnerIndex)
                     End If
 
                     Exit For
@@ -272,6 +279,7 @@ Namespace GameServer
         End Sub
 
 #Region "Propertys"
+
         Public Shared Property Ip() As String
             Get
                 Return _Ip.ToString()
@@ -309,11 +317,17 @@ Namespace GameServer
         End Property
 
         Public Delegate Sub dConnection(ByVal ip As String, ByVal index As Integer)
+
         Public Delegate Sub dDisconnected(ByVal ip As String, ByVal index As Integer)
+
         Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
+
         Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
+
         Public Delegate Sub dServerStarted(ByVal time As String)
+
         Public Delegate Sub dServerStopped(ByVal time As String)
+
 #End Region
     End Class
 End Namespace

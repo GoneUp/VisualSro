@@ -1,6 +1,7 @@
-﻿Namespace GameServer.Functions
-    Module ItemSpawn
+﻿Imports System.Net.Sockets
 
+Namespace GameServer.Functions
+    Module ItemSpawn
         Public Function CreateItemSpawnPacket(ByVal Item_ As cItemDrop) As Byte()
             Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
             Dim writer As New PacketWriter
@@ -21,7 +22,8 @@
             writer.Float(Item_.Position.X)
             writer.Float(Item_.Position.Z)
             writer.Float(Item_.Position.Y)
-            writer.Word(0) 'angle
+            writer.Word(0)
+            'angle
 
             writer.Byte(0)
             ' writer.DWord(UInt32.MaxValue)
@@ -54,8 +56,9 @@
             ItemList.Add(tmp_.UniqueID, tmp_)
 
             For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Net.Sockets.Socket = ClientList.GetSocket(refindex)
-                Dim player As [cChar] = PlayerData(refindex) 'Check if Player is ingame
+                Dim socket As Socket = ClientList.GetSocket(refindex)
+                Dim player As [cChar] = PlayerData(refindex)
+                'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedItems.Contains(tmp_.UniqueID) = False Then
@@ -82,7 +85,6 @@
                     End If
                 End If
             Next
-
         End Sub
     End Module
 End Namespace

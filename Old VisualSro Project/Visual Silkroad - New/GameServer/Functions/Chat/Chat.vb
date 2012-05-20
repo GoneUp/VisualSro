@@ -9,7 +9,7 @@
                     OnPublicChat(Packet, Index_)
 
                 Case ChatModes.PmIncome
-                    OnWhisperIncome(Packet, Index_)
+                    OnWhisper(Packet, Index_)
 
                 Case ChatModes.GameMaster
                     OnGameMasterChat(Packet, Index_)
@@ -31,11 +31,13 @@
         Public Sub OnPublicChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
 
             Dim counter As Byte = packet.Byte
+            Dim items_linked As Byte = packet.Byte()
             Dim messagelength As UInt16 = packet.Word
             Dim message As String = packet.UString(messagelength)
 
             If message.Contains("\n") = False Then 'Filter :P
-                Dim writer As New PacketWriter 'Reply to sender
+                Dim writer As New PacketWriter
+                'Reply to sender
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(1)
                 writer.Byte(1)
@@ -55,12 +57,13 @@
             End If
         End Sub
 
-        Public Sub OnWhisperIncome(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnWhisper(ByVal Packet As PacketReader, ByVal Index_ As Integer)
 
             Dim counter As Byte = Packet.Byte
+            Dim items_linked As Byte = Packet.Byte()
             Dim senderlength As UInt16 = Packet.Word
             Dim receiver As String = Packet.String(senderlength)
-            Dim receiverIndex As Integer = -1
+            Dim receiverIndex As Integer = - 1
 
             Dim messagelength As UInt16 = Packet.Word
             Dim message As String = Packet.UString(messagelength)
@@ -76,7 +79,7 @@
 
             Dim writer As New PacketWriter
 
-            If receiverIndex <> -1 Then
+            If receiverIndex <> - 1 Then
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(1)
                 writer.Byte(ChatModes.PmIncome)
@@ -94,17 +97,20 @@
                 Server.Send(writer.GetBytes, receiverIndex)
 
                 If Settings.Log_Chat Then
-                    Log.WriteGameLog(Index_, "Chat", "Whisper", String.Format("Sender: {0} Message: {1}", receiver, message))
+                    Log.WriteGameLog(Index_, "Chat", "Whisper",
+                                     String.Format("Sender: {0} Message: {1}", receiver, message))
                 End If
             ElseIf receiver = "[DAMAGE_MOD]" Then
-                GameMod.Damage.ParseMessage(Index_, message)
+                GameServer.GameMod.Damage.ParseMessage(Index_, message)
             ElseIf receiver = "[Vagina]" And PlayerData(Index_).InStall Then
-                SendNotice(message, Index_)
+                SendNotice("E=MC Vagina", Index_)
+                SendNotice("Easteregg: " & message, Index_)
             Else
                 'Opposite not online
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(2)
-                writer.Word(3) 'error byte
+                writer.Word(3)
+                'error byte
                 writer.Byte(ChatModes.PmIncome)
                 writer.Byte(counter)
 
@@ -133,7 +139,8 @@
                 Dim messagelength As UShort = Packet.Word
                 Dim message As String = Packet.UString(messagelength)
 
-                Dim writer As New PacketWriter 'Reply to sender
+                Dim writer As New PacketWriter
+                'Reply to sender
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(1)
                 writer.Byte(ChatModes.GameMaster)
@@ -153,7 +160,6 @@
                     Log.WriteGameLog(Index_, "Chat", "GM", "Message: " & message)
                 End If
             End If
-
         End Sub
 
         Public Sub OnNoticeChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -214,7 +220,6 @@
             writer.UString(message)
             Server.Send(writer.GetBytes, Index_)
         End Sub
-
     End Module
 
     Enum ChatModes

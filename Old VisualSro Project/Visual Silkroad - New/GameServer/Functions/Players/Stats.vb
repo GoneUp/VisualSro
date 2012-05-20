@@ -21,8 +21,14 @@
             Server.Send(writer.GetBytes, index_)
 
             'Save all Data to DB
-            DataBase.SaveQuery(String.Format("UPDATE characters SET min_phyatk='{0}', max_phyatk='{1}', min_magatk='{2}', max_magatk='{3}', phydef='{4}', magdef='{5}', hit='{6}', parry='{7}', hp='{8}', mp='{9}', strength='{10}', intelligence='{11}', attribute='{12}' where id='{13}'", _
-            PlayerData(index_).MinPhy, PlayerData(index_).MaxPhy, PlayerData(index_).MinMag, PlayerData(index_).MinMag, PlayerData(index_).PhyDef, PlayerData(index_).MagDef, PlayerData(index_).Hit, PlayerData(index_).Parry, PlayerData(index_).HP, PlayerData(index_).MP, PlayerData(index_).Strength, PlayerData(index_).Intelligence, PlayerData(index_).Attributes, PlayerData(index_).CharacterId))
+            DataBase.SaveQuery(
+                String.Format(
+                    "UPDATE characters SET min_phyatk='{0}', max_phyatk='{1}', min_magatk='{2}', max_magatk='{3}', phydef='{4}', magdef='{5}', hit='{6}', parry='{7}', hp='{8}', mp='{9}', strength='{10}', intelligence='{11}', attribute='{12}' where id='{13}'",
+                    PlayerData(index_).MinPhy, PlayerData(index_).MaxPhy, PlayerData(index_).MinMag,
+                    PlayerData(index_).MinMag, PlayerData(index_).PhyDef, PlayerData(index_).MagDef,
+                    PlayerData(index_).Hit, PlayerData(index_).Parry, PlayerData(index_).HP, PlayerData(index_).MP,
+                    PlayerData(index_).Strength, PlayerData(index_).Intelligence, PlayerData(index_).Attributes,
+                    PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub UpdateHP(ByVal Index_ As Integer)
@@ -30,11 +36,14 @@
             writer.Create(ServerOpcodes.HP_MP_Update)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Word(&H10)
-            writer.Byte(1) 'type
+            writer.Byte(1)
+            'type
             writer.DWord(PlayerData(Index_).CHP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
+                                             PlayerData(Index_).CHP, PlayerData(Index_).HP,
+                                             PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateMP(ByVal Index_ As Integer)
@@ -42,11 +51,14 @@
             writer.Create(ServerOpcodes.HP_MP_Update)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Word(&H10)
-            writer.Byte(2) 'type
+            writer.Byte(2)
+            'type
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'", PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'",
+                                             PlayerData(Index_).CMP, PlayerData(Index_).MP,
+                                             PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateHP_MP(ByVal Index_ As Integer)
@@ -54,12 +66,16 @@
             writer.Create(ServerOpcodes.HP_MP_Update)
             writer.DWord(PlayerData(Index_).UniqueId)
             writer.Word(&H10)
-            writer.Byte(3) 'type
+            writer.Byte(3)
+            'type
             writer.DWord(PlayerData(Index_).CHP)
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'", PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
+            DataBase.SaveQuery(
+                String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'",
+                              PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CMP,
+                              PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateGold(ByVal Index_ As Integer)
@@ -70,7 +86,8 @@
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET gold='{0}' where id='{1}'", PlayerData(Index_).Gold, PlayerData(Index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET gold='{0}' where id='{1}'", PlayerData(Index_).Gold,
+                                             PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateSP(ByVal index_ As Integer)
@@ -81,7 +98,8 @@
             writer.Byte(0)
             Server.Send(writer.GetBytes, index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'", PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'",
+                                             PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub UpdateBerserk(ByVal index_ As Integer)
@@ -92,7 +110,8 @@
             writer.DWord(0)
             Server.Send(writer.GetBytes, index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'", PlayerData(index_).BerserkBar, PlayerData(index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'",
+                                             PlayerData(index_).BerserkBar, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub UpdateSpeeds(ByVal index_ As Integer)
@@ -159,7 +178,7 @@
             PlayerData(index_).Experience += exp
 
             Do While True
-                Dim lvldata As cLevelData = GetLevelData(PlayerData(index_).Level)
+                Dim lvldata As LevelData = GetLevelData(PlayerData(index_).Level)
 
                 If PlayerData(index_).Experience >= lvldata.Experience Then
                     'New Level   
@@ -187,11 +206,13 @@
                 End If
             Loop
 
-            Dim Gained_SP As UInteger = Math.Truncate(sp / 400)
-            Dim Gained_SPX As UInteger = sp - (Gained_SP * 400)
+            Dim Gained_SP As UInteger = Math.Truncate(sp/400)
+            Dim Gained_SPX As UInteger = sp - (Gained_SP*400)
 
             'Error Prevention
-            If PlayerData(index_).SkillPoints + Gained_SP >= UInteger.MaxValue Or PlayerData(index_).SkillPointBar + Gained_SPX >= UInteger.MaxValue Then
+            If _
+                PlayerData(index_).SkillPoints + Gained_SP >= UInteger.MaxValue Or
+                PlayerData(index_).SkillPointBar + Gained_SPX >= UInteger.MaxValue Then
                 Log.WriteSystemLog("SP OVERFLOW. Index: " & index_ & " Char:" & PlayerData(index_).CharacterName)
                 Exit Sub
             End If
@@ -199,7 +220,6 @@
 
             PlayerData(index_).SkillPoints += Gained_SP
             PlayerData(index_).SkillPointBar += Gained_SPX
-      
 
 
             Dim writer As New PacketWriter
@@ -222,7 +242,10 @@
             Server.Send(writer.GetBytes, index_)
 
             UpdateSP(index_)
-            DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'", PlayerData(index_).Level, PlayerData(index_).Experience, PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
+            DataBase.SaveQuery(
+                String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'",
+                              PlayerData(index_).Level, PlayerData(index_).Experience, PlayerData(index_).SkillPoints,
+                              PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub SendLevelUpAnimation(ByVal Index_ As Integer)

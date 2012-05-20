@@ -1,7 +1,8 @@
-﻿Imports System
+﻿Imports System.Timers
 
 Namespace GameServer.Functions
-    Public Class cMonster : Inherits cGameObject
+    Public Class cMonster
+        Inherits cGameObject
         Public SpotID As Long
 
         Public Mob_Type As Byte
@@ -10,7 +11,7 @@ Namespace GameServer.Functions
         Public HP_Max As UInteger
 
         Public Position_Spawn As Position
-        Public Pos_Tracker As Functions.cPositionTracker
+        Public Pos_Tracker As cPositionTracker
 
         Public Death As Boolean = False
         Public DeathRemoveTime As Date
@@ -19,7 +20,7 @@ Namespace GameServer.Functions
         Public AttackEndTime As New Date
         Public AttackingId As UInteger
         Public UsingSkillId As UInteger
-        Public AttackTimer As System.Timers.Timer
+        Public AttackTimer As Timer
 
         Public SpawnedGuard_80 As Boolean
         Public SpawnedGuard_60 As Boolean
@@ -36,7 +37,7 @@ Namespace GameServer.Functions
         End Property
 
         Public Function IsAttacking() As Boolean
-            If Date.Compare(Date.Now, Me.AttackEndTime) = -1 Then
+            If Date.Compare(Date.Now, Me.AttackEndTime) = - 1 Then
                 Return True
             Else
                 Return False
@@ -45,8 +46,9 @@ Namespace GameServer.Functions
 
 
 #Region "Timer"
+
         Sub New()
-            AttackTimer = New System.Timers.Timer
+            AttackTimer = New Timer
             AddHandler AttackTimer.Elapsed, AddressOf AttackTimer_Elapsed
         End Sub
 
@@ -72,15 +74,17 @@ Namespace GameServer.Functions
 
                 For i = 0 To sort.Count - 1
                     Dim Index As Integer = sort(i).PlayerIndex
-                    If Functions.PlayerData(Index) IsNot Nothing Then
-                        If Functions.PlayerData(Index).Ingame And Functions.PlayerData(sort(i).PlayerIndex).Alive = True Then
-                            If Functions.CalculateDistance(Functions.PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And sort(i).AttackingAllowed Then
-                                If Functions.cPositionTracker.enumSpeedMode.Walking Then
-                                    Pos_Tracker.SpeedMode = Functions.cPositionTracker.enumSpeedMode.Running
-                                    Functions.UpdateState(1, 3, Me)
+                    If PlayerData(Index) IsNot Nothing Then
+                        If PlayerData(Index).Ingame And PlayerData(sort(i).PlayerIndex).Alive = True Then
+                            If _
+                                CalculateDistance(PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And
+                                sort(i).AttackingAllowed Then
+                                If cPositionTracker.enumSpeedMode.Walking Then
+                                    Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                                    UpdateState(1, 3, Me)
                                 End If
 
-                                GameServer.Functions.MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
+                                MonsterAttackPlayer(Me.UniqueID, sort(i).PlayerIndex)
                                 Exit For
                             End If
                         End If
@@ -91,7 +95,8 @@ Namespace GameServer.Functions
                 Next
 
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE")
+                '
             End Try
 
             AttackTimer.Interval = 5000
@@ -101,6 +106,7 @@ Namespace GameServer.Functions
         Public Sub Disponse()
             AttackTimer.Dispose()
         End Sub
+
 #End Region
 
         Function GetsAttacked() As Boolean
@@ -111,16 +117,13 @@ Namespace GameServer.Functions
             Next
             Return False
         End Function
-
-
-
     End Class
 
     ''' <summary>
     ''' Is for the Damage done from a Player to a Monster.
     ''' </summary>
     ''' <remarks></remarks>
-    Public Class cDamageDone
+        Public Class cDamageDone
         Public PlayerIndex As Integer
         Public Damage As ULong
         Public AttackingAllowed As Boolean = False

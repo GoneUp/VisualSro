@@ -15,6 +15,7 @@
                 End Select
             End If
         End Sub
+
         Public Sub OnAlchemyPlusNormal(ByVal Packet As PacketReader, ByVal Index_ As Integer)
 
             Dim weapon_slot As Byte = Packet.Byte
@@ -38,22 +39,29 @@
                 writer.Byte(weapon.Slot)
                 writer.DWord(weapon.Pk2Id)
                 writer.Byte(weapon.Plus)
-                writer.QWord(0) 'modifier
+                writer.QWord(0)
+                'modifier
                 writer.DWord(weapon.Durability)
-                writer.Byte(0) 'clues
+                writer.Byte(0)
+                'clues
             Else
                 weapon.Plus = 0
                 writer.Create(ServerOpcodes.Alchemy)
                 writer.Byte(1)
-                writer.Byte(2) 'mode
-                writer.Byte(weapon.Plus) 'chnged to 0
-                writer.Byte(weapon.Slot) 'slot
+                writer.Byte(2)
+                'mode
+                writer.Byte(weapon.Plus)
+                'chnged to 0
+                writer.Byte(weapon.Slot)
+                'slot
                 writer.Byte(0)
                 writer.DWord(weapon.Pk2Id)
                 writer.Byte(weapon.Plus)
-                writer.QWord(0) 'modifier
+                writer.QWord(0)
+                'modifier
                 writer.DWord(weapon.Durability)
-                writer.Byte(0) 'blues
+                writer.Byte(0)
+                'blues
             End If
 
             Server.Send(writer.GetBytes, Index_)
@@ -98,22 +106,29 @@
                 writer.Byte(weapon.Slot)
                 writer.DWord(weapon.Pk2Id)
                 writer.Byte(weapon.Plus)
-                writer.QWord(0) 'modifier
+                writer.QWord(0)
+                'modifier
                 writer.DWord(weapon.Durability)
-                writer.Byte(0) 'clues
+                writer.Byte(0)
+                'clues
             Else
                 weapon.Plus = 0
                 writer.Create(ServerOpcodes.Alchemy)
                 writer.Byte(1)
-                writer.Byte(2) 'mode
-                writer.Byte(weapon.Plus) 'chnged to 0
-                writer.Byte(weapon.Slot) 'slot
+                writer.Byte(2)
+                'mode
+                writer.Byte(weapon.Plus)
+                'chnged to 0
+                writer.Byte(weapon.Slot)
+                'slot
                 writer.Byte(0)
                 writer.DWord(weapon.Pk2Id)
                 writer.Byte(weapon.Plus)
-                writer.QWord(0) 'modifier
+                writer.QWord(0)
+                'modifier
                 writer.DWord(weapon.Durability)
-                writer.Byte(0) 'blues
+                writer.Byte(0)
+                'blues
             End If
 
             Server.Send(writer.GetBytes, Index_)
@@ -143,7 +158,6 @@
             writer.Byte(powder_slot)
             writer.Byte(4)
             Server.Send(writer.GetBytes, Index_)
-
         End Sub
 
 
@@ -157,7 +171,7 @@
         Public Function CheckForSuccess(ByVal Old_Plus As Byte, ByVal Lucky As Integer) As Boolean
             Dim New_Plus As Integer = Old_Plus + 1
             Dim ToReach As Integer = Old_Plus - Lucky
-            Dim Rad As Integer = Math.Round((Rnd() * New_Plus), 0)
+            Dim Rad As Integer = Math.Round((Rnd()*New_Plus), 0)
             If ToReach <= Rad Then
                 'Success
                 Return True

@@ -1,4 +1,5 @@
 ﻿Imports System.Timers
+
 Namespace GameServer.Functions
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
@@ -18,7 +19,9 @@ Namespace GameServer.Functions
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttackTimer(TimerCount), PlayerMoveTimer(TimerCount), PickUpTimer(TimerCount), MonsterAttack(TimerCount), PlayerBerserkTimer(TimerCount), UsingItemTimer(TimerCount), SitUpTimer(TimerCount)
+                ReDim PlayerAttackTimer(TimerCount), PlayerMoveTimer(TimerCount), PickUpTimer(TimerCount),
+                    MonsterAttack(TimerCount), PlayerBerserkTimer(TimerCount), UsingItemTimer(TimerCount),
+                    SitUpTimer(TimerCount)
 
                 For i As Integer = 0 To TimerCount - 1
                     PlayerAttackTimer(i) = New Timer()
@@ -64,18 +67,18 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub AttackTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = -1
+            Dim Index As Integer = - 1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(PlayerAttackTimer, 1) To Information.UBound(PlayerAttackTimer, 1)
-                    If Object.ReferenceEquals(PlayerAttackTimer(i), objB) Then
+                For i As Integer = LBound(PlayerAttackTimer, 1) To UBound(PlayerAttackTimer, 1)
+                    If ReferenceEquals(PlayerAttackTimer(i), objB) Then
                         Index = i
                         Exit For
                     End If
                 Next
 
                 PlayerAttackTimer(Index).Stop()
-                If Index <> -1 And PlayerData(Index) IsNot Nothing Then
+                If Index <> - 1 And PlayerData(Index) IsNot Nothing Then
                     PlayerData(Index).Busy = False
                     PlayerData(Index).Attacking = False
 
@@ -98,33 +101,45 @@ Namespace GameServer.Functions
                 End If
 
 
-
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index)
+                '
             End Try
-
         End Sub
 
         Public Sub UseItemTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = -1
+            Dim Index As Integer = - 1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(UsingItemTimer, 1) To Information.UBound(UsingItemTimer, 1)
-                    If Object.ReferenceEquals(UsingItemTimer(i), objB) Then
+                For i As Integer = LBound(UsingItemTimer, 1) To UBound(UsingItemTimer, 1)
+                    If ReferenceEquals(UsingItemTimer(i), objB) Then
                         Index = i
                         Exit For
                     End If
                 Next
 
                 UsingItemTimer(Index).Stop()
-                If Index <> -1 Then
-                    Select Case Functions.PlayerData(Index).UsedItem
+                If Index <> - 1 Then
+                    Select Case PlayerData(Index).UsedItem
                         Case UseItemTypes.Return_Scroll
-                            PlayerData(Index).Position_Recall = Functions.PlayerData(Index).Position  'Save Pos
-                            PlayerData(Index).Position = Functions.PlayerData(Index).Position_Return 'Set new Pos
+                            PlayerData(Index).Position_Recall = PlayerData(Index).Position
+                            'Save Pos
+                            PlayerData(Index).Position = PlayerData(Index).Position_Return
+                            'Set new Pos
                             'Save to DB
-                            DataBase.SaveQuery(String.Format("UPDATE positions SET recall_xsect='{0}', recall_ysect='{1}', recall_xpos='{2}', recall_zpos='{3}', recall_ypos='{4}' where OwnerCharID='{5}'", PlayerData(Index).Position_Recall.XSector, PlayerData(Index).Position_Recall.YSector, Math.Round(PlayerData(Index).Position_Recall.X), Math.Round(PlayerData(Index).Position_Recall.Z), Math.Round(PlayerData(Index).Position_Recall.Y), PlayerData(Index).CharacterId))
-                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
+                            DataBase.SaveQuery(
+                                String.Format(
+                                    "UPDATE positions SET recall_xsect='{0}', recall_ysect='{1}', recall_xpos='{2}', recall_zpos='{3}', recall_ypos='{4}' where OwnerCharID='{5}'",
+                                    PlayerData(Index).Position_Recall.XSector, PlayerData(Index).Position_Recall.YSector,
+                                    Math.Round(PlayerData(Index).Position_Recall.X),
+                                    Math.Round(PlayerData(Index).Position_Recall.Z),
+                                    Math.Round(PlayerData(Index).Position_Recall.Y), PlayerData(Index).CharacterId))
+                            DataBase.SaveQuery(
+                                String.Format(
+                                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                                    PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
+                                    Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z),
+                                    Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
 
                             OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
                             PlayerData(Index).Busy = False
@@ -133,7 +148,12 @@ Namespace GameServer.Functions
 
                         Case UseItemTypes.Reverse_Scroll_Recall
                             PlayerData(Index).Position = PlayerData(Index).Position_Recall
-                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
+                            DataBase.SaveQuery(
+                                String.Format(
+                                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                                    PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
+                                    Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z),
+                                    Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
 
                             OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
                             PlayerData(Index).Busy = False
@@ -141,16 +161,26 @@ Namespace GameServer.Functions
 
                         Case UseItemTypes.Reverse_Scroll_Dead
                             PlayerData(Index).Position = PlayerData(Index).Position_Dead
-                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
+                            DataBase.SaveQuery(
+                                String.Format(
+                                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                                    PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
+                                    Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z),
+                                    Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
 
                             OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
                             PlayerData(Index).Busy = False
                             PlayerData(Index).UsedItem = UseItemTypes.None
 
                         Case UseItemTypes.Reverse_Scroll_Point
-                            Dim point As ReversePoint_ = GetReversePointByID(PlayerData(Index).UsedItemParameter)
+                            Dim point As ReversePoint_ = GetReversePoint(PlayerData(Index).UsedItemParameter)
                             PlayerData(Index).Position = point.Position
-                            DataBase.SaveQuery(String.Format("UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'", PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector, Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z), Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
+                            DataBase.SaveQuery(
+                                String.Format(
+                                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                                    PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
+                                    Math.Round(PlayerData(Index).Position.X), Math.Round(PlayerData(Index).Position.Z),
+                                    Math.Round(PlayerData(Index).Position.Y), PlayerData(Index).CharacterId))
 
                             OnTeleportUser(Index, PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector)
                             PlayerData(Index).Busy = False
@@ -160,24 +190,23 @@ Namespace GameServer.Functions
                     End Select
                 End If
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index)
+                '
             End Try
-
-
         End Sub
 
         Public Sub SitUpTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = -1
+            Dim Index As Integer = - 1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(SitUpTimer, 1) To Information.UBound(SitUpTimer, 1)
-                    If Object.ReferenceEquals(SitUpTimer(i), objB) Then
+                For i As Integer = LBound(SitUpTimer, 1) To UBound(SitUpTimer, 1)
+                    If ReferenceEquals(SitUpTimer(i), objB) Then
                         Index = i
                         Exit For
                     End If
                 Next
 
-                If Index <> -1 Then
+                If Index <> - 1 Then
                     SitUpTimer(Index).Stop()
 
                     If PlayerData(Index).ActionFlag = 4 Then
@@ -187,22 +216,23 @@ Namespace GameServer.Functions
                     End If
                 End If
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index)
+                '
             End Try
         End Sub
 
         Public Sub PickUpTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = -1
+            Dim Index As Integer = - 1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(PickUpTimer, 1) To Information.UBound(PickUpTimer, 1)
-                    If Object.ReferenceEquals(PickUpTimer(i), objB) Then
+                For i As Integer = LBound(PickUpTimer, 1) To UBound(PickUpTimer, 1)
+                    If ReferenceEquals(PickUpTimer(i), objB) Then
                         Index = i
                         Exit For
                     End If
                 Next
 
-                If Index <> -1 Then
+                If Index <> - 1 Then
                     PickUpTimer(Index).Stop()
 
                     If ItemList.ContainsKey(PlayerData(Index).PickUpId) Then
@@ -211,7 +241,8 @@ Namespace GameServer.Functions
 
                 End If
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index)
+                '
             End Try
         End Sub
 
@@ -251,14 +282,15 @@ Namespace GameServer.Functions
                 Next
 
 
-
                 stopwatch.Stop()
                 Debug.Print("WC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & MobList.Count)
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: WC") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: WC")
+                '
             End Try
 
-            WorldCheck.Start() 'restart Timer
+            WorldCheck.Start()
+            'restart Timer
         End Sub
 
 
@@ -273,10 +305,12 @@ Namespace GameServer.Functions
                 stopwatch.Stop()
                 Debug.Print("MR: " & stopwatch.ElapsedMilliseconds & "ms")
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MR") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MR")
+                '
             End Try
 
-            MonsterRespawn.Start() 'restart Timer
+            MonsterRespawn.Start()
+            'restart Timer
         End Sub
 
         Public Sub MonsterMovement_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
@@ -291,14 +325,17 @@ Namespace GameServer.Functions
                 For Each key In tmplist
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
-                        Dim obj As Object_ = GetObjectById(Mob_.Pk2ID)
+                        Dim obj As Object_ = GetObject(Mob_.Pk2ID)
                         If Rand.Next(0, 3) = 0 Then
-                            If Mob_.Death = False And Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And obj.WalkSpeed > 0 And Mob_.GetsAttacked = False And Mob_.IsAttacking = False Then
+                            If _
+                                Mob_.Death = False And
+                                Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And
+                                obj.WalkSpeed > 0 And Mob_.GetsAttacked = False And Mob_.IsAttacking = False Then
                                 Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
-                                If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
-                                    Dim ToX As Single = Mob_.Position.ToGameX + Rnd.Next(-15, +15)
-                                    Dim ToY As Single = Mob_.Position.ToGameY + Rnd.Next(-15, +15)
+                                If Dist_FromSpawn < Settings.Server_Range/1.25 Then
+                                    Dim ToX As Single = Mob_.Position.ToGameX + Rnd.Next(- 15, + 15)
+                                    Dim ToY As Single = Mob_.Position.ToGameY + Rnd.Next(- 15, + 15)
                                     Dim vaildCords As Boolean = False
                                     Dim validCordTrys As Integer = 0
 
@@ -310,8 +347,8 @@ Namespace GameServer.Functions
                                         ElseIf validCordTrys > 5 Then
                                             Continue For
                                         Else
-                                            ToX = Mob_.Position.ToGameX + Rnd.Next(-15, +15)
-                                            ToY = Mob_.Position.ToGameY + Rnd.Next(-15, +15)
+                                            ToX = Mob_.Position.ToGameX + Rnd.Next(- 15, + 15)
+                                            ToY = Mob_.Position.ToGameY + Rnd.Next(- 15, + 15)
                                             validCordTrys += 1
                                         End If
                                     Loop While vaildCords = False
@@ -336,48 +373,50 @@ Namespace GameServer.Functions
                 Debug.Print("MM: " & stopwatch.ElapsedMilliseconds & "ms")
 
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM")
+                '
             End Try
 
             MonsterMovement.Start()
         End Sub
 
         Public Sub PlayerMoveTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = -1
+            Dim Index As Integer = - 1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(PlayerMoveTimer, 1) To Information.UBound(PickUpTimer, 1)
-                    If Object.ReferenceEquals(PlayerMoveTimer(i), objB) Then
+                For i As Integer = LBound(PlayerMoveTimer, 1) To UBound(PickUpTimer, 1)
+                    If ReferenceEquals(PlayerMoveTimer(i), objB) Then
                         Index = i
                         Exit For
                     End If
                 Next
 
-                If Index <> -1 Then
+                If Index <> - 1 Then
                     PlayerMoveTimer(Index).Stop()
 
                     If PlayerData(Index) IsNot Nothing Then
                         If PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
                             Dim new_pos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
-                            'ObjectSpawnCheck(Index)
+                            ObjectSpawnCheck(Index)
                             CheckForCaveTeleporter(Index)
 
                             'SendPm(Index, "secx" & new_pos.XSector & "secy" & new_pos.YSector & "X: " & new_pos.X & "Y: " & new_pos.Y & " X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
                             PlayerMoveTimer(Index).Start()
 
                         ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
-                            'ObjectSpawnCheck(Index)
+                            ObjectSpawnCheck(Index)
                             'SendPm(Index, "Walk End", "hh")
 
                             CheckForCaveTeleporter(Index)
-                            PlayerMoveTimer(Index).Interval = 20 * 1000
+                            PlayerMoveTimer(Index).Interval = 20*1000
                             PlayerMoveTimer(Index).Start()
                         End If
                     End If
 
                 End If
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index)
+                '
             End Try
         End Sub
 
@@ -393,22 +432,26 @@ Namespace GameServer.Functions
                                 Case 0
                                     'Nomral
                                     If PlayerData(i).CHP < PlayerData(i).HP Then
-                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.002, 0, MidpointRounding.AwayFromZero)
+                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP*0.002, 0,
+                                                                        MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
                                     If PlayerData(i).CMP < PlayerData(i).MP Then
-                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.002, 0, MidpointRounding.AwayFromZero)
+                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP*0.002, 0,
+                                                                        MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
 
                                 Case 4
                                     'Sitting
                                     If PlayerData(i).CHP < PlayerData(i).HP Then
-                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.05, 0, MidpointRounding.AwayFromZero)
+                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP*0.05, 0,
+                                                                        MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
                                     If PlayerData(i).CMP < PlayerData(i).MP Then
-                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.05, 0, MidpointRounding.AwayFromZero)
+                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP*0.05, 0,
+                                                                        MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
                             End Select
@@ -430,7 +473,8 @@ Namespace GameServer.Functions
                 Next
 
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PAH") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PAH")
+                '
             End Try
 
             PlayerAutoHeal.Start()
@@ -439,11 +483,11 @@ Namespace GameServer.Functions
 
         Public Sub PlayerBerserkTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
 
-            Dim Index As Integer = -1
+            Dim Index As Integer = - 1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
-                For i As Integer = Information.LBound(PlayerBerserkTimer, 1) To Information.UBound(PlayerBerserkTimer, 1)
-                    If Object.ReferenceEquals(PlayerBerserkTimer(i), objB) Then
+                For i As Integer = LBound(PlayerBerserkTimer, 1) To UBound(PlayerBerserkTimer, 1)
+                    If ReferenceEquals(PlayerBerserkTimer(i), objB) Then
                         Index = i
                         Exit For
                     End If
@@ -451,7 +495,7 @@ Namespace GameServer.Functions
 
                 PlayerBerserkTimer(Index).Stop()
 
-                If Index <> -1 And PlayerData(Index) IsNot Nothing Then
+                If Index <> - 1 And PlayerData(Index) IsNot Nothing Then
                     PlayerData(Index).Berserk = False
                     PlayerData(Index).BerserkBar = 0
                     PlayerData(Index).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
@@ -459,7 +503,8 @@ Namespace GameServer.Functions
                     UpdateState(4, 0, Index)
                 End If
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index) '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index)
+                '
             End Try
         End Sub
 
@@ -480,7 +525,8 @@ Namespace GameServer.Functions
                     MonsterMovement.Start()
                 End If
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB") '
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB")
+                '
             End Try
 
             DatabaseTimer.Start()

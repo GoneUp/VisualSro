@@ -1,0 +1,119 @@
+<Configuration>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/f:PlayerBuff.vb" caret="4524" fromTop="52" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Custom_Commands.vb" caret="13532" fromTop="19" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/f:Stats.vb" caret="4651" fromTop="86" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/f:Players.vb" caret="164" fromTop="5" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/d:Movement/f:Movement.vb" caret="2505" fromTop="21" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Framework/d:Silkroad/f:SilkroadData.vb" caret="29097" fromTop="6" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Console/f:Main.vb" caret="2233" fromTop="20" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Global/f:Timers.vb" caret="18448" fromTop="21" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Chat.vb" caret="5588" fromTop="130" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Framework/d:Packets/f:PacketReader.vb" caret="531" fromTop="19" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Framework/d:Server/f:Server.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Items/f:cItem.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/f:Parser.vb" caret="0" fromTop="0" />
+      <File id="114134D5-E272-4647-924D-D577AE24D7DD/d:Console/f:Main.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Console/f:Commands.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Framework/d:Server/f:ClientList.vb" caret="0" fromTop="0" />
+      <File id="d:Sonstige Dateien/f:Main.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Mods/f:modDamage.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:GameMaster/f:GameMaster.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Npc/f:NPC.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Framework/d:Silkroad/f:Formula.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Items/f:Inventory.vb" caret="0" fromTop="0" />
+      <File id="114134D5-E272-4647-924D-D577AE24D7DD/d:Framework/d:Settings/f:Settings.vb" caret="521" fromTop="14" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/f:PlayerActions.vb" caret="4418" fromTop="15" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Items/f:ItemMall.vb" caret="269" fromTop="5" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Framework/d:Packets/f:Opcodes.vb" caret="1838" fromTop="17" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Character/f:Character.vb" caret="24031" fromTop="25" />
+      <File id="114134D5-E272-4647-924D-D577AE24D7DD/d:Functions/f:Parser.vb" caret="0" fromTop="0" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/d:Movement/f:cPositionTracker.vb" caret="0" fromTop="0" />
+      <File id="114134D5-E272-4647-924D-D577AE24D7DD/d:Functions/d:Login/f:LoginServer.vb" caret="697" fromTop="0" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Custom_Commands.vb" caret="281" fromTop="6" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Chat.vb" caret="4849" fromTop="9" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Chat.vb" caret="4648" fromTop="4" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Chat.vb" caret="4930" fromTop="10" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Custom_Commands.vb" caret="331" fromTop="7" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Global/f:Timers.vb" caret="18389" fromTop="20" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Global/f:Timers.vb" caret="17897" fromTop="13" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Character/f:Character.vb" caret="32447" fromTop="20" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Chat/f:Custom_Commands.vb" caret="610" fromTop="15" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/d:Movement/f:Movement.vb" caret="3077" fromTop="32" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/d:Movement/f:Movement.vb" caret="3503" fromTop="38" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/f:Stats.vb" caret="10794" fromTop="20" />
+      <File id="F08483F9-6798-4AA9-B585-763A52FBF825/d:Functions/d:Players/f:Stats.vb" caret="4847" fromTop="0" />
+    </RecentEdits>
+  </RecentFiles>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="VBCodeCompletionContextSimple">
+      <Item value="Server`0" priority="13" />
+      <Item value="CreateSpawnPacket`0" priority="13" />
+      <Item value="index" priority="13" />
+      <Item value="ThreadPriorityLevel`0" priority="13" />
+      <Item value="Threading" priority="13" />
+      <Item value="Thread`0" priority="11" />
+      <Item value="Console`0" priority="13" />
+      <Item value="Dim" priority="27" />
+      <Item value="NewsStyleUriParser`0" priority="13" />
+      <Item value="Stopwatch`0" priority="12" />
+      <Item value="Stop" priority="13" />
+      <Item value="stopwatch" priority="27" />
+      <Item value="Byte`0" priority="13" />
+      <Item value="UInt16`0" priority="13" />
+      <Item value="BitConverter`0" priority="13" />
+      <Item value="b" priority="13" />
+      <Item value="Packet" priority="27" />
+      <Item value="Stall_ChangeWelcomeMessage`0" priority="13" />
+      <Item value="messagelength" priority="13" />
+      <Item value="Index_" priority="27" />
+      <Item value="PlayerData" priority="13" />
+      <Item value="index0" priority="13" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@GameServer.GameServer.Server">
+      <Item value="Send`0" priority="11" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Threading.Thread">
+      <Item value="Sleep`0" priority="11" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Console">
+      <Item value="WriteLine`0" priority="11" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Diagnostics.Stopwatch">
+      <Item value="Start`0" priority="12" />
+      <Item value="Stop`0" priority="11" />
+      <Item value="ElapsedMilliseconds" priority="11" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:GameServer.GameServer.PacketReader">
+      <Item value="Byte`0" priority="24" />
+      <Item value="ByteArray`0" priority="11" />
+      <Item value="Word`0" priority="11" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.BitConverter">
+      <Item value="ToUInt16`0" priority="11" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:GameServer.GameServer.Functions.cChar">
+      <Item value="UniqueId" priority="11" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir IsNull="False" />
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+</Configuration>

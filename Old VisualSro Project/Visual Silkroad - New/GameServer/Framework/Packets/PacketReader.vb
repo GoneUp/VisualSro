@@ -1,9 +1,7 @@
-﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.IO
-	Imports System.Text
-Namespace GameServer
+﻿Imports System.IO
+Imports System.Text
 
+Namespace GameServer
     Public Class PacketReader
         Private br As BinaryReader
         Private ms As MemoryStream
@@ -41,7 +39,7 @@ Namespace GameServer
         End Function
 
         Public Sub Skip(ByVal HowMany As Integer)
-            For i As Integer = 1 To (HowMany \ 2)
+            For i As Integer = 1 To (HowMany\2)
                 Me.br.ReadByte()
             Next i
         End Sub
@@ -55,13 +53,14 @@ Namespace GameServer
         End Function
 
         Public Function UString(ByVal len As Integer) As String
-            Dim Bytes As Byte() = Me.ByteArray(len * 2)
-            Return System.Text.Encoding.Unicode.GetString(Bytes)
+            Dim Bytes As Byte() = Me.ByteArray(len*2)
+            Return Encoding.Unicode.GetString(Bytes)
         End Function
 
         Public Function Word() As UShort
             Return Me.br.ReadUInt16()
         End Function
+
         Public Function WordInt() As Short
             Return Me.br.ReadInt16()
         End Function

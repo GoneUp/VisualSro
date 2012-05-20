@@ -1,6 +1,4 @@
-﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.IO
+﻿Imports System.IO
 
 Namespace GameServer
     Public Class PacketWriter
@@ -19,6 +17,7 @@ Namespace GameServer
                 Me.dataLen += 2
             Next
         End Sub
+
         Public Sub Create(ByVal opcode As UShort)
             Me.bw = Nothing
             Me.ms = Nothing
@@ -54,7 +53,7 @@ Namespace GameServer
         Public Sub HexString(ByVal data As String)
             Dim chArray(data.Length - 1) As Char
             For i As Integer = 0 To data.Length - 1
-                chArray(i) = System.Convert.ToChar(data.Substring(i, 1))
+                chArray(i) = Convert.ToChar(data.Substring(i, 1))
                 Me.bw.Write(chArray(i))
             Next i
             Me.dataLen += data.Length
@@ -68,20 +67,20 @@ Namespace GameServer
         Public Sub [String](ByVal data As String)
             Dim chArray(data.Length - 1) As Char
             For i As Integer = 0 To data.Length - 1
-                chArray(i) = System.Convert.ToChar(data.Substring(i, 1))
+                chArray(i) = Convert.ToChar(data.Substring(i, 1))
                 Me.bw.Write(chArray(i))
             Next i
-            Me.dataLen += data.Length * 2
+            Me.dataLen += data.Length*2
         End Sub
 
         Public Sub UString(ByVal data As String)
             Dim chArray(data.Length - 1) As Char
             For i As Integer = 0 To data.Length - 1
-                chArray(i) = System.Convert.ToChar(data.Substring(i, 1))
+                chArray(i) = Convert.ToChar(data.Substring(i, 1))
                 Me.bw.Write(chArray(i))
                 Me.bw.Write(CByte(0))
             Next i
-            Me.dataLen += data.Length * 4
+            Me.dataLen += data.Length*4
         End Sub
 
         Public Sub Word(ByVal data As UShort)

@@ -1,43 +1,44 @@
 ﻿Namespace GameServer.Functions
-    Public Class [cChar] : Inherits cGameObject
+    Public Class [cChar]
+        Inherits cGameObject
 
-        Public AccountID As UInteger
-        Public CharacterName As String
-        Public CharacterId As UInteger
-        Public HP As UInteger
-        Public MP As UInteger
-        Public CHP As Integer
-        Public CMP As Integer
-        Public Volume As Byte
-        Public Level As Byte
-        Public Experience As ULong
-        Public Gold As ULong
-        Public SkillPoints As UInteger
-        Public SkillPointBar As ULong
-        Public Attributes As UShort
-        Public BerserkBar As Byte
-        Public Berserk As Boolean
-        Public WalkSpeed As Single
-        Public RunSpeed As Single
-        Public BerserkSpeed As Single
+        Public AccountID As UInteger = 0
+        Public CharacterName As String = ""
+        Public CharacterId As UInteger = 0
+        Public HP As UInteger = 0
+        Public MP As UInteger = 0
+        Public CHP As UInteger = 0
+        Public CMP As UInteger = 0
+        Public Volume As Byte = 0
+        Public Level As Byte = 0
+        Public Experience As ULong = 0
+        Public Gold As ULong = 0
+        Public SkillPoints As UInteger = 0
+        Public SkillPointBar As ULong = 0
+        Public Attributes As UShort = 0
+        Public BerserkBar As Byte = 0
+        Public Berserk As Boolean = False
+        Public WalkSpeed As Single = 0
+        Public RunSpeed As Single = 0
+        Public BerserkSpeed As Single = 0
 
-        Public MinPhy As UInteger
-        Public MaxPhy As UInteger
+        Public MinPhy As UInteger = 0
+        Public MaxPhy As UInteger = 0
 
-        Public MinMag As UInteger
-        Public MaxMag As UInteger
+        Public MinMag As UInteger = 0
+        Public MaxMag As UInteger = 0
 
-        Public PhyDef As UShort
-        Public MagDef As UShort
-        Public PhyAbs As UShort
-        Public MagAbs As UShort
-        Public AccessoryAbs As UShort
+        Public PhyDef As UShort = 0
+        Public MagDef As UShort = 0
+        Public PhyAbs As UShort = 0
+        Public MagAbs As UShort = 0
+        Public AccessoryAbs As UShort = 0
 
-        Public Hit As UShort
-        Public Parry As UShort
+        Public Hit As UShort = 0
+        Public Parry As UShort = 0
 
-        Public Strength As UShort
-        Public Intelligence As UShort
+        Public Strength As UShort = 0
+        Public Intelligence As UShort = 0
 
         'Job
         Public AliasName As String = ""
@@ -47,24 +48,25 @@
 
         'Flags
         Public GM As Boolean = False
-        Public PVP As Byte
-        Public MaxSlots As Byte
-        Public Angle As UInt16
-        Public Deleted As Boolean
+        Public PVP As Byte = 0
+        Public MaxSlots As Byte = 0
+        Public Angle As UInt16 = 0
+        Public Deleted As Boolean = False
         Public DeletionTime As DateTime
-        Public HelperIcon As Byte
-        Public ActionFlag As Byte '0x00 = standing, 0x02 = walking, 0x03 = running, 0x04 = sitting
-        Public Busy As Boolean
+        Public HelperIcon As Byte = 0
+        Public ActionFlag As Byte = 0
+        '0x00 = standing, 0x02 = walking, 0x03 = running, 0x04 = sitting
+        Public Busy As Boolean = False
         Public Alive As Boolean = True
         Public Skilling As Boolean = False
 
         Public UsedItem As UseItemTypes
-        Public UsedItemParameter As Integer
+        Public UsedItemParameter As Integer = 0
 
         Public Position_Recall As New Position
         Public Position_Return As New Position
         Public Position_Dead As New Position
-        Public Pos_Tracker As Functions.cPositionTracker
+        Public Pos_Tracker As cPositionTracker
 
         Public SpawnedPlayers As New List(Of Integer)
         Public SpawnedMonsters As New List(Of Integer)
@@ -72,22 +74,23 @@
         Public SpawnedNPCs As New List(Of Integer)
 
         Public Ingame As Boolean = False
-        Public Invisible As Boolean = False 'For Gms
+        Public Invisible As Boolean = False
+        'For Gms
         Public Invincible As Boolean = False
 
         Public InGuild As Boolean = False
-        Public GuildID As Long = -1
+        Public GuildID As UInteger = 0
 
         Public InExchange As Boolean = False
-        Public InExchangeWith As Integer = -1
-        Public ExchangeID As Integer = -1
+        Public InExchangeWith As UInteger = 0
+        Public ExchangeID As UInteger = 0
 
         Public InStall As Boolean = False
         Public StallID As UInteger = 0
         Public StallOwner As Boolean = False
 
         Public InParty As Boolean = False
-        Public PartyID As Long = -1
+        Public PartyID As UInteger = 0
 
         Public PickUpId As UInteger = 0
         Public Attacking As Boolean = False
@@ -106,7 +109,8 @@
         Public Pot_Abormal_Value As Byte = 0
         Public Pot_Delay As Byte = 0
 
-        Public Buffs As New Dictionary(Of UInteger, cBuff) 'Uint = SkillOverId
+        Public Buffs As New Dictionary(Of UInteger, cBuff)
+        'Uint = SkillOverId
 
         Public TeleportType As TeleportType_
 
@@ -123,8 +127,8 @@
         Sub SetCharGroundStats()
             'HP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Strength - 20) * 10
             'MP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Intelligence - 20) * 10
-            HP = (Math.Pow(1.02, Me.Level - 1) * Me.Strength * 10)
-            MP = (Math.Pow(1.02, Me.Level - 1) * Me.Intelligence * 10)
+            HP = (Math.Pow(1.02, Me.Level - 1)*Me.Strength*10)
+            MP = (Math.Pow(1.02, Me.Level - 1)*Me.Intelligence*10)
 
             Hit = Math.Round(Me.Level + 1000)
             Parry = Math.Round(Me.Level + 10)
@@ -132,29 +136,35 @@
             '=================Really unsure of these Formulas=============
             Me.WalkSpeed = 15
             Me.RunSpeed = Me.Level + 49
-            Me.BerserkSpeed = Me.RunSpeed * 2
+            Me.BerserkSpeed = Me.RunSpeed*2
             Me.Pos_Tracker.WalkSpeed = Me.WalkSpeed
             Me.Pos_Tracker.RunSpeed = Me.RunSpeed
             Me.Pos_Tracker.ZerkSpeed = Me.BerserkSpeed
 
 
             'Set default.
-            MinPhy = 0 'GameServer.Functions.GetMinPhy(Me.Strength)
-            MaxPhy = 0 'GameServer.Functions.GetMaxPhy(Me.Strength, Level)
-            MinMag = 0 'GameServer.Functions.GetMinMag(Me.Intelligence, Level)
-            MaxMag = 0 'GameServer.Functions.GetMaxMag(Me.Intelligence, Level)
-            PhyDef = 0 'GameServer.Functions.GetPhyDef(Me.Strength, Level)
-            MagDef = 0 'GameServer.Functions.GetMagDef(Me.Intelligence)
+            MinPhy = 0
+            'GameServer.Functions.GetMinPhy(Me.Strength)
+            MaxPhy = 0
+            'GameServer.Functions.GetMaxPhy(Me.Strength, Level)
+            MinMag = 0
+            'GameServer.Functions.GetMinMag(Me.Intelligence, Level)
+            MaxMag = 0
+            'GameServer.Functions.GetMaxMag(Me.Intelligence, Level)
+            PhyDef = 0
+            'GameServer.Functions.GetPhyDef(Me.Strength, Level)
+            MagDef = 0
+            'GameServer.Functions.GetMagDef(Me.Intelligence)
             PhyAbs = 0
             MagAbs = 0
         End Sub
 
         Sub AddItemsToStats(ByVal Index_ As Integer)
             For i = 0 To 12
-                Dim _item As cInvItem = GameServer.Functions.Inventorys(Index_).UserItems(i)
+                Dim _item As cInvItem = Inventorys(Index_).UserItems(i)
                 If _item.Pk2Id <> 0 Then
 
-                    Dim _refitem As cItem = GameServer.GetItemByID(_item.Pk2Id)
+                    Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
 
                     If _refitem.CLASS_A = 1 Then
 
@@ -165,25 +175,29 @@
 
                                 'PhyDef
                                 'Formel:PerItem PhyDef = STR * (PhyRef / 100) + ItemPhyDef
-                                tmpDifference = (_refitem.MAX_PHYS_REINFORCE / 10) - (_refitem.MIN_PHYS_REINFORCE / 10)
-                                Dim PhyRef As Single = (_refitem.MIN_PHYS_REINFORCE / 10) + (_item.PerPhyRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_PHYS_REINFORCE/10) - (_refitem.MIN_PHYS_REINFORCE/10)
+                                Dim PhyRef As Single = (_refitem.MIN_PHYS_REINFORCE/10) +
+                                                       (_item.PerPhyRef*(tmpDifference/100))
 
                                 tmpDifference = _refitem.MAX_PHYSDEF - _refitem.MIN_PHYSDEF
-                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_item.PerPhyDef * (tmpDifference / 100)) + (_item.Plus * _refitem.PHYSDEF_INC)
-                                PhyDef += Math.Round(Strength * (PhyRef / 100) + ItemPhyDef, 0, MidpointRounding.ToEven)
+                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_item.PerPhyDef*(tmpDifference/100)) +
+                                                           (_item.Plus*_refitem.PHYSDEF_INC)
+                                PhyDef += Math.Round(Strength*(PhyRef/100) + ItemPhyDef, 0, MidpointRounding.ToEven)
 
                                 'MagDef
                                 'Formel:PerItem PhyDef = STR * (MagRef / 100) + ItemMagDef
-                                tmpDifference = (_refitem.MAX_MAG_REINFORCE / 19) - (_refitem.MIN_MAG_REINFORCE / 10)
-                                Dim MagRef As Single = (_refitem.MIN_MAG_REINFORCE / 10) + (_item.PerMagRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_MAG_REINFORCE/19) - (_refitem.MIN_MAG_REINFORCE/10)
+                                Dim MagRef As Single = (_refitem.MIN_MAG_REINFORCE/10) +
+                                                       (_item.PerMagRef*(tmpDifference/100))
 
                                 tmpDifference = _refitem.MAX_MAGDEF - _refitem.MIN_MAGDEF
-                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_item.PerMagDef * (tmpDifference / 100)) + (_item.Plus * _refitem.MAGDEF_INC)
-                                MagDef += Math.Round(Intelligence * (MagRef / 100) + ItemMagDef, 0, MidpointRounding.ToEven)
+                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_item.PerMagDef*(tmpDifference/100)) +
+                                                           (_item.Plus*_refitem.MAGDEF_INC)
+                                MagDef += Math.Round(Intelligence*(MagRef/100) + ItemMagDef, 0, MidpointRounding.ToEven)
 
                                 'Parry Rate
                                 tmpDifference = _refitem.MAX_PARRY - _refitem.MIN_PARRY
-                                Parry += Math.Round(_refitem.MIN_PARRY + (_item.PerParryRate * (tmpDifference / 100)))
+                                Parry += Math.Round(_refitem.MIN_PARRY + (_item.PerParryRate*(tmpDifference/100)))
                             Case 6 'Weapon
                                 '################################################################################
                                 '=============Unsure OLD
@@ -199,70 +213,87 @@
                                 'Formel:PhyAtk = STR * (PhyRef / 100) + PhyDmg
 
                                 'PhyRefMin
-                                tmpDifference = (_refitem.MAX_FROM_PHYS_REINFORCE / 10) - (_refitem.MIN_FROM_PHYS_REINFORCE / 10)
-                                Dim PhyRefMin As Single = (_refitem.MIN_FROM_PHYS_REINFORCE / 10) + (_item.PerPhyRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_FROM_PHYS_REINFORCE/10) -
+                                                (_refitem.MIN_FROM_PHYS_REINFORCE/10)
+                                Dim PhyRefMin As Single = (_refitem.MIN_FROM_PHYS_REINFORCE/10) +
+                                                          (_item.PerPhyRef*(tmpDifference/100))
 
                                 'PhyRefMax
-                                tmpDifference = (_refitem.MAX_TO_PHYS_REINFORCE / 10) - (_refitem.MIN_TO_PHYS_REINFORCE / 10)
-                                Dim PhyRefMax As Single = (_refitem.MIN_TO_PHYS_REINFORCE / 10) + (_item.PerPhyRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_TO_PHYS_REINFORCE/10) -
+                                                (_refitem.MIN_TO_PHYS_REINFORCE/10)
+                                Dim PhyRefMax As Single = (_refitem.MIN_TO_PHYS_REINFORCE/10) +
+                                                          (_item.PerPhyRef*(tmpDifference/100))
 
                                 'MinPhyDmg
                                 tmpDifference = _refitem.MAX_FROM_PHYATK - _refitem.MIN_FROM_PHYATK
-                                Dim MinPhyDmg As Single = _refitem.MIN_FROM_PHYATK + (_item.PerPhyAtk * (tmpDifference / 100)) + (_item.Plus * _refitem.PHYSDEF_INC)
+                                Dim MinPhyDmg As Single = _refitem.MIN_FROM_PHYATK +
+                                                          (_item.PerPhyAtk*(tmpDifference/100)) +
+                                                          (_item.Plus*_refitem.PHYSDEF_INC)
 
                                 'MaxPhyDmg
                                 tmpDifference = _refitem.MAX_TO_PHYATK - _refitem.MIN_TO_PHYATK
-                                Dim MaxPhyDmg As Single = _refitem.MIN_TO_PHYATK + (_item.PerPhyAtk * (tmpDifference / 100)) + (_item.Plus * _refitem.PHYSDEF_INC)
+                                Dim MaxPhyDmg As Single = _refitem.MIN_TO_PHYATK + (_item.PerPhyAtk*(tmpDifference/100)) +
+                                                          (_item.Plus*_refitem.PHYSDEF_INC)
 
-                                MinPhy = Math.Round(Strength * (PhyRefMin / 100) + MinPhyDmg, 0, MidpointRounding.ToEven)
-                                MaxPhy = Math.Round(Strength * (PhyRefMax / 100) + MaxPhyDmg, 0, MidpointRounding.ToEven)
+                                MinPhy = Math.Round(Strength*(PhyRefMin/100) + MinPhyDmg, 0, MidpointRounding.ToEven)
+                                MaxPhy = Math.Round(Strength*(PhyRefMax/100) + MaxPhyDmg, 0, MidpointRounding.ToEven)
                                 '--------------------------------------------------------------------------------
                                 'MagATK
                                 'Formel:MagAtk = INT * (MagRef / 100) + MagDmg
 
                                 'MagRefMin
-                                tmpDifference = (_refitem.MAX_FROM_MAG_REINFORCE / 10) - (_refitem.MIN_FROM_MAG_REINFORCE / 10)
-                                Dim MagRefMin As Single = (_refitem.MIN_FROM_MAG_REINFORCE / 10) + (_item.PerMagRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_FROM_MAG_REINFORCE/10) -
+                                                (_refitem.MIN_FROM_MAG_REINFORCE/10)
+                                Dim MagRefMin As Single = (_refitem.MIN_FROM_MAG_REINFORCE/10) +
+                                                          (_item.PerMagRef*(tmpDifference/100))
 
                                 'MagRefMax
-                                tmpDifference = (_refitem.MAX_TO_MAG_REINFORCE / 10) - (_refitem.MIN_TO_MAG_REINFORCE / 10)
-                                Dim MagRefMax As Single = (_refitem.MIN_TO_MAG_REINFORCE / 10) + (_item.PerMagRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_TO_MAG_REINFORCE/10) - (_refitem.MIN_TO_MAG_REINFORCE/10)
+                                Dim MagRefMax As Single = (_refitem.MIN_TO_MAG_REINFORCE/10) +
+                                                          (_item.PerMagRef*(tmpDifference/100))
 
                                 'MinMagDmg
                                 tmpDifference = _refitem.MAX_FROM_MAGATK - _refitem.MIN_FROM_MAGATK
-                                Dim MinMagDmg As Single = _refitem.MIN_FROM_MAGATK + (_item.PerMagAtk * (tmpDifference / 100)) + (_item.Plus * _refitem.MAGATK_INC)
+                                Dim MinMagDmg As Single = _refitem.MIN_FROM_MAGATK +
+                                                          (_item.PerMagAtk*(tmpDifference/100)) +
+                                                          (_item.Plus*_refitem.MAGATK_INC)
 
                                 'MaxMagDmg
                                 tmpDifference = _refitem.MAX_TO_MAGATK - _refitem.MIN_TO_MAGATK
-                                Dim MaxMagDmg As Single = _refitem.MIN_TO_MAGATK + (_item.PerMagAtk * (tmpDifference / 100)) + (_item.Plus * _refitem.MAGATK_INC)
+                                Dim MaxMagDmg As Single = _refitem.MIN_TO_MAGATK + (_item.PerMagAtk*(tmpDifference/100)) +
+                                                          (_item.Plus*_refitem.MAGATK_INC)
 
-                                MinMag = Math.Round(Intelligence * (MagRefMin / 100) + MinMagDmg, 0, MidpointRounding.ToEven)
-                                MaxMag = Math.Round(Intelligence * (MagRefMax / 100) + MaxMagDmg, 0, MidpointRounding.ToEven)
+                                MinMag = Math.Round(Intelligence*(MagRefMin/100) + MinMagDmg, 0, MidpointRounding.ToEven)
+                                MaxMag = Math.Round(Intelligence*(MagRefMax/100) + MaxMagDmg, 0, MidpointRounding.ToEven)
 
                                 'Parry Rate
                                 tmpDifference = _refitem.MAX_ATTACK_RATING - _refitem.MIN_ATTACK_RATING
-                                Hit += Math.Round(_refitem.MIN_ATTACK_RATING + (_item.PerAttackRate * (tmpDifference / 100)))
+                                Hit += Math.Round(_refitem.MIN_ATTACK_RATING + (_item.PerAttackRate*(tmpDifference/100)))
                             Case 7 'Shield
 
                                 Dim tmpDifference As Single
 
                                 'PhyDef
                                 'Formel:PerItem PhyDef = STR * (PhyRef / 100) + ItemPhyDef
-                                tmpDifference = (_refitem.MAX_PHYS_REINFORCE / 10) - (_refitem.MIN_PHYS_REINFORCE / 10)
-                                Dim PhyRef As Single = (_refitem.MIN_PHYS_REINFORCE / 10) + (_item.PerPhyRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_PHYS_REINFORCE/10) - (_refitem.MIN_PHYS_REINFORCE/10)
+                                Dim PhyRef As Single = (_refitem.MIN_PHYS_REINFORCE/10) +
+                                                       (_item.PerPhyRef*(tmpDifference/100))
 
                                 tmpDifference = _refitem.MAX_PHYSDEF - _refitem.MIN_PHYSDEF
-                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_item.PerPhyDef * (tmpDifference / 100)) + (_item.Plus * _refitem.PHYSDEF_INC)
-                                PhyDef += Math.Round(Strength * (PhyRef / 100) + ItemPhyDef, 0, MidpointRounding.ToEven)
+                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_item.PerPhyDef*(tmpDifference/100)) +
+                                                           (_item.Plus*_refitem.PHYSDEF_INC)
+                                PhyDef += Math.Round(Strength*(PhyRef/100) + ItemPhyDef, 0, MidpointRounding.ToEven)
 
                                 'MagDef
                                 'Formel:PerItem PhyDef = STR * (MagRef / 100) + ItemMagDef
-                                tmpDifference = (_refitem.MAX_MAG_REINFORCE / 10) - (_refitem.MIN_MAG_REINFORCE / 10)
-                                Dim MagRef As Single = (_refitem.MIN_MAG_REINFORCE / 10) + (_item.PerMagRef * (tmpDifference / 100))
+                                tmpDifference = (_refitem.MAX_MAG_REINFORCE/10) - (_refitem.MIN_MAG_REINFORCE/10)
+                                Dim MagRef As Single = (_refitem.MIN_MAG_REINFORCE/10) +
+                                                       (_item.PerMagRef*(tmpDifference/100))
 
                                 tmpDifference = _refitem.MAX_MAGDEF - _refitem.MIN_MAGDEF
-                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_item.PerMagDef * (tmpDifference / 100)) + (_item.Plus * _refitem.MAGDEF_INC)
-                                MagDef += Math.Round(Intelligence * (MagRef / 100) + ItemMagDef, 0, MidpointRounding.ToEven)
+                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_item.PerMagDef*(tmpDifference/100)) +
+                                                           (_item.Plus*_refitem.MAGDEF_INC)
+                                MagDef += Math.Round(Intelligence*(MagRef/100) + ItemMagDef, 0, MidpointRounding.ToEven)
 
                             Case 8 'Jobsuit/PVP Cape
 
@@ -270,12 +301,18 @@
                                 Dim tmpDifference As Single
 
                                 tmpDifference = _refitem.MAX_PHYS_ABSORB - _refitem.MIN_PHYS_ABSORB
-                                Dim tmpPhyAbs As Single = _refitem.MIN_PHYS_ABSORB + (_item.PerPhyAbs * (tmpDifference / 100)) + (_item.Plus * _refitem.PHYS_ABSORB_INC)
-                                PhyAbs += tmpPhyAbs  'Math.Round(tmpPhyAbs, 0, MidpointRounding.ToEven)
+                                Dim tmpPhyAbs As Single = _refitem.MIN_PHYS_ABSORB +
+                                                          (_item.PerPhyAbs*(tmpDifference/100)) +
+                                                          (_item.Plus*_refitem.PHYS_ABSORB_INC)
+                                PhyAbs += tmpPhyAbs
+                                'Math.Round(tmpPhyAbs, 0, MidpointRounding.ToEven)
 
                                 tmpDifference = _refitem.MAX_MAG_ABSORB - _refitem.MIN_MAG_ABSORB
-                                Dim tmpMagAbs As Single = _refitem.MIN_MAG_ABSORB + (_item.PerMagAbs * (tmpDifference / 100)) + (_item.Plus * _refitem.MAG_ABSORB_INC)
-                                MagAbs += tmpMagAbs 'Math.Round(tmpMagAbs, 0, MidpointRounding.ToEven)
+                                Dim tmpMagAbs As Single = _refitem.MIN_MAG_ABSORB +
+                                                          (_item.PerMagAbs*(tmpDifference/100)) +
+                                                          (_item.Plus*_refitem.MAG_ABSORB_INC)
+                                MagAbs += tmpMagAbs
+                                'Math.Round(tmpMagAbs, 0, MidpointRounding.ToEven)
 
                         End Select
                     End If
@@ -287,25 +324,23 @@
 
             'Wenn slot leer ist klappt diese formel nicht mehr darum benutz ich vorerst die alten formeln als fix
             If MinPhy = 0 Then
-                MinPhy = GameServer.Functions.GetMinPhy(Me.Strength)
+                MinPhy = GetMinPhy(Me.Strength)
             End If
             If MaxPhy = 0 Then
-                MaxPhy = GameServer.Functions.GetMaxPhy(Me.Strength, Level)
+                MaxPhy = GetMaxPhy(Me.Strength, Level)
             End If
             If MinMag = 0 Then
-                MinMag = GameServer.Functions.GetMinMag(Me.Intelligence, Level)
+                MinMag = GetMinMag(Me.Intelligence, Level)
             End If
             If MaxMag = 0 Then
-                MaxMag = GameServer.Functions.GetMaxMag(Me.Intelligence, Level)
+                MaxMag = GetMaxMag(Me.Intelligence, Level)
             End If
             If PhyDef = 0 Then
-                PhyDef = GameServer.Functions.GetPhyDef(Me.Strength, Level)
+                PhyDef = GetPhyDef(Me.Strength, Level)
             End If
             If MagDef = 0 Then
-                MagDef = GameServer.Functions.GetMagDef(Me.Intelligence)
+                MagDef = GetMagDef(Me.Intelligence)
             End If
-
-
         End Sub
 
         Sub AddBuffsToStats()
@@ -314,15 +349,15 @@
                 If Buffs.ContainsKey(key) Then
                     Select Case Buffs(key).Type
                         Case BuffType_.ItemBuff
-                            Dim Ref As cItem = GameServer.GetItemByID(Buffs(key).ItemID)
+                            Dim Ref As cItem = GetItemByID(Buffs(key).ItemID)
 
 
                         Case BuffType_.SkillBuff
-                            Dim Ref As GameServer.Skill_ = GameServer.GetSkillById(Buffs(key).SkillID)
+                            Dim Ref As Skill = GetSkill(Buffs(key).SkillID)
 
                             Select Case Ref.EffectId
                                 Case Else
-                                    Functions.SendNotice("Unknown Buff: " & Ref.EffectId)
+                                    SendNotice("Unknown Buff: " & Ref.EffectId)
                             End Select
 
                     End Select
@@ -339,10 +374,11 @@
         Public Y As Single
 
         Public Function ToGameX() As Single
-            Return CSng((XSector - 135) * 192 + (X / 10))
+            Return CSng((XSector - 135)*192 + (X/10))
         End Function
+
         Public Function ToGameY() As Single
-            Return CSng((YSector - 92) * 192 + (Y / 10))
+            Return CSng((YSector - 92)*192 + (Y/10))
         End Function
     End Class
 

@@ -1,10 +1,10 @@
-﻿Imports GameServer.GameServer.Functions
+﻿Imports System.Timers
+Imports GameServer.GameServer.Functions
 
 Namespace GameServer.GameDB
     Module GameDb
-
         'Timer
-        Public WithEvents GameDbUpdate As New System.Timers.Timer
+        Public WithEvents GameDbUpdate As New Timer
 
         'User
         Public Users() As cCharListing.UserArray
@@ -29,14 +29,16 @@ Namespace GameServer.GameDB
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
             GameDbUpdate.Stop()
-            GameDbUpdate.Interval = 20000 '20 secs
+            GameDbUpdate.Interval = 20000
+            '20 secs
 
             Try
                 If First = False Then
                     Log.WriteSystemLog("Loading Playerdata from DB now.")
 
                     GetUserData()
-                    GetCharData() 'Only Update for the First Time! 
+                    GetCharData()
+                    'Only Update for the First Time! 
                     GetItemData()
                     GetMasteryData()
                     GetSkillData()
@@ -49,7 +51,6 @@ Namespace GameServer.GameDB
                 End If
 
 
-
             Catch ex As Exception
                 Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
             End Try
@@ -58,12 +59,14 @@ Namespace GameServer.GameDB
         End Sub
 
 #Region "Get from DB"
+
         Public Sub GetUserData()
 
-            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From Users")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From Users")
             Dim UserCount = tmp.Tables(0).Rows.Count
 
-            ReDim Users(UserCount - 1) '-1 machen
+            ReDim Users(UserCount - 1)
+            '-1 machen
 
             For i = 0 To UserCount - 1
                 Users(i).Id = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
@@ -74,12 +77,11 @@ Namespace GameServer.GameDB
                 Users(i).Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
                 Users(i).Admin = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
             Next
-
         End Sub
 
         Public Sub GetCharData()
 
-            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From characters")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From characters")
             Dim CharCount = tmp.Tables(0).Rows.Count
 
             If CharCount >= 1 Then
@@ -87,7 +89,8 @@ Namespace GameServer.GameDB
 
                 For i = 0 To Chars.Length - 1
                     Chars(i) = New [cChar]
-                    Chars(i).Pos_Tracker = New Functions.cPositionTracker(New Position, Chars(i).WalkSpeed, Chars(i).RunSpeed, Chars(i).BerserkSpeed)
+                    Chars(i).Pos_Tracker = New cPositionTracker(New Position, Chars(i).WalkSpeed, Chars(i).RunSpeed,
+                                                                Chars(i).BerserkSpeed)
 
                     Chars(i).CharacterId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                     Chars(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -147,7 +150,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetItemData()
-            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From items")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From items")
             Dim ItemCount = tmp.Tables(0).Rows.Count
 
             If ItemCount >= 1 Then
@@ -181,12 +184,11 @@ Namespace GameServer.GameDB
             Else
                 ReDim AllItems(0)
             End If
-
         End Sub
 
         Public Sub GetMasteryData()
 
-            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From masteries")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From masteries")
             Dim MasteryCount = tmp.Tables(0).Rows.Count
 
             If MasteryCount >= 1 Then
@@ -205,7 +207,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetSkillData()
-            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From skills")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From skills")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             If Count >= 1 Then
@@ -221,8 +223,9 @@ Namespace GameServer.GameDB
                 ReDim Skills(0)
             End If
         End Sub
+
         Public Sub GetPositionData()
-            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From positions")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From positions")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -252,7 +255,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetHotkeyData()
-            Dim tmp As DataSet = GameServer.DataBase.GetDataSet("SELECT * From hotkeys")
+            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From hotkeys")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -299,7 +302,7 @@ Namespace GameServer.GameDB
                 tmp_.Rights.Union = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
                 tmp_.Rights.Storage = CBool(tmp.Tables(0).Rows(i).ItemArray(9))
 
-                If tmp_.GuildID <> -1 Then
+                If tmp_.GuildID <> - 1 Then
                     For g = 0 To Guilds.Count - 1
                         If Guilds(g).GuildID = tmp_.GuildID Then
                             Guilds(g).Member.Add(tmp_)
@@ -317,12 +320,12 @@ Namespace GameServer.GameDB
                 End If
 
             Next
-
         End Sub
 
 #End Region
 
 #Region "Get Things from Array"
+
         Public Function GetUserWithAccName(ByVal id As String) As Integer
             Dim i As Integer = 0
             For i = 0 To Users.Length
@@ -331,7 +334,7 @@ Namespace GameServer.GameDB
                 End If
             Next
             If Users.Length = i Then
-                Return -1
+                Return - 1
             End If
             Return i
         End Function
@@ -344,10 +347,11 @@ Namespace GameServer.GameDB
                 End If
             Next
             If Users.Length = i Then
-                Return -1
+                Return - 1
             End If
             Return i
         End Function
+
         Public Function FillCharList(ByVal CharArray As cCharListing)
 
             Dim CharCount As Integer = 0
@@ -394,9 +398,18 @@ Namespace GameServer.GameDB
             Return free
         End Function
 
-        Public Function GetGuildWithGuildID(ByVal GuildID As UInteger) As cGuild
+        Public Function GetGuild(ByVal GuildID As UInteger) As cGuild
             For i = 0 To Guilds.Count - 1
                 If Guilds(i).GuildID = GuildID Then
+                    Return Guilds(i)
+                End If
+            Next
+            Return Nothing
+        End Function
+
+        Public Function GetGuild(ByVal GuildName As String) As cGuild
+            For i = 0 To Guilds.Count - 1
+                If Guilds(i).Name = GuildName Then
                     Return Guilds(i)
                 End If
             Next
@@ -419,8 +432,8 @@ Namespace GameServer.GameDB
                 Return cInvItem.sUserItemType.Avatar
             End If
         End Function
-#End Region
 
+#End Region
     End Module
 End Namespace
 

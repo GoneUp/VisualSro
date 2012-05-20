@@ -1,6 +1,5 @@
 ﻿Namespace GameServer.Id_Gen
     Module ID_Generator
-
         '====================Unique ID's
         Private UniqueIdCounter As UInteger = 1
 

@@ -1,29 +1,31 @@
-﻿Namespace GameServer.GameMod.Damage
-    Module modDamage
+﻿Imports GameServer.GameServer.Functions
 
+Namespace GameServer.GameMod.Damage
+    Module modDamage
         Public Mod_Name As String = "mod_Damage"
         Public Settings(1500) As Settings_
 
         Public Sub SendDamageInfo(ByVal MobUniqueId As Integer)
-            Dim Mob_ As Functions.cMonster = Functions.MobList(MobUniqueId)
-            Dim ref_ As Object_ = GetObjectById(Mob_.Pk2ID)
+            Dim Mob_ As cMonster = MobList(MobUniqueId)
+            Dim ref_ As Object_ = GetObject(Mob_.Pk2ID)
 
             'Sort
-            Dim DmgList As List(Of Functions.cDamageDone) = Functions.MobList(MobUniqueId).DamageFromPlayer
+            Dim DmgList As List(Of cDamageDone) = MobList(MobUniqueId).DamageFromPlayer
             Dim sort = From elem In DmgList Order By elem.Damage Descending Select elem Take 9
 
             'Build Info
             Dim sDmg As String = String.Format("== Damage Statistic for Mob: {0} ==   ", ref_.RealName)
             Dim rank As Integer = 1
             For i = 0 To sort.Count - 1
-                sDmg += String.Format("Rank: {0}, Name: {1}, Damage: {2} ; ", rank, Functions.PlayerData(DmgList(i).PlayerIndex).CharacterName, DmgList(i).Damage)
+                sDmg += String.Format("Rank: {0}, Name: {1}, Damage: {2} ; ", rank,
+                                      PlayerData(DmgList(i).PlayerIndex).CharacterName, DmgList(i).Damage)
                 rank += 1
             Next
 
             'Send it
             For i = 0 To sort.Count - 1
                 If IsSendingAllowed(DmgList(i).PlayerIndex, Mob_.Mob_Type) Then
-                    Functions.SendPm(DmgList(i).PlayerIndex, sDmg, "[DAMAGE_MOD]")
+                    SendPm(DmgList(i).PlayerIndex, sDmg, "[DAMAGE_MOD]")
                 End If
             Next
         End Sub
@@ -38,7 +40,9 @@
 
         Public Sub OnPlayerCreate(ByVal CharId As UInteger, ByVal Index_ As Integer)
             Try
-                DataBase.SaveQuery(String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,255,255')", CharId))
+                DataBase.SaveQuery(
+                    String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,255,255')",
+                                  CharId))
             Catch ex As Exception
                 Log.WriteSystemLog(String.Format("[MOD_DAMAGE][CREATE][Index:{0},CHAR:{1}]", Index_, CharId))
             End Try
@@ -46,9 +50,11 @@
 
         Public Sub OnPlayerLogon(ByVal Index_)
             Try
-                Dim tmpSet_ As DataSet = DataBase.GetDataSet(String.Format("SELECT * FROM coustum WHERE ownerid='{0}' AND name='damage'", Functions.PlayerData(Index_).CharacterId))
+                Dim tmpSet_ As DataSet =
+                        DataBase.GetDataSet(String.Format("SELECT * FROM coustum WHERE ownerid='{0}' AND name='damage'",
+                                                          PlayerData(Index_).CharacterId))
                 Dim tmp As New Settings_
-                tmp.CharacterId = Functions.PlayerData(Index_).CharacterId
+                tmp.CharacterId = PlayerData(Index_).CharacterId
 
                 Dim I = tmpSet_.Tables(0).Rows.Count
                 If tmpSet_.Tables(0).Rows.Count > 1 Or tmpSet_.Tables(0).Rows.Count = 0 Then
@@ -65,12 +71,14 @@
                 tmp.Send_Unique = CBool(tmpString(2))
                 Settings(Index_) = tmp
             Catch ex As Exception
-                Log.WriteSystemLog(String.Format("[MOD_DAMAGE][LOAD][Index:{0},CHAR:{1}]", Index_, Functions.PlayerData(Index_).CharacterName))
+                Log.WriteSystemLog(String.Format("[MOD_DAMAGE][LOAD][Index:{0},CHAR:{1}]", Index_,
+                                                 PlayerData(Index_).CharacterName))
             End Try
         End Sub
 
         Public Sub OnPlayerLogoff(ByVal Index_)
-            DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'", GenerateSettings(Index_), Functions.PlayerData(Index_).CharacterId))
+            DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'",
+                                             GenerateSettings(Index_), PlayerData(Index_).CharacterId))
             Settings(Index_) = New Settings_
         End Sub
 
@@ -81,8 +89,13 @@
                     Settings(Index_).Send_Normal = tmpString(0)
                     Settings(Index_).Send_Giant = tmpString(1)
                     Settings(Index_).Send_Unique = tmpString(2)
-                    DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'", GenerateSettings(Index_), Functions.PlayerData(Index_).CharacterId))
-                    Functions.SendPm(Index_, "Updated Settings of Damage Mod. Normal, Champions is: " & Settings(Index_).Send_Normal & ",  Giant is: " & Settings(Index_).Send_Giant & ", Unique is: " & Settings(Index_).Send_Unique, "[DAMAGE_MOD]")
+                    DataBase.SaveQuery(
+                        String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'",
+                                      GenerateSettings(Index_), PlayerData(Index_).CharacterId))
+                    SendPm(Index_,
+                           "Updated Settings of Damage Mod. Normal, Champions is: " & Settings(Index_).Send_Normal &
+                           ",  Giant is: " & Settings(Index_).Send_Giant & ", Unique is: " &
+                           Settings(Index_).Send_Unique, "[DAMAGE_MOD]")
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog(String.Format("[MOD_DAMAGE][PARSE: {0}][Index:{1}]", Message, Index_))
@@ -90,11 +103,11 @@
         End Sub
 
 
-
-
         Private Function GenerateSettings(ByVal Index_ As Integer) As String
             '[Normal],[Giant],[Unique] (On = 1, Off=0)(Normal = Normal & Champion Mobs
-            Return CByte(Settings(Index_).Send_Normal) & "," & CByte(Settings(Index_).Send_Giant) & "," & CByte(Settings(Index_).Send_Unique)
+            Return _
+                CByte(Settings(Index_).Send_Normal) & "," & CByte(Settings(Index_).Send_Giant) & "," &
+                CByte(Settings(Index_).Send_Unique)
         End Function
 
         Private Function IsSendingAllowed(ByVal Index_ As Integer, ByVal Mob_Type As Integer) As Boolean
@@ -120,14 +133,13 @@
                 Case Else
                     Return True
             End Select
-
         End Function
+
         Class Settings_
             Public CharacterId As UInteger
             Public Send_Normal As Boolean
             Public Send_Giant As Boolean
             Public Send_Unique As Boolean
         End Class
-
     End Module
 End Namespace

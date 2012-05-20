@@ -1,6 +1,5 @@
 ﻿Namespace GameServer.Functions
     Module Exchange
-
         Public Sub OnExchangeInvite(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim Others_ID As UInt32 = Packet.DWord
 
@@ -57,9 +56,9 @@
                 writer.Byte(&H28)
                 Server.Send(writer.GetBytes, Index_)
 
-                PlayerData(PlayerData(Index_).InExchangeWith).InExchangeWith = -1
+                PlayerData(PlayerData(Index_).InExchangeWith).InExchangeWith = 0
                 PlayerData(PlayerData(Index_).InExchangeWith).InExchange = False
-                PlayerData(Index_).InExchangeWith = -1
+                PlayerData(Index_).InExchangeWith = 0
                 PlayerData(Index_).InExchange = False
             End If
         End Sub
@@ -78,22 +77,24 @@
                 writer.DWord(PlayerData(ExchangeData(ExchangeId).Player1Index).UniqueId)
 
                 For i = 0 To 11 'Count items
-                    If ExchangeData(ExchangeId).Items1(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items1(i) <> - 1 Then
                         itemcount += 1
                     End If
                 Next
                 writer.Byte(itemcount)
 
                 For i = 0 To 11 'Send Item Data
-                    If ExchangeData(ExchangeId).Items1(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items1(i) <> - 1 Then
 
                         Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items1(i))
                         Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                         If own_decider = 0 Then
-                            writer.Byte(_item.Slot) 'Fromslot
+                            writer.Byte(_item.Slot)
+                            'Fromslot
                         End If
-                        writer.Byte(i) 'To Slot
+                        writer.Byte(i)
+                        'To Slot
 
                         AddItemDataToPacket(_item, writer)
                     End If
@@ -116,22 +117,24 @@
                 writer.DWord(PlayerData(ExchangeData(ExchangeId).Player2Index).UniqueId)
 
                 For i = 0 To 11 'Count items
-                    If ExchangeData(ExchangeId).Items2(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items2(i) <> - 1 Then
                         itemcount += 1
                     End If
                 Next
                 writer.Byte(itemcount)
 
                 For i = 0 To 11 'Send Item Data
-                    If ExchangeData(ExchangeId).Items2(i) <> -1 Then
+                    If ExchangeData(ExchangeId).Items2(i) <> - 1 Then
 
                         Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items2(i))
                         Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                         If own_decider = 0 Then
-                            writer.Byte(_item.Slot) 'Fromslot
+                            writer.Byte(_item.Slot)
+                            'Fromslot
                         End If
-                        writer.Byte(i) 'To Slot
+                        writer.Byte(i)
+                        'To Slot
 
                         AddItemDataToPacket(_item, writer)
                     End If
@@ -216,10 +219,10 @@
                     End If
 
 
-
                 End If
             End If
         End Sub
+
         Public Sub FinishExchange(ByVal ExchangeId As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Exchange_Finsih)
@@ -231,7 +234,7 @@
             Dim tmp_ex As cExchange = ExchangeData(ExchangeId)
             'Player 1 items --> Player 2
             For i = 0 To 11
-                If tmp_ex.Items1(i) <> -1 Then
+                If tmp_ex.Items1(i) <> - 1 Then
                     Dim From_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
                     Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player2Index)
                     Dim To_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(To_Slot)
@@ -272,7 +275,7 @@
 
             'Player 2 Items --> Player 1 
             For i = 0 To 11
-                If tmp_ex.Items2(i) <> -1 Then
+                If tmp_ex.Items2(i) <> - 1 Then
 
                     Dim From_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
                     Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player1Index)
@@ -313,12 +316,12 @@
 
             'Clean up
             ExchangeData.Remove(ExchangeId)
-            PlayerData(tmp_ex.Player1Index).ExchangeID = -1
-            PlayerData(tmp_ex.Player1Index).InExchangeWith = -1
+            PlayerData(tmp_ex.Player1Index).ExchangeID = 0
+            PlayerData(tmp_ex.Player1Index).InExchangeWith = 0
             PlayerData(tmp_ex.Player1Index).InExchange = False
 
-            PlayerData(tmp_ex.Player2Index).ExchangeID = -1
-            PlayerData(tmp_ex.Player2Index).InExchangeWith = -1
+            PlayerData(tmp_ex.Player2Index).ExchangeID = 0
+            PlayerData(tmp_ex.Player2Index).InExchangeWith = 0
             PlayerData(tmp_ex.Player2Index).InExchange = False
 
             For i = 0 To Inventorys(tmp_ex.Player1Index).UserItems.Count - 1
@@ -360,8 +363,8 @@
 
                         Dim tmp_ex As cExchange = ExchangeData(PlayerData(Index_).ExchangeID)
                         ExchangeData.Remove(tmp_ex.ExchangeID)
-                        PlayerData(tmp_ex.Player1Index).ExchangeID = -1
-                        PlayerData(tmp_ex.Player1Index).InExchangeWith = -1
+                        PlayerData(tmp_ex.Player1Index).ExchangeID = 0
+                        PlayerData(tmp_ex.Player1Index).InExchangeWith = 0
                         PlayerData(tmp_ex.Player1Index).InExchange = False
 
 
@@ -371,12 +374,11 @@
                         writer.Byte(&H1B)
                         Server.Send(writer.GetBytes, Index_)
 
-                        PlayerData(Index_).ExchangeID = -1
-                        PlayerData(Index_).InExchangeWith = -1
+                        PlayerData(Index_).ExchangeID = 0
+                        PlayerData(Index_).InExchangeWith = 0
                         PlayerData(Index_).InExchange = False
 
                     End If
-
 
 
                 End If
@@ -391,8 +393,8 @@
             writer.Byte(&H1B)
             Server.Send(writer.GetBytes, PlayerData(index_).InExchangeWith)
 
-            PlayerData(index_).ExchangeID = -1
-            PlayerData(index_).InExchangeWith = -1
+            PlayerData(index_).ExchangeID = 0
+            PlayerData(index_).InExchangeWith = 0
             PlayerData(index_).InExchange = False
         End Sub
 
@@ -402,7 +404,7 @@
                     Return r
                 End If
             Next
-            Return -1
+            Return - 1
         End Function
     End Module
 End Namespace

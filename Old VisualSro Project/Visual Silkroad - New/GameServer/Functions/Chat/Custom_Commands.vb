@@ -3,7 +3,7 @@
 Namespace GameServer.GameMod
     Module Costum_Commands
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
-            'This Function is for additional Log from a GM
+            'This Function is for additional Access from a GM
             Dim writer As New PacketWriter
             Dim tmp As String() = Msg.Split(" ")
 
@@ -23,31 +23,32 @@ Namespace GameServer.GameMod
 
                 Case "\\gold"
                     If IsNumeric(tmp(1)) Then
-                        Functions.PlayerData(Index_).Gold += CULng(tmp(1))
-                        Functions.UpdateGold(Index_)
+                        PlayerData(Index_).Gold += CULng(tmp(1))
+                        UpdateGold(Index_)
                     End If
                 Case "\\level"
                     If IsNumeric(tmp(1)) Then
-                        Functions.PlayerData(Index_).Level = tmp(1)
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}' where id='{1}'", Functions.PlayerData(Index_).Level, Functions.PlayerData(Index_).CharacterId))
-                        Functions.OnTeleportUser(Index_, Functions.PlayerData(Index_).Position.XSector, Functions.PlayerData(Index_).Position.YSector)
+                        PlayerData(Index_).Level = tmp(1)
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}' where id='{1}'",
+                                                         PlayerData(Index_).Level, PlayerData(Index_).CharacterId))
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
                 Case "\\sp"
                     If IsNumeric(tmp(1)) Then
-                        Functions.PlayerData(Index_).SkillPoints += CULng(tmp(1))
-                        Functions.UpdateSP(Index_)
+                        PlayerData(Index_).SkillPoints += CULng(tmp(1))
+                        UpdateSP(Index_)
                     End If
                 Case "\\stat"
                     If IsNumeric(tmp(1)) Then
-                        Functions.PlayerData(Index_).Attributes += CULng(tmp(1))
-                        Functions.OnTeleportUser(Index_, Functions.PlayerData(Index_).Position.XSector, Functions.PlayerData(Index_).Position.YSector)
+                        PlayerData(Index_).Attributes += CULng(tmp(1))
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
 
                 Case "\\mastery"
 
                     If IsNumeric(tmp(1)) Then
                         For i = 0 To GameDB.Masterys.Length - 1
-                            If GameDB.Masterys(i).OwnerID = Functions.PlayerData(Index_).CharacterId Then
+                            If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId Then
                                 GameDB.Masterys(i).Level = tmp(1)
 
                                 writer.Create(ServerOpcodes.Mastery_Up)
@@ -56,15 +57,19 @@ Namespace GameServer.GameMod
                                 writer.Byte(GameDB.Masterys(i).Level)
                                 Server.Send(writer.GetBytes, Index_)
 
-                                DataBase.SaveQuery(String.Format("UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ", GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID, GameDB.Masterys(i).MasteryID))
+                                DataBase.SaveQuery(
+                                    String.Format(
+                                        "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ",
+                                        GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
+                                        GameDB.Masterys(i).MasteryID))
                             End If
                         Next
                     End If
                 Case "\\kick"
 
                     For i As Integer = 0 To Server.MaxClients
-                        If Functions.PlayerData(i) IsNot Nothing Then
-                            If Functions.PlayerData(i).CharacterName = tmp(1) Then
+                        If PlayerData(i) IsNot Nothing Then
+                            If PlayerData(i).CharacterName = tmp(1) Then
                                 Server.Disconnect(i)
                             End If
                         End If
@@ -72,70 +77,75 @@ Namespace GameServer.GameMod
                 Case "\\npc"
 
                     If IsNumeric(tmp(1)) Then
-                        Functions.SpawnNPC(tmp(1), Functions.PlayerData(Index_).Position, 0)
+                        SpawnNPC(tmp(1), PlayerData(Index_).Position, 0)
                     End If
                 Case "\\silk"
                     If IsNumeric(tmp(1)) Then
-                        Dim UserIndex As Integer = GameDB.GetUserWithAccID(Functions.PlayerData(Index_).AccountID)
+                        Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(Index_).AccountID)
                         Dim user = GameDB.Users(UserIndex)
                         user.Silk += tmp(1)
                         GameDB.Users(UserIndex) = user
-                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", GameDB.Users(UserIndex).Silk, Functions.PlayerData(Index_).AccountID))
-                        Functions.OnSendSilks(Index_)
+                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
+                                                         GameDB.Users(UserIndex).Silk, PlayerData(Index_).AccountID))
+                        OnSendSilks(Index_)
                     End If
 
                 Case "\\state"
 
                     If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) Then
-                        Functions.UpdateState(tmp(1), tmp(2), Index_)
+                        UpdateState(tmp(1), tmp(2), Index_)
                     End If
 
                 Case "\\save"
-                    Functions.SendPm(Index_, "Saving start!", "[SERVER]")
-                    Functions.SaveAutoSpawn(System.AppDomain.CurrentDomain.BaseDirectory & "npcpos.txt")
-                    Functions.SendPm(Index_, "Saving finsihed!", "[SERVER]")
+                    SendPm(Index_, "Saving start!", "[SERVER]")
+                    SaveAutoSpawn(AppDomain.CurrentDomain.BaseDirectory & "npcpos.txt")
+                    SendPm(Index_, "Saving finsihed!", "[SERVER]")
 
                 Case "\\turn"
                     If IsNumeric(tmp(1)) Then
-                        For i = 0 To Functions.NpcList.Count - 1
-                            If Functions.NpcList(i).UniqueID = Functions.PlayerData(Index_).LastSelected Then
-                                Functions.NpcList(i).Angle = (tmp(1) * 65535) / 360
+                        For i = 0 To NpcList.Count - 1
+                            If NpcList(i).UniqueID = PlayerData(Index_).LastSelected Then
+                                NpcList(i).Angle = (tmp(1)*65535)/360
                                 Exit For
                             End If
                         Next
                     End If
 
                 Case "\\count_me"
-                    Functions.SendPm(Index_, "===========COUNT============", "[SERVER]")
-                    Functions.SendPm(Index_, "Players: " & Functions.PlayerData(Index_).SpawnedPlayers.Count, "[SERVER]")
-                    Functions.SendPm(Index_, "Mob: " & Functions.PlayerData(Index_).SpawnedMonsters.Count, "[SERVER]")
-                    Functions.SendPm(Index_, "Npc: " & Functions.PlayerData(Index_).SpawnedNPCs.Count, "[SERVER]")
-                    Functions.SendPm(Index_, "Items: " & Functions.PlayerData(Index_).SpawnedItems.Count, "[SERVER]")
-                    Functions.SendPm(Index_, "== END ==", "[SERVER]")
+                    SendPm(Index_, "===========COUNT============", "[SERVER]")
+                    SendPm(Index_, "Players: " & PlayerData(Index_).SpawnedPlayers.Count, "[SERVER]")
+                    SendPm(Index_, "Mob: " & PlayerData(Index_).SpawnedMonsters.Count, "[SERVER]")
+                    SendPm(Index_, "Npc: " & PlayerData(Index_).SpawnedNPCs.Count, "[SERVER]")
+                    SendPm(Index_, "Items: " & PlayerData(Index_).SpawnedItems.Count, "[SERVER]")
+                    SendPm(Index_, "== END ==", "[SERVER]")
 
                 Case "\\count_world"
-                    Functions.SendPm(Index_, "===========COUNT============", "[SERVER]")
-                    Functions.SendPm(Index_, "Players: " & Server.OnlineClient, "[SERVER]")
-                    Functions.SendPm(Index_, "Mob: " & Functions.MobList.Count, "[SERVER]")
-                    Functions.SendPm(Index_, "Npc: " & Functions.NpcList.Count, "[SERVER]")
-                    Functions.SendPm(Index_, "Items: " & Functions.ItemList.Count, "[SERVER]")
-                    Functions.SendPm(Index_, "== END ==", "[SERVER]")
+                    SendPm(Index_, "===========COUNT============", "[SERVER]")
+                    SendPm(Index_, "Players: " & Server.OnlineClient, "[SERVER]")
+                    SendPm(Index_, "Mob: " & MobList.Count, "[SERVER]")
+                    SendPm(Index_, "Npc: " & NpcList.Count, "[SERVER]")
+                    SendPm(Index_, "Items: " & ItemList.Count, "[SERVER]")
+                    SendPm(Index_, "== END ==", "[SERVER]")
 
 
                 Case "\\name_me"
                     If tmp(1) <> "" Then
-                        Functions.PlayerData(Index_).CharacterName = tmp(1)
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'", Functions.PlayerData(Index_).CharacterName, Functions.PlayerData(Index_).CharacterId))
+                        PlayerData(Index_).CharacterName = tmp(1)
+                        DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
+                                                         PlayerData(Index_).CharacterName,
+                                                         PlayerData(Index_).CharacterId))
                     End If
 
                 Case "\\name_world"
                     '\\name_world [Old_Name] [New_Name]
                     If tmp(1) <> "" And tmp(2) = "" Then
                         For i = 0 To Server.OnlineClient - 1
-                            If Functions.PlayerData(i) IsNot Nothing Then
-                                If Functions.PlayerData(i).CharacterName = tmp(1) Then
-                                    Functions.PlayerData(i).CharacterName = tmp(2)
-                                    DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'", Functions.PlayerData(i).CharacterName, Functions.PlayerData(i).CharacterId))
+                            If PlayerData(i) IsNot Nothing Then
+                                If PlayerData(i).CharacterName = tmp(1) Then
+                                    PlayerData(i).CharacterName = tmp(2)
+                                    DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
+                                                                     PlayerData(i).CharacterName,
+                                                                     PlayerData(i).CharacterId))
                                     Exit For
                                 End If
                             End If
@@ -144,13 +154,14 @@ Namespace GameServer.GameMod
 
                 Case "\\dmakeitem"
                     Dim pk2id As UInteger = tmp(1)
-                    Dim plus As Byte = tmp(2)  'Or Count
+                    Dim plus As Byte = tmp(2)
+                    'Or Count
 
-                    For i = 13 To Functions.PlayerData(Index_).MaxSlots - 1
-                        If Functions.Inventorys(Index_).UserItems(i).Pk2Id = 0 Then
-                            Dim temp_item As cInvItem = Functions.Inventorys(Index_).UserItems(i)
+                    For i = 13 To PlayerData(Index_).MaxSlots - 1
+                        If Inventorys(Index_).UserItems(i).Pk2Id = 0 Then
+                            Dim temp_item As cInvItem = Inventorys(Index_).UserItems(i)
                             temp_item.Pk2Id = pk2id
-                            temp_item.OwnerCharID = Functions.PlayerData(Index_).CharacterId
+                            temp_item.OwnerCharID = PlayerData(Index_).CharacterId
 
 
                             Dim refitem As cItem = GetItemByID(pk2id)
@@ -175,22 +186,29 @@ Namespace GameServer.GameMod
                                 temp_item.Amount = plus
                             End If
 
-                            Functions.Inventorys(Index_).UserItems(i) = temp_item
-                            Functions.UpdateItem(Functions.Inventorys(Index_).UserItems(i)) 'SAVE IT
+                            Inventorys(Index_).UserItems(i) = temp_item
+                            UpdateItem(Inventorys(Index_).UserItems(i))
+                            'SAVE IT
 
                             writer.Create(ServerOpcodes.ItemMove)
                             writer.Byte(1)
-                            writer.Byte(6) 'type = new item
-                            writer.Byte(Functions.Inventorys(Index_).UserItems(i).Slot)
+                            writer.Byte(6)
+                            'type = new item
+                            writer.Byte(Inventorys(Index_).UserItems(i).Slot)
 
-                            Functions.AddItemDataToPacket(Functions.Inventorys(Index_).UserItems(i), writer)
+                            AddItemDataToPacket(Inventorys(Index_).UserItems(i), writer)
 
                             Server.Send(writer.GetBytes, Index_)
 
-                            Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
+                            Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]",
+                                        temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount,
+                                        temp_item.Plus)
 
                             If Settings.Log_GM Then
-                                Log.WriteGameLog(Index_, "GM", "Item_Create", String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus))
+                                Log.WriteGameLog(Index_, "GM", "Item_Create",
+                                                 String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}",
+                                                               temp_item.Slot, temp_item.Pk2Id, temp_item.Durability,
+                                                               temp_item.Amount, temp_item.Plus))
                                 Exit For
                             End If
                         End If
@@ -198,55 +216,54 @@ Namespace GameServer.GameMod
 
 
                 Case "\\moba"
-                    If tmp(1) <> "" And Functions.PlayerData(Index_).LastSelected <> 0 Then
-                        For Each key In Functions.MobList.Keys.ToList
-                            If Functions.MobList.ContainsKey(key) Then
-                                Dim Mob_ As cMonster = Functions.MobList.Item(key)
-                                If Mob_.UniqueID = Functions.PlayerData(Index_).LastSelected Then
-                                    Functions.MonsterAttackPlayer(Mob_.UniqueID, Index_)
+                    If tmp(1) <> "" And PlayerData(Index_).LastSelected <> 0 Then
+                        For Each key In MobList.Keys.ToList
+                            If MobList.ContainsKey(key) Then
+                                Dim Mob_ As cMonster = MobList.Item(key)
+                                If Mob_.UniqueID = PlayerData(Index_).LastSelected Then
+                                    MonsterAttackPlayer(Mob_.UniqueID, Index_)
                                 End If
                             End If
                         Next
                     End If
 
                 Case "\\respawn"
-                    If Functions.PlayerData(Index_).Alive = False Then
-                        Functions.PlayerData(Index_).CHP = Functions.PlayerData(Index_).HP / 2
-                        Functions.PlayerData(Index_).Alive = True
-                        Functions.PlayerData(Index_).Busy = False
-                        Functions.Player_Die2(Index_)
-                        Functions.UpdateState(0, 1, Index_)
-                        Functions.UpdateHP(Index_)
+                    If PlayerData(Index_).Alive = False Then
+                        PlayerData(Index_).CHP = PlayerData(Index_).HP/2
+                        PlayerData(Index_).Alive = True
+                        PlayerData(Index_).Busy = False
+                        Player_Die2(Index_)
+                        UpdateState(0, 1, Index_)
+                        UpdateHP(Index_)
                     End If
 
                 Case "\\dropgold"
                     '\\dropgold [gold_amout] [drop_amout] [range]
                     If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) And IsNumeric(tmp(3)) Then
                         Dim tmpitem As New cInvItem
-                        tmpitem.OwnerCharID = Functions.PlayerData(Index_).UniqueId
+                        tmpitem.OwnerCharID = PlayerData(Index_).UniqueId
                         tmpitem.Amount = tmp(1)
                         tmpitem.Pk2Id = 1
 
-
-                        Dim tmp_pos As Position = Functions.PlayerData(Index_).Position
                         Dim random As New Random
                         'Drop that shiat
                         For i = 1 To CInt(tmp(2))
-                            Dim tmpX As Single = tmp_pos.ToGameX + random.Next(tmp(3) * -1, tmp(3))
-                            Dim tmpY As Single = tmp_pos.ToGameY + random.Next(tmp(3) * -1, tmp(3))
-                            tmp_pos.XSector = Functions.GetXSecFromGameX(tmpX)
-                            tmp_pos.YSector = Functions.GetYSecFromGameY(tmpY)
-                            tmp_pos.X = Functions.GetXOffset(tmpX)
-                            tmp_pos.Y = Functions.GetYOffset(tmpY)
-                            Functions.DropItem(tmpitem, tmp_pos)
+                            Dim tmp_pos As Position = PlayerData(Index_).Position
+                            Dim tmpX As Single = tmp_pos.ToGameX + random.Next(tmp(3)*- 1, tmp(3))
+                            Dim tmpY As Single = tmp_pos.ToGameY + random.Next(tmp(3)*- 1, tmp(3))
+                            tmp_pos.XSector = GetXSecFromGameX(tmpX)
+                            tmp_pos.YSector = GetYSecFromGameY(tmpY)
+                            tmp_pos.X = GetXOffset(tmpX)
+                            tmp_pos.Y = GetYOffset(tmpY)
+                            DropItem(tmpitem, tmp_pos)
                         Next
 
                     End If
                 Case "\\berserkbar"
                     If IsNumeric(tmp(1)) Then
                         If tmp(1) < 6 Then
-                            Functions.PlayerData(Index_).BerserkBar = tmp(1)
-                            Functions.UpdateBerserk(Index_)
+                            PlayerData(Index_).BerserkBar = tmp(1)
+                            UpdateBerserk(Index_)
                         End If
                     End If
                 Case "\\berserk"
@@ -258,7 +275,7 @@ Namespace GameServer.GameMod
                         UpdateState(4, 1, 0, Index_)
                         UpdateSpeedsBerserk(Index_)
 
-                        PlayerBerserkTimer(Index_).Interval = 10 * 60 * 1000
+                        PlayerBerserkTimer(Index_).Interval = 10*60*1000
                         PlayerBerserkTimer(Index_).Start()
 
                     Else
@@ -270,14 +287,16 @@ Namespace GameServer.GameMod
                         PlayerBerserkTimer(Index_).Stop()
                     End If
 
+                Case "\\reload"
+                    OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+
+
+                Case "\\spawncheck"
+                    ObjectSpawnCheck(Index_)
             End Select
 
 
-            Functions.OnStatsPacket(Index_)
+            OnStatsPacket(Index_)
         End Sub
-
-
-
-
     End Module
 End Namespace

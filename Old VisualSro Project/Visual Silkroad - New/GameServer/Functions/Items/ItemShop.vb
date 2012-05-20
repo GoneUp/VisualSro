@@ -17,22 +17,22 @@
 
             For i = 0 To NpcList.Count - 1
                 If NpcList(i).UniqueID = UniqueID Then
-                    RefObj = GetObjectById(NpcList(i).Pk2ID)
+                    RefObj = GetObject(NpcList(i).Pk2ID)
                 End If
             Next
 
 
             PackageName = RefObj.Shop.Tab(shopline).Items(itemline).PackageName
-            Dim Package As MallPackage_ = GetItemMallItemByName(PackageName)
+            Dim Package As MallPackage_ = GetItemMallItem(PackageName)
             Dim BuyItem As cItem = GetItemByName(Package.Name_Normal)
 
             Select Case BuyItem.CLASS_A
                 Case 1
-                    Price = BuyItem.SHOP_PRICE * amout
+                    Price = BuyItem.SHOP_PRICE*amout
                 Case 2
-                    Price = BuyItem.SHOP_PRICE * amout
+                    Price = BuyItem.SHOP_PRICE*amout
                 Case 3
-                    Price = BuyItem.SHOP_PRICE * amout
+                    Price = BuyItem.SHOP_PRICE*amout
             End Select
 
             If CSng(PlayerData(index_).Gold) - Price < 0 Then
@@ -44,7 +44,7 @@
                 For i = 0 To amout
                     Dim Slot As Byte = GetFreeItemSlot(index_)
 
-                    If Slot <> -1 Then
+                    If Slot <> - 1 Then
                         Dim temp_item As cInvItem = Inventorys(index_).UserItems(Slot)
                         temp_item.Pk2Id = BuyItem.Pk2Id
                         temp_item.OwnerCharID = PlayerData(index_).CharacterId
@@ -63,7 +63,8 @@
                         End If
 
                         Inventorys(index_).UserItems(Slot) = temp_item
-                        UpdateItem(Inventorys(index_).UserItems(Slot)) 'SAVE IT
+                        UpdateItem(Inventorys(index_).UserItems(Slot))
+                        'SAVE IT
                         ItemSlots.Add(Slot)
                     End If
                 Next
@@ -85,7 +86,6 @@
                 writer.Word(amout)
                 Server.Send(writer.GetBytes, index_)
             End If
-
         End Sub
 
 
@@ -109,7 +109,7 @@
                     Case 2
                         Gold = Item.SELL_PRICE
                     Case 3
-                        Gold = Item.SELL_PRICE * Inventorys(index_).UserItems(slot).Amount
+                        Gold = Item.SELL_PRICE*Inventorys(index_).UserItems(slot).Amount
                 End Select
 
                 Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))
@@ -133,9 +133,6 @@
         Public Sub BuyBack(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim UnqiueID As UInt32 = packet.DWord
             Dim BuyBackSlot As Byte = packet.Byte
-
-
-
         End Sub
 
 

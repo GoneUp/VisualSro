@@ -1,6 +1,6 @@
-﻿Imports GameServer
-Module Log
+﻿Imports GameServer.GameServer
 
+Module Log
     Public Sub CheckCommand(ByVal FullMessage As String)
 
         Dim msg() As String = FullMessage.Split(" ")
@@ -27,7 +27,7 @@ Module Log
 
             Case "/packets"
 
-                GameServer.Program.Logpackets = True
+                Program.Logpackets = True
                 GameServer.Log.WriteSystemLog("Log Packets started!")
 
 
@@ -36,57 +36,60 @@ Module Log
 
 
             Case "/notice"
-                GameServer.Functions.SendNotice(msg(1))
+                Functions.SendNotice(msg(1))
 
 
             Case "/weather"
-                GameServer.Functions.OnSetWeather(CByte(msg(1)), CByte(msg(2)))
+                Functions.OnSetWeather(CByte(msg(1)), CByte(msg(2)))
 
             Case "/normalweather"
-                GameServer.Functions.OnSetWeather(1, 75)
+                Functions.OnSetWeather(1, 75)
 
             Case "/rain"
-                GameServer.Functions.OnSetWeather(2, 75)
+                Functions.OnSetWeather(2, 75)
 
             Case "/snow"
-                GameServer.Functions.OnSetWeather(3, 75)
+                Functions.OnSetWeather(3, 75)
 
             Case "/count"
-                GameServer.Log.WriteSystemLog(String.Format("Count Player:{0}!", GameServer.Server.OnlineClient))
-                GameServer.Log.WriteSystemLog(String.Format("Count Mob:{0}!", GameServer.Functions.MobList.Count))
+                GameServer.Log.WriteSystemLog(String.Format("Count Player:{0}!", Server.OnlineClient))
+                GameServer.Log.WriteSystemLog(String.Format("Count Mob:{0}!", Functions.MobList.Count))
 
             Case "/cleanup"
                 Dim mem As Long = Process.GetCurrentProcess.PrivateMemorySize64
-                System.GC.Collect()
-                GameServer.Log.WriteSystemLog("Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64) / 1024 / 1024)
+                GC.Collect()
+                GameServer.Log.WriteSystemLog(
+                    "Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64)/1024/1024)
             Case "/end"
 
                 GameServer.Log.WriteSystemLog("Ending Server....")
-                For i = 0 To GameServer.Functions.PlayerData.Count - 1
-                    If GameServer.Functions.PlayerData(i) IsNot Nothing Then
-                        GameServer.Server.Disconnect(i)
+                For i = 0 To Functions.PlayerData.Count - 1
+                    If Functions.PlayerData(i) IsNot Nothing Then
+                        Server.Disconnect(i)
                     End If
                 Next
-                GameServer.Server.Stop()
-                GameServer.DataBase.ExecuteQuerys()
+                Server.Stop()
+                DataBase.ExecuteQuerys()
                 End
 
             Case "/dcoff"
-                GameServer.Settings.Server_PingDc = False
+                Settings.Server_PingDc = False
                 GameServer.Log.WriteSystemLog("Turned off PingCheck")
             Case "/dcon"
-                GameServer.Settings.Server_PingDc = True
+                Settings.Server_PingDc = True
                 GameServer.Log.WriteSystemLog("Turned on PingCheck")
             Case "/killmobs"
-                For Each key In GameServer.Functions.MobList.Keys.ToList
-                    If GameServer.Functions.MobList.ContainsKey(key) Then
-                        GameServer.Functions.RemoveMob(key)
+                GameServer.Log.WriteSystemLog("In Progress, Count: " & Functions.MobList.Count)
+                For Each key In Functions.MobList.Keys.ToList
+                    If Functions.MobList.ContainsKey(key) Then
+                        Functions.RemoveMob(key)
                     End If
                 Next
+                GameServer.Log.WriteSystemLog("Finished!")
 
             Case "/respawnoff"
-                GameServer.Settings.Server_SpawnRate = 0
+                Settings.Server_SpawnRate = 0
+                GameServer.Log.WriteSystemLog("Turned off Respawn")
         End Select
-
     End Sub
 End Module

@@ -1,6 +1,5 @@
 ﻿Namespace GameServer.Functions
     Module PlayerAttack
-
         Public Rand As New Random
 
         Public Sub OnPlayerAttack(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -38,8 +37,9 @@
 
                     Case 4
                         Dim skillid As UInteger = packet.DWord
-                        Dim type As Byte = packet.Byte() 'Type = 1--> Monster Attack --- Type = 0 --> Buff
-                        Dim refskill As Skill_ = GetSkillById(skillid)
+                        Dim type As Byte = packet.Byte()
+                        'Type = 1--> Monster Attack --- Type = 0 --> Buff
+                        Dim refskill As Skill = GetSkill(skillid)
 
                         Select Case type
                             Case 0
@@ -57,7 +57,7 @@
                                     If PlayerData(Index_).AttackType = AttackType_.Normal Then
                                         If MobList.ContainsKey(ObjectID) And MobList(ObjectID).Death = False Then
                                             'Cleanup the regular Attack before using a Skill
-                                            Timers.PlayerAttackTimer(Index_).Stop()
+                                            PlayerAttackTimer(Index_).Stop()
                                             PlayerData(Index_).Attacking = False
                                             PlayerData(Index_).Busy = False
                                             PlayerData(Index_).AttackType = AttackType_.Normal
@@ -72,8 +72,6 @@
                                 End If
                         End Select
                 End Select
-
-
 
 
                 If found = False Then
@@ -98,7 +96,6 @@
                 PlayerData(Index_).AttackType = AttackType_.Normal
                 PlayerAttackTimer(Index_).Stop()
             End If
-
         End Sub
 
         Public Sub PlayerAttackNormal(ByVal Index_ As Integer, ByVal MobUniqueId As Integer)
@@ -109,7 +106,7 @@
 
             Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
             Dim RefWeapon As New cItem
-            Dim AttObject As Object_ = GetObjectById(MobList(MobUniqueId).Pk2ID)
+            Dim AttObject As Object_ = GetObject(MobList(MobUniqueId).Pk2ID)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
 
             If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
@@ -188,7 +185,8 @@
 
             writer.Byte(1)
             writer.Byte(NumberAttack)
-            writer.Byte(NumberVictims) '1 victim
+            writer.Byte(NumberVictims)
+            '1 victim
 
             For d = 0 To NumberVictims - 1
                 writer.DWord(MobList(MobUniqueId).UniqueID)
@@ -198,7 +196,7 @@
                     Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
-                        Damage = Damage * 2
+                        Damage = Damage*2
                         Crit = 2
                     End If
                     If CLng(MobList(MobUniqueId).HP_Cur) - Damage > 0 Then
@@ -207,7 +205,8 @@
                     ElseIf CLng(MobList(MobUniqueId).HP_Cur) - Damage <= 0 Then
                         'Dead
                         afterstate = &H80
-                        MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False) 'Done the last Damage
+                        MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False)
+                        'Done the last Damage
                         MobList(MobUniqueId).HP_Cur = 0
                     End If
 
@@ -245,11 +244,10 @@
                 'Monster Attack back
                 Mob_.AttackTimer_Start(5)
             End If
-
         End Sub
 
         Public Sub PlayerAttackBeginSkill(ByVal SkillID As UInt32, ByVal Index_ As Integer, ByVal MobUniqueId As Integer)
-            Dim RefSkill As Skill_ = GetSkillById(SkillID)
+            Dim RefSkill As Skill = GetSkill(SkillID)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
 
             If PlayerData(Index_).Busy Or CheckIfUserOwnSkill(SkillID, Index_) = False Then
@@ -313,7 +311,7 @@
         End Sub
 
         Public Sub PlayerAttackEndSkill(ByVal Index_ As Integer)
-            Dim RefSkill As Skill_ = GetSkillById(PlayerData(Index_).UsingSkillId)
+            Dim RefSkill As Skill = GetSkill(PlayerData(Index_).UsingSkillId)
             Dim AttObject As New Object_
             Dim RefWeapon As New cItem
             Dim Mob_ As cMonster = MobList(PlayerData(Index_).AttackedId)
@@ -338,7 +336,8 @@
 
             writer.Byte(1)
             writer.Byte(RefSkill.NumberOfAttacks)
-            writer.Byte(NumberVictims) '1 victim
+            writer.Byte(NumberVictims)
+            '1 victim
 
             For d = 0 To NumberVictims - 1
                 writer.DWord(PlayerData(Index_).AttackedId)
@@ -348,7 +347,7 @@
                     Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
-                        Damage = Damage * 2
+                        Damage = Damage*2
                         Crit = 2
                     End If
 
@@ -398,7 +397,7 @@
 
 
         Function CalculateDamageMob(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) As UInteger
-            Dim RefSkill As Skill_ = GetSkillById(SkillID)
+            Dim RefSkill As Skill = GetSkill(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
             'If (CSng(PlayerData(Index_).Level) - Mob.Level) > -10 Then
@@ -406,7 +405,7 @@
             'Else
             '    Balance = 0.01
             'End If
-            Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 100))
+            Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level)/100))
             If Balance < 0 Then
                 Balance = 0.01
             End If
@@ -415,11 +414,15 @@
             Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                DamageMin = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
-                DamageMax = ((PlayerData(Index_).MaxPhy + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
+                DamageMin = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin)*(1 + 0)/(1 + 0) - Mob.PhyDef)*Balance*(1 + 0)*
+                            (RefSkill.PwrPercent/10)
+                DamageMax = ((PlayerData(Index_).MaxPhy + RefSkill.PwrMax)*(1 + 0)/(1 + 0) - Mob.PhyDef)*Balance*(1 + 0)*
+                            (RefSkill.PwrPercent/10)
             ElseIf RefSkill.Type = TypeTable.Mag Then
-                DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
-                DamageMax = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 10)
+                DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin)*(1 + 0)/(1 + 0) - Mob.MagDef)*Balance*(1 + 0)*
+                            (RefSkill.PwrPercent/10)
+                DamageMax = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax)*(1 + 0)/(1 + 0) - Mob.MagDef)*Balance*(1 + 0)*
+                            (RefSkill.PwrPercent/10)
             End If
 
 
@@ -432,13 +435,15 @@
 
 
             If DamageMax < DamageMin Then
-                Log.WriteSystemLog(String.Format("Ply Max Dmg over Min Dmg. Min {0} Max {1}. Char: {2}, Mob:{3}, Skill:{4}", DamageMin, DamageMax, PlayerData(Index_).CharacterName, Mob.TypeName, SkillID))
+                Log.WriteSystemLog(
+                    String.Format("Ply Max Dmg over Min Dmg. Min {0} Max {1}. Char: {2}, Mob:{3}, Skill:{4}", DamageMin,
+                                  DamageMax, PlayerData(Index_).CharacterName, Mob.TypeName, SkillID))
                 DamageMax = DamageMin + 1
             End If
 
 
-            Dim Radmon As Integer = Rnd() * 100
-            FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
+            Dim Radmon As Integer = Rnd()*100
+            FinalDamage = DamageMin + (((DamageMax - DamageMin)/100)*Radmon)
 
 
             If PlayerData(Index_).Berserk = True Then
@@ -484,12 +489,11 @@
         End Sub
 
         Public Function Attack_GetCritical() As Boolean
-            If Math.Round(Rnd() * 5) = 5 Then
+            If Math.Round(Rnd()*5) = 5 Then
                 Return True
             Else
                 Return False
             End If
         End Function
-
     End Module
 End Namespace

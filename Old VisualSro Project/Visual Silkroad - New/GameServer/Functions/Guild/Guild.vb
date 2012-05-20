@@ -1,9 +1,8 @@
 ﻿Namespace GameServer.Functions
     Module Guild
-
         Public Sub SendGuildInfo(ByVal Index_ As Integer, ByVal update As Boolean)
             Dim writer As New PacketWriter
-            Dim guild As cGuild = GameDB.GetGuildWithGuildID(PlayerData(Index_).GuildID)
+            Dim guild As cGuild = GameDB.GetGuild(PlayerData(Index_).GuildID)
 
             If update = False Then
                 writer.Create(ServerOpcodes.Guild_Info)
@@ -69,8 +68,8 @@
         End Sub
 
         Public Sub LinkPlayerToGuild(ByVal Index_ As Integer)
-            If PlayerData(Index_).GuildID <> -1 Then
-                Dim guild As cGuild = GameDB.GetGuildWithGuildID(PlayerData(Index_).GuildID)
+            If PlayerData(Index_).GuildID <> - 1 Then
+                Dim guild As cGuild = GameDB.GetGuild(PlayerData(Index_).GuildID)
                 Dim member As cGuild.GuildMember_ = GetMember(PlayerData(Index_).GuildID, PlayerData(Index_).CharacterId)
 
                 Dim writer As New PacketWriter
@@ -102,7 +101,5 @@
             Next
             Return New cGuild.GuildMember_
         End Function
-
-
     End Module
 End Namespace

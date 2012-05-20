@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports System.Text
+
+Namespace GameServer.Functions
     Module UseItem
         Public Sub OnUseItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim slot As Byte = packet.Byte
@@ -56,7 +58,7 @@
                         PlayerData(Index_).CHP += refitem.USE_TIME_HP
                     End If
 
-                    UpdateAmout(Index_, Slot, -1)
+                    UpdateAmout(Index_, Slot, - 1)
                     UpdateHP(Index_)
 
                     Dim writer As New PacketWriter
@@ -86,7 +88,7 @@
                         PlayerData(Index_).CMP += refitem.USE_TIME_MP
                     End If
 
-                    UpdateAmout(Index_, Slot, -1)
+                    UpdateAmout(Index_, Slot, - 1)
                     UpdateMP(Index_)
 
                     Dim writer As New PacketWriter
@@ -106,13 +108,16 @@
         Public Sub OnUseReverseScroll(ByVal Slot As Byte, ByVal Index_ As Integer, ByVal packet As PacketReader)
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
             Dim writer As New PacketWriter
-            Dim tag As Byte = packet.Byte '2 = recall 3= dead point
+            Dim tag As Byte = packet.Byte
+            '2 = recall 3= dead point
             Dim id As UInteger = 0
 
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
                 writer.Create(ServerOpcodes.ItemUse)
-                writer.Byte(2) 'error
-                writer.Byte(&H5D) 'already teleporting
+                writer.Byte(2)
+                'error
+                writer.Byte(&H5D)
+                'already teleporting
                 Server.Send(writer.GetBytes, Index_)
                 Exit Sub
             End If
@@ -120,7 +125,7 @@
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 3 Then 'Check for right Item
-                    UpdateAmout(Index_, Slot, -1)
+                    UpdateAmout(Index_, Slot, - 1)
                     UpdateState(&HB, 1, Index_)
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -133,8 +138,8 @@
 
                     ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
-                    Timers.UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
-                    Timers.UsingItemTimer(Index_).Start()
+                    UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
+                    UsingItemTimer(Index_).Start()
 
                     Select Case tag
                         Case 2
@@ -158,8 +163,10 @@
 
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
                 writer.Create(ServerOpcodes.ItemUse)
-                writer.Byte(2) 'error
-                writer.Byte(&H5D) 'already teleporting
+                writer.Byte(2)
+                'error
+                writer.Byte(&H5D)
+                'already teleporting
                 Server.Send(writer.GetBytes, Index_)
                 Exit Sub
             End If
@@ -168,7 +175,7 @@
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 1 Then
-                    UpdateAmout(Index_, Slot, -1)
+                    UpdateAmout(Index_, Slot, - 1)
                     UpdateState(&HB, 1, Index_)
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -181,8 +188,8 @@
 
                     ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
-                    Timers.UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
-                    Timers.UsingItemTimer(Index_).Start()
+                    UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
+                    UsingItemTimer(Index_).Start()
                     PlayerData(Index_).UsedItem = UseItemTypes.Return_Scroll
                     PlayerData(Index_).Busy = True
                 End If
@@ -191,8 +198,8 @@
 
         Public Sub OnUseGlobal(ByVal Slot As Byte, ByVal Index_ As Integer, ByVal packet As PacketReader)
             Dim messagelength As UInt16 = packet.Word
-            Dim bmessage As Byte() = packet.ByteArray(messagelength * 2)
-            Dim message As String = System.Text.Encoding.Unicode.GetString(bmessage)
+            Dim bmessage As Byte() = packet.ByteArray(messagelength*2)
+            Dim message As String = Encoding.Unicode.GetString(bmessage)
 
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
             Dim writer As New PacketWriter
@@ -202,7 +209,7 @@
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
-                    UpdateAmout(Index_, Slot, -1)
+                    UpdateAmout(Index_, Slot, - 1)
 
                     writer.Create(ServerOpcodes.ItemUse)
                     writer.Byte(1)
@@ -239,7 +246,8 @@
                         End If
                     Next
 
-                    If NewModel >= 1907 And NewModel <= 1932 = False And NewModel >= 14717 And NewModel <= 14743 = False Then
+                    If NewModel >= 1907 And NewModel <= 1932 = False And NewModel >= 14717 And NewModel <= 14743 = False _
+                        Then
                         'Wrong Model Code! 
                         Fail = True
                     End If
@@ -250,7 +258,7 @@
                     End If
 
                     '==============Using..
-                    UpdateAmout(Index_, Slot, -1)
+                    UpdateAmout(Index_, Slot, - 1)
 
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -267,7 +275,9 @@
                     PlayerData(Index_).Pk2Id = NewModel
                     PlayerData(Index_).Volume = NewVolume
 
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'", PlayerData(Index_).Pk2Id, PlayerData(Index_).Volume, PlayerData(Index_).CharacterId))
+                    DataBase.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'",
+                                                     PlayerData(Index_).Pk2Id, PlayerData(Index_).Volume,
+                                                     PlayerData(Index_).CharacterId))
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                 End If
             End If
@@ -280,7 +290,7 @@
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 8 Then
-                    UpdateAmout(Index_, Slot, -1)
+                    UpdateAmout(Index_, Slot, - 1)
 
                     PlayerData(Index_).BerserkBar = 5
                     UpdateBerserk(Index_)
@@ -308,11 +318,10 @@
         End Sub
 
 
-
         Public Sub OnReturnScroll_Cancel(ByVal Index_ As Integer)
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
                 PlayerData(Index_).UsedItem = UseItemTypes.None
-                Timers.UsingItemTimer(Index_).Stop()
+                UsingItemTimer(Index_).Stop()
                 UpdateState(&HB, 0, Index_)
                 PlayerData(Index_).Busy = False
             End If
@@ -326,7 +335,7 @@
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
-        
+
         ''' <summary>
         ''' Changing the Item Amout
         ''' </summary>

@@ -1,4 +1,4 @@
-﻿Imports Microsoft.VisualBasic
+﻿Imports Framework
 Imports System
 Imports LoginServer.Framework
 
@@ -13,8 +13,8 @@ Friend Class Program
         AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
         AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
-        AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
-        AddHandler DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
+        AddHandler Framework.DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
+        AddHandler Framework.DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
 
 
         Console.WindowHeight = 10
@@ -32,7 +32,7 @@ Friend Class Program
         Settings.SetToServer()
 
         Log.WriteSystemLog("Loaded Settings. Conneting Database.")
-        DataBase.Connect()
+        Framework.DataBase.Connect()
 
         Log.WriteSystemLog("Connected Database. Starting Server now.")
         LoginDb.UpdateData()
@@ -51,9 +51,6 @@ Friend Class Program
             CheckCommand(msg)
             Threading.Thread.Sleep(10)
         Loop
-
-
-
     End Sub
 
     Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
@@ -85,7 +82,7 @@ Friend Class Program
 
             Dim packet As New PacketReader(newbuff)
             If Logpackets = True Then
-                Log.LogPacket(newbuff, False)
+                'Log.LogPacket(newbuff, False)
             End If
 
             Functions.Parser.Parse(packet, index_)

@@ -1,9 +1,8 @@
-﻿Imports LoginServer.Framework
+﻿Imports Framework
+Imports LoginServer.Framework
 
 Namespace Functions
     Module Login
-
-
         Public Sub ClientInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
             ClientList.SessionInfo(Index_).Locale = packet.Byte
             ClientList.SessionInfo(Index_).ClientName = packet.String(packet.Word)
@@ -235,7 +234,7 @@ Namespace Functions
                     user.FailedLogins += 1
                     LoginDb.Users(UserIndex) = user
 
-                    DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
+                    Framework.DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
 
                     writer.Byte(2) 'login failed
                     writer.Byte(1)
@@ -247,7 +246,7 @@ Namespace Functions
                         user.FailedLogins = 0
                         LoginDb.Users(UserIndex) = user
 
-                        DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
+                        Framework.DataBase.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
                         BanUser(Date.Now.AddMinutes(10), UserIndex) 'Ban for 10 mins
                     End If
 

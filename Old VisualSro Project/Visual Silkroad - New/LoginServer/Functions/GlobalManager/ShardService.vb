@@ -1,11 +1,12 @@
-﻿Imports LoginServer.Framework
+﻿Imports Framework
+Imports LoginServer.Framework
 
 Namespace GlobalManager
     Module ShardService
 
         Public Sub OnSendServerInit()
-            Dim writer As New Framework.PacketWriter
-            writer.Create(ClientOpcodes.Server_Init)
+            Dim writer As New PacketWriter
+            writer.Create(InternalClientOpcodes.Server_Init)
             GlobalManager.Send(writer.GetBytes)
         End Sub
 
@@ -16,13 +17,13 @@ Namespace GlobalManager
                 Log.WriteSystemLog("GlobalManager: Init Complete!")
             Else
                 Log.WriteSystemLog("GlobalManager: Init failed!")
-                Log.WriteSystemLog("Cannot start GameServer!")
+                Log.WriteSystemLog("Cannot start Loginserver!")
             End If
         End Sub
 
         Public Sub OnSendServerShutdown()
-            Dim writer As New Framework.PacketWriter
-            writer.Create(ClientOpcodes.Server_Shutdown)
+            Dim writer As New PacketWriter
+            writer.Create(InternalClientOpcodes.Server_Shutdown)
             GlobalManager.Send(writer.GetBytes)
         End Sub
 
@@ -30,16 +31,16 @@ Namespace GlobalManager
             Dim success As Byte = packet.Byte
 
             If success = 1 Then
-                Log.WriteSystemLog("GlobalManager: Shutdown Complete!")
+                Log.WriteSystemLog("GlobalManager: Shutdown Comfirmed!")
             Else
                 Log.WriteSystemLog("GlobalManager: WTF: Shutdown failed!")
-                Log.WriteSystemLog("Cannot close GameServer ^^")
+                Log.WriteSystemLog("Cannot close Loginserver ^^")
             End If
         End Sub
 
         Public Sub OnSendClientInfo()
-            Dim writer As New Framework.PacketWriter
-            writer.Create(ClientOpcodes.Server_Info)
+            Dim writer As New PacketWriter
+            writer.Create(InternalClientOpcodes.Server_Info)
             writer.Word(Settings.Server_Id)
             writer.Word(Server.OnlineClient)
             writer.Word(Server.MaxClients)
@@ -48,7 +49,7 @@ Namespace GlobalManager
             GlobalManager.Send(writer.GetBytes)
         End Sub
 
-        Public Sub OnShardInfo(ByVal packet As PacketReader)
+        Public Sub OnGlobalInfo(ByVal packet As PacketReader)
 
 
         End Sub

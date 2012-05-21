@@ -1,10 +1,13 @@
-﻿Imports System.Net.Sockets, System.Net
+﻿Imports Framework
+Imports System.Net.Sockets, System.Net
 Imports LoginServer.Framework
 
 Namespace GlobalManager
     Module GlobalManager
         Public ManagerSocket As Socket
         Public ReceiveThread As New Threading.Thread(AddressOf ReceiveData)
+        Public LastPingTime As DateTime
+
 
 #Region "Events"
         Public Event OnServerError As dError
@@ -75,7 +78,7 @@ Namespace GlobalManager
             ManagerSocket.Send(buff)
 
             If Settings.Log_Packets = True Then
-                Log.LogPacket(buff, True)
+                'Log.LogPacket(buff, True)
             End If
         End Sub
 
@@ -95,7 +98,7 @@ Namespace GlobalManager
 
                 Dim packet As New PacketReader(newbuff)
                 If Settings.Log_Packets = True Then
-                    Log.LogPacket(newbuff, False)
+                    'LoginServer.LogPacket(newbuff, False)
                 End If
 
                 Functions.Parser.ParseGlobalManager(packet)

@@ -94,7 +94,7 @@ Namespace Framework
         Enum _ServerTypes
             Unknown = 0
             GlobalManager = 1
-            GateWayServer = 2
+            GatewayServer = 2
             GameServer = 3
             DownloadServer = 4
             AdminTool = 5

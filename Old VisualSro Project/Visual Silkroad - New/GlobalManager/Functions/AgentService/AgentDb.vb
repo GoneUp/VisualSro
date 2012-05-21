@@ -2,7 +2,6 @@
 
 Namespace Agent
     Module AgentDb
-
         Public UserAuthCache As New Dictionary(Of UInt32, _UserAuth)
 
     End Module

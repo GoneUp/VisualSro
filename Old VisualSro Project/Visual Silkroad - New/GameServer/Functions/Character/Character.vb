@@ -271,11 +271,11 @@
                         .Pos_Tracker = New cPositionTracker(Settings.Player_StartPos_Eu, .WalkSpeed, .RunSpeed,
                                                             .BerserkSpeed)
                     End If
-                    Dim magdefmin As Double = 3.0
-                    Dim phydefmin As Double = 6.0
-                    Dim phyatkmin As UShort = 6
-                    Dim phyatkmax As UShort = 9
-                    Dim magatkmin As UShort = 6
+                    Const magdefmin As Double = 3.0
+                    Const phydefmin As Double = 6.0
+                    Const phyatkmin As UShort = 6
+                    Const phyatkmax As UShort = 9
+                    Const magatkmin As UShort = 6
                     Dim magatkmax As UShort = 9
                     Dim hit As UShort = 11
                     Dim parry As UShort = 11

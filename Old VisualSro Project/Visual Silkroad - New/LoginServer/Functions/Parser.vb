@@ -1,6 +1,4 @@
-﻿Imports Microsoft.VisualBasic
-Imports System
-Imports System.Runtime.InteropServices
+﻿Imports Framework
 Imports LoginServer.Framework
 
 Namespace Functions
@@ -18,21 +16,21 @@ Namespace Functions
 
                 Case ClientOpcodes.Handshake_Confirm  'Client accepts
 
-                Case ClientOpcodes.Login_InfoReq  'GateWay
-                    Functions.GateWay(packet, Index_)
+                Case ClientOpcodes.Login_WhoAmI  'GateWay
+                    GateWay(packet, Index_)
 
                 Case ClientOpcodes.Login_PatchReq  'Client sends Patch Info
-                    Functions.ClientInfo(packet, Index_)
-                    Functions.SendPatchInfo(Index_)
+                    ClientInfo(packet, Index_)
+                    SendPatchInfo(Index_)
 
                 Case ClientOpcodes.Login_LauncherReq
-                    Functions.SendLauncherInfo(Index_)
+                    SendLauncherInfo(Index_)
 
                 Case ClientOpcodes.Login_ServerListReq
-                    Functions.SendServerList(Index_)
+                    SendServerList(Index_)
 
                 Case ClientOpcodes.Login_LoginReq
-                    Functions.HandleLogin(packet, Index_)
+                    HandleLogin(packet, Index_)
 
                 Case Else
                     Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
@@ -45,26 +43,10 @@ Namespace Functions
             Dim security As UInteger = packet.Word
 
             Select Case opcode
-                Case ClientOpcodes.Ping
-
                 Case ClientOpcodes.Handshake_Confirm  'Client accepts
                     GlobalManager.OnHandshake(packet)
 
-                    'Case ClientOpcodes.Login_InfoReq  'GateWay
-                    '    GlobalManager.GateWa()
-
-                    'Case ClientOpcodes.Login_PatchReq  'Client sends Patch Info
-                    '    Functions.ClientInfo(packet, Index_)
-                    '    Functions.SendPatchInfo(Index_)
-
-                    'Case ClientOpcodes.Login_LauncherReq
-                    '    Functions.SendLauncherInfo(Index_)
-
-                    'Case ClientOpcodes.Login_ServerListReq
-                    '    Functions.SendServerList(Index_)
-
-                    'Case ClientOpcodes.Login_LoginReq
-                    '    Functions.HandleLogin(packet, Index_)
+     
 
                 Case Else
                     Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)

@@ -115,11 +115,8 @@
     <Compile Include="Functions\GlobalManager\Auth.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
-    <Compile Include="Framework\Packets\PacketLog.vb" />
     <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Database\Database.vb" />
-    <Compile Include="Framework\Packets\PacketReader.vb" />
-    <Compile Include="Framework\Packets\PacketWriter.vb" />
     <Compile Include="Framework\Settings\cINI.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
@@ -146,7 +143,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Framework\Packets\Opcodes.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -200,7 +196,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Framework.vbproj">
+      <Project>{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}</Project>
+      <Name>Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

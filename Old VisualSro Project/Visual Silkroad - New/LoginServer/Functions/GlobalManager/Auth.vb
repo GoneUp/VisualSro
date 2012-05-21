@@ -1,4 +1,4 @@
-﻿Imports LoginServer.Framework
+﻿Imports Framework
 
 Namespace GlobalManager
     Module Auth
@@ -6,18 +6,18 @@ Namespace GlobalManager
             If packet.DataLen = 2 Then
                 Dim BaseKey As UInt16 = packet.Word
 
-                Dim writer As New Framework.PacketWriter
+                Dim writer As New PacketWriter
                 writer.Create(ClientOpcodes.Handshake)
                 writer.DWord(CalculateNewKey(BaseKey))
-                GlobalManager.Send(writer.GetBytes)
+                Send(writer.GetBytes)
 
             ElseIf packet.DataLen = 1 Then
                 Dim success As Byte = packet.Byte
 
                 If success = 1 Then
-                    Log.WriteSystemLog("Handhake with GlobalManager Succeed!!!")
+                    Log.WriteSystemLog("Handshake with GlobalManager Succeed!!!")
                 Else
-                    Log.WriteSystemLog("Handhake with GlobalManager Failed!!!")
+                    Log.WriteSystemLog("Handshake with GlobalManager Failed!!!")
                     Log.WriteSystemLog("Cannot start GameServer!")
                 End If
             End If
@@ -30,10 +30,10 @@ Namespace GlobalManager
         End Function
 
         Public Sub OnSendAuthInfo()
-            Dim clientstring As String = "GateWayServer"
+            Dim clientstring As String = "GatewayServer"
 
-            Dim writer As New Framework.PacketWriter
-            writer.Create(ClientOpcodes.Server_WhoAmI)
+            Dim writer As New PacketWriter
+            writer.Create(ClientOpcodes.Login_WhoAmI)
             writer.Word(clientstring.Length)
             writer.String(clientstring)
             writer.DWord(Settings.GlobalManager_ProtocolVersion)
@@ -62,7 +62,7 @@ Namespace GlobalManager
                 End Select
 
 
-                Log.WriteSystemLog("Cannot start GameServer!")
+                Log.WriteSystemLog("Cannot start Loginserver!")
             End If
         End Sub
     End Module

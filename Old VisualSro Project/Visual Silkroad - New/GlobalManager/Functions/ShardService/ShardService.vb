@@ -7,7 +7,7 @@ Namespace Shard
             Dim ServerId As UInt16 = ClientList.SessionInfo(Index_).ServerId
 
             Select Case ClientList.SessionInfo(Index_).Type
-                Case _SessionInfo._ServerTypes.GateWayServer
+                Case _SessionInfo._ServerTypes.GatewayServer
                     If Server_GateWay.ContainsKey(ServerId) Then
                         Log.WriteSystemLog("SERVER IS ALREADY INIT! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
                     Else
@@ -21,7 +21,7 @@ Namespace Shard
                         Log.WriteSystemLog("SERVER IS ALREADY INIT! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
                     Else
                         'Init Server
-                        Server_Game(ServerId).State = _GameServer._ServerState.Online
+                        Server_Game(ServerId).State = GameServer._ServerState.Online
                         Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", ClientList.GetIP(Index_)))
                         SendServerInit(Index_)
                     End If
@@ -37,7 +37,7 @@ Namespace Shard
                     End If
             End Select
 
-            SendShardInfo(Index_)
+            SendGlobalInfo(Index_)
         End Sub
 
         Private Sub SendServerInit(ByVal index_ As Integer)
@@ -50,7 +50,7 @@ Namespace Shard
             Dim ServerId As UInt16 = ClientList.SessionInfo(Index_).ServerId
 
             Select Case ClientList.SessionInfo(Index_).Type
-                Case _SessionInfo._ServerTypes.GateWayServer
+                Case _SessionInfo._ServerTypes.GatewayServer
                     If Server_GateWay.ContainsKey(ServerId) Then
                         Server_GateWay(ServerId).Online = False
                         Server_GateWay.Remove(ServerId)
@@ -59,7 +59,7 @@ Namespace Shard
                     End If
                 Case _SessionInfo._ServerTypes.GameServer
                     If Server_Game.ContainsKey(ServerId) Then
-                        Server_Game(ServerId).State = _GameServer._ServerState.Check
+                        Server_Game(ServerId).State = GameServer._ServerState.Check
                         Server_Game.Remove(ServerId)
                         Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", ClientList.GetIP(Index_)))
                         SendShutdown(Index_)
@@ -84,8 +84,8 @@ Namespace Shard
 
         Friend Sub OnServerInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Select Case ClientList.SessionInfo(Index_).Type
-                Case _SessionInfo._ServerTypes.GateWayServer
-                    Dim tmp As New _GateWayServer
+                Case _SessionInfo._ServerTypes.GatewayServer
+                    Dim tmp As New GatewayServer
                     tmp.ServerId = packet.Word
                     tmp.ActualUser = packet.Word
                     tmp.MaxUser = packet.Word
@@ -98,7 +98,7 @@ Namespace Shard
                     End If
 
                 Case _SessionInfo._ServerTypes.GameServer
-                    Dim tmp As New _GameServer
+                    Dim tmp As New GameServer
                     tmp.ServerId = packet.Word
                     tmp.ServerName = packet.String(packet.Word)
                     tmp.ActualUser = packet.Word
@@ -118,12 +118,12 @@ Namespace Shard
                     If Server_Game.ContainsKey(tmp.ServerId) Then
                         Server_Game(tmp.ServerId) = tmp
                     Else
-                        tmp.State = _GameServer._ServerState.Check
+                        tmp.State = GameServer._ServerState.Check
                         Server_Game.Add(tmp.ServerId, tmp)
                     End If
 
                 Case _SessionInfo._ServerTypes.DownloadServer
-                    Dim tmp As New _DownloadServer
+                    Dim tmp As New DownloadServer
                     tmp.ServerId = packet.Word
                     tmp.ActualUser = packet.Word
                     tmp.MaxUser = packet.Word
@@ -139,10 +139,10 @@ Namespace Shard
 
 
 
-            SendShardInfo(Index_)
+            SendGlobalInfo(Index_)
         End Sub
 
-        Friend Sub SendShardInfo(ByVal Index_ As Integer)
+        Friend Sub SendGlobalInfo(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.ShardInfo)
             writer.Word(Server_GateWay.Count)

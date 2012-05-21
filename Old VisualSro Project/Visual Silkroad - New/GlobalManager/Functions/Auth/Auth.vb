@@ -42,8 +42,8 @@ Namespace Auth
             tmp.ServerId = packet.Word
 
             Select Case tmp.ClientName
-                Case "GateWayServer"
-                    tmp.Type = _SessionInfo._ServerTypes.GateWayServer
+                Case "GatewayServer"
+                    tmp.Type = _SessionInfo._ServerTypes.GatewayServer
                 Case "AgentServer"
                     tmp.Type = _SessionInfo._ServerTypes.GameServer
                 Case "DownloadServer"

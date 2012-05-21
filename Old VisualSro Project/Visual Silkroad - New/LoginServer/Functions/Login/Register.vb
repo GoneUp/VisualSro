@@ -1,4 +1,5 @@
-﻿Imports LoginServer.Framework
+﻿Imports Framework
+Imports LoginServer.Framework
 
 Namespace Functions
     Module Register
@@ -23,7 +24,7 @@ Namespace Functions
 
 
 
-            DataBase.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
+            Framework.DataBase.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmp As New LoginDb.UserArray
             tmp.AccountId = Id_Gen.GetNewAccountId

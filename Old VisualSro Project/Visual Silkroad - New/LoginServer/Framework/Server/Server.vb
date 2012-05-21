@@ -134,7 +134,7 @@ Namespace Framework
             ClientList.GetSocket(index).Send(buff)
 
             If LoginServer.Program.Logpackets = True Then
-                Log.LogPacket(buff, True)
+                '(buff, True)
             End If
         End Sub
 

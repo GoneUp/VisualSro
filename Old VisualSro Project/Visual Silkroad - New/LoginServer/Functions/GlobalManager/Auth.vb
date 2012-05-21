@@ -33,7 +33,7 @@ Namespace GlobalManager
             Dim clientstring As String = "GatewayServer"
 
             Dim writer As New PacketWriter
-            writer.Create(ClientOpcodes.Login_WhoAmI)
+            writer.Create(ClientOpcodes.LOGIN_WHO_AM_I)
             writer.Word(clientstring.Length)
             writer.String(clientstring)
             writer.DWord(Settings.GlobalManager_ProtocolVersion)

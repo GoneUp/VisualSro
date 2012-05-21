@@ -72,7 +72,6 @@
     <Compile Include="Framework\Database\DataBase.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Packets\Opcodes.vb" />
-    <Compile Include="Framework\Packets\PacketLog.vb" />
     <Compile Include="Framework\Packets\PacketReader.vb" />
     <Compile Include="Framework\Packets\PacketWriter.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

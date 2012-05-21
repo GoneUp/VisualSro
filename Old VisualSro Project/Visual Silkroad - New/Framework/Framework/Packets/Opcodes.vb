@@ -5,79 +5,73 @@
     'C --> S
 
     Public Enum ClientOpcodes As UInteger
-        Handshake = &H5000
-        Handshake_Confirm = &H9000
-        Ping = &H2002
+        HANDSHAKE = &H5000
+        HANDSHAKE_CONFIRM = &H9000
+        PING = &H2002
 
-        Login_PatchReq = &H6100
-        Login_WhoAmI = &H2001 'cleint whoami
-        Login_LauncherReq = &H6104
-        Login_ServerListReq = &H6101
-        Login_LoginReq = &H6102
+        LOGIN_PATCH_REQ = &H6100
+        LOGIN_WHO_AM_I = &H2001 'cleint whoami
+        LOGIN_LAUNCHER_REQ = &H6104
+        LOGIN_SERVER_LIST_REQ = &H6101
+        LOGIN_LOGIN_REQ = &H6102
 
         'Agent
-        Character = &H7007
-        IngameReq = &H7001
-        JoinWorldReq = &H3012
-        JoinWorldReq2 = &H34C5
+        GAME_CHARACTER = &H7007
+        GAME_INGAME_REQ = &H7001
+        GAME_JOIN_WORLD_REQ = &H3012
+        GAME_JOIN_WORLD_REQ2 = &H34C5
 
         'Ingame
-        Movement = &H7021
-        GameMaster = &H7010
-        Chat = &H7025
-        Action = &H704F
-        Emotion = &H3091
-        [Exit] = &H7005
-        Target = &H7045
-        Death_Respawn = &H3053
-        SetReturnPoint = &H7059
-        Berserk_Activate = &H70A7
+        GAME_MOVEMENT = &H7021
+        GAME_GAME_MASTER = &H7010
+        GAME_CHAT = &H7025
+        GAME_ACTION = &H704F
+        GAME_EMOTION = &H3091
+        GAME_EXIT = &H7005
+        GAME_TARGET = &H7045
+        GAME_DEATH_RESPAWN = &H3053
+        GAME_SET_RETURN_POINT = &H7059
+        GAME_BERSERK_ACTIVATE = &H70A7
 
-        ItemMove = &H7034
-        Alchemy = &H7150
-        ItemUse = &H704C
-        Scroll_Cancel = &H705B
-        Buy_Back = &H7168
+        GAME_ITEM_MOVE = &H7034
+        GAME_ALCHEMY = &H7150
+        GAME_ITEM_USE = &H704C
+        GAME_SCROLL_CANCEL = &H705B
+        GAME_BUY_BACK = &H7168
 
-        Angle_Update = &H7024
-        Teleport_Reply = &H34B6
-        HelperIcon = &H7402
-        Hotkey_Update = &H7158
-        Attack = &H7074
-        ClientStatus = &H70EA
-        CTF_Register = &H74B2
+        GAME_ANGLE_UPDATE = &H7024
+        GAME_TELEPORT_REPLY = &H34B6
+        GAME_HELPER_ICON = &H7402
+        GAME_HOTKEY_UPDATE = &H7158
+        GAME_ATTACK = &H7074
+        GAME_CLIENT_STATUS = &H70EA
 
-        Npc_Chat = &H7046
-        Npc_Chat_Left = &H704B
-        Npc_Teleport = &H705A
+        GAME_CTF_REGISTER = &H74B2
 
+        GAME_NPC_CHAT = &H7046
+        GAME_NPC_CHAT_LEFT = &H704B
+        GAME_NPC_TELEPORT = &H705A
 
-        Exchange_Invite = &H7081
-        Exchange_Invite_Accept = &H3080
-        Exchange_Confirm = &H7082
-        Exchange_Approve = &H7083
-        Exchange_Abort = &H7084
+        GAME_EXCHANGE_INVITE = &H7081
+        GAME_EXCHANGE_INVITE_ACCEPT = &H3080
+        GAME_EXCHANGE_CONFIRM = &H7082
+        GAME_EXCHANGE_APPROVE = &H7083
+        GAME_EXCHANGE_ABORT = &H7084
 
-        Str_Up = &H7050
-        Int_Up = &H7051
+        GAME_STR_UP = &H7050
+        GAME_INT_UP = &H7051
 
         'Skills
-        Mastery_Up = &H70A2
-        Skill_Up = &H70A1
+        GAME_MASTERY_UP = &H70A2
+        GAME_SKILL_UP = &H70A1
 
         'Stall
-        Stall_Open = &H70B1
-        Stall_Close_Own = &H70B2
-        Stall_Select = &H70B3
-        Stall_Buy = &H70B4
-        Stall_Close_Visitor = &H70B5
-        Stall_Data = &H70BA
-
-
-        'SR_ADMIN
-        SR_Admin = &HAD01
-
-
+        GAME_STALL_OPEN = &H70B1
+        GAME_STALL_CLOSE_OWN = &H70B2
+        GAME_STALL_SELECT = &H70B3
+        GAME_STALL_BUY = &H70B4
+        GAME_STALL_CLOSE_VISITOR = &H70B5
+        GAME_STALL_DATA = &H70BA
     End Enum
 
 
@@ -204,9 +198,6 @@
         'Exit
         [Exit] = &HB005
         Exit2 = &H300A
-
-        'SR_ADMIN
-        SR_Admin = &HBD01
     End Enum
 
     Enum InternalClientOpcodes

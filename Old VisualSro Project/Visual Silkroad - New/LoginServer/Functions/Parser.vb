@@ -16,20 +16,20 @@ Namespace Functions
 
                 Case ClientOpcodes.Handshake_Confirm  'Client accepts
 
-                Case ClientOpcodes.Login_WhoAmI  'GateWay
+                Case ClientOpcodes.LOGIN_WHO_AM_I  'GateWay
                     GateWay(packet, Index_)
 
-                Case ClientOpcodes.Login_PatchReq  'Client sends Patch Info
+                Case ClientOpcodes.LOGIN_PATCH_REQ  'Client sends Patch Info
                     ClientInfo(packet, Index_)
                     SendPatchInfo(Index_)
 
-                Case ClientOpcodes.Login_LauncherReq
+                Case ClientOpcodes.LOGIN_LAUNCHER_REQ
                     SendLauncherInfo(Index_)
 
-                Case ClientOpcodes.Login_ServerListReq
+                Case ClientOpcodes.LOGIN_SERVER_LIST_REQ
                     SendServerList(Index_)
 
-                Case ClientOpcodes.Login_LoginReq
+                Case ClientOpcodes.LOGIN_LOGIN_REQ
                     HandleLogin(packet, Index_)
 
                 Case Else

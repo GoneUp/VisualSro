@@ -32,7 +32,7 @@ Friend Class Program
         Settings.SetToServer()
 
         Log.WriteSystemLog("Loaded Settings. Conneting Database.")
-        Framework.DataBase.Connect()
+        LoginServer.Framework.DataBase.Connect()
 
         Log.WriteSystemLog("Connected Database. Starting Server now.")
         LoginDb.UpdateData()

@@ -76,6 +76,14 @@ Namespace GameServer
 
                 Log.WriteSystemLog("Loading took " & DateDiff(DateInterval.Second, time, Date.Now) & " Seconds.")
 
+
+                For Each key In RefObjects.Keys
+                    If RefObjects(key).Type = Object_.Type_.Mob_Unique Then
+                        Log.WriteSystemLog(key)
+                    End If
+                Next
+
+
             Catch ex As Exception
                 Log.WriteSystemLog("Error at Loading Data! Message: " & ex.Message & " Stack: " & ex.StackTrace)
             End Try
@@ -442,7 +450,7 @@ Namespace GameServer
             For Each key In RefSkills.Keys.ToList
                 If RefSkills.ContainsKey(key) Then
                     RefSkills(key).NumberOfAttacks = GetSkillNumberOfAttacks(GetTmpSkill(RefSkills(key).Pk2Id))
-                    RefSkills(key).PreviousId = GetSkillPreviosId(key)
+                    'RefSkills(key).PreviousId = GetSkillPreviosId(key)
                 End If
             Next
         End Sub
@@ -552,6 +560,7 @@ Namespace GameServer
                 tmp.Pk2ID = Convert.ToUInt32(tmpString(1))
                 tmp.TypeName = tmpString(2)
                 tmp.InternalName = tmpString(5)
+                Dim tmpRarity As Int32 = tmpString(15)
                 tmp.WalkSpeed = Convert.ToSingle(tmpString(46))
                 tmp.RunSpeed = Convert.ToSingle(tmpString(47))
                 tmp.BerserkSpeed = Convert.ToSingle(tmpString(48))
@@ -573,7 +582,7 @@ Namespace GameServer
                 tmp.Skill8 = Convert.ToUInt32(tmpString(91))
                 tmp.Skill9 = Convert.ToUInt32(tmpString(92))
 
-
+               
                 Dim selector As String() = tmp.TypeName.Split("_")
                 Select Case selector(0)
                     Case "MOB"
@@ -583,7 +592,7 @@ Namespace GameServer
                         ElseIf selector(1) = "QT" Then
                             tmp.Type = Object_.Type_.Mob_Quest
 
-                        ElseIf IsUnique(tmp.Pk2ID) Then
+                        ElseIf IsUnique(tmp.Pk2ID) Or tmpRarity = 3 Then
                             tmp.Type = Object_.Type_.Mob_Unique
                         Else
                             tmp.Type = Object_.Type_.Mob_Normal
@@ -726,7 +735,7 @@ Namespace GameServer
 
                     Dim area As Integer = tmpString(5)
                     If area < 0 Then
-                        area *= - 1
+                        area *= -1
                     End If
 
                     obj.ToPos = New Position
@@ -849,11 +858,15 @@ Namespace GameServer
 
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                     Dim obj As Object_ = GetObject(tmpString(1))
-                    ReDim obj.ChatBytes(tmpString.Length - 3)
+                    If obj IsNot Nothing Then
+                        ReDim obj.ChatBytes(tmpString.Length - 3)
 
-                    For c = 0 To obj.ChatBytes.Count - 1
-                        obj.ChatBytes(c) = tmpString(c + 2)
-                    Next
+                        For c = 0 To obj.ChatBytes.Count - 1
+                            obj.ChatBytes(c) = tmpString(c + 2)
+                        Next
+                    Else
+                        'Obj not found
+                    End If
                 End If
             Next
         End Sub
@@ -881,10 +894,12 @@ Namespace GameServer
                     If (tmpString(5) > 0) Then
                         Dim obj As Object_ = GetObject(tmpString(5))
 
-                        obj.Shop = New ShopData_
-                        obj.Shop.Pk2ID = obj.Pk2ID
-                        obj.Shop.StoreName = tmpString(2)
-                        obj.Shop.Init()
+                        If obj IsNot Nothing Then
+                            obj.Shop = New ShopData_
+                            obj.Shop.Pk2ID = obj.Pk2ID
+                            obj.Shop.StoreName = tmpString(2)
+                            obj.Shop.Init()
+                        End If
                     End If
                 End If
             Next
@@ -897,17 +912,19 @@ Namespace GameServer
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
                     If tmpString(3).StartsWith("STORE") Then
-                        Dim StoreName As String = tmpString(3).Remove(tmpString(3).Length - 5, 5)
-                        Dim Pk2Id As Integer = GetNpc(StoreName)
-                        Dim TabIndex As Integer = tmpString(3).Remove(0, tmpString(3).Length - 1)
+                        Dim storeName As String = tmpString(3).Remove(tmpString(3).Length - 5, 5)
+                        Dim pk2Id As Integer = GetNpc(storeName)
+                        Dim tabIndex As Integer = tmpString(3).Remove(0, tmpString(3).Length - 1)
 
-                        If Pk2Id <> - 1 Then
-                            If RefObjects(Pk2Id).Shop IsNot Nothing Then
-                                If _
-                                    StoreName.StartsWith("STORE_KT_SMITH") = False Or
-                                    StoreName.StartsWith("STORE_KT_ARMOR") = False Or
-                                    StoreName.StartsWith("STORE_KT_ACCESSORY") = False Then
-                                    RefObjects(Pk2Id).Shop.Tab(TabIndex - 1).TabName = tmpString(3)
+                        If pk2Id <> -1 Then
+                            If RefObjects.ContainsKey(pk2Id) Then
+                                If RefObjects(pk2Id).Shop IsNot Nothing Then
+                                    If _
+                                        storeName.StartsWith("STORE_KT_SMITH") = False Or
+                                        storeName.StartsWith("STORE_KT_ARMOR") = False Or
+                                        storeName.StartsWith("STORE_KT_ACCESSORY") = False Then
+                                        RefObjects(pk2Id).Shop.Tab(tabIndex - 1).TabName = tmpString(3)
+                                    End If
                                 End If
                             End If
                         End If
@@ -920,29 +937,30 @@ Namespace GameServer
             'Dump Items
             lines = File.ReadAllLines(base_path & "data\refshopgoods.txt")
             For i As Integer = 0 To lines.Length - 1
-                If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+                If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                    Dim TabName As String = tmpString(2)
-                    Dim Pk2Id As Integer = GetNpc2(TabName)
-                    Dim ItemLine As Byte = tmpString(4)
+                    Dim tabName As String = tmpString(2)
+                    Dim pk2Id As Integer = GetNpc2(tabName)
+                    Dim itemLine As Byte = tmpString(4)
 
-                    If Pk2Id <> - 1 Then
-                        For r = 0 To RefObjects(Pk2Id).Shop.Tab.Count - 1
-                            If RefObjects(Pk2Id).Shop.Tab(r) IsNot Nothing Then
-                                If RefObjects(Pk2Id).Shop.Tab(r).TabName = TabName Then
-                                    If RefObjects(Pk2Id).Shop.Tab(r).Items.Count <= ItemLine Then
-                                        Dim d = RefObjects(Pk2Id).Shop.Tab(r)
-                                        Debug.Print(9)
+                    If pk2Id <> -1 Then
+                        If RefObjects.ContainsKey(pk2Id) Then
+                            For r = 0 To RefObjects(pk2Id).Shop.Tab.Count - 1
+                                If RefObjects(pk2Id).Shop.Tab(r) IsNot Nothing Then
+                                    If RefObjects(pk2Id).Shop.Tab(r).TabName = tabName Then
+                                        If RefObjects(pk2Id).Shop.Tab(r).Items.Count <= itemLine Then
+                                            Dim d = RefObjects(pk2Id).Shop.Tab(r)
+                                            Debug.Print(9)
+                                        End If
+
+                                        RefObjects(pk2Id).Shop.Tab(r).Items(itemLine) = New ShopData_.ShopItem_
+                                        RefObjects(pk2Id).Shop.Tab(r).Items(itemLine).ItemLine = itemLine
+                                        RefObjects(pk2Id).Shop.Tab(r).Items(itemLine).PackageName = tmpString(3)
                                     End If
-
-                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine) = New ShopData_.ShopItem_
-                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine).ItemLine = ItemLine
-                                    RefObjects(Pk2Id).Shop.Tab(r).Items(ItemLine).PackageName = tmpString(3)
                                 End If
-                            End If
-                        Next
+                            Next
+                        End If
                     End If
-
                 End If
             Next
         End Sub
@@ -990,7 +1008,7 @@ Namespace GameServer
                     End If
                 End If
             Next
-            Return - 1
+            Return -1
         End Function
 
         Public Function GetNpc2(ByVal TabName As String)
@@ -1008,7 +1026,7 @@ Namespace GameServer
                     End If
                 End If
             Next
-            Return - 1
+            Return -1
         End Function
 
 

@@ -16,7 +16,7 @@ Class Program
 
 
         Console.WindowHeight = 10
-        Console.BufferHeight = 30
+        Console.BufferHeight = 300
         Console.WindowWidth = 60
         Console.BufferWidth = 60
         Console.BackgroundColor = ConsoleColor.White

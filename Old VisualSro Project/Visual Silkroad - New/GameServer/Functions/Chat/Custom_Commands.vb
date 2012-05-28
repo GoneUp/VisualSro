@@ -105,7 +105,7 @@ Namespace GameServer.GameMod
                     If IsNumeric(tmp(1)) Then
                         For i = 0 To NpcList.Count - 1
                             If NpcList(i).UniqueID = PlayerData(Index_).LastSelected Then
-                                NpcList(i).Angle = (tmp(1)*65535)/360
+                                NpcList(i).Angle = (tmp(1) * 65535) / 360
                                 Exit For
                             End If
                         Next
@@ -229,7 +229,7 @@ Namespace GameServer.GameMod
 
                 Case "\\respawn"
                     If PlayerData(Index_).Alive = False Then
-                        PlayerData(Index_).CHP = PlayerData(Index_).HP/2
+                        PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
                         PlayerData(Index_).Alive = True
                         PlayerData(Index_).Busy = False
                         Player_Die2(Index_)
@@ -248,14 +248,14 @@ Namespace GameServer.GameMod
                         Dim random As New Random
                         'Drop that shiat
                         For i = 1 To CInt(tmp(2))
-                            Dim tmp_pos As Position = PlayerData(Index_).Position
-                            Dim tmpX As Single = tmp_pos.ToGameX + random.Next(tmp(3)*- 1, tmp(3))
-                            Dim tmpY As Single = tmp_pos.ToGameY + random.Next(tmp(3)*- 1, tmp(3))
-                            tmp_pos.XSector = GetXSecFromGameX(tmpX)
-                            tmp_pos.YSector = GetYSecFromGameY(tmpY)
-                            tmp_pos.X = GetXOffset(tmpX)
-                            tmp_pos.Y = GetYOffset(tmpY)
-                            DropItem(tmpitem, tmp_pos)
+                            Dim tmpPos As Position = PlayerData(Index_).Position
+                            Dim tmpX As Single = tmpPos.ToGameX + random.Next(tmp(3) * -1, tmp(3))
+                            Dim tmpY As Single = tmpPos.ToGameY + random.Next(tmp(3) * -1, tmp(3))
+                            tmpPos.XSector = GetXSecFromGameX(tmpX)
+                            tmpPos.YSector = GetYSecFromGameY(tmpY)
+                            tmpPos.X = GetXOffset(tmpX)
+                            tmpPos.Y = GetYOffset(tmpY)
+                            DropItem(tmpitem, tmpPos)
                         Next
 
                     End If
@@ -275,7 +275,7 @@ Namespace GameServer.GameMod
                         UpdateState(4, 1, 0, Index_)
                         UpdateSpeedsBerserk(Index_)
 
-                        PlayerBerserkTimer(Index_).Interval = 10*60*1000
+                        PlayerBerserkTimer(Index_).Interval = 10 * 60 * 1000
                         PlayerBerserkTimer(Index_).Start()
 
                     Else

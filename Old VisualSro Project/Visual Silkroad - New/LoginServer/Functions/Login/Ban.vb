@@ -12,7 +12,7 @@ Namespace Functions
                     If wert = -1 Then
                         'Zeit abgelaufen
                         user.Banned = False
-                        DataBase.SaveQuery(String.Format("UPDATE users SET banned = '0' WHERE id = '{0}'", user.AccountId))
+                        Database.SaveQuery(String.Format("UPDATE users SET banned = '0' WHERE id = '{0}'", user.AccountId))
 
                         LoginDb.Users(UserIndex) = user
                     End If
@@ -31,7 +31,7 @@ Namespace Functions
                 user.BannReason = "You got banned for 10 Minutes because of 5 failed Logins."
                 Dim time As String = String.Format("{0}-{1}-{2} {3}:{4}:{5}", LeakTime.Year, LeakTime.Month, LeakTime.Day, LeakTime.Hour, LeakTime.Minute, LeakTime.Second)
 
-                DataBase.SaveQuery(String.Format("UPDATE users SET banned='1', bantime = '{0}', banreason = 'You got banned for 10 Minutes because of 5 failed Logins.' where id='{1}'", time, user.AccountId))
+                Database.SaveQuery(String.Format("UPDATE users SET banned='1', bantime = '{0}', banreason = 'You got banned for 10 Minutes because of 5 failed Logins.' where id='{1}'", time, user.AccountId))
                 LoginDb.Users(UserIndex) = user
             Catch ex As Exception
                 Log.WriteSystemLog("[BAN_USER][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")

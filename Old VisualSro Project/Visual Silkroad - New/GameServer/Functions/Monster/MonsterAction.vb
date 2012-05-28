@@ -54,17 +54,17 @@
         End Function
 
         Public Sub MoveMob(ByVal UniqueID As Integer, ByVal ToPos As Position)
-            Dim Obj As Object_ = GetObject(MobList(UniqueID).Pk2ID)
+            Dim Obj As SilkroadObject = GetObject(MobList(UniqueID).Pk2ID)
 
             Dim WalkTime As Single
             Dim distance As Single = CalculateDistance(MobList(UniqueID).Position, ToPos)
             Select Case MobList(UniqueID).Pos_Tracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
-                    WalkTime = (distance/Obj.WalkSpeed)*10000
+                    WalkTime = (distance / Obj.WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
-                    WalkTime = (distance/Obj.RunSpeed)*10000
+                    WalkTime = (distance / Obj.RunSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Zerking
-                    WalkTime = (distance/Obj.BerserkSpeed)*10000
+                    WalkTime = (distance / Obj.BerserkSpeed) * 10000
             End Select
 
 
@@ -102,18 +102,18 @@
         End Sub
 
         Public Sub MoveMobToUser(ByVal UniqueID As Integer, ByVal ToPos As Position, ByVal Range As Integer)
-            Dim Obj As Object_ = GetObject(MobList(UniqueID).Pk2ID)
+            Dim Obj As SilkroadObject = GetObject(MobList(UniqueID).Pk2ID)
 
             Dim distance_x As Double = MobList(UniqueID).Position.ToGameX - ToPos.ToGameX
             Dim distance_y As Double = MobList(UniqueID).Position.ToGameY - ToPos.ToGameY
-            Dim distance As Double = Math.Sqrt((distance_x*distance_x) + (distance_y*distance_y))
+            Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
 
             If distance > Range Then
-                Dim Cosinus As Double = Math.Cos(distance_x/distance)
-                Dim Sinus As Double = Math.Sin(distance_y/distance)
+                Dim Cosinus As Double = Math.Cos(distance_x / distance)
+                Dim Sinus As Double = Math.Sin(distance_y / distance)
 
-                Dim distance_x_new As Double = Range*Cosinus
-                Dim distance_y_new As Double = Range*Sinus
+                Dim distance_x_new As Double = Range * Cosinus
+                Dim distance_y_new As Double = Range * Sinus
 
                 Dim new_x As Single = ToPos.ToGameX + distance_x_new
                 Dim new_y As Single = ToPos.ToGameY + distance_y_new
@@ -126,11 +126,11 @@
             Dim WalkTime As Single
             Select Case MobList(UniqueID).Pos_Tracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
-                    WalkTime = (distance/Obj.WalkSpeed)*10000
+                    WalkTime = (distance / Obj.WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
-                    WalkTime = (distance/Obj.RunSpeed)*10000
+                    WalkTime = (distance / Obj.RunSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Zerking
-                    WalkTime = (distance/Obj.BerserkSpeed)*10000
+                    WalkTime = (distance / Obj.BerserkSpeed) * 10000
             End Select
 
 
@@ -169,21 +169,21 @@
 
 
         Public Sub GetEXPFromMob(ByVal mob_ As cMonster)
-            Dim ref_ As Object_ = GetObject(mob_.Pk2ID)
+            Dim ref_ As SilkroadObject = GetObject(mob_.Pk2ID)
             For i = 0 To mob_.DamageFromPlayer.Count - 1
                 Dim Index_ As Integer = mob_.DamageFromPlayer(i).PlayerIndex
-                Dim Percent As Double = mob_.DamageFromPlayer(i).Damage/mob_.HP_Max
+                Dim Percent As Double = mob_.DamageFromPlayer(i).Damage / mob_.HP_Max
 
                 If PlayerData(Index_) IsNot Nothing Then
                     Dim Balance As Double
                     'The Level factor...
                     If CSng(ref_.Level) - PlayerData(Index_).Level > 0 Then
                         'Mob is higher then you
-                        Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level))/10))
+                        Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 10))
                     Else
                         'Mob is lower then you
                         If PlayerData(Index_).Level - CSng(ref_.Level) < 100 Then
-                            Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level))/100))
+                            Balance = (1 + ((CSng(ref_.Level) - CSng(PlayerData(Index_).Level)) / 100))
                         Else
                             Balance = 0.01
                         End If
@@ -212,15 +212,15 @@
                         GapFactorSP = 1
                     Else
                         'Gap 1-9
-                        GapFactorXP = 1 - (Gap/10)
-                        GapFactorSP = 1 + (Gap/10)
+                        GapFactorXP = 1 - (Gap / 10)
+                        GapFactorSP = 1 + (Gap / 10)
                     End If
 
 
                     Dim EXP As Long =
-                            ((ref_.Exp*GetMobExpMultiplier(mob_.Mob_Type))*Settings.Server_XPRate*Percent*Balance*
+                            ((ref_.Exp * GetMobExpMultiplier(mob_.Mob_Type)) * Settings.Server_XPRate * Percent * Balance *
                              GapFactorXP)
-                    Dim SP As Long = (ref_.Exp*Settings.Server_SPRate*Percent*Balance*GapFactorSP)
+                    Dim SP As Long = (ref_.Exp * Settings.Server_SPRate * Percent * Balance * GapFactorSP)
 
 
                     GetXP(EXP, SP, Index_, mob_.UniqueID)

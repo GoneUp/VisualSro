@@ -369,7 +369,7 @@
 
             Select Case tag
                 Case 1 'To Town  
-                    PlayerData(Index_).Position = PlayerData(Index_).Position_Return
+                    PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return
                     'Set new Pos
                     DataBase.SaveQuery(
                         String.Format(
@@ -390,8 +390,8 @@
             Dim ObjectId As UInteger = packet.DWord
             For i = 0 To NpcList.Count - 1
                 If ObjectId = NpcList(i).UniqueID Then
-                    Dim ref As Object_ = GetObject(NpcList(i).Pk2ID)
-                    PlayerData(Index_).Position_Return = GetTeleportPoint(ref.Pk2ID)
+                    Dim ref As SilkroadObject = GetObject(NpcList(i).Pk2ID)
+                    PlayerData(Index_).Position_Return = GetTeleportPoint(ref.Pk2ID).ToPos
 
                     DataBase.SaveQuery(
                         String.Format(

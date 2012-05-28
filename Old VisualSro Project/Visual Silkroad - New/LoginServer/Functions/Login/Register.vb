@@ -1,4 +1,4 @@
-﻿Imports Framework
+﻿Imports SRFramework
 Imports LoginServer.Framework
 
 Namespace Functions
@@ -17,14 +17,13 @@ Namespace Functions
         ''' <remarks></remarks>
         Public Function RegisterUser(ByVal Name As String, ByVal Password As String, ByVal Index_ As Integer)
             If Name.Contains("ä") Or Name.Contains("ü") Or Name.Contains("ö") Or Password.Contains("ä") Or Password.Contains("ü") Or Password.Contains("ö") Then
-                Login_WriteSpecialText("Please don't enter any Chars like ä, ö, ü.", Index_)
+                LoginWriteSpecialText("Please don't enter any Chars like ä, ö, ü.", Index_)
                 Return False
             End If
 
 
 
-
-            Framework.DataBase.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
+            Framework.Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmp As New LoginDb.UserArray
             tmp.AccountId = Id_Gen.GetNewAccountId
@@ -50,7 +49,7 @@ Namespace Functions
             Return True
         End Function
 
-        Public Sub Login_WriteSpecialText(ByVal Text As String, ByVal Index_ As Integer)
+        Public Sub LoginWriteSpecialText(ByVal Text As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
             writer.Byte(3) 'failed
@@ -62,15 +61,15 @@ Namespace Functions
         End Sub
 
         Public Function CheckIfUserCanRegister(ByVal IP As String) As Boolean
-            Dim Count As Integer = 0
+            Dim count As Integer = 0
 
             For i = 0 To RegisterList.Count - 1
                 If RegisterList(i).IP = IP And Date.Now.DayOfYear = RegisterList(i).Time.DayOfYear Then
-                    Count += 1
+                    count += 1
                 End If
             Next
 
-            If Count >= Settings.Max_RegistersPerDay Then
+            If count >= Settings.Max_RegistersPerDay Then
                 Return False
             End If
 

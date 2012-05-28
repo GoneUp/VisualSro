@@ -126,6 +126,7 @@
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\cGameObject.vb" />
     <Compile Include="Functions\Global\Global.vb" />
+    <Compile Include="Functions\Global\GroupSpawn.vb" />
     <Compile Include="Functions\Global\Timers.vb" />
     <Compile Include="Functions\Guild\cGuild.vb" />
     <Compile Include="Functions\Guild\Guild.vb" />
@@ -240,9 +241,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework.vbproj">
+    <ProjectReference Include="..\Framework\SRFramework.vbproj">
       <Project>{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}</Project>
-      <Name>Framework</Name>
+      <Name>SRFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

@@ -41,11 +41,11 @@ Class Program
         Server.Start()
         Log.WriteSystemLog("Inital Loading complete!")
 
-read:
-        Dim msg As String = Console.ReadLine()
-        CheckCommand(msg)
-        GoTo read
-
+        
+        Do While True
+            Dim msg As String = Console.ReadLine()
+            CheckCommand(msg)
+        Loop
     End Sub
 
     Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)

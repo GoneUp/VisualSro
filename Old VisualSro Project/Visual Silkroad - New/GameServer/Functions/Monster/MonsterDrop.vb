@@ -7,7 +7,7 @@
 
             'Gold + Normal items (arrow, Pots, Vigor) + Equip (Normal, SOX) + Alchemy
 
-            Dim RefMonster As Object_ = GetObject(MobList(MobUniqueId).Pk2ID)
+            Dim RefMonster As SilkroadObject = GetObject(MobList(MobUniqueId).Pk2ID)
             Dim RefLevel As cGoldData = GetGoldData(RefMonster.Level)
             Dim tmp_item As New cInvItem
             tmp_item.OwnerCharID = MobUniqueId

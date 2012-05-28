@@ -116,17 +116,16 @@
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Server\ClientList.vb" />
-    <Compile Include="Framework\Database\Database.vb" />
-    <Compile Include="Framework\Settings\cINI.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
     <Compile Include="Functions\GlobalManager\ShardService.vb" />
+    <Compile Include="Functions\Global\GlobalLogin.vb" />
     <Compile Include="Functions\Login\Ban.vb" />
     <Compile Include="Functions\Login\Register.vb" />
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Framework\Server\Server.vb" />
-    <Compile Include="Functions\Login\LoginServer.vb" />
+    <Compile Include="Functions\Login\Login.vb" />
     <Compile Include="Console\Main.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -197,11 +196,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Framework\Framework.vbproj">
+    <ProjectReference Include="..\Framework\SRFramework.vbproj">
       <Project>{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}</Project>
-      <Name>Framework</Name>
+      <Name>SRFramework</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

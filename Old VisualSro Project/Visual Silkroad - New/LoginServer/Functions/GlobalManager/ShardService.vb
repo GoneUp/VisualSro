@@ -1,4 +1,4 @@
-﻿Imports Framework
+﻿Imports SRFramework
 Imports LoginServer.Framework
 
 Namespace GlobalManager

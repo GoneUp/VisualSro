@@ -3,7 +3,7 @@
 Namespace Settings
     Module Settings
         'Loading File
-        Private File As New cINI(System.AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
+        Private File As New SRFramework.cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
 
         Public Database_IP As String
         Public Database_Port As UShort
@@ -58,11 +58,11 @@ Namespace Settings
         End Sub
 
         Public Sub SetToServer()
-            DataBase.DB_IP = Database_IP
-            DataBase.DB_PORT = Database_Port
-            DataBase.DB_DATABASE = Database_Database
-            DataBase.DB_USERNAME = Database_User
-            DataBase.DB_PASSWORD = Database_Password
+            Database.DbIp = Database_IP
+            Database.DbPort = Database_Port
+            Database.DbDatabase = Database_Database
+            Database.DbUsername = Database_User
+            Database.DbPassword = Database_Password
 
             Server.ip = Server_Ip
             Server.Port = Server_Port

@@ -1,4 +1,4 @@
-﻿Imports Framework
+﻿Imports SRFramework
 Imports System.Net.Sockets, System.Net
 Imports LoginServer.Framework
 

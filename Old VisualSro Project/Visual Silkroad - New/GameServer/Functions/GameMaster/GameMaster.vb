@@ -112,7 +112,7 @@
             Dim Angle As UInt16 = packet.Word
             'Not sure 
 
-            PlayerData(index_).Position = to_pos
+            PlayerData(index_).SetPosition = to_pos
             PlayerData(index_).TeleportType = TeleportType_.GM
 
 
@@ -146,7 +146,7 @@
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
 
-                        PlayerData(index_).Position = PlayerData(i).Position
+                        PlayerData(index_).SetPosition = PlayerData(i).Position
 
                         DataBase.SaveQuery(
                             String.Format(
@@ -171,7 +171,7 @@
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
 
-                        PlayerData(i).Position = PlayerData(index_).Position
+                        PlayerData(i).SetPosition = PlayerData(index_).Position
 
                         DataBase.SaveQuery(
                             String.Format(
@@ -225,7 +225,7 @@
         Public Sub OnGoTown(ByVal Index_ As Integer)
 
             'Teleport the GM to Town
-            PlayerData(Index_).Position = PlayerData(Index_).Position_Return
+            PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return
             'Set new Pos
             DataBase.SaveQuery(
                 String.Format(
@@ -253,7 +253,7 @@
         Public Sub OnCreateObject(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim objectid As UInteger = Packet.DWord
             Dim type As Byte = Packet.Byte
-            Dim refobject As Object_ = GetObject(objectid)
+            Dim refobject As SilkroadObject = GetObject(objectid)
 
             Dim selector As String = refobject.TypeName.Substring(0, 3)
 

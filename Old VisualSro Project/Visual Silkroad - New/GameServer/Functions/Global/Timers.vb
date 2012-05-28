@@ -15,15 +15,15 @@ Namespace GameServer.Functions
         Public SitUpTimer As Timer() = New Timer(14999) {}
         Public DatabaseTimer As New Timer
 
-        Public Sub LoadTimers(ByVal TimerCount As Integer)
+        Public Sub LoadTimers(ByVal timerCount As Integer)
             Log.WriteSystemLog("Loading Timers...")
 
             Try
-                ReDim PlayerAttackTimer(TimerCount), PlayerMoveTimer(TimerCount), PickUpTimer(TimerCount),
-                    MonsterAttack(TimerCount), PlayerBerserkTimer(TimerCount), UsingItemTimer(TimerCount),
-                    SitUpTimer(TimerCount)
+                ReDim PlayerAttackTimer(timerCount), PlayerMoveTimer(timerCount), PickUpTimer(timerCount),
+                    MonsterAttack(timerCount), PlayerBerserkTimer(timerCount), UsingItemTimer(timerCount),
+                    SitUpTimer(timerCount)
 
-                For i As Integer = 0 To TimerCount - 1
+                For i As Integer = 0 To timerCount - 1
                     PlayerAttackTimer(i) = New Timer()
                     AddHandler PlayerAttackTimer(i).Elapsed, AddressOf AttackTimer_Elapsed
                     PlayerMoveTimer(i) = New Timer()
@@ -103,7 +103,6 @@ Namespace GameServer.Functions
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index)
-                '
             End Try
         End Sub
 
@@ -124,7 +123,7 @@ Namespace GameServer.Functions
                         Case UseItemTypes.Return_Scroll
                             PlayerData(Index).Position_Recall = PlayerData(Index).Position
                             'Save Pos
-                            PlayerData(Index).Position = PlayerData(Index).Position_Return
+                            PlayerData(Index).SetPosition = PlayerData(Index).Position_Return
                             'Set new Pos
                             'Save to DB
                             DataBase.SaveQuery(
@@ -147,7 +146,7 @@ Namespace GameServer.Functions
 
 
                         Case UseItemTypes.Reverse_Scroll_Recall
-                            PlayerData(Index).Position = PlayerData(Index).Position_Recall
+                            PlayerData(Index).SetPosition = PlayerData(Index).Position_Recall
                             DataBase.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
@@ -160,7 +159,7 @@ Namespace GameServer.Functions
                             PlayerData(Index).UsedItem = UseItemTypes.None
 
                         Case UseItemTypes.Reverse_Scroll_Dead
-                            PlayerData(Index).Position = PlayerData(Index).Position_Dead
+                            PlayerData(Index).SetPosition = PlayerData(Index).Position_Dead
                             DataBase.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
@@ -174,7 +173,7 @@ Namespace GameServer.Functions
 
                         Case UseItemTypes.Reverse_Scroll_Point
                             Dim point As ReversePoint_ = GetReversePoint(PlayerData(Index).UsedItemParameter)
-                            PlayerData(Index).Position = point.Position
+                            PlayerData(Index).SetPosition = point.Position
                             DataBase.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
@@ -325,7 +324,7 @@ Namespace GameServer.Functions
                 For Each key In tmplist
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
-                        Dim obj As Object_ = GetObject(Mob_.Pk2ID)
+                        Dim obj As SilkroadObject = GetObject(Mob_.Pk2ID)
                         If Rand.Next(0, 3) = 0 Then
                             If _
                                 Mob_.Death = False And
@@ -400,7 +399,7 @@ Namespace GameServer.Functions
                             ObjectSpawnCheck(Index)
                             CheckForCaveTeleporter(Index)
 
-                            'SendPm(Index, "secx" & new_pos.XSector & "secy" & new_pos.YSector & "X: " & new_pos.X & "Y: " & new_pos.Y & " X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
+                            SendPm(Index, "secx" & new_pos.XSector & "secy" & new_pos.YSector & "X: " & new_pos.X & "Y: " & new_pos.Y & " X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
                             PlayerMoveTimer(Index).Start()
 
                         ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then

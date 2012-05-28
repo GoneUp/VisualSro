@@ -2,68 +2,59 @@
 
 Namespace GameServer.Functions
     Module MonsterSpawn
-        Public Function CreateMonsterSpawnPacket(ByVal _mob As cMonster, ByVal obj As Object_) As Byte()
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.SingleSpawn)
-            writer.DWord(_mob.Pk2ID)
-            writer.DWord(_mob.UniqueID)
-            writer.Byte(_mob.Position.XSector)
-            writer.Byte(_mob.Position.YSector)
-            writer.Float(_mob.Position.X)
-            writer.Float(_mob.Position.Z)
-            writer.Float(_mob.Position.Y)
-
-            writer.Word(_mob.Angle)
-            writer.Byte(_mob.Pos_Tracker.MoveState)
-            'dest
-            If _mob.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
-                writer.Byte(0)
-                'Walking
-            Else
-                writer.Byte(1)
-                'Running + Zerk
+        Public Sub CreateMonsterSpawnPacket(ByVal mob As cMonster, ByVal obj As SilkroadObject, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
+            If includePacketHeader Then
+                writer.Create(ServerOpcodes.SingleSpawn)
             End If
 
-            If _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+            writer.DWord(mob.Pk2ID)
+            writer.DWord(mob.UniqueID)
+            writer.Byte(mob.Position.XSector)
+            writer.Byte(mob.Position.YSector)
+            writer.Float(mob.Position.X)
+            writer.Float(mob.Position.Z)
+            writer.Float(mob.Position.Y)
+
+            writer.Word(mob.Angle)
+            writer.Byte(mob.Pos_Tracker.MoveState)
+            'dest
+            If mob.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
+                writer.Byte(0) 'Walking
+            Else
+                writer.Byte(1)  'Running + Zerk
+            End If
+
+            If mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                 writer.Byte(0)
                 'dest
-                writer.Word(_mob.Angle)
-            ElseIf _mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
-                writer.Byte(_mob.Pos_Tracker.WalkPos.XSector)
-                writer.Byte(_mob.Pos_Tracker.WalkPos.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(_mob.Pos_Tracker.WalkPos.Y)))
+                writer.Word(mob.Angle)
+            ElseIf mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                writer.Byte(mob.Pos_Tracker.WalkPos.XSector)
+                writer.Byte(mob.Pos_Tracker.WalkPos.YSector)
+                writer.Byte(BitConverter.GetBytes(CShort(mob.Pos_Tracker.WalkPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(mob.Pos_Tracker.WalkPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(mob.Pos_Tracker.WalkPos.Y)))
             End If
 
             Dim alive As Boolean = True
-            If _mob.Death = True Then alive = False
-            writer.Byte(Convert.ToByte(alive))
-            ' alive flag
-            writer.Byte(0)
-            'action flag 
-            writer.Byte(0)
-            'jobmode? 3=normal?
-            writer.Byte(0)
-            'berserk activated
+            If mob.Death = True Then alive = False
+            'writer.Byte(Convert.ToByte(alive)) ' alive flag
+            writer.Byte(1)
+            writer.Byte(0)   'action flag 
+            writer.Byte(0) 'jobmode? 3=normal?
+            writer.Byte(0)  'berserk activated
 
-            writer.Float(obj.WalkSpeed)
-            'walkspeed
-            writer.Float(obj.RunSpeed)
-            'runspeed
-            writer.Float(obj.BerserkSpeed)
-            'berserkerspeed
 
-            writer.Byte(0)
-            'unknwown  
-            writer.Byte(2)
-            'unknwown  
-            writer.Byte(_mob.Mob_Type)
-            writer.Word(5)
-            'mhm
+            writer.Float(obj.WalkSpeed)     'walkspeed
+            writer.Float(obj.RunSpeed) 'runspeed
+            writer.Float(obj.BerserkSpeed) 'berserkerspeed
 
-            Return writer.GetBytes
-        End Function
+            writer.Byte(0)  'unknwown  
+            writer.Byte(2)  'unknwown  
+            writer.Byte(mob.Mob_Type)
+            writer.Byte(5) 'mhm
+            writer.Byte(0) 'mhm
+        End Sub
 
         ''' <summary>
         ''' Spawns a new Mob
@@ -77,7 +68,7 @@ Namespace GameServer.Functions
         ''' <remarks></remarks>
         Public Function SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position,
                                  ByVal Angle As UInteger, ByVal SpotID As Long) As UInteger
-            Dim mob_ As Object_ = GetObject(MobID)
+            Dim mob_ As SilkroadObject = GetObject(MobID)
             Dim tmp As New cMonster
             tmp.UniqueID = Id_Gen.GetUnqiueId
             tmp.Pk2ID = mob_.Pk2ID
@@ -92,23 +83,23 @@ Namespace GameServer.Functions
                 'Try Catch, due to several spawn errors from gm's
                 Select Case Type
                     Case 0
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Normal
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Normal
                     Case 1
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Champion
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
                     Case 3
                         tmp.HP_Cur = mob_.Hp
                     Case 4
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Giant
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
                     Case 5
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Titan
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Titan
                     Case 6
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Elite
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
                     Case 16
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Party_Normal
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Normal
                     Case 17
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Party_Champ
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Champ
                     Case 20
-                        tmp.HP_Cur = mob_.Hp*MobMultiplierHP.Party_Giant
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
                 End Select
             Catch ex As Exception
                 tmp.HP_Cur = mob_.Hp
@@ -135,7 +126,9 @@ Namespace GameServer.Functions
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedMonsters.Contains(tmp.UniqueID) = False Then
-                            Server.Send(CreateMonsterSpawnPacket(tmp, mob_), refindex)
+                            Dim tmpSpawn As New GroupSpawn
+                            tmpSpawn.AddObject(tmp.UniqueID)
+                            Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
                             PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
                         End If
                     End If

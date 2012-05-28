@@ -898,7 +898,7 @@
 
 
                 If SetPosToTown Then
-                    PlayerData(Index_).Position = PlayerData(Index_).Position_Return
+                    PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return
                     DataBase.SaveQuery(
                         String.Format(
                             "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",

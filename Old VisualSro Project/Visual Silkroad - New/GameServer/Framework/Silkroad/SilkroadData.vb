@@ -9,7 +9,7 @@ Namespace GameServer
 
         Public RefTmpSkills As New Dictionary(Of UInteger, TmpSkill)
         Public RefSkills As New Dictionary(Of UInteger, Skill)
-        Public RefObjects As New Dictionary(Of UInteger, Object_)
+        Public RefObjects As New Dictionary(Of UInteger, SilkroadObject)
         Public RefMallItems As New List(Of MallPackage_)
         Public RefReversePoints As New List(Of ReversePoint_)
         Public RefTeleportPoints As New List(Of TeleportPoint_)
@@ -54,6 +54,7 @@ Namespace GameServer
 
                 DumpTeleportBuildings(base_path & "data\teleportbuilding.txt")
                 DumpTeleportData(base_path & "data\teleportdata.txt", base_path & "data\teleportlink.txt")
+                DumpTelportLink(base_path & "data\teleportlink.txt")
                 Log.WriteSystemLog("Loaded " & RefTeleportPoints.Count & " Teleport-Points.")
 
                 DumpSpecialSectorFile(base_path & "\data\special_sectors.txt")
@@ -75,14 +76,6 @@ Namespace GameServer
                 Log.WriteSystemLog("Loaded " & NpcList.Count & " Autospawn Npc's.")
 
                 Log.WriteSystemLog("Loading took " & DateDiff(DateInterval.Second, time, Date.Now) & " Seconds.")
-
-
-                For Each key In RefObjects.Keys
-                    If RefObjects(key).Type = Object_.Type_.Mob_Unique Then
-                        Log.WriteSystemLog(key)
-                    End If
-                Next
-
 
             Catch ex As Exception
                 Log.WriteSystemLog("Error at Loading Data! Message: " & ex.Message & " Stack: " & ex.StackTrace)
@@ -491,7 +484,7 @@ Namespace GameServer
             End If
         End Function
 
-        Public Class Object_
+        Public Class SilkroadObject
             Public Pk2ID As UInteger
 
             Public TypeName As String
@@ -556,7 +549,7 @@ Namespace GameServer
                 End If
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim tmp As New Object_()
+                Dim tmp As New SilkroadObject()
                 tmp.Pk2ID = Convert.ToUInt32(tmpString(1))
                 tmp.TypeName = tmpString(2)
                 tmp.InternalName = tmpString(5)
@@ -582,37 +575,37 @@ Namespace GameServer
                 tmp.Skill8 = Convert.ToUInt32(tmpString(91))
                 tmp.Skill9 = Convert.ToUInt32(tmpString(92))
 
-               
+
                 Dim selector As String() = tmp.TypeName.Split("_")
                 Select Case selector(0)
                     Case "MOB"
                         If selector(1) = "TQ" Or selector(1) = "DH" Then
-                            tmp.Type = Object_.Type_.Mob_Cave
+                            tmp.Type = SilkroadObject.Type_.Mob_Cave
 
                         ElseIf selector(1) = "QT" Then
-                            tmp.Type = Object_.Type_.Mob_Quest
+                            tmp.Type = SilkroadObject.Type_.Mob_Quest
 
                         ElseIf IsUnique(tmp.Pk2ID) Or tmpRarity = 3 Then
-                            tmp.Type = Object_.Type_.Mob_Unique
+                            tmp.Type = SilkroadObject.Type_.Mob_Unique
                         Else
-                            tmp.Type = Object_.Type_.Mob_Normal
+                            tmp.Type = SilkroadObject.Type_.Mob_Normal
                         End If
 
                     Case "NPC"
-                        tmp.Type = Object_.Type_.Npc
+                        tmp.Type = SilkroadObject.Type_.Npc
                     Case "STORE"
-                        tmp.Type = Object_.Type_.Teleport
+                        tmp.Type = SilkroadObject.Type_.Teleport
                     Case "STRUCTURE"
-                        tmp.Type = Object_.Type_.Structure
+                        tmp.Type = SilkroadObject.Type_.Structure
                     Case "COS"
-                        tmp.Type = Object_.Type_.COS
+                        tmp.Type = SilkroadObject.Type_.COS
                 End Select
 
                 RefObjects.Add(tmp.Pk2ID, tmp)
             Next
         End Sub
 
-        Public Function GetObject(ByVal Pk2Id As UInteger) As Object_
+        Public Function GetObject(ByVal Pk2Id As UInteger) As SilkroadObject
             If RefObjects.ContainsKey(Pk2Id) Then
                 Return RefObjects(Pk2Id)
             Else
@@ -692,11 +685,11 @@ Namespace GameServer
             Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim obj As New Object_
+                Dim obj As New SilkroadObject
 
                 obj.Pk2ID = tmpString(1)
                 obj.TypeName = tmpString(2)
-                obj.Type = Object_.Type_.Teleport
+                obj.Type = SilkroadObject.Type_.Teleport
 
                 Dim area As Integer = tmpString(41)
                 obj.T_Position = New Position
@@ -713,15 +706,13 @@ Namespace GameServer
             Next
         End Sub
 
-        Structure TeleportPoint_
-            Public Number As Integer
-            Public Name As String
+        Class TeleportPoint_
+            Public TeleportNumber As UInt32
+            Public TypeName As String
             Public Pk2ID As UInteger
             Public ToPos As Position
-            Public Cost As UInteger
-            Public MinLevel As UInteger
-            Public MaxLevel As UInteger
-        End Structure
+            Public Links As Dictionary(Of UInt32, TeleportLink)
+        End Class
 
         Public Sub DumpTeleportData(ByVal Path_Data As String, ByVal Path_Link As String)
             Dim lines As String() = File.ReadAllLines(Path_Data)
@@ -730,8 +721,9 @@ Namespace GameServer
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                     Dim obj As New TeleportPoint_
 
-                    obj.Number = tmpString(1)
-                    obj.Name = tmpString(2)
+                    obj.TeleportNumber = tmpString(1)
+                    obj.TypeName = tmpString(2)
+                    obj.Pk2ID = tmpString(3)
 
                     Dim area As Integer = tmpString(5)
                     If area < 0 Then
@@ -746,41 +738,59 @@ Namespace GameServer
                     obj.ToPos.Z = tmpString(7)
                     obj.ToPos.Y = tmpString(8)
 
-                    Dim link_lines As String() = File.ReadAllLines(Path_Link)
-                    For b As Integer = 0 To link_lines.Length - 1
-                        Dim tmpString2 As String() = link_lines(b).Split(ControlChars.Tab)
-                        If tmpString2(2) = obj.Number Then
-                            obj.Cost = tmpString2(3)
-                            obj.MinLevel = tmpString2(7)
-                            obj.MaxLevel = tmpString2(8)
-                            Exit For
-                        End If
-                    Next
+                    obj.Links = New Dictionary(Of UInteger, TeleportLink)
 
                     RefTeleportPoints.Add(obj)
-
                 Next
             Catch ex As Exception
 
             End Try
         End Sub
 
-        Public Function GetTeleportPoint(ByVal Number As Integer)
+        Structure TeleportLink
+            Public FromPoint As UInt32
+            Public ToPoint As UInt32
+            Public Cost As UInteger
+            Public MinLevel As UInteger
+            Public MaxLevel As UInteger
+        End Structure
+
+        Public Sub DumpTelportLink(ByVal path As String)
+            Dim lines As String() = File.ReadAllLines(path)
+            For i = 0 To lines.Length - 1
+                Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+
+                Dim fromPoint As TeleportPoint_ = GetTeleportPointByNumber(tmpString(1))
+
+                If fromPoint IsNot Nothing Then
+                    Dim obj As New TeleportLink
+                    obj.FromPoint = tmpString(1)
+                    obj.ToPoint = tmpString(2)
+                    obj.Cost = tmpString(3)
+                    obj.MinLevel = tmpString(7)
+                    obj.MaxLevel = tmpString(8)
+
+                    fromPoint.Links.Add(obj.ToPoint, obj)
+                End If
+            Next
+        End Sub
+
+        Public Function GetTeleportPointByNumber(ByVal number As Integer) As TeleportPoint_
             For i = 0 To RefTeleportPoints.Count - 1
-                If RefTeleportPoints(i).Number = Number Then
+                If RefTeleportPoints(i).TeleportNumber = number Then
                     Return RefTeleportPoints(i)
                 End If
             Next
-            Throw New Exception("Teleportpoint couldn't be found! P:" & Number)
+            Return Nothing
         End Function
 
-        Public Function GetTeleportPoint(ByVal Pk2Id As UInteger)
+        Public Function GetTeleportPoint(ByVal pk2Id As UInteger) As TeleportPoint_
             For i = 0 To RefTeleportPoints.Count - 1
-                If RefTeleportPoints(i).Pk2ID = Pk2Id Then
+                If RefTeleportPoints(i).Pk2ID = pk2Id Then
                     Return RefTeleportPoints(i)
                 End If
             Next
-            Throw New Exception("Teleportpoint couldn't be found! PN:" & Pk2Id)
+            Return Nothing
         End Function
 
         Public Structure SpecialSector_
@@ -857,7 +867,7 @@ Namespace GameServer
                 If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
 
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                    Dim obj As Object_ = GetObject(tmpString(1))
+                    Dim obj As SilkroadObject = GetObject(tmpString(1))
                     If obj IsNot Nothing Then
                         ReDim obj.ChatBytes(tmpString.Length - 3)
 
@@ -892,7 +902,7 @@ Namespace GameServer
                     End If
 
                     If (tmpString(5) > 0) Then
-                        Dim obj As Object_ = GetObject(tmpString(5))
+                        Dim obj As SilkroadObject = GetObject(tmpString(5))
 
                         If obj IsNot Nothing Then
                             obj.Shop = New ShopData_
@@ -966,7 +976,7 @@ Namespace GameServer
         End Sub
 
         Public Sub CorrectHotanData()
-            Dim obj As Object_ = GetObject(2072)
+            Dim obj As SilkroadObject = GetObject(2072)
             obj.Shop.Tab(0).TabName = "STORE_KT_SMITH_EU_TAB1"
             obj.Shop.Tab(1).TabName = "STORE_KT_SMITH_EU_TAB2"
             obj.Shop.Tab(2).TabName = "STORE_KT_SMITH_EU_TAB3"

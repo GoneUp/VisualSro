@@ -2,10 +2,13 @@
 
 Namespace GameServer.Functions
     Module ItemSpawn
-        Public Function CreateItemSpawnPacket(ByVal Item_ As cItemDrop) As Byte()
+        Public Sub CreateItemSpawnPacket(ByVal Item_ As cItemDrop, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
             Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.SingleSpawn)
+
+            If includePacketHeader Then
+                writer.Create(ServerOpcodes.SingleSpawn)
+            End If
+            
             writer.DWord(Item_.Item.Pk2Id)
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
@@ -30,9 +33,7 @@ Namespace GameServer.Functions
             writer.Byte(0)
             writer.Byte(6)
             writer.DWord(Item_.DroppedBy)
-
-            Return writer.GetBytes
-        End Function
+        End Sub
 
         Public Function DropItem(ByVal Item As cInvItem, ByVal Position As Position) As UInteger
             Dim tmp_ As New cItemDrop
@@ -62,7 +63,12 @@ Namespace GameServer.Functions
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedItems.Contains(tmp_.UniqueID) = False Then
-                            Server.Send(CreateItemSpawnPacket(tmp_), refindex)
+                            'Dim tmpSpawn As New GroupSpawn
+                            'tmpSpawn.AddObject(tmp_.UniqueID)
+                            'Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
+                            Dim writer As New PacketWriter
+                            CreateItemSpawnPacket(tmp_, writer, True)
+                            Server.Send(writer.GetBytes, refindex)
                             PlayerData(refindex).SpawnedItems.Add(tmp_.UniqueID)
                         End If
                     End If

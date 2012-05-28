@@ -1,8 +1,7 @@
-﻿Imports Microsoft.VisualBasic
-	Imports System
-	Imports System.Net
-	Imports System.Net.Sockets
-	Imports System.Runtime.CompilerServices
+﻿Imports System
+Imports System.Net
+Imports System.Net.Sockets
+
 Namespace Framework
 
     Public Class Server

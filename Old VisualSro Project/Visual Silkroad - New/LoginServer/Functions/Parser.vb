@@ -1,4 +1,4 @@
-﻿Imports Framework
+﻿Imports SRFramework
 Imports LoginServer.Framework
 
 Namespace Functions
@@ -12,9 +12,10 @@ Namespace Functions
             ClientList.LastPingTime(Index_) = Date.Now
 
             Select Case opcode
-                Case ClientOpcodes.Ping
+                Case ClientOpcodes.PING
 
-                Case ClientOpcodes.Handshake_Confirm  'Client accepts
+                Case ClientOpcodes.HANDSHAKE_CONFIRM  'Client accepts
+                    ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.HANDSHAKE
 
                 Case ClientOpcodes.LOGIN_WHO_AM_I  'GateWay
                     GateWay(packet, Index_)

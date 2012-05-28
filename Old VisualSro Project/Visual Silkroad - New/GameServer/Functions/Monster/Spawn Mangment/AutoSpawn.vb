@@ -19,9 +19,9 @@ Namespace GameServer.Functions
                     Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
                     Dim Pk2ID As UInt32 = tmpString(0)
-                    Dim obj_ As Object_ = GetObject(Pk2ID)
+                    Dim obj_ As SilkroadObject = GetObject(Pk2ID)
                     If tmpString.Length = 6 Then
-                        Angle = Math.Round((CInt(tmpString(5))*65535)/360)
+                        Angle = Math.Round((CInt(tmpString(5)) * 65535) / 360)
                     End If
 
                     Dim tmpSectors As String = Hex(tmpString(1))
@@ -41,19 +41,19 @@ Namespace GameServer.Functions
                     tmp.Position = pos
 
                     Select Case obj_.Type
-                        Case Object_.Type_.Mob_Normal
+                        Case SilkroadObject.Type_.Mob_Normal
                             RefRespawns.Add(tmp)
                             For s = 1 To Settings.Server_SpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
-                        Case Object_.Type_.Mob_Cave
+                        Case SilkroadObject.Type_.Mob_Cave
                             RefRespawns.Add(tmp)
                             For s = 1 To Settings.Server_SpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
-                        Case Object_.Type_.Mob_Unique
+                        Case SilkroadObject.Type_.Mob_Unique
                             AddUnqiueRespawn(tmp)
-                        Case Object_.Type_.Npc
+                        Case SilkroadObject.Type_.Npc
                             SpawnNPC(Pk2ID, pos, Angle)
                     End Select
                 End If

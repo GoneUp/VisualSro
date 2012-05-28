@@ -114,14 +114,21 @@
 
         Public TeleportType As TeleportType_
 
-        Public Property Position() As Position
+        Public ReadOnly Property Position() As Position
             Get
                 Return Me.Pos_Tracker.GetCurPos
             End Get
+            'Set(ByVal value As Position)
+            '    Me.Pos_Tracker.LastPos = value
+            'End Set
+        End Property
+
+        Public WriteOnly Property SetPosition() As Position
             Set(ByVal value As Position)
                 Me.Pos_Tracker.LastPos = value
             End Set
         End Property
+
 
 
         Sub SetCharGroundStats()

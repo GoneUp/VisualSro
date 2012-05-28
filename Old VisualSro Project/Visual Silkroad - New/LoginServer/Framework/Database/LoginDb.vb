@@ -10,8 +10,9 @@ Namespace LoginDb
         Public Servers As New List(Of Server_)
         Public News As New List(Of News_)
         Public Users As New List(Of UserArray)
+        Public LoginInfoMessages As New List(Of LoginInfoMessage_)
 
-        Private First As Boolean
+        Private InitalLoad As Boolean
 
         Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
             LoginDbUpdate.Stop()
@@ -19,7 +20,7 @@ Namespace LoginDb
 
 
             Try
-                If First = False Then
+                If InitalLoad = False Then
                     Log.WriteSystemLog("Load Data from Database.")
 
                     GetServerData()
@@ -27,7 +28,7 @@ Namespace LoginDb
                     GetUserData()
 
                     Log.WriteSystemLog("Loading Completed.")
-                    First = True
+                    InitalLoad = True
 
                 Else
                     GetServerData()
@@ -52,7 +53,7 @@ Namespace LoginDb
             Public Port As UInt16
         End Structure
         Public Sub GetServerData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From Servers")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Servers")
             Servers.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
@@ -76,17 +77,33 @@ Namespace LoginDb
             Public Time As Date
         End Structure
 
+        Structure LoginInfoMessage_
+            Public Text As String
+            Public Delay As Integer
+        End Structure
+
         Public Sub GetNewsData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From News")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From News")
             News.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
-                Dim tmp_news As New News_
-                tmp_news.Title = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                tmp_news.Text = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_news.Time = CDate(tmp.Tables(0).Rows(i).ItemArray(3))
+                If CInt(tmp.Tables(0).Rows(i).ItemArray(1)) = 0 Then
+                    'Type, 0=Launcher,1=Login Info Messages Subsystem
+                    Dim tmpNews As New News_
+                    tmpNews.Title = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
+                    tmpNews.Text = CStr(tmp.Tables(0).Rows(i).ItemArray(3))
+                    tmpNews.Time = CDate(tmp.Tables(0).Rows(i).ItemArray(4))
 
-                News.Add(tmp_news)
+                    News.Add(tmpNews)
+                ElseIf CInt(tmp.Tables(0).Rows(i).ItemArray(1)) = 1 Then
+                    Dim tmpMsg As New LoginInfoMessage_
+                    tmpMsg.Delay = CInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                    tmpMsg.Text = CStr(tmp.Tables(0).Rows(i).ItemArray(3))
+
+                    LoginInfoMessages.Add(tmpMsg)
+                End If
+
+
             Next
         End Sub
 
@@ -102,7 +119,7 @@ Namespace LoginDb
         End Structure
         Public Sub GetUserData()
 
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From Users")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
             Users.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
@@ -119,27 +136,18 @@ Namespace LoginDb
             Next
         End Sub
 
-        Public Function GetUserWithID(ByVal id As String) As Integer
 
-            Dim i As Integer = 0
 
+        Public Function GetUser(ByVal id As String) As Integer
             For i = 0 To (Users.Count - 1)
                 If Users(i).Name = id Then
-                    Exit For
+                    Return i
                 End If
             Next
-
-
-            If Users.Count = i Then
-                Return -1
-            End If
-
-            Return i
+            Return -1
         End Function
 
-
-
-        Public Function GetServerIndexById(ByVal id As Integer) As UShort
+        Public Function GetServerIndex(ByVal id As Integer) As UShort
             For i = 0 To Servers.Count - 1
                 If Servers(i).ServerId = id Then
                     Return Convert.ToUInt16(i)

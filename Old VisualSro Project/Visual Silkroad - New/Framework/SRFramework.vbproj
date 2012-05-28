@@ -9,8 +9,8 @@
     </SchemaVersion>
     <ProjectGuid>{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Framework</RootNamespace>
-    <AssemblyName>Framework</AssemblyName>
+    <RootNamespace>SRFramework</RootNamespace>
+    <AssemblyName>SRFramework</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -22,7 +22,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Framework.xml</DocumentationFile>
+    <DocumentationFile>SRFramework.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -31,7 +31,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Framework.xml</DocumentationFile>
+    <DocumentationFile>SRFramework.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -66,6 +66,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\Classes\cINI.vb" />
     <Compile Include="Framework\Classes\DownloadServer.vb" />
     <Compile Include="Framework\Classes\GameServer.vb" />
     <Compile Include="Framework\Classes\GatewayServer.vb" />

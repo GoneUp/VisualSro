@@ -1,4 +1,4 @@
-﻿Imports Framework
+﻿Imports SRFramework
 
 Namespace GlobalManager
     Module Auth

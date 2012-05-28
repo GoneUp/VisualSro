@@ -1,6 +1,6 @@
 ﻿Imports MySql.Data.MySqlClient
 Imports System.Data
-Public Class DataBase
+Public Class cDatabase
     Private _connection As MySqlConnection
     Private _connectionString As String
     Private ReadOnly _query As New List(Of String)

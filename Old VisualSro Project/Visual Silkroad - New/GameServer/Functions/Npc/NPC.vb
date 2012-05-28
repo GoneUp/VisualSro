@@ -2,30 +2,44 @@
 
 Namespace GameServer.Functions
     Module NPC
-        Public Function CreateNPCGroupSpawnPacket(ByVal NpcUniqueId As UInteger) As Byte()
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.GroupSpawnStart)
-            writer.Byte(1)
-            'spawn
-            writer.Word(1)
-            Dim bytes1 As Byte() = writer.GetBytes
-            Dim bytes2 As Byte() = CreateNPCSpawnPacket(NpcUniqueId)
-            writer.Create(ServerOpcodes.GroupSpawnEnd)
-            Dim bytes3 As Byte() = writer.GetBytes
-            Dim finalbytes((bytes1.Length + bytes2.Length + bytes3.Length) - 1) As Byte
-            Array.ConstrainedCopy(bytes1, 0, finalbytes, 0, bytes1.Length)
-            Array.ConstrainedCopy(bytes2, 0, finalbytes, 9, bytes2.Length)
-            Array.ConstrainedCopy(bytes3, 0, finalbytes, (bytes2.Length) + 9, bytes3.Length)
-            Return finalbytes
-        End Function
+
+        '############## Use the new groupspawn class
+        'Public Function CreateNPCGroupSpawnPacket(ByVal npcUniqueIDs As List(Of UInteger)) As Byte()
+        '    Dim writer As New PacketWriter
+        '    writer.Create(ServerOpcodes.GroupSpawnStart)
+        '    writer.Byte(1)
+        '    'spawn
+        '    writer.Word(1)
+        '    Dim bytesHeader As Byte() = writer.GetBytes
+
+        '    Dim bytesBody As Byte()
+        '    Dim ms As New IO.MemoryStream(bytesBody)
+
+        '    For Each id As UInt32 In npcUniqueIDs
+        '        Dim spawnPacket() As Byte = CreateNPCSpawnPacket(id)
+        '        ms.Write(spawnPacket, ms.Length, spawnPacket.Length)
+        '    Next
+        '    ms.Close()
+
+        '    writer.Create(ServerOpcodes.GroupSpawnEnd)
+        '    Dim bytesEnd As Byte() = writer.GetBytes
+
+        '    Dim finalbytes((bytesHeader.Length + bytesBody.Length + bytesEnd.Length) - 1) As Byte
+        '    Array.ConstrainedCopy(bytesHeader, 0, finalbytes, 0, bytesHeader.Length)
+        '    Array.ConstrainedCopy(bytesBody, 0, finalbytes, 9, bytesBody.Length)
+        '    Array.ConstrainedCopy(bytesEnd, 0, finalbytes, (bytesBody.Length) + 9, bytesEnd.Length)
+        '    Return finalbytes
+        'End Function
 
 
-        Public Function CreateNPCSpawnPacket(ByVal NpcUniqueId As UInteger) As Byte()
+        Public Sub CreateNPCSpawnPacket(ByVal NpcUniqueId As UInteger, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
             Dim npc As cNPC = NpcList(NpcUniqueId)
-            Dim obj As Object_ = GetObject(npc.Pk2ID)
+            Dim obj As SilkroadObject = GetObject(npc.Pk2ID)
 
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.GroupSpawnData)
+            If includePacketHeader Then
+                writer.Create(ServerOpcodes.GroupSpawnData)
+            End If
+
             writer.DWord(npc.Pk2ID)
             writer.DWord(npc.UniqueID)
             writer.Byte(npc.Position.XSector)
@@ -36,7 +50,7 @@ Namespace GameServer.Functions
             writer.Word(npc.Angle)
 
             Select Case obj.Type
-                Case Object_.Type_.Npc
+                Case SilkroadObject.Type_.Npc
                     writer.Byte(0)
                     writer.Byte(1)
                     writer.Byte(0)
@@ -44,15 +58,17 @@ Namespace GameServer.Functions
                     writer.Byte(1)
                     writer.Byte(0)
                     writer.Byte(0)
-                    writer.DWord(0)
+                    writer.Byte(0)
+
                     'speeds
                     writer.DWord(0)
-                    writer.Float(100)
-                    'berserker speed
+                    writer.DWord(0)
+                    writer.Float(100)     'berserker speed
+
                     writer.Word(0)
 
 
-                Case Object_.Type_.Teleport
+                Case SilkroadObject.Type_.Teleport
                     writer.Byte(1)
                     writer.Byte(0)
                     writer.Byte(0)
@@ -61,25 +77,22 @@ Namespace GameServer.Functions
                     writer.DWord(0)
 
             End Select
-
-            Return writer.GetBytes
-        End Function
+        End Sub
 
         Public Sub SpawnNPC(ByVal Pk2Id As UInteger, ByVal Position As Position, ByVal Angle As UInt16)
-            Dim npc_ As Object_ = GetObject(Pk2Id)
+            Dim npc_ As SilkroadObject = GetObject(Pk2Id)
 
             If npc_ Is Nothing Then
                 Throw New Exception("Npc Spawn failed, id: " & Pk2Id)
-                Exit Sub
             End If
 
             Dim tmp As New cNPC
-            tmp.UniqueID = Id_Gen.GetUnqiueID
+            tmp.UniqueID = Id_Gen.GetUnqiueId
             tmp.Pk2ID = npc_.Pk2ID
             tmp.Angle = Angle
-            If npc_.Type = Object_.Type_.Npc Then
+            If npc_.Type = SilkroadObject.Type_.Npc Then
                 tmp.Position = Position
-            ElseIf npc_.Type = Object_.Type_.Teleport Then
+            ElseIf npc_.Type = SilkroadObject.Type_.Teleport Then
                 tmp.Position = npc_.T_Position
             End If
 
@@ -93,7 +106,9 @@ Namespace GameServer.Functions
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedNPCs.Contains(tmp.UniqueID) = False Then
-                            Server.Send(CreateNPCGroupSpawnPacket(tmp.UniqueID), refindex)
+                            Dim tmpSpawn As New GroupSpawn
+                            tmpSpawn.AddObject(tmp.UniqueID)
+                            Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
                             PlayerData(refindex).SpawnedNPCs.Add(tmp.UniqueID)
                         End If
                     End If
@@ -103,7 +118,7 @@ Namespace GameServer.Functions
 
         Public Sub OnNpcChat(ByVal NpcUniqueId As UInteger, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            Dim obj As Object_ = GetObject(NpcList(NpcUniqueId).Pk2ID)
+            Dim obj As SilkroadObject = GetObject(NpcList(NpcUniqueId).Pk2ID)
             Dim name As String() = obj.TypeName.Split("_")
 
             writer.Create(ServerOpcodes.Target)
@@ -131,7 +146,7 @@ Namespace GameServer.Functions
         Public Sub OnNpcChatSelect(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim UniqueID As UInteger = packet.DWord
             Dim ChatId As Byte = packet.Byte
-            Dim RefObj As New Object_
+            Dim RefObj As New SilkroadObject
 
             If NpcList.ContainsKey(UniqueID) Then
                 RefObj = GetObject(NpcList(UniqueID).Pk2ID)
@@ -174,24 +189,33 @@ Namespace GameServer.Functions
             Select Case type
                 Case 2
                     Dim TeleportNumber As Integer = packet.DWord
-                    Dim Point_ As TeleportPoint_ = GetTeleportPoint(TeleportNumber)
+                    Dim Point_ As TeleportPoint_ = GetTeleportPointByNumber(TeleportNumber)
+
+                    If Point_ Is Nothing Then
+                        Server.Disconnect(Index_)
+                    ElseIf Point_.Links.ContainsKey(TeleportNumber) = False Then
+                        Server.Disconnect(Index_)
+                    End If
+
+                    Dim Link As TeleportLink = Point_.Links(TeleportNumber)
+
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
 
-                    If CSng(PlayerData(Index_).Gold) - Point_.Cost < 0 Then
+                    If CSng(PlayerData(Index_).Gold) - Link.Cost < 0 Then
                         'Not enough Gold...
                         writer.Byte(2)
                         writer.Byte(7)
                         'Server.Send(writer.GetBytes, Index_)
 
-                    ElseIf PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
+                    ElseIf PlayerData(Index_).Level < Link.MinLevel And Link.MinLevel > 0 Then
                         'Level too low
                         writer.Byte(2)
                         writer.Byte(&H15)
                         writer.Byte(&H1C)
                         Server.Send(writer.GetBytes, Index_)
 
-                    ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
+                    ElseIf PlayerData(Index_).Level > Link.MaxLevel And Link.MaxLevel > 0 Then
                         'Level too high
                         writer.Byte(2)
                         writer.Byte(&H16)
@@ -200,10 +224,10 @@ Namespace GameServer.Functions
 
                     Else
                         PlayerData(Index_).Busy = True
-                        PlayerData(Index_).Position = Point_.ToPos
+                        PlayerData(Index_).SetPosition = Point_.ToPos
                         PlayerData(Index_).TeleportType = TeleportType_.Npc
 
-                        PlayerData(Index_).Gold -= Point_.Cost
+                        PlayerData(Index_).Gold -= Link.Cost
                         UpdateGold(Index_)
 
                         writer.Create(ServerOpcodes.Npc_Teleport_Confirm)

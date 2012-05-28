@@ -41,7 +41,7 @@ Module Commands
                     End If
                 Next
                 ' GameServer.Server.stop()
-                DataBase.ExecuteQuerys()
+                Database.ExecuteQuerys()
                 End
 
         End Select

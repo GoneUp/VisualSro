@@ -106,7 +106,7 @@
 
             Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
             Dim RefWeapon As New cItem
-            Dim AttObject As Object_ = GetObject(MobList(MobUniqueId).Pk2ID)
+            Dim AttObject As SilkroadObject = GetObject(MobList(MobUniqueId).Pk2ID)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
 
             If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
@@ -196,7 +196,7 @@
                     Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
-                        Damage = Damage*2
+                        Damage = Damage * 2
                         Crit = 2
                     End If
                     If CLng(MobList(MobUniqueId).HP_Cur) - Damage > 0 Then
@@ -312,7 +312,7 @@
 
         Public Sub PlayerAttackEndSkill(ByVal Index_ As Integer)
             Dim RefSkill As Skill = GetSkill(PlayerData(Index_).UsingSkillId)
-            Dim AttObject As New Object_
+            Dim AttObject As New SilkroadObject
             Dim RefWeapon As New cItem
             Dim Mob_ As cMonster = MobList(PlayerData(Index_).AttackedId)
             Dim afterstate, NumberVictims As Integer
@@ -347,7 +347,7 @@
                     Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
-                        Damage = Damage*2
+                        Damage = Damage * 2
                         Crit = 2
                     End If
 
@@ -396,7 +396,7 @@
         End Sub
 
 
-        Function CalculateDamageMob(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) As UInteger
+        Function CalculateDamageMob(ByVal Index_ As Integer, ByVal Mob As SilkroadObject, ByVal SkillID As UInt32) As UInteger
             Dim RefSkill As Skill = GetSkill(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
@@ -405,7 +405,7 @@
             'Else
             '    Balance = 0.01
             'End If
-            Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level)/100))
+            Balance = (1 + ((CSng(PlayerData(Index_).Level) - Mob.Level) / 100))
             If Balance < 0 Then
                 Balance = 0.01
             End If
@@ -414,15 +414,15 @@
             Dim DamageMax As Double
 
             If RefSkill.Type = TypeTable.Phy Then
-                DamageMin = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin)*(1 + 0)/(1 + 0) - Mob.PhyDef)*Balance*(1 + 0)*
-                            (RefSkill.PwrPercent/10)
-                DamageMax = ((PlayerData(Index_).MaxPhy + RefSkill.PwrMax)*(1 + 0)/(1 + 0) - Mob.PhyDef)*Balance*(1 + 0)*
-                            (RefSkill.PwrPercent/10)
+                DamageMin = ((PlayerData(Index_).MinPhy + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) *
+                            (RefSkill.PwrPercent / 10)
+                DamageMax = ((PlayerData(Index_).MaxPhy + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.PhyDef) * Balance * (1 + 0) *
+                            (RefSkill.PwrPercent / 10)
             ElseIf RefSkill.Type = TypeTable.Mag Then
-                DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin)*(1 + 0)/(1 + 0) - Mob.MagDef)*Balance*(1 + 0)*
-                            (RefSkill.PwrPercent/10)
-                DamageMax = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax)*(1 + 0)/(1 + 0) - Mob.MagDef)*Balance*(1 + 0)*
-                            (RefSkill.PwrPercent/10)
+                DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) *
+                            (RefSkill.PwrPercent / 10)
+                DamageMax = ((PlayerData(Index_).MaxMag + RefSkill.PwrMax) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) *
+                            (RefSkill.PwrPercent / 10)
             End If
 
 
@@ -442,8 +442,8 @@
             End If
 
 
-            Dim Radmon As Integer = Rnd()*100
-            FinalDamage = DamageMin + (((DamageMax - DamageMin)/100)*Radmon)
+            Dim Radmon As Integer = Rnd() * 100
+            FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
 
 
             If PlayerData(Index_).Berserk = True Then

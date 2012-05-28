@@ -32,16 +32,16 @@
         Public Sub ReSpawnMob(ByVal SpotIndex As Integer)
             Try
                 Dim re = RefRespawns(SpotIndex)
-                Dim obj_ As Object_ = GetObject(RefRespawns(SpotIndex).Pk2ID)
+                Dim obj_ As SilkroadObject = GetObject(RefRespawns(SpotIndex).Pk2ID)
 
                 Select Case obj_.Type
-                    Case Object_.Type_.Mob_Normal
+                    Case SilkroadObject.Type_.Mob_Normal
                         SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0,
                                  re.SpotID)
-                    Case Object_.Type_.Mob_Cave
+                    Case SilkroadObject.Type_.Mob_Cave
                         SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0,
                                  re.SpotID)
-                    Case Object_.Type_.Npc
+                    Case SilkroadObject.Type_.Npc
                         SpawnNPC(RefRespawns(SpotIndex).Pk2ID, RefRespawns(SpotIndex).Position,
                                  RefRespawns(SpotIndex).Angle)
                 End Select

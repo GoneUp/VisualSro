@@ -1,5 +1,4 @@
-﻿Imports Framework
-Imports System
+﻿Imports SRFramework
 Imports LoginServer.Framework
 
 Friend Class Program
@@ -13,9 +12,9 @@ Friend Class Program
         AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
         AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
-        AddHandler Framework.DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
-        AddHandler Framework.DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
-
+        AddHandler Database.OnDatabaseError, AddressOf Program.db_OnDatabaseError
+        AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnConnectedToDatabase
+        AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
 
         Console.WindowHeight = 10
         Console.BufferHeight = 30
@@ -32,12 +31,12 @@ Friend Class Program
         Settings.SetToServer()
 
         Log.WriteSystemLog("Loaded Settings. Conneting Database.")
-        LoginServer.Framework.DataBase.Connect()
+        Database.Connect()
 
         Log.WriteSystemLog("Connected Database. Starting Server now.")
         LoginDb.UpdateData()
         ClientList.SetupClientList(Server.MaxClients)
-        Timers.LoadTimers()
+        Timers.LoadTimers(Server.MaxClients)
 
 
         Server.Start()
@@ -93,7 +92,7 @@ Friend Class Program
     End Sub
 
     Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
-        Log.WriteSystemLog("Server Error: " & ex.Message & " Index: " & index) '-1 = on client connect + -2 = on server start
+        Log.WriteSystemLog("Server Error: " & ex.Message & " Index: " & index & " Stacktrace: " & ex.StackTrace) '-1 = on client connect + -2 = on server start
     End Sub
 
     Private Shared Sub Server_OnServerStarted(ByVal time As String)
@@ -111,7 +110,10 @@ Friend Class Program
 
     Private Shared Sub db_OnConnectedToDatabase()
         Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
+    End Sub
 
+    Private Shared Sub db_OnDatabaseLog(ByVal message As String)
+        Log.WriteSystemLog("Database Log: " & message)
     End Sub
 
     Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)

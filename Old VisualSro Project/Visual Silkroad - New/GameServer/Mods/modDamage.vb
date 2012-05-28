@@ -7,7 +7,7 @@ Namespace GameServer.GameMod.Damage
 
         Public Sub SendDamageInfo(ByVal MobUniqueId As Integer)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
-            Dim ref_ As Object_ = GetObject(Mob_.Pk2ID)
+            Dim ref_ As SilkroadObject = GetObject(Mob_.Pk2ID)
 
             'Sort
             Dim DmgList As List(Of cDamageDone) = MobList(MobUniqueId).DamageFromPlayer

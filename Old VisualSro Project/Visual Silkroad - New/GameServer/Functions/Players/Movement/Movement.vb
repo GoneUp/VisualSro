@@ -147,6 +147,8 @@ Namespace GameServer.Functions
             Try
                 ObjectDeSpawnCheck(Index_)
 
+                Dim spawnCollector As New GroupSpawn
+
                 '=============Players============
                 For refindex As Integer = 0 To Server.MaxClients
                     Dim othersock As Socket = ClientList.GetSocket(refindex)
@@ -175,25 +177,35 @@ Namespace GameServer.Functions
                         If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Mob_.Position) Then
                             Dim obj As Object = GetObject(Mob_.Pk2ID)
                             If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = False Then
-                                Server.Send(CreateMonsterSpawnPacket(Mob_, obj), Index_)
+                                spawnCollector.AddObject(Mob_.UniqueID)
                                 PlayerData(Index_).SpawnedMonsters.Add(Mob_.UniqueID)
                             End If
                         End If
                     End If
                 Next
+                If spawnCollector.Count > 0 Then
+                    Server.Send(spawnCollector.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), Index_)
+                    spawnCollector.Clear()
+                End If
 
                 '===========NPCS===================
+
                 For Each key In NpcList.Keys.ToList
                     If NpcList.ContainsKey(key) Then
                         Dim Npc_ As cNPC = NpcList.Item(key)
                         If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Npc_.Position) Then
                             If PlayerData(Index_).SpawnedNPCs.Contains(Npc_.UniqueID) = False Then
-                                Server.Send(CreateNPCGroupSpawnPacket(Npc_.UniqueID), Index_)
+                                spawnCollector.AddObject(Npc_.UniqueID)
                                 PlayerData(Index_).SpawnedNPCs.Add(Npc_.UniqueID)
                             End If
                         End If
                     End If
                 Next
+                If spawnCollector.Count > 0 Then
+                    Server.Send(spawnCollector.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), Index_)
+                    spawnCollector.Clear()
+                End If
+
 
 
                 '===========ITEMS===================
@@ -202,13 +214,19 @@ Namespace GameServer.Functions
                         Dim Item_ As cItemDrop = ItemList(key)
                         If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, ItemList(key).Position) Then
                             If PlayerData(Index_).SpawnedItems.Contains(Item_.UniqueID) = False Then
-                                Server.Send(CreateItemSpawnPacket(Item_), Index_)
+                                'spawnCollector.AddObject(Item_.UniqueID)
+                                Dim writer As New PacketWriter
+                                CreateItemSpawnPacket(Item_, writer, True)
+                                Server.Send(writer.GetBytes, Index_)
                                 PlayerData(Index_).SpawnedItems.Add(Item_.UniqueID)
                             End If
                         End If
                     End If
                 Next
-
+                If spawnCollector.Count > 0 Then
+                    Server.Send(spawnCollector.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), Index_)
+                    spawnCollector.Clear()
+                End If
 
             Catch ex As Exception
                 Log.WriteSystemLog("SpawnCheckError:: Message: " & ex.Message & " Stack:" & ex.StackTrace)
@@ -280,9 +298,11 @@ Namespace GameServer.Functions
                     CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <=
                     RefCaveTeleporter(i).Range Then
                     'In Range --> Teleport
-                    Dim Point_ As TeleportPoint_ = GetTeleportPoint(RefCaveTeleporter(i).ToTeleporterID)
+                    Dim Point_ As TeleportPoint_ = GetTeleportPointByNumber(RefCaveTeleporter(i).ToTeleporterID)
+                    '####################### Notice : Dont work
+                    Dim link As TeleportLink = Point_.Links(0)
 
-                    If PlayerData(Index_).Level < Point_.MinLevel And Point_.MinLevel > 0 Then
+                    If PlayerData(Index_).Level < link.MinLevel And link.MinLevel > 0 Then
                         'Level too low
                         Dim writer As New PacketWriter
                         writer.Create(ServerOpcodes.Teleport_Start)
@@ -290,12 +310,12 @@ Namespace GameServer.Functions
                         writer.Byte(&H15)
                         writer.Byte(&H1C)
                         Server.Send(writer.GetBytes, Index_)
-                    ElseIf PlayerData(Index_).Level > Point_.MaxLevel And Point_.MaxLevel > 0 Then
+                    ElseIf PlayerData(Index_).Level > link.MaxLevel And link.MaxLevel > 0 Then
                         'Level too high
                         SendNotice("Cannot Teleport because your Level is too high.", Index_)
                     ElseIf PlayerData(Index_).Busy = False Then
                         PlayerData(Index_).Busy = True
-                        PlayerData(Index_).Position = Point_.ToPos
+                        PlayerData(Index_).SetPosition = Point_.ToPos
 
                         DataBase.SaveQuery(
                             String.Format(

@@ -84,6 +84,17 @@ Namespace Framework
         Public Version As UInt32
         Public ClientName As String
         Public Locale As Byte
+        Public SRConnectionSetup As SRConnectionStatus
+
+        Public LoginTextIndex As UInt32 = 0
+
+        Public Enum SRConnectionStatus
+            HANDSHAKE = 0
+            WHOAMI = 1
+            PATCH_INFO = 2
+            LAUNCHER = 3
+            LOGIN = 4
+        End Enum
     End Class
 End Namespace
 

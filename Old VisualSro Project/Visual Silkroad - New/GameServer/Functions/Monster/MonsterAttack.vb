@@ -31,8 +31,8 @@
 
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
-            Dim AttObject As Object_ = GetObject(PlayerData(Index_).Pk2Id)
-            Dim RefMonster As Object_ = GetObject(Mob_.Pk2ID)
+            Dim AttObject As SilkroadObject = GetObject(PlayerData(Index_).Pk2Id)
+            Dim RefMonster As SilkroadObject = GetObject(Mob_.Pk2ID)
 
 
             Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
@@ -67,7 +67,7 @@
                     Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Pk2Id)
                     Dim Crit As Byte = Attack_GetCritical()
                     If Crit = True Then
-                        Damage = Damage*2
+                        Damage = Damage * 2
                         Crit = 2
                     End If
 
@@ -99,8 +99,8 @@
                 MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, False)
             Else
                 UpdateHP(Index_)
-                Mob_.AttackTimer_Start(RefSkill.UseDuration*250)
-                Mob_.AttackEndTime = Date.Now.AddMilliseconds(RefSkill.UseDuration*250)
+                Mob_.AttackTimer_Start(RefSkill.UseDuration * 250)
+                Mob_.AttackEndTime = Date.Now.AddMilliseconds(RefSkill.UseDuration * 250)
             End If
         End Sub
 
@@ -132,13 +132,13 @@
         ''' <param name="SkillID"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Function CalculateDamagePlayer(ByVal Index_ As Integer, ByVal Mob As Object_, ByVal SkillID As UInt32) _
+        Function CalculateDamagePlayer(ByVal Index_ As Integer, ByVal Mob As SilkroadObject, ByVal SkillID As UInt32) _
             As UInteger
             Dim RefSkill As Skill = GetSkill(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
-            If (CSng(Mob.Level) - PlayerData(Index_).Level) > - 99 Then
-                Balance = (1 + (CSng(Mob.Level) - PlayerData(Index_).Level)/100)
+            If (CSng(Mob.Level) - PlayerData(Index_).Level) > -99 Then
+                Balance = (1 + (CSng(Mob.Level) - PlayerData(Index_).Level) / 100)
             Else
                 Balance = 0.01
             End If
@@ -148,11 +148,11 @@
 
             If RefSkill.Type = TypeTable.Phy Then
                 DamageMin =
-                    ((Mob.ParryRatio + RefSkill.PwrMin)*(1 + 0)/(1 + (PlayerData(Index_).PhyAbs/500)) -
-                     PlayerData(Index_).PhyDef)*Balance*(1 + 0)*(RefSkill.PwrPercent/100)
+                    ((Mob.ParryRatio + RefSkill.PwrMin) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 500)) -
+                     PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
                 DamageMax =
-                    ((Mob.ParryRatio + RefSkill.PwrMax)*(1 + 0)/(1 + (PlayerData(Index_).PhyAbs/510)) -
-                     PlayerData(Index_).PhyDef)*Balance*(1 + 0)*(RefSkill.PwrPercent/100)
+                    ((Mob.ParryRatio + RefSkill.PwrMax) * (1 + 0) / (1 + (PlayerData(Index_).PhyAbs / 510)) -
+                     PlayerData(Index_).PhyDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
             ElseIf RefSkill.Type = TypeTable.Mag Then
                 'UNUSED FOR NOW
                 '  DamageMin = ((PlayerData(Index_).MinMag + RefSkill.PwrMin) * (1 + 0) / (1 + 0) - Mob.MagDef) * Balance * (1 + 0) * (RefSkill.PwrPercent / 100)
@@ -167,8 +167,8 @@
                 DamageMax = 2
             End If
 
-            Dim Radmon As Integer = Rnd()*100
-            FinalDamage = DamageMin + (((DamageMax - DamageMin)/100)*Radmon)
+            Dim Radmon As Integer = Rnd() * 100
+            FinalDamage = DamageMin + (((DamageMax - DamageMin) / 100) * Radmon)
 
             'A = Basic Attack Power
             'B = Skill Attack Power
@@ -186,7 +186,7 @@
         End Function
 
         Private Function Monster_GetNextSkill(ByVal SkillID As UInteger, ByVal ObjectID As UInteger)
-            Dim Ref_ As Object_ = GetObject(ObjectID)
+            Dim Ref_ As SilkroadObject = GetObject(ObjectID)
 
 
             Select Case SkillID

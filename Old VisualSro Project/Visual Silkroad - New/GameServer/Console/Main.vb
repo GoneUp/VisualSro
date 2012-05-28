@@ -37,10 +37,12 @@ Namespace GameServer
             Log.WriteSystemLog("Connected Database. Loading Data now.")
 
             ClientList.SetupClientList(Server.MaxClients)
+            Functions.GlobalInit(Server.MaxClients)
             DumpDataFiles()
             TheardDB.Start()
             TheardTimer.Start(1500)
-            GameServer.GameMod.Damage.OnServerStart(Server.MaxClients)
+            GameMod.Damage.OnServerStart(Server.MaxClients)
+
             Log.WriteSystemLog("Data Loaded. Starting Server.")
 
             TheardServer.Start()

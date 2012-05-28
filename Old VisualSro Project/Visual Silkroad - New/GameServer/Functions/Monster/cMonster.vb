@@ -3,6 +3,7 @@
 Namespace GameServer.Functions
     Public Class cMonster
         Inherits cGameObject
+
         Public SpotID As Long
 
         Public Mob_Type As Byte
@@ -37,7 +38,7 @@ Namespace GameServer.Functions
         End Property
 
         Public Function IsAttacking() As Boolean
-            If Date.Compare(Date.Now, Me.AttackEndTime) = - 1 Then
+            If Date.Compare(Date.Now, Me.AttackEndTime) = -1 Then
                 Return True
             Else
                 Return False

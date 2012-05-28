@@ -1,12 +1,12 @@
 ﻿Namespace GameServer.Functions
     Module ItemMall
         Public Sub OnSendSilks(ByVal Index_ As Integer)
-            Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(Index_).AccountID)
+            Dim userIndex As Integer = GameDB.GetUser(PlayerData(Index_).AccountID)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Silk)
-            writer.DWord(GameDB.Users(UserIndex).Silk)
-            writer.DWord(GameDB.Users(UserIndex).Silk_Bonus)
-            writer.DWord(GameDB.Users(UserIndex).Silk_Points)
+            writer.DWord(GameDB.Users(userIndex).Silk)
+            writer.DWord(GameDB.Users(userIndex).Silk_Bonus)
+            writer.DWord(GameDB.Users(userIndex).Silk_Points)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
@@ -21,10 +21,10 @@
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
-            Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(index_).AccountID)
+            Dim UserIndex As Integer = GameDB.GetUser(PlayerData(index_).AccountID)
 
             If LongName = RefObject.Name_Package Then
-                If GameDB.Users(UserIndex).Silk - (RefObject.Price*amout) >= 0 And GetFreeItemSlot(index_) <> - 1 Then
+                If GameDB.Users(UserIndex).Silk - (RefObject.Price * amout) >= 0 And GetFreeItemSlot(index_) <> -1 Then
                     Dim ItemSlots As New List(Of Byte)
 
                     For i = 1 To amout

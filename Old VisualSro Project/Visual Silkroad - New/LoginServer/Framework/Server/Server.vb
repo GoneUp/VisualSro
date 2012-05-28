@@ -98,17 +98,21 @@ Namespace Framework
             Do While True
 
                 Try
-                    If socket.Connected Then
-                        If socket.Available > 0 Then
-                            socket.Receive(buffer, socket.Available, SocketFlags.None)
-                            RaiseEvent OnReceiveData(buffer, Index_)
-                            Array.Clear(buffer, 0, buffer.Length)
-                        Else
-                            Threading.Thread.Sleep(10)
-                        End If
+                    If socket IsNot Nothing Then
+                        If socket.Connected Then
+                            If socket.Available > 0 Then
+                                socket.Receive(buffer, socket.Available, SocketFlags.None)
+                                RaiseEvent OnReceiveData(buffer, Index_)
+                                Array.Clear(buffer, 0, buffer.Length)
+                            Else
+                                Threading.Thread.Sleep(10)
+                            End If
 
+                        Else
+                            Log.WriteSystemLog(buffer.ToString)
+                            Exit Do
+                        End If
                     Else
-                        Log.WriteSystemLog(buffer.ToString)
                         Exit Do
                     End If
 
@@ -130,11 +134,19 @@ Namespace Framework
 
 
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
-            ClientList.GetSocket(index).Send(buff)
+            Try
+                Dim socket = ClientList.GetSocket(index)
+                If socket IsNot Nothing Then
+                    If socket.Connected Then
+                        socket.Send(buff)
+                    Else
+                        Dissconnect(index)
+                    End If
+                End If
 
-            If LoginServer.Program.Logpackets = True Then
-                '(buff, True)
-            End If
+            Catch ex As Exception
+               RaiseEvent OnServerError(ex, index)
+            End Try
         End Sub
 
 

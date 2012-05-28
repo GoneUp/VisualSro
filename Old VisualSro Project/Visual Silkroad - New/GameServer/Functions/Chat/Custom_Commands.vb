@@ -81,7 +81,7 @@ Namespace GameServer.GameMod
                     End If
                 Case "\\silk"
                     If IsNumeric(tmp(1)) Then
-                        Dim UserIndex As Integer = GameDB.GetUserWithAccID(PlayerData(Index_).AccountID)
+                        Dim UserIndex As Integer = GameDB.GetUser(PlayerData(Index_).AccountID)
                         Dim user = GameDB.Users(UserIndex)
                         user.Silk += tmp(1)
                         GameDB.Users(UserIndex) = user
@@ -98,7 +98,7 @@ Namespace GameServer.GameMod
 
                 Case "\\save"
                     SendPm(Index_, "Saving start!", "[SERVER]")
-                    SaveAutoSpawn(AppDomain.CurrentDomain.BaseDirectory & "npcpos.txt")
+                    SaveAutoSpawn(AppDomain.CurrentDomain.BaseDirectory & "npcpos_saved.txt")
                     SendPm(Index_, "Saving finsihed!", "[SERVER]")
 
                 Case "\\turn"

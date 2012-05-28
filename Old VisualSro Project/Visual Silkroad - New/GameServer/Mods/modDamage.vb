@@ -2,35 +2,35 @@
 
 Namespace GameServer.GameMod.Damage
     Module modDamage
-        Public Mod_Name As String = "mod_Damage"
+        Public ModName As String = "mod_Damage"
         Public Settings(1500) As Settings_
 
-        Public Sub SendDamageInfo(ByVal MobUniqueId As Integer)
-            Dim Mob_ As cMonster = MobList(MobUniqueId)
-            Dim ref_ As SilkroadObject = GetObject(Mob_.Pk2ID)
+        Public Sub SendDamageInfo(ByVal mobUniqueId As Integer)
+            Dim mob As cMonster = MobList(MobUniqueId)
+            Dim ref As SilkroadObject = GetObject(mob.Pk2ID)
 
             'Sort
-            Dim DmgList As List(Of cDamageDone) = MobList(MobUniqueId).DamageFromPlayer
-            Dim sort = From elem In DmgList Order By elem.Damage Descending Select elem Take 9
+            Dim dmgList As List(Of cDamageDone) = MobList(mobUniqueId).DamageFromPlayer
+            Dim sort = From elem In dmgList Order By elem.Damage Descending Select elem Take 9
 
             'Build Info
-            Dim sDmg As String = String.Format("== Damage Statistic for Mob: {0} ==   ", ref_.RealName)
+            Dim sDmg As String = String.Format("== Damage Statistic for Mob: {0} ==   ", ref.RealName)
             Dim rank As Integer = 1
             For i = 0 To sort.Count - 1
                 sDmg += String.Format("Rank: {0}, Name: {1}, Damage: {2} ; ", rank,
-                                      PlayerData(DmgList(i).PlayerIndex).CharacterName, DmgList(i).Damage)
+                                      PlayerData(dmgList(i).PlayerIndex).CharacterName, dmgList(i).Damage)
                 rank += 1
             Next
 
             'Send it
             For i = 0 To sort.Count - 1
-                If IsSendingAllowed(DmgList(i).PlayerIndex, Mob_.Mob_Type) Then
-                    SendPm(DmgList(i).PlayerIndex, sDmg, "[DAMAGE_MOD]")
+                If IsSendingAllowed(dmgList(i).PlayerIndex, mob.Mob_Type) Then
+                    SendPm(dmgList(i).PlayerIndex, sDmg, "[DAMAGE_MOD]")
                 End If
             Next
         End Sub
 
-        Public Sub OnServerStart(ByVal Slots As Integer)
+        Public Sub OnServerStart(ByVal slots As Integer)
             ReDim Settings(Slots)
 
             For i = 0 To Settings.Count - 1

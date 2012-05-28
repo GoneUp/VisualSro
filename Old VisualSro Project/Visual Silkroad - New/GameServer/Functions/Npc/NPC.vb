@@ -131,9 +131,8 @@ Namespace GameServer.Functions
                     writer.Byte(obj.ChatBytes(i))
                 Next
             Else
-                writer.Byte(0)
-                writer.DWord(0)
-                writer.Byte(0)
+                'Unsupoorted npc
+                SendNotice("Unsupported NPC, ID: " & obj.Pk2ID & " TypeName: " & obj.TypeName)
             End If
 
 

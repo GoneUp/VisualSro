@@ -1,34 +1,34 @@
 ﻿Namespace GameServer.Functions
-    Module Stats
-        Public Sub OnStatsPacket(ByVal index_ As Integer)
-            PlayerData(index_).SetCharGroundStats()
-            PlayerData(index_).AddItemsToStats(index_)
+    Module PlayerStats
+        Public Sub OnStatsPacket(ByVal Index_ As Integer)
+            PlayerData(Index_).SetCharGroundStats()
+            PlayerData(Index_).AddItemsToStats(Index_)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.CharacterStats)
-            writer.DWord(PlayerData(index_).MinPhy)
-            writer.DWord(PlayerData(index_).MaxPhy)
-            writer.DWord(PlayerData(index_).MinMag)
-            writer.DWord(PlayerData(index_).MaxMag)
-            writer.Word(PlayerData(index_).PhyDef)
-            writer.Word(PlayerData(index_).MagDef)
-            writer.Word(PlayerData(index_).Hit)
-            writer.Word(PlayerData(index_).Parry)
-            writer.DWord(PlayerData(index_).HP)
-            writer.DWord(PlayerData(index_).MP)
-            writer.Word(PlayerData(index_).Strength)
-            writer.Word(PlayerData(index_).Intelligence)
-            Server.Send(writer.GetBytes, index_)
+            writer.DWord(PlayerData(Index_).MinPhy)
+            writer.DWord(PlayerData(Index_).MaxPhy)
+            writer.DWord(PlayerData(Index_).MinMag)
+            writer.DWord(PlayerData(Index_).MaxMag)
+            writer.Word(PlayerData(Index_).PhyDef)
+            writer.Word(PlayerData(Index_).MagDef)
+            writer.Word(PlayerData(Index_).Hit)
+            writer.Word(PlayerData(Index_).Parry)
+            writer.DWord(PlayerData(Index_).HP)
+            writer.DWord(PlayerData(Index_).MP)
+            writer.Word(PlayerData(Index_).Strength)
+            writer.Word(PlayerData(Index_).Intelligence)
+            Server.Send(writer.GetBytes, Index_)
 
             'Save all Data to DB
             DataBase.SaveQuery(
                 String.Format(
                     "UPDATE characters SET min_phyatk='{0}', max_phyatk='{1}', min_magatk='{2}', max_magatk='{3}', phydef='{4}', magdef='{5}', hit='{6}', parry='{7}', hp='{8}', mp='{9}', strength='{10}', intelligence='{11}', attribute='{12}' where id='{13}'",
-                    PlayerData(index_).MinPhy, PlayerData(index_).MaxPhy, PlayerData(index_).MinMag,
-                    PlayerData(index_).MinMag, PlayerData(index_).PhyDef, PlayerData(index_).MagDef,
-                    PlayerData(index_).Hit, PlayerData(index_).Parry, PlayerData(index_).HP, PlayerData(index_).MP,
-                    PlayerData(index_).Strength, PlayerData(index_).Intelligence, PlayerData(index_).Attributes,
-                    PlayerData(index_).CharacterId))
+                    PlayerData(Index_).MinPhy, PlayerData(Index_).MaxPhy, PlayerData(Index_).MinMag,
+                    PlayerData(Index_).MinMag, PlayerData(Index_).PhyDef, PlayerData(Index_).MagDef,
+                    PlayerData(Index_).Hit, PlayerData(Index_).Parry, PlayerData(Index_).HP, PlayerData(Index_).MP,
+                    PlayerData(Index_).Strength, PlayerData(Index_).Intelligence, PlayerData(Index_).Attributes,
+                    PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub UpdateHP(ByVal Index_ As Integer)
@@ -253,6 +253,15 @@
             writer.Create(ServerOpcodes.LevelUp_Animation)
             writer.DWord(PlayerData(Index_).UniqueId)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+        End Sub
+
+        Public Sub SavePlayerPositionToDB(ByVal Index_ As Integer)
+            DataBase.SaveQuery(
+                String.Format(
+                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                    PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
+                    Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
+                    Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
         End Sub
     End Module
 End Namespace

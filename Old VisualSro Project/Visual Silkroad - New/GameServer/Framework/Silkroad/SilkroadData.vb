@@ -71,7 +71,7 @@ Namespace GameServer
                 DumpCaveTeleporterFile(base_path & "\data\cave_teleport.txt")
                 Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
-                ' Functions.LoadAutoSpawn(base_path & "data\npcpos.txt")
+                LoadAutoSpawn(base_path & "data\npcpos.txt")
                 Log.WriteSystemLog("Loaded " & MobList.Count & " Autospawn Monster.")
                 Log.WriteSystemLog("Loaded " & NpcList.Count & " Autospawn Npc's.")
 

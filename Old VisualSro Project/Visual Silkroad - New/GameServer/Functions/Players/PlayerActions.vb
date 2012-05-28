@@ -369,14 +369,8 @@
 
             Select Case tag
                 Case 1 'To Town  
-                    PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return
-                    'Set new Pos
-                    DataBase.SaveQuery(
-                        String.Format(
-                            "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                            PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
-                            Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
-                            Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                    PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return 'Set new Pos
+                    SavePlayerPositionToDB(Index_)
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
 
                 Case 2 'At present Point
@@ -388,21 +382,22 @@
 
         Public Sub OnSetReturnPoint(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ObjectId As UInteger = packet.DWord
-            For i = 0 To NpcList.Count - 1
-                If ObjectId = NpcList(i).UniqueID Then
-                    Dim ref As SilkroadObject = GetObject(NpcList(i).Pk2ID)
-                    PlayerData(Index_).Position_Return = GetTeleportPoint(ref.Pk2ID).ToPos
 
-                    DataBase.SaveQuery(
-                        String.Format(
+            If NpcList.ContainsKey(ObjectId) = False Then
+                Server.Disconnect(Index_)
+            End If
+          
+            Dim ref As SilkroadObject = GetObject(NpcList(ObjectId).Pk2ID)
+            PlayerData(Index_).Position_Return = GetTeleportPoint(ref.Pk2ID).ToPos
+
+            DataBase.SaveQuery(String.Format(
                             "UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'",
                             PlayerData(Index_).Position_Return.XSector, PlayerData(Index_).Position_Return.YSector,
                             Math.Round(PlayerData(Index_).Position_Return.X),
                             Math.Round(PlayerData(Index_).Position_Return.Z),
                             Math.Round(PlayerData(Index_).Position_Return.Y), PlayerData(Index_).CharacterId))
-                    Exit For
-                End If
-            Next
+
+
         End Sub
 
         Public Sub OnUseBerserk(ByVal packet As PacketReader, ByVal Index_ As Integer)

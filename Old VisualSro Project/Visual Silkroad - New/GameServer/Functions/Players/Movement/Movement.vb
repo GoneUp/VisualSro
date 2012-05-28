@@ -293,40 +293,40 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub CheckForCaveTeleporter(ByVal Index_ As Integer)
-            For i = 0 To RefCaveTeleporter.Count - 1
-                If _
-                    CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <=
-                    RefCaveTeleporter(i).Range Then
-                    'In Range --> Teleport
-                    Dim Point_ As TeleportPoint_ = GetTeleportPointByNumber(RefCaveTeleporter(i).ToTeleporterID)
-                    '####################### Notice : Dont work
-                    Dim link As TeleportLink = Point_.Links(0)
+            If PlayerData(Index_) IsNot Nothing Then
+                For i = 0 To RefCaveTeleporter.Count - 1
+                    If CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <= RefCaveTeleporter(i).Range Then
+                        'In Range --> Teleport
+                        Dim point As TeleportPoint_ = GetTeleportPointByNumber(RefCaveTeleporter(i).ToTeleporterID)
+                        '####################### Notice : Dont work
+                        Dim link As TeleportLink = point.Links(0)
 
-                    If PlayerData(Index_).Level < link.MinLevel And link.MinLevel > 0 Then
-                        'Level too low
-                        Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.Teleport_Start)
-                        writer.Byte(2)
-                        writer.Byte(&H15)
-                        writer.Byte(&H1C)
-                        Server.Send(writer.GetBytes, Index_)
-                    ElseIf PlayerData(Index_).Level > link.MaxLevel And link.MaxLevel > 0 Then
-                        'Level too high
-                        SendNotice("Cannot Teleport because your Level is too high.", Index_)
-                    ElseIf PlayerData(Index_).Busy = False Then
-                        PlayerData(Index_).Busy = True
-                        PlayerData(Index_).SetPosition = Point_.ToPos
+                        If PlayerData(Index_).Level < link.MinLevel And link.MinLevel > 0 Then
+                            'Level too low
+                            Dim writer As New PacketWriter
+                            writer.Create(ServerOpcodes.Teleport_Start)
+                            writer.Byte(2)
+                            writer.Byte(&H15)
+                            writer.Byte(&H1C)
+                            Server.Send(writer.GetBytes, Index_)
+                        ElseIf PlayerData(Index_).Level > link.MaxLevel And link.MaxLevel > 0 Then
+                            'Level too high
+                            SendNotice("Cannot Teleport because your Level is too high.", Index_)
+                        ElseIf PlayerData(Index_).Busy = False Then
+                            PlayerData(Index_).Busy = True
+                            PlayerData(Index_).SetPosition = point.ToPos
 
-                        DataBase.SaveQuery(
-                            String.Format(
-                                "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                                PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
-                                Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
-                                Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                            DataBase.SaveQuery(
+                                String.Format(
+                                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
+                                    PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
+                                    Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
+                                    Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                            OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                        End If
                     End If
-                End If
-            Next
+                Next
+            End If
         End Sub
 
         Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean

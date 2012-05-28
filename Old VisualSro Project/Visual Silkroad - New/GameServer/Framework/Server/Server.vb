@@ -137,7 +137,13 @@ Namespace GameServer
                 If socket IsNot Nothing Then
                     If socket.Connected Then
                         socket.Send(buff)
+                    Else
+                        Disconnect(index)
                     End If
+                End If
+
+                If Program.Logpackets = True Then
+                    Log.LogPacket(buff, True)
                 End If
 
             Catch ex As Exception

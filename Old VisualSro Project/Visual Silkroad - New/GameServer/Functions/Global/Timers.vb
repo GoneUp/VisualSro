@@ -49,7 +49,7 @@ Namespace GameServer.Functions
                 WorldCheck.Start()
 
                 MonsterMovement.Interval = 3500
-                MonsterMovement.Start()
+                'MonsterMovement.Start()
 
                 MonsterRespawn.Interval = 7500
                 MonsterRespawn.Start()
@@ -395,16 +395,16 @@ Namespace GameServer.Functions
 
                     If PlayerData(Index) IsNot Nothing Then
                         If PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
-                            Dim new_pos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
+                            Dim newPos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
                             ObjectSpawnCheck(Index)
                             CheckForCaveTeleporter(Index)
 
-                            SendPm(Index, "secx" & new_pos.XSector & "secy" & new_pos.YSector & "X: " & new_pos.X & "Y: " & new_pos.Y & " X:" & new_pos.ToGameX & " Y: " & new_pos.ToGameY, "hh")
+                            SendPm(Index, "secx" & newPos.XSector & "secy" & newPos.YSector & "X: " & newPos.X & "Y: " & newPos.Y & " X:" & newPos.ToGameX & " Y: " & newPos.ToGameY, "hh")
                             PlayerMoveTimer(Index).Start()
 
                         ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                             ObjectSpawnCheck(Index)
-                            'SendPm(Index, "Walk End", "hh")
+                            SendPm(Index, "Walk End", "hh")
 
                             CheckForCaveTeleporter(Index)
                             PlayerMoveTimer(Index).Interval = 20*1000
@@ -521,7 +521,7 @@ Namespace GameServer.Functions
                     WorldCheck.Start()
                 End If
                 If MonsterMovement.Enabled = False Then
-                    MonsterMovement.Start()
+                    'MonsterMovement.Start()
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB")

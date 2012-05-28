@@ -90,6 +90,14 @@ Module Log
             Case "/respawnoff"
                 Settings.Server_SpawnRate = 0
                 GameServer.Log.WriteSystemLog("Turned off Respawn")
+            Case "/save"
+                Dim path = AppDomain.CurrentDomain.BaseDirectory & "npcpos_saved.txt"
+                Dim cloack As New Stopwatch
+                cloack.Start()
+                GameServer.Log.WriteSystemLog("Save start to: " & path)
+                Functions.SaveAutoSpawn(path)
+                cloack.Stop()
+                GameServer.Log.WriteSystemLog("Save Fin! S:" & cloack.Elapsed().TotalSeconds)
         End Select
     End Sub
 End Module

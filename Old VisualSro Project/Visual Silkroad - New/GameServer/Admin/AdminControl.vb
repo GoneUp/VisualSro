@@ -58,7 +58,7 @@ Namespace GameServer.Admin
 
         Public Sub SendCharInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim iChar As New [cChar]
-            Dim UserIndex As Integer = GameDB.GetUserWithAccName(ClientList.SessionInfo(Index_).UserName)
+            Dim UserIndex As Integer = GameDB.GetUser(ClientList.SessionInfo(Index_).UserName)
             Dim Account As New cCharListing With {.LoginInformation = GameDB.Users(UserIndex)}
 
             Dim CharList As Boolean

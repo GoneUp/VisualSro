@@ -104,66 +104,66 @@
                 Exit Sub
             End If
 
-            Dim NumberAttack = 1, NumberVictims = 1, AttackType, afterstate As UInteger
-            Dim RefWeapon As New cItem
-            Dim AttObject As SilkroadObject = GetObject(MobList(MobUniqueId).Pk2ID)
-            Dim Mob_ As cMonster = MobList(MobUniqueId)
+            Dim numberAttack = 1, NumberVictims = 1, attackType, afterstate As UInteger
+            Dim refWeapon As New cItem
+            Dim attObject As SilkroadObject = GetObject(MobList(MobUniqueId).Pk2ID)
+            Dim mob As cMonster = MobList(MobUniqueId)
 
             If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
                 'Weapon
-                RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+                refWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
             Else
                 'No Weapon
-                RefWeapon.ATTACK_DISTANCE = 6
+                refWeapon.ATTACK_DISTANCE = 6
             End If
 
-            Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
-            If Distance >= (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)) Then
-                Dim Walktime As Single = MoveUserToObject(Index_, Mob_.Position, (Math.Sqrt(RefWeapon.ATTACK_DISTANCE)))
+            Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, mob.Position)
+            If distance >= (Math.Sqrt(refWeapon.ATTACK_DISTANCE)) Then
+                Dim walktime As Single = MoveUserToObject(Index_, mob.Position, (Math.Sqrt(refWeapon.ATTACK_DISTANCE)))
                 PlayerData(Index_).AttackType = AttackType_.Normal
                 PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
 
-                PlayerAttackTimer(Index_).Interval = WalkTime
+                PlayerAttackTimer(Index_).Interval = walktime
                 PlayerAttackTimer(Index_).Start()
 
                 Exit Sub
             End If
 
-            Select Case RefWeapon.CLASS_C
+            Select Case refWeapon.CLASS_C
                 Case 0
-                    AttackType = 1
+                    attackType = 1
                 Case 2
-                    NumberAttack = 2
-                    AttackType = 2
+                    numberAttack = 2
+                    attackType = 2
                 Case 3
-                    NumberAttack = 2
-                    AttackType = 2
+                    numberAttack = 2
+                    attackType = 2
                 Case 4
-                    AttackType = 40
+                    attackType = 40
                 Case 5
-                    AttackType = 40
+                    attackType = 40
                 Case 6
-                    AttackType = 70
+                    attackType = 70
                 Case 7
-                    AttackType = 7127
+                    attackType = 7127
                 Case 8
-                    AttackType = 7128
+                    attackType = 7128
                 Case 9
-                    NumberAttack = 2
-                    AttackType = 7129
+                    numberAttack = 2
+                    attackType = 7129
                 Case 10
-                    AttackType = 9069
+                    attackType = 9069
                 Case 11
-                    AttackType = 8454
+                    attackType = 8454
                 Case 12
-                    AttackType = 7909
+                    attackType = 7909
                 Case 13
-                    NumberAttack = 2
-                    AttackType = 7910
+                    numberAttack = 2
+                    attackType = 7910
                 Case 14
-                    AttackType = 9606
+                    attackType = 9606
                 Case 15
-                    AttackType = 9970
+                    attackType = 9970
             End Select
 
             Dim writer As New PacketWriter
@@ -178,21 +178,21 @@
             writer.Byte(2)
             writer.Byte(&H30)
 
-            writer.DWord(AttackType)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(attackType)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.DWord(Id_Gen.GetSkillOverId)
-            writer.DWord(Mob_.UniqueID)
+            writer.DWord(mob.UniqueID)
 
             writer.Byte(1)
-            writer.Byte(NumberAttack)
+            writer.Byte(numberAttack)
             writer.Byte(NumberVictims)
             '1 victim
 
             For d = 0 To NumberVictims - 1
                 writer.DWord(MobList(MobUniqueId).UniqueID)
 
-                For i = 0 To NumberAttack - 1
-                    Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, AttackType)
+                For i = 0 To numberAttack - 1
+                    Dim Damage As UInteger = CalculateDamageMob(Index_, attObject, attackType)
                     Dim Crit As Byte = Attack_GetCritical()
 
                     If Crit = True Then
@@ -201,11 +201,11 @@
                     End If
                     If CLng(MobList(MobUniqueId).HP_Cur) - Damage > 0 Then
                         MobList(MobUniqueId).HP_Cur -= Damage
-                        MobAddDamageFromPlayer(Damage, Index_, Mob_.UniqueID, True)
+                        MobAddDamageFromPlayer(Damage, Index_, mob.UniqueID, True)
                     ElseIf CLng(MobList(MobUniqueId).HP_Cur) - Damage <= 0 Then
                         'Dead
                         afterstate = &H80
-                        MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False)
+                        MobAddDamageFromPlayer(mob.HP_Cur, Index_, mob.UniqueID, False)
                         'Done the last Damage
                         MobList(MobUniqueId).HP_Cur = 0
                     End If
@@ -234,7 +234,7 @@
                 PlayerData(Index_).Attacking = True
                 PlayerData(Index_).Busy = True
                 PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
-                PlayerData(Index_).UsingSkillId = AttackType
+                PlayerData(Index_).UsingSkillId = attackType
                 PlayerData(Index_).AttackType = AttackType_.Normal
                 If PlayerAttackTimer(Index_).Enabled = False Then
                     PlayerAttackTimer(Index_).Interval = 2500
@@ -242,7 +242,7 @@
                 End If
 
                 'Monster Attack back
-                Mob_.AttackTimer_Start(5)
+                mob.AttackTimer_Start(5)
             End If
         End Sub
 
@@ -343,18 +343,18 @@
                 writer.DWord(PlayerData(Index_).AttackedId)
 
                 For i = 0 To RefSkill.NumberOfAttacks - 1
-                    Dim Damage As UInteger = CalculateDamageMob(Index_, AttObject, RefSkill.Pk2Id)
-                    Dim Crit As Byte = Attack_GetCritical()
+                    Dim damage As UInteger = CalculateDamageMob(Index_, AttObject, RefSkill.Pk2Id)
+                    Dim crit As Byte = Attack_GetCritical()
 
-                    If Crit = True Then
-                        Damage = Damage * 2
-                        Crit = 2
+                    If crit = True Then
+                        damage = damage * 2
+                        crit = 2
                     End If
 
-                    If CLng(Mob_.HP_Cur) - Damage > 0 Then
-                        Mob_.HP_Cur -= Damage
-                        MobAddDamageFromPlayer(Damage, Index_, Mob_.UniqueID, True)
-                    ElseIf CLng(Mob_.HP_Cur) - Damage <= 0 Then
+                    If CLng(Mob_.HP_Cur) - damage > 0 Then
+                        Mob_.HP_Cur -= damage
+                        MobAddDamageFromPlayer(damage, Index_, Mob_.UniqueID, True)
+                    ElseIf CLng(Mob_.HP_Cur) - damage <= 0 Then
                         'Dead
                         afterstate = &H80
                         MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, True)
@@ -362,8 +362,8 @@
                     End If
 
                     writer.Byte(afterstate)
-                    writer.Byte(Crit)
-                    writer.DWord(Damage)
+                    writer.Byte(crit)
+                    writer.DWord(damage)
                     writer.Byte(0)
                     writer.Word(0)
                 Next
@@ -489,7 +489,7 @@
         End Sub
 
         Public Function Attack_GetCritical() As Boolean
-            If Math.Round(Rnd()*5) = 5 Then
+            If Math.Round(Rnd() * 5) = 5 Then
                 Return True
             Else
                 Return False

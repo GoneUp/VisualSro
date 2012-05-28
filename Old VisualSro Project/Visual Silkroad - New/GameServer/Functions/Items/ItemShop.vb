@@ -86,6 +86,9 @@
                     writer.Byte(slot)
                 Next
                 writer.Word(amout)
+                For i = 1 To amout
+                    writer.DWord(0)
+                Next
                 Server.Send(writer.GetBytes, index_)
             End If
         End Sub
@@ -127,7 +130,7 @@
                 writer.Byte(slot)
                 writer.Word(amout)
                 writer.DWord(UniqueID)
-                writer.Byte(1)
+                writer.Byte(1) 'buyback slot
                 Server.Send(writer.GetBytes, index_)
             End If
         End Sub

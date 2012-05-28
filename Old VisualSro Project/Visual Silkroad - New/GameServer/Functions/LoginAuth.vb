@@ -1,9 +1,9 @@
 ﻿Namespace GameServer.Functions
     Module LoginAuth
         Public Sub GateWay(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ClientString As String = packet.String(packet.Word)
+            Dim clientString As String = packet.String(packet.Word)
 
-            If ClientString = "SR_Client" Then
+            If clientString = "SR_Client" Then
                 Dim writer As New PacketWriter
                 Dim name As String = "AgentServer"
                 writer.Create(ServerOpcodes.ServerInfo)
@@ -16,41 +16,41 @@
                 ClientList.SessionInfo(Index_).Authorized = True
             ElseIf "SR_Admin" Then
                 ClientList.SessionInfo(Index_).ClientType = _SessionInfo.ConnectionType.SR_Admin
-                Dim UserName As String = packet.String(packet.Word)
-                Dim Password As String = packet.String(packet.Word)
+                Dim userName As String = packet.String(packet.Word)
+                Dim password As String = packet.String(packet.Word)
 
-                Dim UserIndex As Integer = GameDB.GetUserWithAccName(UserName)
-                If _
-                    GameDB.Users(UserIndex).Name = UserName And GameDB.Users(UserIndex).Pw = Password And
-                    GameDB.Users(UserIndex).Admin Then
+                Dim userIndex As Integer = GameDB.GetUser(userName)
+                If GameDB.Users(userIndex).Name = userName And GameDB.Users(userIndex).Pw = password And GameDB.Users(userIndex).Admin Then
                     ClientList.SessionInfo(Index_).Authorized = True
-                    ClientList.SessionInfo(Index_).UserName = UserName
+                    ClientList.SessionInfo(Index_).UserName = userName
                 End If
             End If
         End Sub
 
-        Public Sub CheckLogin(ByVal index_ As Integer, ByVal packet As PacketReader)
-            Dim Key As UInteger = packet.DWord()
-            Dim Name As String = packet.String(packet.Word)
-            Dim Password As String = packet.String(packet.Word)
+        Public Sub CheckLogin(ByVal Index_ As Integer, ByVal packet As PacketReader)
+            Dim key As UInteger = packet.DWord()
+            Dim name As String = packet.String(packet.Word)
+            Dim password As String = packet.String(packet.Word)
 
             'Checking
-            Dim UserIndex As Integer = GameDB.GetUserWithAccName(Name)
-            Dim Real_Key As UInt32 = GetKey(index_)
-            Dim Logged_In As Boolean = False
+            Dim userIndex As Integer = GameDB.GetUser(name)
+            Dim realKey As UInt32 = GetKey(Index_)
+            Dim loggedIn As Boolean = False
 
             For i = 0 To Server.MaxClients
                 If ClientList.CharListing(i) IsNot Nothing Then
-                    If ClientList.CharListing(i).LoginInformation.Id = GameDB.Users(UserIndex).Id Then
-                        Logged_In = True
+                    If ClientList.CharListing(i).LoginInformation.Id = GameDB.Users(userIndex).Id Then
+                        loggedIn = True
+                        Exit For
                     End If
                 End If
             Next
 
             For i = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).AccountID = GameDB.Users(UserIndex).Id Then
-                        Logged_In = True
+                    If PlayerData(i).AccountID = GameDB.Users(userIndex).Id Then
+                        loggedIn = True
+                        Exit For
                     End If
                 End If
             Next
@@ -59,27 +59,24 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
 
-            If Logged_In = True Or GameDB.Users(UserIndex).Banned = True Then
+            If loggedIn = True Or GameDB.Users(userIndex).Banned = True Then
                 writer.Byte(2)
                 writer.Byte(2)
                 'Server Full aka User is already logged in
-                Server.Send(writer.GetBytes, index_)
-                Server.Disconnect(index_)
-            ElseIf _
-                GameDB.Users(UserIndex).Name = Name And GameDB.Users(UserIndex).Pw = Password And Key = Real_Key And
-                ClientList.SessionInfo(index_).Authorized Then
+                Server.Send(writer.GetBytes, Index_)
+                Server.Disconnect(Index_)
+            ElseIf GameDB.Users(userIndex).Name = name And GameDB.Users(userIndex).Pw = password And key = realKey And ClientList.SessionInfo(Index_).Authorized Then
                 writer.Byte(1)
-                Server.Send(writer.GetBytes, index_)
-                ClientList.CharListing(index_) = New cCharListing
-                ClientList.CharListing(index_).LoginInformation = New cCharListing.UserArray
-                ClientList.CharListing(index_).LoginInformation = GameDB.Users(UserIndex)
-                ClientList.CharListing(index_).LoginInformation.LoggedIn = True
-            ElseIf GameDB.Users(UserIndex).Name <> Name Or GameDB.Users(UserIndex).Pw <> Password Or Key <> Real_Key _
-                Then
+                Server.Send(writer.GetBytes, Index_)
+                ClientList.CharListing(Index_) = New cCharListing
+                ClientList.CharListing(Index_).LoginInformation = New cCharListing.UserArray
+                ClientList.CharListing(Index_).LoginInformation = GameDB.Users(userIndex)
+                ClientList.CharListing(Index_).LoginInformation.LoggedIn = True
+            ElseIf GameDB.Users(userIndex).Name <> name Or GameDB.Users(userIndex).Pw <> password Or key <> realKey Then
                 writer.Byte(2)
                 writer.Byte(2)
-                Server.Send(writer.GetBytes, index_)
-                Server.Disconnect(index_)
+                Server.Send(writer.GetBytes, Index_)
+                Server.Disconnect(Index_)
             End If
         End Sub
 

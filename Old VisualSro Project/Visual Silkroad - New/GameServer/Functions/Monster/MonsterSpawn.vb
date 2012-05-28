@@ -128,8 +128,9 @@ Namespace GameServer.Functions
                         If PlayerData(refindex).SpawnedMonsters.Contains(tmp.UniqueID) = False Then
                             Dim tmpSpawn As New GroupSpawn
                             tmpSpawn.AddObject(tmp.UniqueID)
-                            Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
-                            PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
+                            SendNotice(tmp.UniqueID & " type: " & mob_.TypeName)
+                            'Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
+                            'PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
                         End If
                     End If
                 End If

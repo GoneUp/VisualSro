@@ -164,7 +164,7 @@
     <Compile Include="Functions\Chat\Chat.vb" />
     <Compile Include="Functions\Players\PlayerActions.vb" />
     <Compile Include="Functions\Players\Players.vb" />
-    <Compile Include="Functions\Players\Stats.vb" />
+    <Compile Include="Functions\Players\PlayerStats.vb" />
     <Compile Include="Functions\Skills\cSkill.vb" />
     <Compile Include="Functions\Skills\Mastery.vb" />
     <Compile Include="Functions\Stall\cStall.vb" />

@@ -23,7 +23,7 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Character)
 
-            ClientList.CharListing(Index_) = GameDB.FillCharList(ClientList.CharListing(Index_))
+            GameDB.FillCharList(ClientList.CharListing(Index_))
 
             writer.Byte(2)
             'Char List
@@ -67,14 +67,14 @@
                     Dim inventory As New cInventory(ClientList.CharListing(Index_).Chars(i).MaxSlots)
                     inventory = GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
 
-                    Dim PlayerItemCount As Integer = 0
+                    Dim playerItemCount As Integer = 0
                     For b = 0 To 9
                         If inventory.UserItems(b).Pk2Id <> 0 Then
-                            PlayerItemCount += 1
+                            playerItemCount += 1
                         End If
                     Next
 
-                    writer.Byte(PlayerItemCount)
+                    writer.Byte(playerItemCount)
 
                     For b = 0 To 9
                         If inventory.UserItems(b).Pk2Id <> 0 Then
@@ -85,14 +85,14 @@
 
                     'Avatars
 
-                    Dim AvatarItemCount As Integer = 0
+                    Dim avatarItemCount As Integer = 0
                     For b = 0 To 4
                         If inventory.AvatarItems(b).Pk2Id <> 0 Then
-                            AvatarItemCount += 1
+                            avatarItemCount += 1
                         End If
                     Next
 
-                    writer.Byte(AvatarItemCount)
+                    writer.Byte(avatarItemCount)
 
                     For b = 0 To 4
                         If inventory.AvatarItems(b).Pk2Id <> 0 Then
@@ -155,10 +155,8 @@
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Character)
-                    writer.Byte(3)
-                    'type = delte
-                    writer.Byte(1)
-                    'success
+                    writer.Byte(3)   'type = delte
+                    writer.Byte(1) 'success
                     Server.Send(writer.GetBytes, Index_)
                 End If
             Next
@@ -175,10 +173,8 @@
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Character)
-                    writer.Byte(5)
-                    'type = restore
-                    writer.Byte(1)
-                    'success
+                    writer.Byte(5) 'type = restore
+                    writer.Byte(1) 'success
                     Server.Send(writer.GetBytes, Index_)
                 End If
             Next
@@ -232,13 +228,12 @@
             Else
 
                 Array.Resize(GameDB.Chars, GameDB.Chars.Count + 1)
+                
+                Dim newCharacterIndex As Integer = GameDB.Chars.Count - 1
 
-                Dim newchar As New [cChar]
-                Dim NewCharacterIndex As Integer = GameDB.Chars.Count - 1
+                GameDB.Chars(newCharacterIndex) = New [cChar]
 
-                GameDB.Chars(NewCharacterIndex) = New [cChar]
-
-                With GameDB.Chars(NewCharacterIndex)
+                With GameDB.Chars(newCharacterIndex)
                     .AccountID = ClientList.CharListing(Index_).LoginInformation.Id
                     .CharacterName = nick
                     .CharacterId = Id_Gen.GetNewCharId
@@ -295,24 +290,24 @@
                 DataBase.SaveQuery(
                     String.Format(
                         "INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
-                        GameDB.Chars(NewCharacterIndex).CharacterId, GameDB.Chars(NewCharacterIndex).AccountID,
-                        GameDB.Chars(NewCharacterIndex).CharacterName, GameDB.Chars(NewCharacterIndex).Pk2Id,
-                        GameDB.Chars(NewCharacterIndex).Volume, GameDB.Chars(NewCharacterIndex).Level,
-                        GameDB.Chars(NewCharacterIndex).Gold, GameDB.Chars(NewCharacterIndex).SkillPoints,
-                        CInt(GameDB.Chars(NewCharacterIndex).GM)))
+                        GameDB.Chars(newCharacterIndex).CharacterId, GameDB.Chars(newCharacterIndex).AccountID,
+                        GameDB.Chars(newCharacterIndex).CharacterName, GameDB.Chars(newCharacterIndex).Pk2Id,
+                        GameDB.Chars(newCharacterIndex).Volume, GameDB.Chars(newCharacterIndex).Level,
+                        GameDB.Chars(newCharacterIndex).Gold, GameDB.Chars(newCharacterIndex).SkillPoints,
+                        CInt(GameDB.Chars(newCharacterIndex).GM)))
                 DataBase.SaveQuery(
                     String.Format(
                         "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                        GameDB.Chars(NewCharacterIndex).Position.XSector,
-                        GameDB.Chars(NewCharacterIndex).Position.YSector,
-                        Math.Round(GameDB.Chars(NewCharacterIndex).Position.X),
-                        Math.Round(GameDB.Chars(NewCharacterIndex).Position.Z),
-                        Math.Round(GameDB.Chars(NewCharacterIndex).Position.Y),
-                        GameDB.Chars(NewCharacterIndex).CharacterId))
+                        GameDB.Chars(newCharacterIndex).Position.XSector,
+                        GameDB.Chars(newCharacterIndex).Position.YSector,
+                        Math.Round(GameDB.Chars(newCharacterIndex).Position.X),
+                        Math.Round(GameDB.Chars(newCharacterIndex).Position.Z),
+                        Math.Round(GameDB.Chars(newCharacterIndex).Position.Y),
+                        GameDB.Chars(newCharacterIndex).CharacterId))
                 DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')",
-                                                 GameDB.Chars(NewCharacterIndex).CharacterId))
+                                                 GameDB.Chars(newCharacterIndex).CharacterId))
                 DataBase.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')",
-                                                 GameDB.Chars(NewCharacterIndex).CharacterId))
+                                                 GameDB.Chars(newCharacterIndex).CharacterId))
 
                 ' Masterys
 
@@ -321,44 +316,44 @@
                     '257 - 259
 
                     Dim mastery As New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 257
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 258
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 259
                     AddMasteryToDB(mastery)
 
                     '273 - 276
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 273
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 274
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 275
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 276
                     AddMasteryToDB(mastery)
@@ -369,37 +364,37 @@
                     'Europe Char
                     '513 - 518
                     Dim mastery As New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 513
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 514
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 515
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 516
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 517
                     AddMasteryToDB(mastery)
 
                     mastery = New cMastery
-                    mastery.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    mastery.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     mastery.Level = Settings.Player_StartMasteryLevel
                     mastery.MasteryID = 518
                     AddMasteryToDB(mastery)
@@ -410,7 +405,7 @@
                 'Inventory
                 For I = 0 To 109
                     Dim to_add As New cInvItem
-                    to_add.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    to_add.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                     to_add.Pk2Id = 0
                     to_add.Plus = 0
                     to_add.Amount = 0
@@ -421,7 +416,7 @@
                 'Avatar
                 For I = 0 To 5
                     Dim to_add As New cInvItem
-                    to_add.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    to_add.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                     to_add.Pk2Id = 0
                     to_add.Plus = 0
                     to_add.Amount = 0
@@ -436,7 +431,7 @@
                 '3 = foot
                 '4 = Waffe
                 Dim item As New cInvItem
-                item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                 item.Pk2Id = _items(1)
                 item.Plus = 0
                 'Math.Round(Rnd() * 3, 0)
@@ -445,7 +440,7 @@
                 UpdateItem(item)
 
                 item = New cInvItem
-                item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                 item.Pk2Id = _items(2)
                 item.Plus = 0
                 'Math.Round(Rnd() * 3, 0)
@@ -454,7 +449,7 @@
                 UpdateItem(item)
 
                 item = New cInvItem
-                item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                 item.Pk2Id = _items(3)
                 item.Plus = 0
                 'Math.Round(Rnd() * 3, 0)
@@ -463,7 +458,7 @@
                 UpdateItem(item)
 
                 item = New cInvItem
-                item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                 item.Pk2Id = _items(4)
                 item.Plus = 0
                 'Math.Round(Rnd() * 5, 0)
@@ -473,7 +468,7 @@
 
                 If _items(4) = 3632 Or _items(4) = 3633 Then 'Sword or Blade need a Shield
                     item = New cInvItem
-                    item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                     item.Pk2Id = 251
                     item.Plus = 0
                     'Math.Round(Rnd() * 9, 0)
@@ -484,7 +479,7 @@
 
                 ElseIf _items(4) = 3636 Then 'Bow --> Give some Arrows
                     item = New cInvItem
-                    item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                     item.Pk2Id = 62
                     item.Amount = 100
                     item.Slot = 7
@@ -492,7 +487,7 @@
 
                 ElseIf _items(4) = 10730 Or _items(4) = 10734 Or _items(4) = 10737 Then 'EU Weapons who need a shield
                     item = New cInvItem
-                    item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                     item.Pk2Id = 10738
                     item.Plus = 0
                     'Math.Round(Rnd() * 9, 0)
@@ -500,9 +495,9 @@
                     item.Slot = 7
                     UpdateItem(item)
 
-                ElseIf _items(4) = - 1 Then 'Armbrust --> Bolt
+                ElseIf _items(4) = -1 Then 'Armbrust --> Bolt
                     item = New cInvItem
-                    item.OwnerCharID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    item.OwnerCharID = GameDB.Chars(newCharacterIndex).CharacterId
                     item.Pk2Id = 62
                     item.Amount = 123
                     item.Slot = 7
@@ -512,13 +507,13 @@
                 'Hotkeys
                 For i = 0 To 50
                     Dim toadd As New cHotKey
-                    toadd.OwnerID = GameDB.Chars(NewCharacterIndex).CharacterId
+                    toadd.OwnerID = GameDB.Chars(newCharacterIndex).CharacterId
                     toadd.Slot = i
                     AddHotKeyToDB(toadd)
                 Next
 
                 'Mods
-                GameServer.GameMod.Damage.OnPlayerCreate(GameDB.Chars(NewCharacterIndex).CharacterId, Index_)
+                GameServer.GameMod.Damage.OnPlayerCreate(GameDB.Chars(newCharacterIndex).CharacterId, Index_)
 
 
                 'Finish
@@ -573,7 +568,7 @@
             'Prepare
             CleanUpPlayer(Index_)
             Player_CheckDeath(Index_, True)
-            GameServer.GameMod.Damage.OnPlayerLogon(Index_)
+            GameMod.Damage.OnPlayerLogon(Index_)
 
             'Packet's
             writer = New PacketWriter
@@ -891,7 +886,7 @@
         Public Sub Player_CheckDeath(ByVal Index_ As Integer, ByVal SetPosToTown As Boolean)
             If PlayerData(Index_).CHP = 0 Then
                 PlayerData(Index_).Alive = True
-                PlayerData(Index_).CHP = PlayerData(Index_).HP/2
+                PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
                 DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
                                                  PlayerData(Index_).CHP, PlayerData(Index_).HP,
                                                  PlayerData(Index_).CharacterId))

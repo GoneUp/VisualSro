@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports System.Globalization
+Imports System.Text
 
 Namespace GameServer.Functions
     Module AutoSpawn
@@ -27,6 +28,9 @@ Namespace GameServer.Functions
                     Dim tmpSectors As String = Hex(tmpString(1))
                     If tmpSectors.Length = 8 Then
                         tmpSectors = tmpSectors.Substring(tmpSectors.Length - 4, 4)
+                    End If
+                    If tmpSectors.Length <> 4 Then
+                        Debug.Print("Fuck")
                     End If
 
                     pos.XSector = Byte.Parse(tmpSectors.Substring(2, 2), NumberStyles.HexNumber)
@@ -61,7 +65,7 @@ Namespace GameServer.Functions
         End Sub
 
         Public Function GetRadomMobType() As Byte
-            Dim num As Integer = Rnd()*10
+            Dim num As Integer = Rnd() * 10
 
             If num <= 5 Then
                 Return 0
@@ -74,46 +78,69 @@ Namespace GameServer.Functions
 
 
         Public Sub SaveAutoSpawn(ByVal path As String)
-            Dim str As String = ""
+            Dim str As New StringBuilder
 
 
             For Each key In MobList.Keys.ToList
                 If MobList.ContainsKey(key) Then
-                    Dim Mob_ As cMonster = MobList.Item(key)
-                    str += CStr(Mob_.Pk2ID) & ControlChars.Tab
-                    str +=
+                    Dim mob As cMonster = MobList.Item(key)
+                    If mob.Mob_Type = 3 Then
+                        Continue For
+                    End If
+
+                    str.Append(CStr(mob.Pk2ID) & ControlChars.Tab)
+                    str.Append(
                         CStr(
                             Integer.Parse(
-                                ByteFromInteger(Mob_.Position.YSector) & ByteFromInteger(Mob_.Position.XSector),
-                                NumberStyles.HexNumber)) & ControlChars.Tab
-                    str += CStr(Mob_.Position.X) & ControlChars.Tab
-                    str += CStr(Mob_.Position.Z) & ControlChars.Tab
-                    str += CStr(Mob_.Position.Y) & ControlChars.Tab
-                    str += CStr(Math.Round((Mob_.Angle*360)/65535))
-                    str += ControlChars.NewLine
+                                ByteFromInteger(mob.Position.YSector) & ByteFromInteger(mob.Position.XSector),
+                                NumberStyles.HexNumber)) & ControlChars.Tab)
+                    str.Append(CStr(mob.Position.X) & ControlChars.Tab)
+                    str.Append(CStr(mob.Position.Z) & ControlChars.Tab)
+                    str.Append(CStr(mob.Position.Y) & ControlChars.Tab)
+                    str.Append(CStr(Math.Round((mob.Angle * 360) / 65535)))
+                    str.Append(ControlChars.NewLine)
+                End If
+            Next
+
+            For Each unique In RefRespawnsUnique
+                For Each spot In unique.Spots
+                    str.Append(CStr(unique.Pk2ID) & ControlChars.Tab)
+                    str.Append(
+                        CStr(
+                            Integer.Parse(
+                                ByteFromInteger(spot.YSector) & ByteFromInteger(spot.XSector),
+                                NumberStyles.HexNumber)) & ControlChars.Tab)
+                    str.Append(CStr(spot.X) & ControlChars.Tab)
+                    str.Append(CStr(spot.Z) & ControlChars.Tab)
+                    str.Append(CStr(spot.Y) & ControlChars.Tab)
+                    str.Append(0)
+                    str.Append(ControlChars.NewLine)
+                Next
+            Next
+
+
+            For Each key In NpcList.Keys.ToList
+                If NpcList.ContainsKey(key) Then
+                    Dim npc As cNPC = NpcList.Item(key)
+                    str.Append(CStr(npc.Pk2ID) & ControlChars.Tab)
+                    str.Append(
+                        CStr(
+                            Integer.Parse(
+                                ByteFromInteger(npc.Position.YSector) & ByteFromInteger(npc.Position.XSector),
+                                NumberStyles.HexNumber)) & ControlChars.Tab)
+                    str.Append(CStr(npc.Position.X) & ControlChars.Tab)
+                    str.Append(CStr(npc.Position.Z) & ControlChars.Tab)
+                    str.Append(CStr(npc.Position.Y) & ControlChars.Tab)
+                    str.Append(CStr(Math.Round((npc.Angle * 360) / 65535)))
+                    str.Append(ControlChars.NewLine)
                 End If
             Next
 
 
-            For i = 0 To NpcList.Count - 1
-                str += CStr(NpcList(i).Pk2ID) & ControlChars.Tab
-                str +=
-                    CStr(
-                        Integer.Parse(
-                            ByteFromInteger(NpcList(i).Position.YSector) & ByteFromInteger(NpcList(i).Position.XSector),
-                            NumberStyles.HexNumber)) & ControlChars.Tab
-                str += CStr(NpcList(i).Position.X) & ControlChars.Tab
-                str += CStr(NpcList(i).Position.Z) & ControlChars.Tab
-                str += CStr(NpcList(i).Position.Y) & ControlChars.Tab
-                str += CStr(Math.Round((NpcList(i).Angle*360)/65535))
-                str += ControlChars.NewLine
-            Next
-
-
-            File.WriteAllText(path, str)
+            File.WriteAllText(path, str.ToString())
         End Sub
 
-        Public Function ByteFromInteger(ByVal data As Integer) As String
+        Private Function ByteFromInteger(ByVal data As Integer) As String
             Dim str As String = Nothing
             str = Convert.ToString(data, &H10).ToUpper()
             If str.Length = 1 Then

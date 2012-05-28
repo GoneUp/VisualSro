@@ -326,49 +326,58 @@ Namespace GameServer.GameDB
 
 #Region "Get Things from Array"
 
-        Public Function GetUserWithAccName(ByVal id As String) As Integer
-            Dim i As Integer = 0
+        Public Function GetUser(ByVal name As String) As Integer
             For i = 0 To Users.Length
-                If Users(i).Name = id Then
-                    Exit For
+                If Users(i).Name = name Then
+                    Return i
                 End If
             Next
-            If Users.Length = i Then
-                Return - 1
-            End If
-            Return i
+            Return -1
         End Function
 
-        Public Function GetUserWithAccID(ByVal id As String) As Integer
-            Dim i As Integer = 0
+        Public Function GetUser(ByVal id As UInteger) As Integer
             For i = 0 To Users.Length
                 If Users(i).Id = id Then
-                    Exit For
+                    Return i
                 End If
             Next
-            If Users.Length = i Then
-                Return - 1
-            End If
-            Return i
+            Return -1
         End Function
 
-        Public Function FillCharList(ByVal CharArray As cCharListing)
+        Public Function GetUserArray(ByVal id As UInteger) As cCharListing.UserArray
+            For i = 0 To Users.Length
+                If Users(i).Id = id Then
+                    Return Users(i)
+                End If
+            Next
+            Return Nothing
+        End Function
+
+        Public Function GetUser(ByVal id As Integer) As Integer
+            For i = 0 To Users.Length
+                If Users(i).Id = id Then
+                    Return i
+                End If
+            Next
+            Return -1
+        End Function
+
+        Public Sub FillCharList(ByVal charArray As cCharListing)
 
             Dim CharCount As Integer = 0
-            CharArray.Chars.Clear()
+            charArray.Chars.Clear()
 
             For i = 0 To Chars.Length - 1
                 If Chars(i) IsNot Nothing Then
-                    If CharArray.LoginInformation.Id = Chars(i).AccountID Then
-                        CharArray.Chars.Add(Chars(i))
+                    If charArray.LoginInformation.Id = Chars(i).AccountID Then
+                        charArray.Chars.Add(Chars(i))
                         CharCount += 1
                     End If
                 End If
             Next
 
-            CharArray.NumberOfChars = CharCount
-            Return CharArray
-        End Function
+            charArray.NumberOfChars = CharCount
+        End Sub
 
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
             Dim inventory As New cInventory([char].MaxSlots)

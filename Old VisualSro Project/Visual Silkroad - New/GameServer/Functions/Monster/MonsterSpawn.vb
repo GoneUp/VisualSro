@@ -168,6 +168,15 @@ Namespace GameServer.Functions
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
 
+        Public Sub SendGlobalStatusInfo(ByVal mode1 As UShort, Optional ByVal mode2 As Byte = Nothing)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.UniqueAnnonce)
+            writer.Word(&HC1D)
+            writer.Byte(1)
+            writer.Byte(1)
+            Server.SendToAllIngame(writer.GetBytes)
+        End Sub
+
         Public Sub SendUniqueKill(ByVal PK2ID As UInteger, ByVal KillName As String)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.UniqueAnnonce)

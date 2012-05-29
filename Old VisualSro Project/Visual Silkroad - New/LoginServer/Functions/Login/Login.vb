@@ -208,6 +208,27 @@ Namespace Functions
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LoginAuthInfo)
+            'writer.Byte(2) 'fail
+            'writer.Byte(3) 'already connected
+            'writer.Byte(4) 'C5
+            'writer.Byte(6) 'server full
+            'writer.Byte(7) 'nothing
+            'writer.Byte(8) 'ip limit
+            'writer.Byte(9) 'billing server error
+            'writer.Byte(10) 'aduslts over 18
+            'writer.Byte(11) 'aduslts over 12
+            'writer.Byte(12) 'only teen
+            'writer.Byte(15) 'only teen
+            '##########
+            'writer.Byte(2) 'fail
+            'writer.Byte(2) 'fail subcode
+            'writer.Byte(1) 'block
+            'writer.Byte(2) 'server in insepction
+            'writer.Byte(3) 'use aggrement
+            'writer.Byte(4) 'free service over
+            '###########
+            'Server.Send(writer.GetBytes, Index_)
+            'Exit Sub
 
             Dim userIndex As Integer = LoginDb.GetUser(id)
             If userIndex = -1 Then
@@ -259,9 +280,9 @@ Namespace Functions
                     Framework.Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
 
                     writer.Byte(2) 'login failed
-                    writer.Byte(1)
-                    writer.DWord(Settings.Max_FailedLogins) 'Max Failed Logins
+                    writer.Byte(1) 'wrong pw
                     writer.DWord(user.FailedLogins) 'number of falied logins
+                    writer.DWord(Settings.Max_FailedLogins) 'Max Failed Logins
                     Server.Send(writer.GetBytes, Index_)
 
                     If user.FailedLogins >= Settings.Max_FailedLogins Then
@@ -275,9 +296,9 @@ Namespace Functions
 
 
                 ElseIf LoginDb.Users(userIndex).Name = id And LoginDb.Users(userIndex).Pw = pw Then
-                    Dim ServerIndex As Integer = LoginDb.GetServerIndex(serverID)
+                    Dim serverIndex As Integer = LoginDb.GetServerIndex(serverID)
 
-                    If (LoginDb.Servers(ServerIndex).AcUs + 1) >= LoginDb.Servers(ServerIndex).MaxUs Then
+                    If (LoginDb.Servers(serverIndex).AcUs + 1) >= LoginDb.Servers(serverIndex).MaxUs Then
                         writer.Byte(4)
                         writer.Byte(2) 'Server traffic... 
                         Server.Send(writer.GetBytes, Index_)
@@ -286,13 +307,13 @@ Namespace Functions
                         'Sucess!
                         writer.Byte(1)
                         writer.DWord(GetKey(Index_))
-                        writer.Word(LoginDb.Servers(ServerIndex).IP.Length)
-                        writer.String(LoginDb.Servers(ServerIndex).IP)
-                        writer.Word(LoginDb.Servers(ServerIndex).Port)
+                        writer.Word(LoginDb.Servers(serverIndex).IP.Length)
+                        writer.String(LoginDb.Servers(serverIndex).IP)
+                        writer.Word(LoginDb.Servers(serverIndex).Port)
                         Server.Send(writer.GetBytes, Index_)
 
                         If Settings.Log_Login Then
-                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, LoginDb.Servers(ServerIndex).Name))
+                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, LoginDb.Servers(serverIndex).Name))
                         End If
                     End If
                 End If

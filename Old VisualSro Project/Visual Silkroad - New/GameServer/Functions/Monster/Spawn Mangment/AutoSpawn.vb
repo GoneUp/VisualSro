@@ -10,7 +10,7 @@ Namespace GameServer.Functions
                 If lines(i).StartsWith("//") = False Then
                     Dim pos As New Position
                     Dim tmp As New ReSpawn_
-                    Dim Angle As UShort = 0
+                    Dim angle As UShort = 0
 
                     'If My.Computer.Info.OSFullName.Contains("x64") = True Then
                     '    lines(i) = lines(i).Replace(",", ".")
@@ -22,7 +22,7 @@ Namespace GameServer.Functions
                     Dim Pk2ID As UInt32 = tmpString(0)
                     Dim obj_ As SilkroadObject = GetObject(Pk2ID)
                     If tmpString.Length = 6 Then
-                        Angle = Math.Round((CInt(tmpString(5)) * 65535) / 360)
+                        angle = Math.Round((CInt(tmpString(5)) * 65535) / 360)
                     End If
 
                     Dim tmpSectors As String = Hex(tmpString(1))
@@ -58,7 +58,7 @@ Namespace GameServer.Functions
                         Case SilkroadObject.Type_.Mob_Unique
                             AddUnqiueRespawn(tmp)
                         Case SilkroadObject.Type_.Npc
-                            SpawnNPC(Pk2ID, pos, Angle)
+                            SpawnNPC(Pk2ID, pos, angle)
                     End Select
                 End If
             Next

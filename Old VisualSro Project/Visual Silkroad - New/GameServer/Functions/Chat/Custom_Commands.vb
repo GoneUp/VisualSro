@@ -9,14 +9,14 @@ Namespace GameServer.GameMod
 
             Select Case tmp(0)
                 Case "\\1"
-                    SendPm(Index_, "Spawn", "")
-                    Dim stopwatch As New Stopwatch
-                    stopwatch.Start()
-                    Server.Send(CreateSpawnPacket(1), Index_)
-                    Server.Send(CreateDespawnPacket(PlayerData(1).UniqueId), Index_)
-                    stopwatch.Stop()
-                    SendPm(Index_, "DeSpawn -" & stopwatch.ElapsedMilliseconds & "ms-", "")
-
+                    'SendPm(Index_, "Spawn", "")
+                    'Dim stopwatch As New Stopwatch
+                    'stopwatch.Start()
+                    'Server.Send(CreateSpawnPacket(1), Index_)
+                    'Server.Send(CreateDespawnPacket(PlayerData(1).UniqueId), Index_)
+                    'stopwatch.Stop()
+                    'SendPm(Index_, "DeSpawn -" & stopwatch.ElapsedMilliseconds & "ms-", "")
+                    SendGlobalStatusInfo(0, 0)
 
                 Case "\\capatcha"
                     SendCaptcha(Index_)

@@ -133,6 +133,7 @@ Namespace GameServer.Functions
             Else
                 'Unsupoorted npc
                 SendNotice("Unsupported NPC, ID: " & obj.Pk2ID & " TypeName: " & obj.TypeName)
+                Exit Sub
             End If
 
 
@@ -143,19 +144,19 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub OnNpcChatSelect(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim UniqueID As UInteger = packet.DWord
-            Dim ChatId As Byte = packet.Byte
-            Dim RefObj As New SilkroadObject
+            Dim uniqueID As UInteger = packet.DWord
+            Dim chatId As Byte = packet.Byte
+            Dim refObj As New SilkroadObject
 
-            If NpcList.ContainsKey(UniqueID) Then
-                RefObj = GetObject(NpcList(UniqueID).Pk2ID)
+            If NpcList.ContainsKey(uniqueID) Then
+                refObj = GetObject(NpcList(uniqueID).Pk2ID)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Npc_Chat)
                 writer.Byte(1)
                 'Sucess
-                If RefObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
-                    writer.Byte(ChatId)
+                If refObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
+                    writer.Byte(chatId)
                     'Type
                 Else
                     writer.Byte(17)

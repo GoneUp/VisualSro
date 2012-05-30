@@ -3,7 +3,7 @@
         Public Sub OnGM(ByVal Packet As PacketReader, ByVal Index_ As Integer)
 
             Dim tag As Byte = Packet.Word
-            'Debug.Print("[GM][Tag:" & tag & "]")
+            Debug.Print("[GM][Tag:" & tag & "]")
 
             If PlayerData(Index_).GM = True Then
                 Select Case tag
@@ -252,14 +252,18 @@
 
         Public Sub OnCreateObject(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim objectid As UInteger = Packet.DWord
-            Dim type As Byte = Packet.Byte
+            Dim count As Byte = Packet.Byte
+            Dim type As Integer = Packet.Byte
+
             Dim refobject As SilkroadObject = GetObject(objectid)
 
             Dim selector As String = refobject.TypeName.Substring(0, 3)
 
             Select Case selector
                 Case "MOB"
-                    SpawnMob(objectid, type, PlayerData(Index_).Position, 0, - 1)
+                    For i = 0 To count
+                        SpawnMob(objectid, type, PlayerData(Index_).Position, 0, -1)
+                    Next
                 Case "NPC"
                     SpawnNPC(objectid, PlayerData(Index_).Position, 0)
             End Select
@@ -267,7 +271,7 @@
             If Settings.Log_GM Then
                 Log.WriteGameLog(Index_, "GM", "Monster_Spawn",
                                  String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.TypeName,
-                                               type))
+                                               count))
             End If
         End Sub
 
@@ -306,10 +310,17 @@
             End If
         End Sub
 
+        Public Sub OnWorldStatus(ByVal Index_ As Integer)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Gold_Update)
+
+        End Sub
+
         Enum GmTypes
             FindUser = 1
             GoTown = 2
             ToTown = 3
+            WorldStatus = 4
             MakeMonster = 6
             MakeItem = 7
             MoveToUser = 8

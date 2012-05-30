@@ -290,9 +290,13 @@ Namespace GameServer.GameMod
                 Case "\\reload"
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
 
-
                 Case "\\spawncheck"
                     ObjectSpawnCheck(Index_)
+
+                Case "\\spawn"
+                    If IsNumeric(tmp(1)) Then
+
+                    End If
             End Select
 
 

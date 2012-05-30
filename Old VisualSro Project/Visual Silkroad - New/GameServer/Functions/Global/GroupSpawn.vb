@@ -13,40 +13,76 @@
         End Sub
 
         Public Function GetPackets(ByVal mode As GroupSpawnMode) As PacketWriter()
-            Dim packets(3) As PacketWriter
+            Dim packets As New List(Of PacketWriter)
+            Dim tmpUniqueIDs As List(Of UInt32) = m_UniqueIDs
+            Dim finsihed As Boolean = False
 
-            packets(0) = New PacketWriter()
-            packets(0).Create(ServerOpcodes.GroupSpawnStart)
-            packets(0).Byte(mode)
-            packets(0).Word(m_UniqueIDs.Count)
+            Do
+                Dim start As New PacketWriter
+                Dim data As New PacketWriter
+                Dim finsih As New PacketWriter
+                Dim writtenUniqueIds As New List(Of UInt32)
+                Dim writtenBytes As UInt32 = 0
 
-            
-            packets(1) = New PacketWriter()
-            packets(1).Create(ServerOpcodes.GroupSpawnData)
+                data.Create(ServerOpcodes.GroupSpawnData)
+                For Each UniqueID In tmpUniqueIDs
+                    If writtenBytes + 56 > 8192 Then
+                        Exit For
+                    End If
 
-            For i As Integer = 0 To m_UniqueIDs.Count - 1
-                If MobList.ContainsKey(m_UniqueIDs(i)) Then
-                    Dim mob As cMonster = MobList(m_UniqueIDs(i))
-                    Dim refobject As SilkroadObject = GetObject(mob.Pk2ID)
-                    CreateMonsterSpawnPacket(mob, refobject, packets(1), False)
-                    Continue For
+                    If MobList.ContainsKey(UniqueID) Then
+                        Dim mob As cMonster = MobList(UniqueID)
+                        Dim refobject As SilkroadObject = GetObject(mob.Pk2ID)
+                        '49 bytes min
+                        '56 bytes max
+
+                        CreateMonsterSpawnPacket(mob, refobject, data, False)
+                        writtenBytes += 56
+                        tmpUniqueIDs.Remove(UniqueID)
+                        Continue For
+                    Else
+                        tmpUniqueIDs.Remove(UniqueID)
+                    End If
+
+                    If NpcList.ContainsKey(UniqueID) Then
+                        '47 max
+                        CreateNPCSpawnPacket(UniqueID, data, False)
+                        writtenBytes += 47
+                        tmpUniqueIDs.Remove(UniqueID)
+                        Continue For
+                    Else
+                        tmpUniqueIDs.Remove(UniqueID)
+                    End If
+
+                    If ItemList.ContainsKey(UniqueID) Then
+                        '34 max
+                        CreateItemSpawnPacket(ItemList(UniqueID), data, False)
+                        writtenBytes += 34
+                        tmpUniqueIDs.Remove(UniqueID)
+                        Continue For
+                    Else
+                        tmpUniqueIDs.Remove(UniqueID)
+                    End If
+                Next
+
+
+
+                start.Create(ServerOpcodes.GroupSpawnStart)
+                start.Byte(mode)
+                start.Word(writtenUniqueIds.Count)
+
+                finsih.Create(ServerOpcodes.GroupSpawnEnd)
+
+
+                If tmpUniqueIDs.Count = 0 Then
+                    finsihed = True
                 End If
-
-                If NpcList.ContainsKey(m_UniqueIDs(i)) Then
-                    CreateNPCSpawnPacket(m_UniqueIDs(i), packets(1), False)
-                    Continue For
-                End If
-
-                If ItemList.ContainsKey(m_UniqueIDs(i)) Then
-                    CreateItemSpawnPacket(ItemList(m_UniqueIDs(i)), packets(1), False)
-                    Continue For
-                End If
-            Next
-            
-            packets(2) = New PacketWriter()
-            packets(2).Create(ServerOpcodes.GroupSpawnEnd)
-   
-            Return packets
+                packets.Add(start)
+                packets.Add(data)
+                packets.Add(finsih)
+            Loop While finsihed
+     
+            Return packets.ToArray
         End Function
 
         Public Function GetBytes(ByVal mode As GroupSpawnMode) As Byte()
@@ -55,9 +91,9 @@
             Dim br As New IO.BinaryWriter(ms)
             Dim packets() As PacketWriter = GetPackets(mode)
 
-            br.Write(packets(0).GetBytes)
-            br.Write(packets(1).GetBytes)
-            br.Write(packets(2).GetBytes)
+            For i = 0 To packets.Count - 1
+                br.Write(packets(i).GetBytes())
+            Next
             Dim written As Integer = br.BaseStream.Position
 
             br.Close()
@@ -68,12 +104,20 @@
             Return bytes
         End Function
 
+        Public Sub Send(ByVal index_ As Integer, ByVal mode As GroupSpawnMode)
+            Dim packets() As PacketWriter = GetPackets(mode)
+            For Each writer As PacketWriter In packets
+                Server.Send(writer.GetBytes, index_)
+            Next
+        End Sub
+
+
         Public ReadOnly Property Count() As Integer
             Get
                 Return m_UniqueIDs.Count
             End Get
         End Property
-        
+
         Public Sub Clear()
             m_UniqueIDs.Clear()
         End Sub

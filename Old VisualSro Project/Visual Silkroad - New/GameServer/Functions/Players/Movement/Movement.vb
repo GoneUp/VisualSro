@@ -184,7 +184,7 @@ Namespace GameServer.Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    Server.Send(spawnCollector.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), Index_)
+                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
                     spawnCollector.Clear()
                 End If
 
@@ -202,7 +202,7 @@ Namespace GameServer.Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    Server.Send(spawnCollector.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), Index_)
+                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
                     spawnCollector.Clear()
                 End If
 
@@ -224,7 +224,7 @@ Namespace GameServer.Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    Server.Send(spawnCollector.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), Index_)
+                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
                     spawnCollector.Clear()
                 End If
 

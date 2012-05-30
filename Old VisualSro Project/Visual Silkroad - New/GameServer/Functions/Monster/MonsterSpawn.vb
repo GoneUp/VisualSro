@@ -51,9 +51,9 @@ Namespace GameServer.Functions
 
             writer.Byte(0)  'unknwown  
             writer.Byte(2)  'unknwown  
-            writer.Byte(mob.Mob_Type)
+            writer.Byte(1)
             writer.Byte(5) 'mhm
-            writer.Byte(0) 'mhm
+            writer.Byte(mob.Mob_Type) '
         End Sub
 
         ''' <summary>
@@ -94,6 +94,8 @@ Namespace GameServer.Functions
                         tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Titan
                     Case 6
                         tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
+                    Case 7
+                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Strong
                     Case 16
                         tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Normal
                     Case 17
@@ -129,8 +131,8 @@ Namespace GameServer.Functions
                             Dim tmpSpawn As New GroupSpawn
                             tmpSpawn.AddObject(tmp.UniqueID)
                             SendNotice(tmp.UniqueID & " type: " & mob_.TypeName)
-                            'Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
-                            'PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
+                            tmpSpawn.Send(refindex, GroupSpawn.GroupSpawnMode.SPAWN)
+                            PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
                         End If
                     End If
                 End If
@@ -196,6 +198,7 @@ Namespace GameServer.Functions
             Giant = 20
             Titan = 100
             Elite = 10
+            Strong = 30
             Party_Normal = 10
             Party_Champ = 20
             Party_Giant = 200
@@ -208,6 +211,7 @@ Namespace GameServer.Functions
             Giant = 3
             Titan = 25
             Elite = 4
+            Strong = 3
             Party_Normal = 5
             Party_Champ = 6
             Party_Giant = 10

@@ -49,7 +49,7 @@ Namespace GameServer.Functions
                 WorldCheck.Start()
 
                 MonsterMovement.Interval = 3500
-                'MonsterMovement.Start()
+                MonsterMovement.Start()
 
                 MonsterRespawn.Interval = 7500
                 MonsterRespawn.Start()
@@ -319,7 +319,6 @@ Namespace GameServer.Functions
                 Dim stopwatch As New Stopwatch
                 stopwatch.Start()
 
-                Dim Rnd As New Random
                 Dim tmplist As Array = MobList.Keys.ToArray
                 For Each key In tmplist
                     If MobList.ContainsKey(key) Then
@@ -333,8 +332,8 @@ Namespace GameServer.Functions
                                 Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
                                 If Dist_FromSpawn < Settings.Server_Range/1.25 Then
-                                    Dim ToX As Single = Mob_.Position.ToGameX + Rnd.Next(- 15, + 15)
-                                    Dim ToY As Single = Mob_.Position.ToGameY + Rnd.Next(- 15, + 15)
+                                    Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
+                                    Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
                                     Dim vaildCords As Boolean = False
                                     Dim validCordTrys As Integer = 0
 
@@ -346,8 +345,8 @@ Namespace GameServer.Functions
                                         ElseIf validCordTrys > 5 Then
                                             Continue For
                                         Else
-                                            ToX = Mob_.Position.ToGameX + Rnd.Next(- 15, + 15)
-                                            ToY = Mob_.Position.ToGameY + Rnd.Next(- 15, + 15)
+                                            ToX = Mob_.Position.ToGameX + Rand.Next(-15, +15)
+                                            ToY = Mob_.Position.ToGameY + Rand.Next(-15, +15)
                                             validCordTrys += 1
                                         End If
                                     Loop While vaildCords = False
@@ -521,7 +520,7 @@ Namespace GameServer.Functions
                     WorldCheck.Start()
                 End If
                 If MonsterMovement.Enabled = False Then
-                    'MonsterMovement.Start()
+                    MonsterMovement.Start()
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB")

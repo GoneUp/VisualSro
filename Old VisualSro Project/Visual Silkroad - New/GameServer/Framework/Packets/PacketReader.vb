@@ -76,6 +76,10 @@ Namespace GameServer
         Public Function GetData() As Byte()
             Return Me.Packet_Data
         End Function
+
+        Public Function Available() As Boolean
+            Return ms.CanRead
+        End Function
     End Class
 End Namespace
 

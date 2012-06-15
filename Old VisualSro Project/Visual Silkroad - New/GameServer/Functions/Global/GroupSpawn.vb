@@ -25,8 +25,9 @@
                 Dim writtenBytes As UInt32 = 0
 
                 data.Create(ServerOpcodes.GroupSpawnData)
-                For Each UniqueID In tmpUniqueIDs
+                For Each UniqueID In tmpUniqueIDs.ToArray()
                     If writtenBytes + 56 > 8192 Then
+                        '56 seems to be the maximum of bytes added in one spawn.
                         Exit For
                     End If
 
@@ -35,9 +36,11 @@
                         Dim refobject As SilkroadObject = GetObject(mob.Pk2ID)
                         '49 bytes min
                         '56 bytes max
-
+                        Dim byteCount As UInt16 = data.Length
                         CreateMonsterSpawnPacket(mob, refobject, data, False)
-                        writtenBytes += 56
+                        writtenBytes += (data.Length - byteCount)
+
+                        writtenUniqueIds.Add(UniqueID)
                         tmpUniqueIDs.Remove(UniqueID)
                         Continue For
                     Else
@@ -46,8 +49,11 @@
 
                     If NpcList.ContainsKey(UniqueID) Then
                         '47 max
+                        Dim byteCount As UInt16 = data.Length
                         CreateNPCSpawnPacket(UniqueID, data, False)
-                        writtenBytes += 47
+                        writtenBytes += (data.Length - byteCount)
+
+                        writtenUniqueIds.Add(UniqueID)
                         tmpUniqueIDs.Remove(UniqueID)
                         Continue For
                     Else
@@ -56,8 +62,11 @@
 
                     If ItemList.ContainsKey(UniqueID) Then
                         '34 max
+                        Dim byteCount As UInt16 = data.Length
                         CreateItemSpawnPacket(ItemList(UniqueID), data, False)
-                        writtenBytes += 34
+                        writtenBytes += (data.Length - byteCount)
+
+                        writtenUniqueIds.Add(UniqueID)
                         tmpUniqueIDs.Remove(UniqueID)
                         Continue For
                     Else
@@ -65,22 +74,22 @@
                     End If
                 Next
 
+                If writtenUniqueIds.Count > 0 Then
+                    start.Create(ServerOpcodes.GroupSpawnStart)
+                    start.Byte(mode)
+                    start.Word(writtenUniqueIds.Count)
 
+                    finsih.Create(ServerOpcodes.GroupSpawnEnd)
 
-                start.Create(ServerOpcodes.GroupSpawnStart)
-                start.Byte(mode)
-                start.Word(writtenUniqueIds.Count)
-
-                finsih.Create(ServerOpcodes.GroupSpawnEnd)
-
-
+                    packets.Add(start)
+                    packets.Add(data)
+                    packets.Add(finsih)
+                End If
+                
                 If tmpUniqueIDs.Count = 0 Then
                     finsihed = True
                 End If
-                packets.Add(start)
-                packets.Add(data)
-                packets.Add(finsih)
-            Loop While finsihed
+            Loop While finsihed = False
      
             Return packets.ToArray
         End Function

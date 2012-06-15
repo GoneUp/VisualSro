@@ -71,7 +71,7 @@ Namespace GameServer
                 DumpCaveTeleporterFile(base_path & "\data\cave_teleport.txt")
                 Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
-                LoadAutoSpawn(base_path & "data\npcpos.txt")
+                'LoadAutoSpawn(base_path & "data\npcpos.txt")
                 Log.WriteSystemLog("Loaded " & MobList.Count & " Autospawn Monster.")
                 Log.WriteSystemLog("Loaded " & NpcList.Count & " Autospawn Npc's.")
 
@@ -240,7 +240,7 @@ Namespace GameServer
 
         Structure LevelData
             Public Level As Byte
-            Public Base As UInteger
+            Public MobEXP As UInteger
             Public Experience As ULong
             Public SkillPoints As ULong
         End Structure
@@ -254,7 +254,7 @@ Namespace GameServer
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim level As New LevelData
                 level.Level = tmpString(0)
-                level.Base = tmpString(1)
+                level.MobEXP = tmpString(1)
                 level.Experience = tmpString(2)
                 If level.Level = 1 Then
                     level.SkillPoints = 0

@@ -1,0 +1,32 @@
+Structure of a BSR File
+
+8 bytes / JMXVRES & 0 byte / ID
+4 bytes / Int32 / Version
+52 bytes / unknown 
+4 bytes / Int32 / BSR Type
+4 bytes / Int32 / Bsr name String Len
+x bytes / String / BSR name
+
+if(bsrType == 0x20002 || bsrType == 0x20003 || bsrType == 0x20004)
+{
+		48 bytes / unknown skip
+		4 bytes / Int32 / Entry Path Len
+		x bytes / String / Entry Path
+		4 bytes / Float / aabb[0] / -2.722 / X links
+		4 bytes / Float / aabb[1] / -1.743 / Y links
+		4 bytes / Float / aabb[2] / -3.207 / Z links
+		4 bytes / Float / aabb[3] / 2.742 / X rechts
+		4 bytes / Float / aabb[4] / 1.518 / Y rechts
+		4 bytes / Float / aabb[5] / 3.215 / Z rechts
+		26 bytes / unknown
+		4 bytes / Int32 / Mtrl Path Len
+		x bytes / String / Mtrl Path
+		
+		4 bytes / Int32 / BMS Model Part Count
+		
+		for each bms_model_count(
+			4 bytes / Int32 / BMS Path Len
+			x bytes / String / BMS Path
+		)
+
+		

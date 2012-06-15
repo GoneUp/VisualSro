@@ -41,13 +41,13 @@ Namespace GameServer.Functions
             Try
                 Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
                 Dim WalkTime As Single
-                Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
+                Select Case PlayerData(Index_).PosTracker.SpeedMode
                     Case cPositionTracker.enumSpeedMode.Walking
-                        WalkTime = (Distance/PlayerData(Index_).WalkSpeed)*10000
+                        WalkTime = (Distance / PlayerData(Index_).WalkSpeed) * 10000
                     Case cPositionTracker.enumSpeedMode.Running
-                        WalkTime = (Distance/PlayerData(Index_).RunSpeed)*10000
+                        WalkTime = (Distance / PlayerData(Index_).RunSpeed) * 10000
                     Case cPositionTracker.enumSpeedMode.Zerking
-                        WalkTime = (Distance/PlayerData(Index_).BerserkSpeed)*10000
+                        WalkTime = (Distance / PlayerData(Index_).BerserkSpeed) * 10000
                 End Select
 
                 'If Distance < 10000 Then
@@ -75,9 +75,9 @@ Namespace GameServer.Functions
                 '1= source
                 writer.Byte(PlayerData(Index_).Position.XSector)
                 writer.Byte(PlayerData(Index_).Position.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X*- 1)))
+                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.X * -1)))
                 writer.Byte(BitConverter.GetBytes(PlayerData(Index_).Position.Z))
-                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y*- 1)))
+                writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y * -1)))
 
 
                 DataBase.SaveQuery(
@@ -88,8 +88,8 @@ Namespace GameServer.Functions
                         Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
-                PlayerData(Index_).Pos_Tracker.Move(ToPos)
-                PlayerMoveTimer(Index_).Interval = 250
+                PlayerData(Index_).PosTracker.Move(ToPos)
+                PlayerMoveTimer(Index_).Interval = 100
                 PlayerMoveTimer(Index_).Start()
                 ' End If
 
@@ -113,14 +113,14 @@ Namespace GameServer.Functions
 
             Dim distance_x As Double = PlayerData(Index_).Position.ToGameX - ToPos.ToGameX
             Dim distance_y As Double = PlayerData(Index_).Position.ToGameY - ToPos.ToGameY
-            Dim distance As Double = Math.Sqrt((distance_x*distance_x) + (distance_y*distance_y))
+            Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
 
             If distance > Range Then
-                Dim Cosinus As Double = Math.Cos(distance_x/distance)
-                Dim Sinus As Double = Math.Sin(distance_y/distance)
+                Dim Cosinus As Double = Math.Cos(distance_x / distance)
+                Dim Sinus As Double = Math.Sin(distance_y / distance)
 
-                Dim distance_x_new As Double = Range*Cosinus
-                Dim distance_y_new As Double = Range*Sinus
+                Dim distance_x_new As Double = Range * Cosinus
+                Dim distance_y_new As Double = Range * Sinus
 
                 ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
                 ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
@@ -130,13 +130,13 @@ Namespace GameServer.Functions
             End If
 
             Dim WalkTime As Single
-            Select Case PlayerData(Index_).Pos_Tracker.SpeedMode
+            Select Case PlayerData(Index_).PosTracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
-                    WalkTime = (distance/PlayerData(Index_).WalkSpeed)*10000
+                    WalkTime = (distance / PlayerData(Index_).WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
-                    WalkTime = (distance/PlayerData(Index_).RunSpeed)*10000
+                    WalkTime = (distance / PlayerData(Index_).RunSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Zerking
-                    WalkTime = (distance/PlayerData(Index_).BerserkSpeed)*10000
+                    WalkTime = (distance / PlayerData(Index_).BerserkSpeed) * 10000
             End Select
 
             OnMoveUser(Index_, ToPos)
@@ -155,7 +155,7 @@ Namespace GameServer.Functions
                     If _
                         (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso
                         (othersock.Connected) AndAlso Index_ <> refindex Then
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, PlayerData(refindex).Position) Then
+                        If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, PlayerData(refindex).Position) Then
                             If _
                                 PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And
                                 PlayerData(Index_).Invisible = False Then
@@ -174,7 +174,7 @@ Namespace GameServer.Functions
                 For Each key In MobList.Keys.ToList
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Mob_.Position) Then
+                        If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, Mob_.Position) Then
                             Dim obj As Object = GetObject(Mob_.Pk2ID)
                             If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = False Then
                                 spawnCollector.AddObject(Mob_.UniqueID)
@@ -193,7 +193,7 @@ Namespace GameServer.Functions
                 For Each key In NpcList.Keys.ToList
                     If NpcList.ContainsKey(key) Then
                         Dim Npc_ As cNPC = NpcList.Item(key)
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Npc_.Position) Then
+                        If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, Npc_.Position) Then
                             If PlayerData(Index_).SpawnedNPCs.Contains(Npc_.UniqueID) = False Then
                                 spawnCollector.AddObject(Npc_.UniqueID)
                                 PlayerData(Index_).SpawnedNPCs.Add(Npc_.UniqueID)
@@ -212,7 +212,7 @@ Namespace GameServer.Functions
                 For Each key In ItemList.Keys.ToList
                     If ItemList.ContainsKey(key) Then
                         Dim Item_ As cItemDrop = ItemList(key)
-                        If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, ItemList(key).Position) Then
+                        If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, ItemList(key).Position) Then
                             If PlayerData(Index_).SpawnedItems.Contains(Item_.UniqueID) = False Then
                                 'spawnCollector.AddObject(Item_.UniqueID)
                                 Dim writer As New PacketWriter
@@ -240,7 +240,7 @@ Namespace GameServer.Functions
                     If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) _
                         Then
                         If _
-                            CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, PlayerData(Other_Index).Position) =
+                            CheckRange(PlayerData(Index_).PosTracker.GetCurPos, PlayerData(Other_Index).Position) =
                             False Then
                             'Despawn for both
                             Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
@@ -255,7 +255,7 @@ Namespace GameServer.Functions
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
                         If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = True Then
-                            If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Mob_.Position) = False Then
+                            If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, Mob_.Position) = False Then
                                 Server.Send(CreateDespawnPacket(Mob_.UniqueID), Index_)
                                 PlayerData(Index_).SpawnedMonsters.Remove(Mob_.UniqueID)
                             End If
@@ -267,7 +267,7 @@ Namespace GameServer.Functions
                     If NpcList.ContainsKey(key) Then
                         Dim Npc_ As cNPC = NpcList.Item(key)
                         If PlayerData(Index_).SpawnedNPCs.Contains(Npc_.UniqueID) = True Then
-                            If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, Npc_.Position) = False Then
+                            If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, Npc_.Position) = False Then
                                 Server.Send(CreateDespawnPacket(Npc_.UniqueID), Index_)
                                 PlayerData(Index_).SpawnedNPCs.Remove(Npc_.UniqueID)
                             End If
@@ -280,7 +280,7 @@ Namespace GameServer.Functions
                     If ItemList.ContainsKey(key) Then
                         Dim _item As cItemDrop = ItemList(key)
                         If PlayerData(Index_).SpawnedItems.Contains(_item.UniqueID) = True Then
-                            If CheckRange(PlayerData(Index_).Pos_Tracker.GetCurPos, _item.Position) = False Then
+                            If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, _item.Position) = False Then
                                 Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
                                 PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
                             End If

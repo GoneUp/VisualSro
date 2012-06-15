@@ -1,0 +1,88 @@
+Navmesh File (.nvm)
+
+Content:
+'-------------------------
+Header Total 12 Bytes
+Entry
+Zone1
+Zone2
+Zone3
+TextureMap
+HeightMap
+last3
+last4
+
+Stucture:
+'-------------------------
+Company	Char(4)
+Format	Char(4)
+Version	Char(4)
+'-------------------------
+EntryCount WORD
+Do ReadEntry
+	ID	DWORD
+	X	FLOAT
+	Y	FLOAT
+	Z	FLOAT
+	uk2		WORD
+	Angle		WORD
+	uk4		WORD
+	uk5		WORD
+	uk6		WORD
+	grid	WORD
+	ExtraCount	WORD
+		Do ReadExtraCount
+			field1		DWORD
+			field2		WORD
+		Loop
+Loop
+'-------------------------
+Zone1Count	DWORD
+zone1Extra	DWORD
+Do ReadZones
+	fX1	DWORD
+	fY1	DWORD
+	fX2	DWORD
+	fY2	DWORD
+	extraCount	BYTE
+	Do ReadExtra
+		extra	WORD
+	Loop	
+Loop
+'-------------------------
+Zone2Count	DWORD
+Do ReadZones
+	fX1	DWORD
+	fY1	DWORD
+	fX2	DWORD
+	fY2	DWORD
+	s3_b1	CHAR
+	s3_b2	CHAR
+	s3_b3	CHAR
+	s3_w2	WORD
+	s3_w3	WORD
+	s3_w4	WORD
+	s3_w5	WORD
+Loop
+'-------------------------
+Zone3Count
+Do ReadZones
+	fX1	DWORD
+	fY1	DWORD
+	fX2	DWORD
+	fY2	DWORD
+	s3_b1	CHAR
+	s3_b2	CHAR
+	s3_b3	CHAR
+	s3_w2	WORD
+	s3_w3	WORD
+Loop
+'-------------------------
+TextureMap Read 73728 Bytes	Not Used
+HeighMap   Read 9408 Bytes
+last3	Read 36 Bytes
+last4	ReadToEnd
+
+
+Notes:
+97x97

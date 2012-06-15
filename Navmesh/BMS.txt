@@ -1,0 +1,4 @@
+﻿Structure of a BMS File
+
+8 bytes / JMXVRES & 0 byte / ID
+4 bytes / Int32 / Version

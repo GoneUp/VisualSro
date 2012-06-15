@@ -225,7 +225,7 @@
         Public Sub OnGoTown(ByVal Index_ As Integer)
 
             'Teleport the GM to Town
-            PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return
+            PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn
             'Set new Pos
             DataBase.SaveQuery(
                 String.Format(

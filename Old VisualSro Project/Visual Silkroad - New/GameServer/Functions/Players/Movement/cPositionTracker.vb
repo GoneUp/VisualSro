@@ -39,8 +39,7 @@ Namespace GameServer.Functions
             Dim ToGoY As Single
             Dim Distance As Double
             Dim Speed As Double
-            Dim tmpPos As New Position
-
+            
             Try
                 Select Case pMoveState
                     Case enumMoveState.Standing
@@ -135,6 +134,16 @@ Namespace GameServer.Functions
             tmrMovement.Dispose()
         End Sub
 
+        Public Sub StopMove()
+            If tmrMovement IsNot Nothing Then
+                tmrMovement.Stop()
+                tmrMovement.Dispose()
+            End If
+            
+            pMoveState = enumMoveState.Standing
+            pPosition = GetCurPos()
+        End Sub
+
         'Properties
         Public Property WalkSpeed() As Single
             Get
@@ -166,7 +175,7 @@ Namespace GameServer.Functions
             End Set
         End Property
 
-        Public Property ZerkSpeed() As Single
+        Public Property BerserkSpeed() As Single
             Get
                 Return Speed_Zerk
             End Get

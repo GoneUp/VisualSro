@@ -269,7 +269,7 @@ Namespace GameServer.GameMod
                 Case "\\berserk"
                     If PlayerData(Index_).Berserk Then
                         PlayerData(Index_).Berserk = True
-                        PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking
+                        PlayerData(Index_).PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking
 
                         UpdateBerserk(Index_)
                         UpdateState(4, 1, 0, Index_)
@@ -281,7 +281,7 @@ Namespace GameServer.GameMod
                     Else
                         PlayerData(Index_).Berserk = False
                         PlayerData(Index_).BerserkBar = 5
-                        PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                        PlayerData(Index_).PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
                         UpdateSpeeds(Index_)
                         UpdateState(4, 0, Index_)
                         PlayerBerserkTimer(Index_).Stop()
@@ -296,6 +296,22 @@ Namespace GameServer.GameMod
                 Case "\\spawn"
                     If IsNumeric(tmp(1)) Then
 
+                    End If
+
+                Case "\\speed"
+                    If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) And IsNumeric(tmp(3)) Then
+                        PlayerData(Index_).PosTracker.WalkSpeed = tmp(1)
+                        PlayerData(Index_).PosTracker.RunSpeed = tmp(2)
+                        PlayerData(Index_).PosTracker.BerserkSpeed = tmp(3)
+                        UpdateSpeeds(Index_)
+                    End If
+
+                Case "\\z"
+                    If IsNumeric(tmp(1)) Then
+                        Dim pos = PlayerData(Index_).Position
+                        pos.Z = tmp(1)
+                        PlayerData(Index_).SetPosition = pos
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
             End Select
 

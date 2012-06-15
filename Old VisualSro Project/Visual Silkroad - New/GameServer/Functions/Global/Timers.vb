@@ -121,18 +121,18 @@ Namespace GameServer.Functions
                 If Index <> - 1 Then
                     Select Case PlayerData(Index).UsedItem
                         Case UseItemTypes.Return_Scroll
-                            PlayerData(Index).Position_Recall = PlayerData(Index).Position
+                            PlayerData(Index).PositionRecall = PlayerData(Index).Position
                             'Save Pos
-                            PlayerData(Index).SetPosition = PlayerData(Index).Position_Return
+                            PlayerData(Index).SetPosition = PlayerData(Index).PositionReturn
                             'Set new Pos
                             'Save to DB
                             DataBase.SaveQuery(
                                 String.Format(
                                     "UPDATE positions SET recall_xsect='{0}', recall_ysect='{1}', recall_xpos='{2}', recall_zpos='{3}', recall_ypos='{4}' where OwnerCharID='{5}'",
-                                    PlayerData(Index).Position_Recall.XSector, PlayerData(Index).Position_Recall.YSector,
-                                    Math.Round(PlayerData(Index).Position_Recall.X),
-                                    Math.Round(PlayerData(Index).Position_Recall.Z),
-                                    Math.Round(PlayerData(Index).Position_Recall.Y), PlayerData(Index).CharacterId))
+                                    PlayerData(Index).PositionRecall.XSector, PlayerData(Index).PositionRecall.YSector,
+                                    Math.Round(PlayerData(Index).PositionRecall.X),
+                                    Math.Round(PlayerData(Index).PositionRecall.Z),
+                                    Math.Round(PlayerData(Index).PositionRecall.Y), PlayerData(Index).CharacterId))
                             DataBase.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
@@ -146,7 +146,7 @@ Namespace GameServer.Functions
 
 
                         Case UseItemTypes.Reverse_Scroll_Recall
-                            PlayerData(Index).SetPosition = PlayerData(Index).Position_Recall
+                            PlayerData(Index).SetPosition = PlayerData(Index).PositionRecall
                             DataBase.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
@@ -159,7 +159,7 @@ Namespace GameServer.Functions
                             PlayerData(Index).UsedItem = UseItemTypes.None
 
                         Case UseItemTypes.Reverse_Scroll_Dead
-                            PlayerData(Index).SetPosition = PlayerData(Index).Position_Dead
+                            PlayerData(Index).SetPosition = PlayerData(Index).PositionDead
                             DataBase.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
@@ -393,21 +393,19 @@ Namespace GameServer.Functions
                     PlayerMoveTimer(Index).Stop()
 
                     If PlayerData(Index) IsNot Nothing Then
-                        If PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
-                            Dim newPos As Position = PlayerData(Index).Pos_Tracker.GetCurPos()
+                        If PlayerData(Index).PosTracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                            Dim newPos As Position = PlayerData(Index).PosTracker.GetCurPos()
                             ObjectSpawnCheck(Index)
                             CheckForCaveTeleporter(Index)
 
-                            SendPm(Index, "secx" & newPos.XSector & "secy" & newPos.YSector & "X: " & newPos.X & "Y: " & newPos.Y & " X:" & newPos.ToGameX & " Y: " & newPos.ToGameY, "hh")
+                            SendPm(Index, "secx" & newPos.XSector & "secy" & newPos.YSector & "X: " & newPos.X & "Y: " & newPos.Y & " X:" & newPos.ToGameX & " Y: " & newPos.ToGameY & " Z: " & newPos.Z, "hh")
                             PlayerMoveTimer(Index).Start()
 
-                        ElseIf PlayerData(Index).Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+                        ElseIf PlayerData(Index).PosTracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                             ObjectSpawnCheck(Index)
                             SendPm(Index, "Walk End", "hh")
 
                             CheckForCaveTeleporter(Index)
-                            PlayerMoveTimer(Index).Interval = 20*1000
-                            PlayerMoveTimer(Index).Start()
                         End If
                     End If
 
@@ -430,12 +428,12 @@ Namespace GameServer.Functions
                                 Case 0
                                     'Nomral
                                     If PlayerData(i).CHP < PlayerData(i).HP Then
-                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP*0.002, 0,
+                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.002, 0,
                                                                         MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
                                     If PlayerData(i).CMP < PlayerData(i).MP Then
-                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP*0.002, 0,
+                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.002, 0,
                                                                         MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
@@ -443,12 +441,12 @@ Namespace GameServer.Functions
                                 Case 4
                                     'Sitting
                                     If PlayerData(i).CHP < PlayerData(i).HP Then
-                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP*0.05, 0,
+                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.05, 0,
                                                                         MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
                                     If PlayerData(i).CMP < PlayerData(i).MP Then
-                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP*0.05, 0,
+                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.05, 0,
                                                                         MidpointRounding.AwayFromZero)
                                         Changed_HPMP = True
                                     End If
@@ -481,7 +479,7 @@ Namespace GameServer.Functions
 
         Public Sub PlayerBerserkTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
 
-            Dim Index As Integer = - 1
+            Dim Index As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
                 For i As Integer = LBound(PlayerBerserkTimer, 1) To UBound(PlayerBerserkTimer, 1)
@@ -493,10 +491,10 @@ Namespace GameServer.Functions
 
                 PlayerBerserkTimer(Index).Stop()
 
-                If Index <> - 1 And PlayerData(Index) IsNot Nothing Then
+                If Index <> -1 And PlayerData(Index) IsNot Nothing Then
                     PlayerData(Index).Berserk = False
                     PlayerData(Index).BerserkBar = 0
-                    PlayerData(Index).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                    PlayerData(Index).PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
                     UpdateSpeeds(Index)
                     UpdateState(4, 0, Index)
                 End If

@@ -256,14 +256,14 @@
                     .Intelligence = 20
                     .PVP = 0
                     .MaxSlots = 45
-                    .Position_Dead = Settings.Player_StartReturnPos
-                    .Position_Recall = Settings.Player_StartReturnPos
-                    .Position_Return = Settings.Player_StartReturnPos
+                    .PositionDead = Settings.Player_StartReturnPos
+                    .PositionRecall = Settings.Player_StartReturnPos
+                    .PositionReturn = Settings.Player_StartReturnPos
                     If IsCharChinese(model) Then
-                        .Pos_Tracker = New cPositionTracker(Settings.PlayerStartPosCh, .WalkSpeed, .RunSpeed,
+                        .PosTracker = New cPositionTracker(Settings.PlayerStartPosCh, .WalkSpeed, .RunSpeed,
                                                             .BerserkSpeed)
                     ElseIf IsCharEurope(model) Then
-                        .Pos_Tracker = New cPositionTracker(Settings.Player_StartPos_Eu, .WalkSpeed, .RunSpeed,
+                        .PosTracker = New cPositionTracker(Settings.Player_StartPos_Eu, .WalkSpeed, .RunSpeed,
                                                             .BerserkSpeed)
                     End If
                     Const magdefmin As Double = 3.0
@@ -291,7 +291,7 @@
                     String.Format(
                         "INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
                         GameDB.Chars(newCharacterIndex).CharacterId, GameDB.Chars(newCharacterIndex).AccountID,
-                        GameDB.Chars(newCharacterIndex).CharacterName, GameDB.Chars(newCharacterIndex).Pk2Id,
+                        GameDB.Chars(newCharacterIndex).CharacterName, GameDB.Chars(newCharacterIndex).Pk2ID,
                         GameDB.Chars(newCharacterIndex).Volume, GameDB.Chars(newCharacterIndex).Level,
                         GameDB.Chars(newCharacterIndex).Gold, GameDB.Chars(newCharacterIndex).SkillPoints,
                         CInt(GameDB.Chars(newCharacterIndex).GM)))
@@ -549,7 +549,7 @@
             For i = 0 To ClientList.CharListing(Index_).Chars.Count - 1
                 If ClientList.CharListing(Index_).Chars(i).CharacterName = SelectedNick Then
                     PlayerData(Index_) = ClientList.CharListing(Index_).Chars(i)
-                    PlayerData(Index_).UniqueId = Id_Gen.GetUnqiueId()
+                    PlayerData(Index_).UniqueID = Id_Gen.GetUnqiueId()
 
                     Dim inventory As New cInventory(ClientList.CharListing(Index_).Chars(i).MaxSlots)
                     Inventorys(Index_) = GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
@@ -584,7 +584,7 @@
 
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterID)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             'charid
             writer.Word(Date.Now.Day)
             'moon pos
@@ -603,202 +603,133 @@
             Dim chari As [cChar] = PlayerData(Index_)
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterInfo)
-            writer.DWord(3912288588)
-            '@@@@@@@@@@@@@@@@@
-            writer.DWord(chari.Pk2Id)
-            ' Character Model
-            writer.Byte(chari.Volume)
-            ' Volume & Height
+            writer.DWord(3912288588)  '@@@@@@@@@@@@@@@@@
+            writer.DWord(chari.Pk2ID)      ' Character Model
+            writer.Byte(chari.Volume)    ' Volume & Height
             writer.Byte(chari.Level)
-            ' Level
-            writer.Byte(chari.Level)
-            ' Highest Level
+            writer.Byte(chari.Level) ' Highest Level
 
             writer.QWord(chari.Experience)
-            ' EXP Bar
             writer.DWord(chari.SkillPointBar)
-            ' SP Bar
             writer.QWord(chari.Gold)
-            ' Gold Amount
             writer.DWord(chari.SkillPoints)
-            ' SP Amount
             writer.Word(chari.Attributes)
-            ' Stat Points
             writer.Byte(chari.BerserkBar)
-            ' Berserk Bar
             writer.DWord(0)
-            ' @@@@@@@@@@@@@
             writer.DWord(chari.CHP)
-            ' HP
             writer.DWord(chari.CMP)
-            ' MP
             writer.Byte(chari.HelperIcon)
-            ' Icon
-            writer.Byte(0)
-            ' Daily PK (/15)
-            writer.Word(0)
-            ' Total PK
-            writer.DWord(0)
-            ' PK Penalty Point
-            writer.Byte(0)
-            ' Rank
-            writer.Byte(0)
-            ' Unknown
-            '''''''''''''''''''/
+            writer.Byte(0)   ' Daily PK (/15)
+            writer.Word(0)   ' Total PK
+            writer.DWord(0)   ' PK Penalty Point
+            writer.Byte(0) ' Rank
+            writer.Byte(0)  ' Unknown
 
-            'INVENTORY HERE
-
+            'INVENTORY
             Inventorys(Index_).CalculateItemCount()
-            writer.Byte(chari.MaxSlots)
-            ' Max Item Slot (0 Minimum + 13) (4 Seiten x 24 Slots = 96 Maximum + 13 --> 109)
-            writer.Byte(Inventorys(Index_).ItemCount)
-            ' Amount of Items  
+            writer.Byte(chari.MaxSlots)       ' Max Item Slot (0 Minimum + 13) (4 Seiten x 24 Slots = 96 Maximum + 13 --> 109)
+            writer.Byte(Inventorys(Index_).ItemCount)         ' Amount of Items  
+            
+            For Each item As cInvItem In Inventorys(Index_).UserItems
+                If item.Pk2Id <> 0 Then
+                    writer.Byte(item.Slot)
 
-            For Each _item As cInvItem In Inventorys(Index_).UserItems
-                If _item.Pk2Id <> 0 Then
-                    writer.Byte(_item.Slot)
-
-                    AddItemDataToPacket(_item, writer)
+                    AddItemDataToPacket(item, writer)
                 End If
             Next
 
+            'Avatar Inventory
             Inventorys(Index_).CalculateAvatarCount()
-            writer.Byte(5)
-            ' Avatar Item Max
-            writer.Byte(Inventorys(Index_).AvatarCount)
-            ' Amount of Avatars
-            For Each _avatar As cInvItem In Inventorys(Index_).AvatarItems
-                If _avatar.Pk2Id <> 0 Then
-                    Dim refitem As cItem = GetItemByID(_avatar.Pk2Id)
+            writer.Byte(5)  ' Avatar Item Max
+            writer.Byte(Inventorys(Index_).AvatarCount)    ' Amount of Avatars
+
+            For Each avatar As cInvItem In Inventorys(Index_).AvatarItems
+                If avatar.Pk2Id <> 0 Then
+                    Dim refitem As cItem = GetItemByID(avatar.Pk2Id)
                     writer.Byte(GetExternalAvatarSlot(refitem))
-                    AddItemDataToPacket(_avatar, writer)
+                    AddItemDataToPacket(avatar, writer)
                 End If
             Next
 
-            writer.Byte(0)
-            ' Duplicate List (00 - None) (01 - Duplicate)
-            writer.Word(11)
-            'Unkown
-            writer.Byte(0)
-            'Unkown
+            writer.Byte(0)  ' Duplicate List (00 - None) (01 - Duplicate)
+            writer.Word(11) 'Unknown
+            writer.Byte(0)  'Unknown
 
+            'Mastery List
             For i = 0 To GameDB.Masterys.Length - 1
                 If (GameDB.Masterys(i) IsNot Nothing) AndAlso GameDB.Masterys(i).OwnerID = chari.CharacterId Then
-                    writer.Byte(1)
-                    'mastery start
+                    writer.Byte(1) 'Mastery start
                     writer.DWord(GameDB.Masterys(i).MasteryID)
-                    ' Mastery
                     writer.Byte(GameDB.Masterys(i).Level)
-                    ' Mastery Level
                 End If
             Next
 
-            writer.Byte(2)
-            'mastery end
-            writer.Byte(0)
-            'mastery end
+            writer.Byte(2)     'Mastery list end
+            writer.Byte(0)     'Skill list start
+
 
             For i = 0 To GameDB.Skills.Length - 1
                 If (GameDB.Skills(i) IsNot Nothing) AndAlso GameDB.Skills(i).OwnerID = chari.CharacterId Then
-                    writer.Byte(1)
-                    'skill start
-                    writer.DWord(GameDB.Skills(i).SkillID)
-                    'skill id
-                    writer.Byte(1)
-                    ' skill end?
+                    writer.Byte(1)    'skill start
+                    writer.DWord(GameDB.Skills(i).SkillID)    'skill id
+                    writer.Byte(1)   ' skill end
                 End If
             Next
 
-            writer.Byte(2)
-            'end
+            writer.Byte(2)  'Skill List End
 
 
-            writer.Word(0)
-            ' Amount of Completed Quests
+
+            writer.Word(0) ' Amount of Completed Quests
             'writer.DWord(1) 'event
 
-            writer.Word(0)
-            ' Amount of Pending Quests
+            writer.Word(0) ' Amount of Pending Quests
 
+            
 
-            '''''''''''''''''''''/
             ' ID, Position, State, Speed
             writer.DWord(0)
-            writer.DWord(chari.UniqueId)
-            ' Unique ID
+            writer.DWord(chari.UniqueID)
             writer.Byte(chari.Position.XSector)
-            ' X Sector
             writer.Byte(chari.Position.YSector)
-            ' Y Sector
             writer.Float(chari.Position.X)
-            ' X
             writer.Float(chari.Position.Z)
-            ' Z
             writer.Float(chari.Position.Y)
-            ' Y
             writer.Word(chari.Angle)
-            ' Angle
-            writer.Byte(0)
-            ' Destination
-            writer.Byte(1)
-            ' Walk & Run Flag
-            writer.Byte(0)
-            ' No Destination
+            writer.Byte(0)    ' Destination
+            writer.Byte(1) ' Walk & Run Flag
+            writer.Byte(0)   ' No Destination
             writer.Word(chari.Angle)
-            ' Angle
             writer.Byte(0)
-            ' Death Flag
             writer.Byte(0)
-            ' Movement Flag
             writer.Byte(0)
-            ' Unknown
             writer.Byte(chari.Berserk)
-            ' Berserker Flag
             writer.Float(chari.WalkSpeed)
-            ' Walking Speed
             writer.Float(chari.RunSpeed)
-            ' Running Speed
             writer.Float(chari.BerserkSpeed)
-            ' Berserk Speed
-            '''''''''''''''''''''/
 
 
-            writer.Byte(0)
-            ' Buff Flag
-
-            '''''''''''''''''''''/
-            ' Name, Job, PK
+            writer.Byte(0) ' Buff Flag
+            
             writer.Word(chari.CharacterName.Length)
-            ' Player Name Length
             writer.String(chari.CharacterName)
-            ' Player Name
             writer.Word(chari.AliasName.Length)
-            ' Alias Name Length
             writer.String(chari.AliasName)
-            ' Alias Name
             writer.Word(0)
             writer.Byte(0)
             '0=not selected, 1 = hunter
             writer.Byte(1)
             writer.QWord(0)
-            'job exp
             writer.DWord(0)
-            writer.Byte(&HFF)
-            ' PK Flag
-            '''''''''''''''''''''/
+            writer.Byte(&HFF)    'PVP Flag
 
 
-            '''''''''''''''''''''/  
-            ' Account
-
+            'Account
             writer.QWord(0)
-            ' @@@@@@@@@@@@@
             writer.DWord(chari.AccountID)
-            ' Account ID
             writer.Byte(chari.GM)
             writer.Byte(7)
-            ' @@@@@@@@@@@@@
-            '''''''''''''''''''''/
+
 
             Dim hotkeycount As UInteger = 0
             For i = 0 To GameDB.Hotkeys.Count - 1
@@ -810,8 +741,7 @@
             Next
 
             writer.Byte(hotkeycount)
-            ' Number of Hotkeys
-
+         
             For i = 0 To GameDB.Hotkeys.Count - 1
                 If GameDB.Hotkeys(i).OwnerID = chari.CharacterId Then
                     If GameDB.Hotkeys(i).Type <> 0 And GameDB.Hotkeys(i).IconID <> 0 Then
@@ -824,35 +754,21 @@
 
 
             ' Autopotion
-            writer.Byte(chari.Pot_HP_Slot)
-            ' HP Slot
-            writer.Byte(chari.Pot_HP_Value)
-            ' HP Value
-            writer.Byte(chari.Pot_MP_Slot)
-            ' MP Slot
-            writer.Byte(chari.Pot_MP_Value)
-            ' MP Value
-            writer.Byte(chari.Pot_Abormal_Slot)
-            ' Abnormal Slot
-            writer.Byte(chari.Pot_Abormal_Value)
-            ' Abnormal Value
-            writer.Byte(chari.Pot_Delay)
-            ' Potion Delay
+            writer.Word(chari.PotHp)
+            writer.Word(chari.PotMp)
+            writer.Word(chari.PotAbormal)
+            writer.Byte(chari.PotDelay)
+            
 
+            writer.Byte(0)  ' Amount of Players Blocked
+            writer.Byte(0)  'Other Block Shit (Trade or PTM)
 
-            writer.Byte(0)
-            ' Amount of Players Blocked
-            writer.Byte(0)
-            'Other Block Shit (Trade or PTM)
 
             ' Other
             writer.Word(1)
-            'unknown
             writer.Word(1)
             writer.Byte(0)
             writer.Byte(2)
-            'or 2
-
 
             Server.Send(writer.GetBytes, Index_)
         End Sub
@@ -874,13 +790,14 @@
             '    Server.Send(writer.GetBytes, Index_)
 
             'UpdateState(4, 2, Index_) 'Untouchable Status
-            ObjectSpawnCheck(Index_)
             OnStatsPacket(Index_)
             OnSendSilks(Index_)
             If PlayerData(Index_).InGuild = True Then
                 SendGuildInfo(Index_, False)
                 LinkPlayerToGuild(Index_)
             End If
+
+            ObjectSpawnCheck(Index_)
         End Sub
 
         Public Sub Player_CheckDeath(ByVal Index_ As Integer, ByVal SetPosToTown As Boolean)
@@ -893,7 +810,7 @@
 
 
                 If SetPosToTown Then
-                    PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return
+                    PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn
                     DataBase.SaveQuery(
                         String.Format(
                             "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",

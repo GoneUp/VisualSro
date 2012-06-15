@@ -89,8 +89,7 @@ Namespace GameServer.GameDB
 
                 For i = 0 To Chars.Length - 1
                     Chars(i) = New [cChar]
-                    Chars(i).Pos_Tracker = New cPositionTracker(New Position, Chars(i).WalkSpeed, Chars(i).RunSpeed,
-                                                                Chars(i).BerserkSpeed)
+                    Chars(i).PosTracker = New cPositionTracker(New Position, 0, 0, 0)
 
                     Chars(i).CharacterId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                     Chars(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -131,13 +130,10 @@ Namespace GameServer.GameDB
                     Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
                     Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
                     Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))
-                    Chars(i).Pot_HP_Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(39))
-                    Chars(i).Pot_HP_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(40))
-                    Chars(i).Pot_MP_Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(41))
-                    Chars(i).Pot_MP_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(42))
-                    Chars(i).Pot_Abormal_Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(43))
-                    Chars(i).Pot_Abormal_Value = CByte(tmp.Tables(0).Rows(i).ItemArray(44))
-                    Chars(i).Pot_Delay = CByte(tmp.Tables(0).Rows(i).ItemArray(45))
+                    Chars(i).PotHp = CByte(tmp.Tables(0).Rows(i).ItemArray(39))
+                    Chars(i).PotMp = CByte(tmp.Tables(0).Rows(i).ItemArray(40))
+                    Chars(i).PotAbormal = CByte(tmp.Tables(0).Rows(i).ItemArray(41))
+                    Chars(i).PotDelay = CByte(tmp.Tables(0).Rows(i).ItemArray(42))
 
                     If Chars(i).CHP = 0 Then
                         Chars(i).Alive = False
@@ -232,23 +228,23 @@ Namespace GameServer.GameDB
                 Dim CharID As UInteger = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 For c = 0 To Chars.Count - 1
                     If Chars(c).CharacterId = CharID Then
-                        Chars(c).Position_Return.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(1))
-                        Chars(c).Position_Return.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(2))
-                        Chars(c).Position_Return.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(3))
-                        Chars(c).Position_Return.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(4))
-                        Chars(c).Position_Return.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(5))
+                        Chars(c).PositionReturn.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(1))
+                        Chars(c).PositionReturn.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(2))
+                        Chars(c).PositionReturn.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(3))
+                        Chars(c).PositionReturn.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(4))
+                        Chars(c).PositionReturn.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(5))
 
-                        Chars(c).Position_Recall.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(6))
-                        Chars(c).Position_Recall.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(7))
-                        Chars(c).Position_Recall.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(8))
-                        Chars(c).Position_Recall.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(9))
-                        Chars(c).Position_Recall.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(10))
+                        Chars(c).PositionRecall.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(6))
+                        Chars(c).PositionRecall.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(7))
+                        Chars(c).PositionRecall.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(8))
+                        Chars(c).PositionRecall.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(9))
+                        Chars(c).PositionRecall.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(10))
 
-                        Chars(c).Position_Dead.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(11))
-                        Chars(c).Position_Dead.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
-                        Chars(c).Position_Dead.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(13))
-                        Chars(c).Position_Dead.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(14))
-                        Chars(c).Position_Dead.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(15))
+                        Chars(c).PositionDead.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(11))
+                        Chars(c).PositionDead.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
+                        Chars(c).PositionDead.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(13))
+                        Chars(c).PositionDead.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(14))
+                        Chars(c).PositionDead.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(15))
                     End If
                 Next
             Next

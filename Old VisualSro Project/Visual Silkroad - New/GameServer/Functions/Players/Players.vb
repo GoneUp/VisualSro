@@ -8,9 +8,8 @@
         ''' <remarks></remarks>
         Public Function CreateSpawnPacket(ByVal Index As Integer) As Byte()
 
-            Dim chari As [cChar] = PlayerData(Index)
-            'Only for faster Code writing
-
+            Dim chari As [cChar] = PlayerData(Index) 'Only for faster Code writing
+            
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.SingleSpawn)
             writer.DWord(chari.Pk2Id)
@@ -73,9 +72,9 @@
             writer.Float(chari.Position.Y)
             writer.Word(chari.Angle)
 
-            writer.Byte(chari.Pos_Tracker.MoveState)
+            writer.Byte(chari.PosTracker.MoveState)
             'dest
-            If chari.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
+            If chari.PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
                 writer.Byte(0)
                 'Walking
             Else
@@ -83,16 +82,16 @@
                 'Running + Zerk
             End If
 
-            If chari.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+            If chari.PosTracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                 writer.Byte(0)
                 'dest
                 writer.Word(chari.Angle)
-            ElseIf chari.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
-                writer.Byte(chari.Pos_Tracker.WalkPos.XSector)
-                writer.Byte(chari.Pos_Tracker.WalkPos.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(chari.Pos_Tracker.WalkPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(chari.Pos_Tracker.WalkPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(chari.Pos_Tracker.WalkPos.Y)))
+            ElseIf chari.PosTracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                writer.Byte(chari.PosTracker.WalkPos.XSector)
+                writer.Byte(chari.PosTracker.WalkPos.YSector)
+                writer.Byte(BitConverter.GetBytes(CShort(chari.PosTracker.WalkPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(chari.PosTracker.WalkPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(chari.PosTracker.WalkPos.Y)))
             End If
 
 
@@ -266,8 +265,7 @@
             PlayerData(Index_).SpawnedNPCs.Clear()
             PlayerData(Index_).SpawnedMonsters.Clear()
             PlayerData(Index_).SpawnedItems.Clear()
-
-
+            
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Alive = True
             PlayerData(Index_).Attacking = False
@@ -303,6 +301,10 @@
                 PlayerData(Index_).Buffs(key).Disponse()
             Next
             PlayerData(Index_).Buffs.Clear()
+
+            If PlayerData(Index_).PosTracker IsNot Nothing Then
+                PlayerData(Index_).PosTracker.StopMove()
+            End If
         End Sub
 
         Public Sub CheckStall(ByVal Index_ As Integer)

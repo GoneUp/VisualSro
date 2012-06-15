@@ -39,11 +39,11 @@
             Select Case action
                 Case 2 'Run --> Walk
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
+                    PlayerData(Index_).PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
 
                 Case 3 'Walk --> Run
                     UpdateState(1, action, Index_)
-                    PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                    PlayerData(Index_).PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
 
                 Case 4 'sit down
                     If SitUpTimer(Index_).Enabled = True Then
@@ -111,6 +111,7 @@
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)
             DespawnPlayerTeleport(Index_)
             PlayerData(Index_).Ingame = False
+            
             Dim writer As New PacketWriter
 
 
@@ -201,21 +202,18 @@
                         UpdateHotkey(tmp_)
                     End If
                 Case 2
-                    PlayerData(index_).Pot_HP_Slot = packet.Byte
-                    PlayerData(index_).Pot_HP_Value = packet.Byte
-                    PlayerData(index_).Pot_MP_Slot = packet.Byte
-                    PlayerData(index_).Pot_MP_Value = packet.Byte
-                    PlayerData(index_).Pot_Abormal_Slot = packet.Byte
-                    PlayerData(index_).Pot_Abormal_Value = packet.Byte
-                    PlayerData(index_).Pot_Delay = packet.Byte
+                    PlayerData(index_).PotHp = packet.Word
+                    PlayerData(index_).PotMp = packet.Word
+                    PlayerData(index_).PotAbormal = packet.Word
+                    PlayerData(index_).PotDelay = packet.Word
 
                     DataBase.SaveQuery(
                         String.Format(
-                            "UPDATE characters SET pot_hp_slot='{0}', pot_hp_value='{1}', pot_mp_slot='{2}', pot_mp_value='{3}', pot_abnormal_slot='{4}', pot_abnormal_value='{5}', pot_delay='{6}' where id='{7}'",
-                            PlayerData(index_).Pot_HP_Slot, PlayerData(index_).Pot_HP_Value,
-                            PlayerData(index_).Pot_MP_Slot, PlayerData(index_).Pot_MP_Value,
-                            PlayerData(index_).Pot_Abormal_Slot, PlayerData(index_).Pot_Abormal_Value,
-                            PlayerData(index_).Pot_Delay, PlayerData(index_).CharacterId))
+                            "UPDATE characters SET pot_hp='{0}', pot_mp='{1}', pot_abnormal='{2}', pot_delay='{3}' where id='{4}'",
+                            PlayerData(index_).PotHp,
+                            PlayerData(index_).PotMp,
+                            PlayerData(index_).PotAbormal,
+                            PlayerData(index_).PotDelay, PlayerData(index_).CharacterId))
             End Select
         End Sub
 
@@ -329,16 +327,16 @@
             PlayerData(Index_).SkillOverId = 0
             PlayerData(Index_).CHP = 0
             PlayerData(Index_).Alive = False
-            PlayerData(Index_).Position_Dead = PlayerData(Index_).Position
+            PlayerData(Index_).PositionDead = PlayerData(Index_).Position
             UpdateHP(Index_)
             'GetXP(GetLevelDataByLevel(PlayerData(Index_).Level).Experience * 0.01, 0, Index_, PlayerData(Index_).UniqueId) 'Reduce Experience by 1 %
 
             DataBase.SaveQuery(
                 String.Format(
                     "UPDATE positions SET dead_xsect='{0}', dead_ysect='{1}', dead_xpos='{2}', dead_zpos='{3}', dead_ypos='{4}' where OwnerCharID='{5}'",
-                    PlayerData(Index_).Position_Recall.XSector, PlayerData(Index_).Position_Recall.YSector,
-                    Math.Round(PlayerData(Index_).Position_Recall.X), Math.Round(PlayerData(Index_).Position_Recall.Z),
-                    Math.Round(PlayerData(Index_).Position_Recall.Y), PlayerData(Index_).CharacterId))
+                    PlayerData(Index_).PositionRecall.XSector, PlayerData(Index_).PositionRecall.YSector,
+                    Math.Round(PlayerData(Index_).PositionRecall.X), Math.Round(PlayerData(Index_).PositionRecall.Z),
+                    Math.Round(PlayerData(Index_).PositionRecall.Y), PlayerData(Index_).CharacterId))
         End Sub
 
         Public Sub Player_Die1(ByVal Index_ As Integer)
@@ -363,13 +361,13 @@
 
             Dim tag As Byte = packet.Byte
 
-            PlayerData(Index_).CHP = PlayerData(Index_).HP/2
+            PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
             PlayerData(Index_).Alive = True
             PlayerData(Index_).Busy = False
 
             Select Case tag
                 Case 1 'To Town  
-                    PlayerData(Index_).SetPosition = PlayerData(Index_).Position_Return 'Set new Pos
+                    PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn 'Set new Pos
                     SavePlayerPositionToDB(Index_)
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
 
@@ -386,16 +384,16 @@
             If NpcList.ContainsKey(ObjectId) = False Then
                 Server.Disconnect(Index_)
             End If
-          
+
             Dim ref As SilkroadObject = GetObject(NpcList(ObjectId).Pk2ID)
-            PlayerData(Index_).Position_Return = GetTeleportPoint(ref.Pk2ID).ToPos
+            PlayerData(Index_).PositionReturn = GetTeleportPoint(ref.Pk2ID).ToPos
 
             DataBase.SaveQuery(String.Format(
                             "UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'",
-                            PlayerData(Index_).Position_Return.XSector, PlayerData(Index_).Position_Return.YSector,
-                            Math.Round(PlayerData(Index_).Position_Return.X),
-                            Math.Round(PlayerData(Index_).Position_Return.Z),
-                            Math.Round(PlayerData(Index_).Position_Return.Y), PlayerData(Index_).CharacterId))
+                            PlayerData(Index_).PositionReturn.XSector, PlayerData(Index_).PositionReturn.YSector,
+                            Math.Round(PlayerData(Index_).PositionReturn.X),
+                            Math.Round(PlayerData(Index_).PositionReturn.Z),
+                            Math.Round(PlayerData(Index_).PositionReturn.Y), PlayerData(Index_).CharacterId))
 
 
         End Sub
@@ -409,7 +407,7 @@
                     PlayerData(Index_).BerserkBar = 5 Then
                     PlayerData(Index_).BerserkBar = 0
                     PlayerData(Index_).Berserk = True
-                    PlayerData(Index_).Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking
+                    PlayerData(Index_).PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking
 
                     UpdateBerserk(Index_)
                     UpdateState(4, 1, 0, Index_)

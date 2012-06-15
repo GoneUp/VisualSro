@@ -18,9 +18,6 @@
         Public Attributes As UShort = 0
         Public BerserkBar As Byte = 0
         Public Berserk As Boolean = False
-        Public WalkSpeed As Single = 0
-        Public RunSpeed As Single = 0
-        Public BerserkSpeed As Single = 0
 
         Public MinPhy As UInteger = 0
         Public MaxPhy As UInteger = 0
@@ -63,15 +60,15 @@
         Public UsedItem As UseItemTypes
         Public UsedItemParameter As Integer = 0
 
-        Public Position_Recall As New Position
-        Public Position_Return As New Position
-        Public Position_Dead As New Position
-        Public Pos_Tracker As cPositionTracker
+        Public PositionRecall As New Position
+        Public PositionReturn As New Position
+        Public PositionDead As New Position
+        Public PosTracker As cPositionTracker
 
-        Public SpawnedPlayers As New List(Of Integer)
-        Public SpawnedMonsters As New List(Of Integer)
-        Public SpawnedItems As New List(Of Integer)
-        Public SpawnedNPCs As New List(Of Integer)
+        Public SpawnedPlayers As New List(Of UInt32)
+        Public SpawnedMonsters As New List(Of UInt32)
+        Public SpawnedItems As New List(Of UInt32)
+        Public SpawnedNPCs As New List(Of UInt32)
 
         Public Ingame As Boolean = False
         Public Invisible As Boolean = False
@@ -101,53 +98,69 @@
         Public CastingId As UInt32 = 0
         Public LastSelected As UInt32 = 0
 
-        Public Pot_HP_Slot As Byte = 0
-        Public Pot_HP_Value As Byte = 0
-        Public Pot_MP_Slot As Byte = 0
-        Public Pot_MP_Value As Byte = 0
-        Public Pot_Abormal_Slot As Byte = 0
-        Public Pot_Abormal_Value As Byte = 0
-        Public Pot_Delay As Byte = 0
+        Public PotHp As UInt16 = 0
+        Public PotMp As UInt16 = 0
+        Public PotAbormal As UInt16 = 0
+        Public PotDelay As UInt16 = 0
 
-        Public Buffs As New Dictionary(Of UInteger, cBuff)
-        'Uint = SkillOverId
+        Public Buffs As New Dictionary(Of UInteger, cBuff) 'Key = SkillOverId
 
         Public TeleportType As TeleportType_
 
         Public ReadOnly Property Position() As Position
             Get
-                Return Me.Pos_Tracker.GetCurPos
+                Return PosTracker.GetCurPos
             End Get
-            'Set(ByVal value As Position)
-            '    Me.Pos_Tracker.LastPos = value
-            'End Set
         End Property
 
         Public WriteOnly Property SetPosition() As Position
             Set(ByVal value As Position)
-                Me.Pos_Tracker.LastPos = value
+                Me.PosTracker.LastPos = value
             End Set
         End Property
 
+        Public Property WalkSpeed As Single
+            Get
+                Return PosTracker.WalkSpeed
+            End Get
+            Set(ByVal value As Single)
+                PosTracker.WalkSpeed = value
+            End Set
+        End Property
+        
+        Public Property RunSpeed As Single
+            Get
+                Return PosTracker.RunSpeed
+            End Get
+            Set(ByVal value As Single)
+                PosTracker.RunSpeed = value
+            End Set
+        End Property
+        
+        Public Property BerserkSpeed As Single
+            Get
+                Return PosTracker.BerserkSpeed
+            End Get
+            Set(ByVal value As Single)
+                PosTracker.BerserkSpeed = value
+            End Set
+        End Property
 
+        
 
         Sub SetCharGroundStats()
-            'HP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Strength - 20) * 10
-            'MP = GameServer.GetLevelDataByLevel(Level).Base + (Me.Intelligence - 20) * 10
-            HP = (Math.Pow(1.02, Me.Level - 1)*Me.Strength*10)
-            MP = (Math.Pow(1.02, Me.Level - 1)*Me.Intelligence*10)
+            'HP = GetLevelData(Level).MobEXP + (Me.Strength - 20) * 10
+            'MP = GetLevelData(Level).MobEXP + (Me.Intelligence - 20) * 10
+            HP = (Math.Pow(1.02, Me.Level - 1) * Me.Strength * 10)
+            MP = (Math.Pow(1.02, Me.Level - 1) * Me.Intelligence * 10)
 
             Hit = Math.Round(Me.Level + 1000)
             Parry = Math.Round(Me.Level + 10)
 
             '=================Really unsure of these Formulas=============
-            Me.WalkSpeed = 15
-            Me.RunSpeed = Me.Level + 49
-            Me.BerserkSpeed = Me.RunSpeed*2
-            Me.Pos_Tracker.WalkSpeed = Me.WalkSpeed
-            Me.Pos_Tracker.RunSpeed = Me.RunSpeed
-            Me.Pos_Tracker.ZerkSpeed = Me.BerserkSpeed
-
+            WalkSpeed = 15
+            RunSpeed = Level + 49
+            BerserkSpeed = RunSpeed * 2
 
             'Set default.
             MinPhy = 0

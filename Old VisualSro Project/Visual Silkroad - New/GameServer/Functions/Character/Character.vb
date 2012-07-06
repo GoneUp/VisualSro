@@ -36,6 +36,10 @@
 
             ElseIf ClientList.CharListing(Index_).NumberOfChars > 0 Then
                 For i = 0 To (ClientList.CharListing(Index_).NumberOfChars - 1)
+                    If ClientList.CharListing(Index_).Chars(i) Is Nothing Then
+                        Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & ClientList.CharListing(Index_).LoginInformation.Name)
+                        Server.Disconnect(Index_)
+                    End If
 
                     writer.DWord(ClientList.CharListing(Index_).Chars(i).Pk2Id)
                     writer.Word(ClientList.CharListing(Index_).Chars(i).CharacterName.Length)
@@ -104,7 +108,7 @@
                 Next
 
                 'unknown byte thief - hunterr flag?
-                writer.Byte(1)
+                writer.Byte(0)
 
                 Server.Send(writer.GetBytes, Index_)
 
@@ -125,11 +129,22 @@
                 writer.Byte(2)
                 writer.Byte(&H10)
                 writer.Byte(4)
-                '13 invalid 10 server error
+                '260
             End If
 
             Server.Send(writer.GetBytes, Index_)
         End Sub
+
+        Public Sub OnSendNickError(ByVal index_ As Integer, ByVal Errornum As UInt16)
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.Character)
+            writer.Byte(4)
+            writer.Byte(2)
+            writer.Word(Errornum)
+            Server.Send(writer.GetBytes, index_)
+        End Sub
+
+
 
         Public Function CheckForAbuse(ByVal nick As String) As Boolean
             Dim tmp As String = nick.ToLowerInvariant
@@ -222,13 +237,12 @@
 
             If GameDB.CheckNick(nick) And CheckForAbuse(nick) = True Then
                 writer.Byte(2)
-                writer.Byte(&H10)
-                writer.Byte(4)
+                writer.Word(216)
                 Server.Send(writer.GetBytes, Index_)
             Else
 
                 Array.Resize(GameDB.Chars, GameDB.Chars.Count + 1)
-                
+
                 Dim newCharacterIndex As Integer = GameDB.Chars.Count - 1
 
                 GameDB.Chars(newCharacterIndex) = New [cChar]
@@ -237,12 +251,12 @@
                     .AccountID = ClientList.CharListing(Index_).LoginInformation.Id
                     .CharacterName = nick
                     .CharacterId = Id_Gen.GetNewCharId
-                    .UniqueId = Id_Gen.GetUnqiueId
+                    .UniqueID = Id_Gen.GetUnqiueId
                     .HP = 200
                     .MP = 200
                     .CHP = 200
                     .CMP = 200
-                    .Pk2Id = model
+                    .Pk2ID = model
                     .Volume = volume
                     .Level = Settings.Player_StartLevel
                     .Gold = Settings.Player_StartGold
@@ -629,7 +643,7 @@
             Inventorys(Index_).CalculateItemCount()
             writer.Byte(chari.MaxSlots)       ' Max Item Slot (0 Minimum + 13) (4 Seiten x 24 Slots = 96 Maximum + 13 --> 109)
             writer.Byte(Inventorys(Index_).ItemCount)         ' Amount of Items  
-            
+
             For Each item As cInvItem In Inventorys(Index_).UserItems
                 If item.Pk2Id <> 0 Then
                     writer.Byte(item.Slot)
@@ -685,7 +699,7 @@
 
             writer.Word(0) ' Amount of Pending Quests
 
-            
+
 
             ' ID, Position, State, Speed
             writer.DWord(0)
@@ -710,7 +724,7 @@
 
 
             writer.Byte(0) ' Buff Flag
-            
+
             writer.Word(chari.CharacterName.Length)
             writer.String(chari.CharacterName)
             writer.Word(chari.AliasName.Length)
@@ -741,7 +755,7 @@
             Next
 
             writer.Byte(hotkeycount)
-         
+
             For i = 0 To GameDB.Hotkeys.Count - 1
                 If GameDB.Hotkeys(i).OwnerID = chari.CharacterId Then
                     If GameDB.Hotkeys(i).Type <> 0 And GameDB.Hotkeys(i).IconID <> 0 Then
@@ -758,7 +772,7 @@
             writer.Word(chari.PotMp)
             writer.Word(chari.PotAbormal)
             writer.Byte(chari.PotDelay)
-            
+
 
             writer.Byte(0)  ' Amount of Players Blocked
             writer.Byte(0)  'Other Block Shit (Trade or PTM)
@@ -799,6 +813,39 @@
 
             ObjectSpawnCheck(Index_)
         End Sub
+
+        Public Sub OnCharacterNamechangeRequest(ByVal Index_ As Integer, ByVal packet As PacketReader)
+            Dim tag As Byte = packet.Byte
+            Dim OldCharname As String = packet.String(packet.Word)
+            Dim NewCharname As String = packet.String(packet.Word)
+
+            GameDB.FillCharList(ClientList.CharListing(Index_))
+
+            For i = 0 To ClientList.CharListing(Index_).Chars.Count - 1
+                If ClientList.CharListing(Index_).Chars(i) Is Nothing Then
+                    Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & ClientList.CharListing(Index_).LoginInformation.Name)
+                    Server.Disconnect(Index_)
+                End If
+
+                With ClientList.CharListing(Index_).Chars(i)
+                    If .CharacterName = OldCharname Then
+                        'Found the Char, Change is only possible when it contains a @
+                        If .CharacterName.Contains("@") Then
+                            'Check the New Name
+                            If GameDB.CheckNick(NewCharname) And CheckForAbuse(NewCharname) = False Then
+                                'Free ;)
+                                .CharacterName = NewCharname
+
+                                DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0} where id='{1}'", .CharacterName, .CharacterId))
+                            End If
+                        End If
+                    End If
+                End With
+            Next
+
+        End Sub
+
+
 
         Public Sub Player_CheckDeath(ByVal Index_ As Integer, ByVal SetPosToTown As Boolean)
             If PlayerData(Index_).CHP = 0 Then

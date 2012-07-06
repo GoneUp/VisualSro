@@ -6,11 +6,68 @@ Public Class cDatabase
     Private ReadOnly _query As New List(Of String)
     Private ReadOnly _mysqlLock As New Object
 
-    Public DbIp As String
-    Public DbPort As UShort
-    Public DbDatabase As String
-    Public DbUsername As String
-    Public DbPassword As String
+#Region "Propertys"
+    Private _DbIp As String
+    Public Property DbIP As String
+        Get
+            Return _DbIp
+        End Get
+        Set(ByVal value As String)
+            _DbIp = value
+        End Set
+    End Property
+
+    Private _DbPort As UShort
+    Public Property DbPort As UShort
+        Get
+            Return _DbPort
+        End Get
+        Set(ByVal value As UShort)
+            _DbPort = value
+        End Set
+    End Property
+
+    Private _DbDatabase As String
+    Public Property DbDatabase As String
+        Get
+            Return _DbDatabase
+        End Get
+        Set(ByVal value As String)
+            _DbDatabase = value
+        End Set
+    End Property
+
+    Private _DbUsername As String
+    Public Property DbUsername As String
+        Get
+            Return _DbUsername
+        End Get
+        Set(ByVal value As String)
+            _DbUsername = value
+        End Set
+    End Property
+
+    Private _DbPassword As String
+    Public Property DbPassword As String
+        Get
+            Return _DbPassword
+        End Get
+        Set(ByVal value As String)
+            _DbPassword = value
+        End Set
+    End Property
+
+    Private _autoExecuteQuerys As Boolean = False
+    Public Property autoExecuteQuerys As Boolean
+        Get
+            Return _autoExecuteQuerys
+        End Get
+        Set(ByVal value As Boolean)
+            _autoExecuteQuerys = value
+        End Set
+    End Property
+#End Region
+
 
     Public Event OnDatabaseConnected As DelegateConnected
     Public Event OnDatabaseLog As DelegateLog
@@ -47,6 +104,17 @@ Public Class cDatabase
             RaiseEvent OnDatabaseError(exception, _connectionString)
         End Try
     End Sub
+
+    Public Sub Disconnect()
+        Try
+            If _connection IsNot Nothing Then
+                _connection.Close()
+            End If
+        Catch exception As Exception
+            RaiseEvent OnDatabaseError(exception, _connectionString)
+        End Try
+    End Sub
+
 #End Region
 
 #Region "GetData"
@@ -142,6 +210,9 @@ Public Class cDatabase
     Public Sub SaveQuery(ByVal command As String)
         Try
             _query.Add(command)
+            If autoExecuteQuerys Then
+                ExecuteQuerys()
+            End If
         Catch exception As Exception
             RaiseEvent OnDatabaseError(exception, command)
         End Try

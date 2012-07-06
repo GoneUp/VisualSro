@@ -75,7 +75,7 @@ Namespace GameServer.GameDB
                 Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
                 Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
                 Users(i).Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
-                Users(i).Admin = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
+                Users(i).Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
             Next
         End Sub
 
@@ -371,8 +371,6 @@ Namespace GameServer.GameDB
                     End If
                 End If
             Next
-
-            charArray.NumberOfChars = CharCount
         End Sub
 
         Public Function FillInventory(ByVal [char] As [cChar]) As cInventory

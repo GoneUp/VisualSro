@@ -20,7 +20,7 @@
                 Dim password As String = packet.String(packet.Word)
 
                 Dim userIndex As Integer = GameDB.GetUser(userName)
-                If GameDB.Users(userIndex).Name = userName And GameDB.Users(userIndex).Pw = password And GameDB.Users(userIndex).Admin Then
+                If GameDB.Users(userIndex).Name = userName And GameDB.Users(userIndex).Pw = password And GameDB.Users(userIndex).Permission Then
                     ClientList.SessionInfo(Index_).Authorized = True
                     ClientList.SessionInfo(Index_).UserName = userName
                 End If

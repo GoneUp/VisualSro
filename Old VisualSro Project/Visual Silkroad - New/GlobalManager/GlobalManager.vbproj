@@ -88,20 +88,12 @@
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Console\Main.vb" />
-    <Compile Include="Framework\Classes\DownloadServer.vb" />
-    <Compile Include="Framework\Classes\GameServer.vb" />
-    <Compile Include="Framework\Classes\GatewayServer.vb" />
-    <Compile Include="Framework\Database\Database.vb" />
     <Compile Include="Framework\Database\GlobalDb.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
-    <Compile Include="Framework\Packets\Opcodes.vb" />
     <Compile Include="Framework\Packets\PacketLog.vb" />
-    <Compile Include="Framework\Packets\PacketReader.vb" />
-    <Compile Include="Framework\Packets\PacketWriter.vb" />
     <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Server\Server.vb" />
-    <Compile Include="Framework\Settings\cINI.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
@@ -112,6 +104,7 @@
     <Compile Include="Functions\Parser.vb" />
     <Compile Include="Functions\ShardService\ShardControl.vb" />
     <Compile Include="Functions\ShardService\ShardService.vb" />
+    <Compile Include="Global\GlobalDef.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

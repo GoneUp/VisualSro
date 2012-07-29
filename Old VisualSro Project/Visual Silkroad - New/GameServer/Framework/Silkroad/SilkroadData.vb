@@ -7,7 +7,7 @@ Namespace GameServer
         Public RefGoldData As New List(Of cGoldData)
         Public RefLevelData As New List(Of LevelData)
 
-        Public RefTmpSkills As New Dictionary(Of UInteger, TmpSkill)
+        Public RefTmpSkills As New Dictionary(Of UInteger, Skill.tmpSkill)
         Public RefSkills As New Dictionary(Of UInteger, Skill)
         Public RefObjects As New Dictionary(Of UInteger, SilkroadObject)
         Public RefMallItems As New List(Of MallPackage_)
@@ -296,7 +296,7 @@ Namespace GameServer
 
             Public SpawnPercent As Integer
 
-            Public EffectId As String
+            Public Effect_0 As String
             Public Effect_1 As Long
             Public Effect_2 As Long
             Public Effect_3 As Long
@@ -313,14 +313,16 @@ Namespace GameServer
             Public Effect_14 As Long
             Public Effect_15 As Long
             Public Effect_16 As Long
+
+            Public Structure tmpSkill
+                Public Pk2Id As UInteger
+                Public NextId As UInteger
+            End Structure
         End Class
 
-        Public Structure TmpSkill
-            Public Pk2Id As UInteger
-            Public NextId As UInteger
-        End Structure
 
-        Public Class TypeTable
+
+        Public Class SkillTypeTable
             Public Const Phy As Byte = &H1,
                          Mag As Byte = &H2,
                          Bicheon As Byte = &H3,
@@ -329,6 +331,26 @@ Namespace GameServer
                          All As Byte = &H6
         End Class
 
+        Public Structure SkillEffect
+            Public EffectId As String
+
+            Public Effect_1 As Long
+            Public Effect_2 As Long
+            Public Effect_3 As Long
+            Public Effect_4 As Long
+            Public Effect_5 As Long
+            Public Effect_6 As Long
+            Public Effect_7 As Long
+            Public Effect_8 As Long
+            Public Effect_9 As Long
+            Public Effect_10 As Long
+            Public Effect_11 As Long
+            Public Effect_12 As Long
+            Public Effect_13 As Long
+            Public Effect_14 As Long
+            Public Effect_15 As Long
+            Public Effect_16 As Long
+        End Structure
 
         Public Sub DumpSkillFiles()
             Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\skilldata.txt")
@@ -343,7 +365,7 @@ Namespace GameServer
             Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim tmp As New TmpSkill()
+                Dim tmp As New Skill.tmpSkill()
                 tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
                 tmp.NextId = Convert.ToUInt32(tmpString(9))
                 RefTmpSkills.Add(tmp.Pk2Id, tmp)
@@ -373,7 +395,7 @@ Namespace GameServer
                 tmp.PwrPercent = Convert.ToInt32(tmpString(71))
                 tmp.PwrMin = Convert.ToInt32(tmpString(72))
                 tmp.PwrMax = Convert.ToInt32(tmpString(73))
-                tmp.EffectId = HexToString(Hex(tmpString(69)))
+                tmp.Effect_0 = HexToString(Hex(tmpString(69)))
                 tmp.Effect_1 = Convert.ToInt32(tmpString(70))
                 tmp.Effect_2 = Convert.ToInt32(tmpString(71))
                 tmp.Effect_3 = Convert.ToInt32(tmpString(72))
@@ -392,48 +414,48 @@ Namespace GameServer
                 tmp.Effect_16 = Convert.ToInt32(tmpString(85))
 
 
-                If tmp.EffectId = "att" Then
+                If tmp.Effect_0 = "att" Then
                     tmp.Distance = 21
                 End If
 
                 If tmpString(3).Contains("SWORD") Then
-                    tmp.Type = TypeTable.Phy
-                    tmp.Type2 = TypeTable.Bicheon
+                    tmp.Type = SkillTypeTable.Phy
+                    tmp.Type2 = SkillTypeTable.Bicheon
                 End If
                 If tmpString(3).Contains("SPEAR") Then
-                    tmp.Type = TypeTable.Phy
-                    tmp.Type2 = TypeTable.Heuksal
+                    tmp.Type = SkillTypeTable.Phy
+                    tmp.Type2 = SkillTypeTable.Heuksal
                 End If
                 If tmpString(3).Contains("BOW") Then
-                    tmp.Type = TypeTable.Phy
-                    tmp.Type2 = TypeTable.Bow
+                    tmp.Type = SkillTypeTable.Phy
+                    tmp.Type2 = SkillTypeTable.Bow
                 End If
                 If _
                     tmpString(3).Contains("FIRE") OrElse tmpString(3).Contains("LIGHTNING") OrElse
                     tmpString(3).Contains("COLD") OrElse tmpString(3).Contains("WATER") Then
-                    tmp.Type = TypeTable.Mag
-                    tmp.Type2 = TypeTable.All
+                    tmp.Type = SkillTypeTable.Mag
+                    tmp.Type2 = SkillTypeTable.All
                 End If
                 If tmpString(3).Contains("PUNCH") Then
-                    tmp.Type = TypeTable.Phy
-                    tmp.Type2 = TypeTable.All
+                    tmp.Type = SkillTypeTable.Phy
+                    tmp.Type2 = SkillTypeTable.All
                 End If
                 If _
                     tmpString(3).Contains("ROG") OrElse tmpString(3).Contains("WARRIOR") OrElse
                     tmpString(3).Contains("AXE") Then
-                    tmp.Type = TypeTable.Phy
-                    tmp.Type2 = TypeTable.All
+                    tmp.Type = SkillTypeTable.Phy
+                    tmp.Type2 = SkillTypeTable.All
                 End If
                 If _
                     tmpString(3).Contains("WIZARD") OrElse tmpString(3).Contains("STAFF") OrElse
                     tmpString(3).Contains("WARLOCK") OrElse tmpString(3).Contains("BARD") OrElse
                     tmpString(3).Contains("HARP") OrElse tmpString(3).Contains("CLERIC") Then
-                    tmp.Type = TypeTable.Mag
-                    tmp.Type2 = TypeTable.All
+                    tmp.Type = SkillTypeTable.Mag
+                    tmp.Type2 = SkillTypeTable.All
                 End If
                 If tmpString(3).StartsWith("MSKILL") Then
-                    tmp.Type = TypeTable.Phy
-                    tmp.Type2 = TypeTable.All
+                    tmp.Type = SkillTypeTable.Phy
+                    tmp.Type2 = SkillTypeTable.All
                 End If
 
 
@@ -448,7 +470,7 @@ Namespace GameServer
             Next
         End Sub
 
-        Private Function GetSkillNumberOfAttacks(ByVal tmp As TmpSkill) As Byte
+        Private Function GetSkillNumberOfAttacks(ByVal tmp As Skill.tmpSkill) As Byte
             For i As Byte = 0 To 9
                 If tmp.NextId <> 0 Then
                     tmp = GetTmpSkill(tmp.NextId)
@@ -476,13 +498,36 @@ Namespace GameServer
             End If
         End Function
 
-        Private Function GetTmpSkill(ByVal NextId As UInteger) As TmpSkill
+        Private Function GetTmpSkill(ByVal NextId As UInteger) As Skill.tmpSkill
             If RefTmpSkills.ContainsKey(NextId) Then
                 Return RefTmpSkills(NextId)
             Else
                 Return Nothing
             End If
         End Function
+
+        Private Function ParseSkillEffects(ByVal tmpEffectList() As Long) As List(Of SkillEffect)
+            'Note: use the effect system, so any skill can use any effect (more coustumable, not so static)
+            'case 1: use teh common system with Effect_1, you not knwo what is behind
+            'case 2: create types (or smth similar) that represent each possible (under)effect
+
+
+            Dim tmpList As New List(Of SkillEffect)
+            Dim counter As Integer = 0
+
+            Do While True
+                Dim tmpEffect As New SkillEffect
+                tmpEffect.EffectId = HexToString(Hex(tmpEffectList(counter)))
+
+                Select Case tmpEffect.EffectId
+                    Case "att"
+
+                End Select
+            Loop
+
+
+        End Function
+
 
         Public Class SilkroadObject
             Public Pk2ID As UInteger

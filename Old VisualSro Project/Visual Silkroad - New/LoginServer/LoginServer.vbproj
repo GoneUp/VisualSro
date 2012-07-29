@@ -111,7 +111,6 @@
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Framework\Database\LoginDb.vb" />
-    <Compile Include="Framework\GlobalManager\GlobalManager.vb" />
     <Compile Include="Functions\GlobalManager\Auth.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
@@ -120,7 +119,7 @@
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
     <Compile Include="Functions\GlobalManager\ShardService.vb" />
-    <Compile Include="Functions\Global\GlobalLogin.vb" />
+    <Compile Include="Global\GlobalDef.vb" />
     <Compile Include="Functions\Login\Ban.vb" />
     <Compile Include="Functions\Login\Register.vb" />
     <Compile Include="Functions\Parser.vb" />

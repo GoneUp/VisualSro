@@ -375,9 +375,9 @@
                         Case BuffType_.SkillBuff
                             Dim Ref As Skill = GetSkill(Buffs(key).SkillID)
 
-                            Select Case Ref.EffectId
+                            Select Case Ref.Effect_0
                                 Case Else
-                                    SendNotice("Unknown Buff: " & Ref.EffectId)
+                                    SendNotice("Unknown Buff: " & Ref.Effect_0)
                             End Select
 
                     End Select

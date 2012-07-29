@@ -1,4 +1,5 @@
 ﻿Imports SRFramework
+Imports LoginServer.Framework
 
 Namespace GlobalManager
     Module Auth
@@ -9,7 +10,7 @@ Namespace GlobalManager
                 Dim writer As New PacketWriter
                 writer.Create(ClientOpcodes.Handshake)
                 writer.DWord(CalculateNewKey(BaseKey))
-                Send(writer.GetBytes)
+                GlobalManagerCon.Send(writer.GetBytes)
 
             ElseIf packet.DataLen = 1 Then
                 Dim success As Byte = packet.Byte
@@ -39,7 +40,7 @@ Namespace GlobalManager
             writer.DWord(Settings.GlobalManager_ProtocolVersion)
             writer.Word(Settings.Server_Id)
 
-            GlobalManager.Send(writer.GetBytes)
+            GlobalManagerCon.Send(writer.GetBytes)
         End Sub
 
         Public Sub OnServerInfo(ByVal packet As PacketReader)

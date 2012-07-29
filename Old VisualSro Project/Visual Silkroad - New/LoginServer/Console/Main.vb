@@ -12,9 +12,17 @@ Friend Class Program
         AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
         AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
+
         AddHandler Database.OnDatabaseError, AddressOf Program.db_OnDatabaseError
         AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnConnectedToDatabase
         AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
+
+        AddHandler GlobalManagerCon.OnGlobalManagerInit, AddressOf Program.gmc_OnGlobalManagerInit
+        AddHandler GlobalManagerCon.OnGlobalManagerShutdown, AddressOf Program.gmc_OnGlobalManagerInit
+        AddHandler GlobalManagerCon.OnError, AddressOf Program.gmc_OnGlobalManagerError
+        AddHandler GlobalManagerCon.OnLog, AddressOf Program.gmc_OnGlobalManagerLog
+        AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.ParseGlobalManager
+
 
         Console.WindowHeight = 10
         Console.BufferHeight = 30
@@ -38,9 +46,7 @@ Friend Class Program
         ClientList.SetupClientList(Server.MaxClients)
         Timers.LoadTimers(Server.MaxClients)
 
-
-        Server.Start()
-        Log.WriteSystemLog("Inital Loading complete!")
+        Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
         Log.WriteSystemLog("Latest Version: " & Settings.Server_CurrectVersion)
         Log.WriteSystemLog("Slotcount: " & Settings.Server_Slots)
 
@@ -60,11 +66,9 @@ Friend Class Program
         writer.Create(ServerOpcodes.Handshake)
         writer.Byte(1)
         Server.Send(writer.GetBytes, index)
-
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
-
         Dim read As Integer = 0
 
         Do While True
@@ -86,9 +90,6 @@ Friend Class Program
 
             Functions.Parser.Parse(packet, index_)
         Loop
-
-
-
     End Sub
 
     Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
@@ -104,6 +105,10 @@ Friend Class Program
     End Sub
 
     Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
+        If Timers.LoginInfoTimer(index).Enabled Then
+            Timers.LoginInfoTimer(index).Stop()
+        End If
+
         Server.OnlineClient -= 1
         Server.RevTheard(index).Abort()
     End Sub
@@ -118,6 +123,30 @@ Friend Class Program
 
     Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
         Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerInit()
+        Server.Start()
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerShutdown()
+        For i = 0 To ClientList.SessionInfo.Count - 1
+            If ClientList.SessionInfo(i) IsNot Nothing Then
+                Server.Dissconnect(i)
+            End If
+        Next
+        Server.Stop()
+        Database.ExecuteQuerys()
+
+        Log.WriteSystemLog("Server stopped, Data is save. Feel free to close!")
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerLog(ByVal message As String)
+        Log.WriteSystemLog("GMC Log: " & message)
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal command As String)
+        Log.WriteSystemLog("GMC error: " & ex.Message & " Command: " & command)
     End Sub
 End Class
 

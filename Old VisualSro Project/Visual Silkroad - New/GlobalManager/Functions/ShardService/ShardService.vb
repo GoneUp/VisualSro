@@ -1,4 +1,5 @@
 ﻿Imports GlobalManager.Framework
+Imports SRFramework
 
 Namespace Shard
     Module ShardService
@@ -13,7 +14,7 @@ Namespace Shard
                     Else
                         'Init Serverr
                         Server_GateWay(ServerId).Online = True
-                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", ClientList.GetIp(Index_)))
                         SendServerInit(Index_)
                     End If
                 Case _SessionInfo._ServerTypes.GameServer
@@ -22,7 +23,7 @@ Namespace Shard
                     Else
                         'Init Server
                         Server_Game(ServerId).State = GameServer._ServerState.Online
-                        Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", ClientList.GetIp(Index_)))
                         SendServerInit(Index_)
                     End If
                 Case _SessionInfo._ServerTypes.DownloadServer
@@ -32,7 +33,7 @@ Namespace Shard
                     Else
                         'Init Server
                         Server_Download(ServerId).Online = True
-                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] fully initialized!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] fully initialized!", ClientList.GetIp(Index_)))
                         SendServerInit(Index_)
                     End If
             End Select
@@ -42,7 +43,7 @@ Namespace Shard
 
         Private Sub SendServerInit(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Server_Init)
+            writer.Create(InternalServerOpcodes.Server_Init)
             Server.Send(writer.GetBytes, index_)
         End Sub
 
@@ -54,14 +55,14 @@ Namespace Shard
                     If Server_GateWay.ContainsKey(ServerId) Then
                         Server_GateWay(ServerId).Online = False
                         Server_GateWay.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", ClientList.GetIp(Index_)))
                         SendShutdown(Index_)
                     End If
                 Case _SessionInfo._ServerTypes.GameServer
                     If Server_Game.ContainsKey(ServerId) Then
                         Server_Game(ServerId).State = GameServer._ServerState.Check
                         Server_Game.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", ClientList.GetIp(Index_)))
                         SendShutdown(Index_)
                     End If
                 Case _SessionInfo._ServerTypes.DownloadServer
@@ -69,7 +70,7 @@ Namespace Shard
                     If Server_Download.ContainsKey(ServerId) Then
                         Server_Download(ServerId).Online = False
                         Server_Download.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", ClientList.GetIp(Index_)))
                         SendShutdown(Index_)
                     End If
             End Select
@@ -78,7 +79,7 @@ Namespace Shard
 
         Private Sub SendShutdown(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Server_Shutdown)
+            writer.Create(InternalServerOpcodes.Server_Shutdown)
             Server.Send(writer.GetBytes, index_)
         End Sub
 
@@ -144,7 +145,7 @@ Namespace Shard
 
         Friend Sub SendGlobalInfo(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ShardInfo)
+            writer.Create(InternalServerOpcodes.ShardInfo)
             writer.Word(Server_GateWay.Count)
             Dim tmplist = Server_GateWay.Keys.ToList
             For i = 0 To tmplist.Count - 1
@@ -192,6 +193,7 @@ Namespace Shard
                 writer.Byte(Server_Game(tmplist(i)).Server_Debug)
             Next
 
+            Server.SendToAll(writer.GetBytes)
         End Sub
 
     End Module

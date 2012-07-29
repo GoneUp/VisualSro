@@ -1,12 +1,7 @@
 ﻿Public Class GameServer
-    Public ServerId As UInt32
-    Public ServerName As String
-    Public IP As String
-    Public Port As UInt16
+    Inherits cServer
 
-    Public ActualUser As UInt16
-    Public MaxUser As UInt16
-    Public StartTime As DateTime
+    Public ServerName As String
     Public State As _ServerState = _ServerState.Check
 
     'General Server Data

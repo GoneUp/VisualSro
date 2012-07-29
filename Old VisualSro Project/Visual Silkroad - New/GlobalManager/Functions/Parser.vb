@@ -1,4 +1,5 @@
 ﻿Imports GlobalManager.Framework
+Imports SRFramework
 
 Namespace Functions
     Module Parser
@@ -13,9 +14,9 @@ Namespace Functions
             If ClientList.SessionInfo(Index_).Authorized = False Then
                 '===Pre-Game===
                 Select Case opcode
-                    Case ClientOpcodes.Handshake
+                    Case ClientOpcodes.HANDSHAKE
                         Auth.OnVerifyIdentity(packet, Index_)
-                    Case ClientOpcodes.WhoAmI
+                    Case ClientOpcodes.LOGIN_WHO_AM_I
                         Auth.OnGateWay(packet, Index_)
                 End Select
 
@@ -23,17 +24,15 @@ Namespace Functions
             ElseIf ClientList.SessionInfo(Index_).Authorized Then
                 '===SECURE===
                 Select Case opcode
-                    Case ClientOpcodes.Server_Init
+                    Case InternalServerOpcodes.Server_Init
                         Shard.OnInitServer(packet, Index_)
-                    Case ClientOpcodes.Server_Shutdown
+                    Case InternalServerOpcodes.Server_Shutdown
                         Shard.OnShutdownServer(packet, Index_)
-
-                    Case ClientOpcodes.Server_Info
+                    Case InternalServerOpcodes.ShardInfo
                         Shard.OnServerInfo(packet, Index_)
-
-                    Case ClientOpcodes.GateWay_SendUserAuth
+                    Case InternalServerOpcodes.GateWay_SendUserAuth
                         Agent.OnSendUserAuth(packet, Index_)
-                    Case ClientOpcodes.GameServer_CheckUserAuth
+                    Case InternalServerOpcodes.GameServer_CheckUserAuth
                         Agent.OnCheckUserAuth(packet, Index_)
                 End Select
 

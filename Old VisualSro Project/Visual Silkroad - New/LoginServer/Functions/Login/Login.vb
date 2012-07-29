@@ -312,6 +312,8 @@ Namespace Functions
                         writer.Word(LoginDb.Servers(serverIndex).Port)
                         Server.Send(writer.GetBytes, Index_)
 
+                        Timers.LoginInfoTimer(Index_).Stop()
+
                         If Settings.Log_Login Then
                             Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, LoginDb.Servers(serverIndex).Name))
                         End If

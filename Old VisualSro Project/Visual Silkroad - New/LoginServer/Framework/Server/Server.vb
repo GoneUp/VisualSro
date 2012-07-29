@@ -72,10 +72,6 @@ Namespace Framework
 
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -1)
-
-                If ServerSocket.Blocking = True Then
-                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
-                End If
             End Try
         End Sub
 
@@ -87,6 +83,7 @@ Namespace Framework
                 Server.RevTheard(index).Abort()
                 OnlineClient -= 1
             Catch ex As Exception
+                RaiseEvent OnServerError(ex, -2)
             End Try
         End Sub
 

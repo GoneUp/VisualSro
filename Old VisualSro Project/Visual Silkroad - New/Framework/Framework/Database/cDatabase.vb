@@ -68,7 +68,7 @@ Public Class cDatabase
     End Property
 #End Region
 
-
+#Region "Events"
     Public Event OnDatabaseConnected As DelegateConnected
     Public Event OnDatabaseLog As DelegateLog
     Public Event OnDatabaseError As DelegateError
@@ -76,13 +76,14 @@ Public Class cDatabase
     Public Delegate Sub DelegateConnected()
     Public Delegate Sub DelegateLog(ByVal message As String)
     Public Delegate Sub DelegateError(ByVal ex As Exception, ByVal command As String)
+#End Region
 
 #Region "Connect"
     Public Sub Connect()
         If _connection IsNot Nothing Then
             _connection.Close()
         End If
-        _connectionString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; pooling=false;", DbIp, DbPort, DbUsername, DbPassword, DbDatabase)
+        _connectionString = String.Format("server={0};port={1};user id={2}; password={3}; database={4}; pooling=false;", DbIP, DbPort, DbUsername, DbPassword, DbDatabase)
         Try
             _connection = New MySqlConnection(_connectionString)
             _connection.Open()

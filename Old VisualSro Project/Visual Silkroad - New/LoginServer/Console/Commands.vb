@@ -22,7 +22,8 @@ Module Commands
                 Log.WriteSystemLog("/info for the credits")
                 Log.WriteSystemLog("/packets to enable packetLoginServer.Log")
                 Log.WriteSystemLog("/clear")
-
+                Log.WriteSystemLog("/count")
+                Log.WriteSystemLog("/end")
             Case "/packets"
 
                 Program.Logpackets = True
@@ -35,14 +36,15 @@ Module Commands
                 Console.Clear()
 
             Case "/end"
-                For i = 0 To ClientList.SessionInfo.Count - 1
-                    If ClientList.SessionInfo(i) IsNot Nothing Then
-                        Server.Dissconnect(i)
-                    End If
-                Next
-                ' GameServer.Server.stop()
-                Database.ExecuteQuerys()
-                End
+                'For i = 0 To ClientList.SessionInfo.Count - 1
+                '    If ClientList.SessionInfo(i) IsNot Nothing Then
+                '        Server.Dissconnect(i)
+                '    End If
+                'Next
+                'Server.Stop()
+                'Database.ExecuteQuerys()
+                'End
+                GlobalManager.OnSendServerShutdown()
 
         End Select
 

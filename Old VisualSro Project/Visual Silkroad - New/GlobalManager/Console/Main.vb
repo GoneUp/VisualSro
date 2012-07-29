@@ -1,6 +1,7 @@
 ﻿Imports Microsoft.VisualBasic
 Imports System
 Imports GlobalManager.Framework
+Imports SRFramework
 
 Class Program
 
@@ -12,7 +13,7 @@ Class Program
         AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
         AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
-        AddHandler DataBase.OnConnectedToDatabase, AddressOf Program.db_OnConnectedToDatabase
+        AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnDatabaseConnected
 
 
         Console.WindowHeight = 10
@@ -41,7 +42,7 @@ Class Program
         Server.Start()
         Log.WriteSystemLog("Inital Loading complete!")
 
-        
+
         Do While True
             Dim msg As String = Console.ReadLine()
             CheckCommand(msg)
@@ -53,7 +54,7 @@ Class Program
         Server.OnlineClient += 1
 
         ClientList.SessionInfo(index).BaseKey = Auth.GenarateKey
-        Dim writer As New Framework.PacketWriter
+        Dim writer As New PacketWriter
         writer.Create(ServerOpcodes.Handshake)
         writer.Word(Auth.GenarateKey)
         Server.Send(writer.GetBytes, index)
@@ -98,7 +99,7 @@ Class Program
         Server.RevTheard(index).Abort()
     End Sub
 
-    Private Shared Sub db_OnConnectedToDatabase()
+    Private Shared Sub db_OnDatabaseConnected()
         Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
 
     End Sub

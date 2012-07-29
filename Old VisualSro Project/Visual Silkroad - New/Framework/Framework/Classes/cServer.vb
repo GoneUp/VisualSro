@@ -1,4 +1,4 @@
-﻿Public Class GatewayServer
+﻿Public Class cServer
     Public ServerId As UInt32
 
     Public Online As Boolean = False

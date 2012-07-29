@@ -146,7 +146,7 @@ Namespace Framework
             Next i
         End Sub
 
-        Public Shared Property ip() As String
+        Public Shared Property IP() As String
             Get
                 Return IP_Renamed.ToString()
             End Get

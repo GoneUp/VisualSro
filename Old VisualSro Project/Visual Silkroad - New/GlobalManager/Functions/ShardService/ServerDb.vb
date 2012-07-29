@@ -1,4 +1,6 @@
-﻿Namespace Shard
+﻿Imports SRFramework
+
+Namespace Shard
     Module ServerDb
         Public Server_GateWay As New Dictionary(Of UInt16, GatewayServer)
         Public Server_Game As New Dictionary(Of UInt16, GameServer)

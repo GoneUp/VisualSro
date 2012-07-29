@@ -47,7 +47,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.3.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+    <Reference Include="MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -69,9 +69,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\Classes\cINI.vb" />
+    <Compile Include="Framework\Classes\cServer.vb" />
     <Compile Include="Framework\Classes\DownloadServer.vb" />
     <Compile Include="Framework\Classes\GameServer.vb" />
     <Compile Include="Framework\Classes\GatewayServer.vb" />
+    <Compile Include="Framework\Classes\GlobalManagerClient.vb" />
     <Compile Include="Framework\Database\cDatabase.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Packets\Opcodes.vb" />

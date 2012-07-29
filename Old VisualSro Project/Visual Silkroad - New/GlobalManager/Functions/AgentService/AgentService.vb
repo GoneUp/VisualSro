@@ -1,4 +1,5 @@
 ﻿Imports GlobalManager.Framework
+Imports SRFramework
 
 Namespace Agent
     Module AgentService
@@ -13,7 +14,7 @@ Namespace Agent
             UserAuthCache.Add(tmp.SessionId, tmp)
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.GateWay_SendUserAuth)
+            writer.Create(InternalServerOpcodes.GateWay_SendUserAuth)
             writer.Byte(1)
             writer.DWord(tmp.SessionId)
             Server.Send(writer.GetBytes, Index_)
@@ -27,7 +28,7 @@ Namespace Agent
             tmp.UserPw = packet.String(packet.Word)
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.GameServer_CheckUserAuth)
+            writer.Create(InternalServerOpcodes.GameServer_CheckUserAuth)
 
 
             If UserAuthCache.ContainsKey(tmp.SessionId) Then

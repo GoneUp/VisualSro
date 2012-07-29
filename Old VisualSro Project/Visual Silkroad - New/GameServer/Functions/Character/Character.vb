@@ -144,8 +144,6 @@
             Server.Send(writer.GetBytes, index_)
         End Sub
 
-
-
         Public Function CheckForAbuse(ByVal nick As String) As Boolean
             Dim tmp As String = nick.ToLowerInvariant
             For i = 0 To RefAbuseList.Count - 1

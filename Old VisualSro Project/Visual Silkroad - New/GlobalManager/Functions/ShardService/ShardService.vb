@@ -9,8 +9,8 @@ Namespace Shard
 
             Select Case ClientList.SessionInfo(Index_).Type
                 Case _SessionInfo._ServerTypes.GatewayServer
-                    If Server_GateWay.ContainsKey(ServerId) Then
-                        Log.WriteSystemLog("SERVER IS ALREADY INIT! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
+                    If Server_GateWay.ContainsKey(ServerId) = False AndAlso Server_GateWay(ServerId).Online Then
+                        Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
                     Else
                         'Init Serverr
                         Server_GateWay(ServerId).Online = True
@@ -18,8 +18,8 @@ Namespace Shard
                         SendServerInit(Index_)
                     End If
                 Case _SessionInfo._ServerTypes.GameServer
-                    If Server_Game.ContainsKey(ServerId) Then
-                        Log.WriteSystemLog("SERVER IS ALREADY INIT! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
+                    If Server_Game.ContainsKey(ServerId) = False AndAlso Server_Game(ServerId).Online Then
+                        Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
                     Else
                         'Init Server
                         Server_Game(ServerId).State = GameServer._ServerState.Online
@@ -28,8 +28,8 @@ Namespace Shard
                     End If
                 Case _SessionInfo._ServerTypes.DownloadServer
 
-                    If Server_Download.ContainsKey(ServerId) Then
-                        Log.WriteSystemLog("SERVER IS ALREADY INIT! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
+                    If Server_Download.ContainsKey(ServerId) = False AndAlso Server_Download(ServerId).Online Then
+                        Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & ClientList.SessionInfo(Index_).ClientName & " ID: " & ClientList.SessionInfo(Index_).ServerId)
                     Else
                         'Init Server
                         Server_Download(ServerId).Online = True
@@ -44,6 +44,7 @@ Namespace Shard
         Private Sub SendServerInit(ByVal index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.SERVER_INIT)
+            writer.Byte(1)
             Server.Send(writer.GetBytes, index_)
         End Sub
 
@@ -80,6 +81,7 @@ Namespace Shard
         Private Sub SendShutdown(ByVal index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.SERVER_SHUTDOWN)
+            writer.Byte(1)
             Server.Send(writer.GetBytes, index_)
         End Sub
 
@@ -87,6 +89,8 @@ Namespace Shard
             Select Case ClientList.SessionInfo(Index_).Type
                 Case _SessionInfo._ServerTypes.GatewayServer
                     Dim tmp As New GatewayServer
+                    tmp.IP = ClientList.GetIp(Index_).Split(":")(0)
+                    tmp.Port = Convert.ToUInt16(ClientList.GetIp(Index_).Split(":")(1))
                     tmp.ServerId = packet.Word
                     tmp.ActualUser = packet.Word
                     tmp.MaxUser = packet.Word

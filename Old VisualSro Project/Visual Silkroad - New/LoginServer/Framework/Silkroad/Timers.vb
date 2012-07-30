@@ -37,11 +37,15 @@ Namespace Timers
                 Database.ExecuteQuerys()
 
                 If DateDiff(DateInterval.Second, GlobalManagerCon.LastPingTime, Date.Now) > 5 Then
-                    GlobalManagerCon.SendPing()
+                    If GlobalManagerCon.ManagerSocket.Connected Then
+                        GlobalManagerCon.SendPing()
+                    End If
                 End If
 
                 If DateDiff(DateInterval.Second, GlobalManagerCon.LastInfoTime, Date.Now) > 10 And GlobalManagerCon.UpdateInfoAllowed Then
-                    GlobalManager.OnSendMyInfo()
+                    If GlobalManagerCon.ManagerSocket.Connected Then
+                        GlobalManager.OnSendMyInfo()
+                    End If
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: QT")

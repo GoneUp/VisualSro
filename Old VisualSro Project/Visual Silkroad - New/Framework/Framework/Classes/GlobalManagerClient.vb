@@ -15,11 +15,13 @@ Public Class GlobalManagerClient
     Public Event OnError As dError
     Public Event OnLog As dLog
     Public Event OnPacketReceived As dReceive
+    Public Event OnGatewayUserauthReply As dGatewayUserauthReply
 
     Public Delegate Sub dGlobalManagerInit()
     Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
     Public Delegate Sub dLog(ByVal message As String)
     Public Delegate Sub dReceive(ByVal packet As PacketReader)
+    Public Delegate Sub dGatewayUserauthReply(ByVal sessionID As UInteger, ByVal index_ As Integer)
 #End Region
 
 #Region "Connect"
@@ -94,12 +96,16 @@ Public Class GlobalManagerClient
 #End Region
 #Region "Send"
     Public Sub Send(ByVal buff() As Byte)
-        If ManagerSocket IsNot Nothing Then
-            If ManagerSocket.Connected Then
-                ManagerSocket.Send(buff)
-                LastPingTime = Date.Now
+        Try
+            If ManagerSocket IsNot Nothing Then
+                If ManagerSocket.Connected Then
+                    ManagerSocket.Send(buff)
+                    LastPingTime = Date.Now
+                End If
             End If
-        End If
+        Catch ex As Exception
+            RaiseEvent OnError(ex, -5)
+        End Try
     End Sub
 #End Region
 

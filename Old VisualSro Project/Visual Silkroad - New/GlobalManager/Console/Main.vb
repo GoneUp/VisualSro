@@ -94,13 +94,15 @@ Class Program
     End Sub
 
     Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
+        Log.WriteSystemLog("Client Disconnected : " & ip)
+
+        ClientList.Delete(index)
         Server.OnlineClient -= 1
         Server.RevTheard(index).Abort()
     End Sub
 
     Private Shared Sub db_OnDatabaseConnected()
         Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
-
     End Sub
 
     Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)

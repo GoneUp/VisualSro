@@ -6,6 +6,7 @@ Namespace Agent
 
         Public Sub OnSendUserAuth(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim tmp As New _UserAuth
+            tmp.UserIndex = packet.DWord
             tmp.GameServerId = packet.Word
             tmp.UserName = packet.String(packet.Word)
             tmp.UserPw = packet.String(packet.Word)
@@ -16,9 +17,9 @@ Namespace Agent
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.GATEWAY_SEND_USERAUTH)
             writer.Byte(1)
+            writer.DWord(Index_)
             writer.DWord(tmp.SessionId)
             Server.Send(writer.GetBytes, Index_)
-
         End Sub
 
         Public Sub OnCheckUserAuth(ByVal packet As PacketReader, ByVal Index_ As Integer)

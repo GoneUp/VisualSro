@@ -32,7 +32,7 @@ Namespace Functions
                         Shard.OnShutdownServer(packet, Index_)
                     Case InternalClientOpcodes.Server_Info
                         Shard.OnServerInfo(packet, Index_)
-                    Case InternalClientOpcodes.GateWay_SendUserAuth
+                    Case InternalClientOpcodes.Gateway_SendUserAuth
                         Agent.OnSendUserAuth(packet, Index_)
                     Case InternalClientOpcodes.GameServer_CheckUserAuth
                         Agent.OnCheckUserAuth(packet, Index_)

@@ -34,7 +34,7 @@
             Case "/end"
                 For i = 0 To Framework.ClientList.SessionInfo.Count - 1
                     If Framework.ClientList.SessionInfo(i) IsNot Nothing Then
-                        Framework.Server.Dissconnect(i)
+                        Framework.Server.Disconnect(i)
                     End If
                 Next
                 ' GameServer.Server.stop()

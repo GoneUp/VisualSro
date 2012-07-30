@@ -8,6 +8,7 @@ Namespace Agent
 
     Class _UserAuth
         Public SessionId As UInt32
+        Public UserIndex As UInteger
         Public UserName As String
         Public UserPw As String
         Public GameServerId As UInt16

@@ -68,14 +68,14 @@ Namespace Framework
             End Try
         End Sub
 
-        Public Shared Sub Dissconnect(ByVal index As Integer)
+        Public Shared Sub Disconnect(ByVal index As Integer)
             Try
                 Dim socket As Socket = ClientList.GetSocket(index)
-                ClientList.Delete(index)
                 socket.Shutdown(SocketShutdown.Both)
-                Server.RevTheard(index).Abort()
-                OnlineClient -= 1
+
+                RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
             Catch ex As Exception
+                RaiseEvent OnServerError(ex, -11)
             End Try
         End Sub
 
@@ -85,7 +85,6 @@ Namespace Framework
 
 
             Do While True
-
                 Try
                     If socket.Connected Then
                         If socket.Available > 0 Then
@@ -104,11 +103,9 @@ Namespace Framework
 
                 Catch exception As SocketException
                     If exception.ErrorCode = &H2746 Then
-                        ClientList.Delete(Index_)
                         RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                     End If
                 Catch exception1 As Threading.ThreadAbortException
-                    ClientList.Delete(Index_)
                     RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                 Catch exception2 As Exception
                     RaiseEvent OnServerError(exception2, Index_)
@@ -119,29 +116,39 @@ Namespace Framework
 
 
         Public Shared Sub Send(ByVal buff() As Byte, ByVal index As Integer)
-            ClientList.GetSocket(index).Send(buff)
-            _SentBytes += buff.Length
+            Try
+                Dim socket = ClientList.GetSocket(index)
+                If socket IsNot Nothing Then
+                    If socket.Connected Then
+                        socket.Send(buff)
+                    Else
+                        Disconnect(index)
+                    End If
+                End If
 
-            If Settings.Log_Packets = True Then
-                Log.LogPacket(buff, True)
-            End If
+                If Settings.Log_Packets = True Then
+                    Log.LogPacket(buff, True)
+                End If
+            Catch ex As Exception
+                RaiseEvent OnServerError(ex, index)
+            End Try
         End Sub
 
 
         Public Shared Sub SendToAll(ByVal buff() As Byte)
             For i As Integer = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)
-                If (socket IsNot Nothing) AndAlso socket.Connected Then
-                    socket.Send(buff)
+                If (socket IsNot Nothing) AndAlso (socket.Connected) Then
+                    Send(buff, i)
                 End If
             Next i
         End Sub
 
-        Public Shared Sub SendToAll(ByVal buff() As Byte, ByVal index As Integer)
+        Public Shared Sub SendToAll(ByVal buff() As Byte, ByVal expect_index As Integer)
             For i As Integer = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)
-                If ((socket IsNot Nothing) AndAlso socket.Connected) AndAlso (i <> index) Then
-                    socket.Send(buff)
+                If ((socket IsNot Nothing) AndAlso socket.Connected) AndAlso (i <> expect_index) Then
+                    Send(buff, i)
                 End If
             Next i
         End Sub

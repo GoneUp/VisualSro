@@ -211,7 +211,7 @@
         Admin_GetInfo = &H1006
         Admin_UpdateInfo = &H1007
 
-        GateWay_SendUserAuth = &H1010
+        Gateway_SendUserAuth = &H1010
         GameServer_CheckUserAuth = &H1011
     End Enum
 

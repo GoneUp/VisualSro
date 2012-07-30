@@ -111,6 +111,7 @@
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Framework\Database\LoginDb.vb" />
+    <Compile Include="Functions\GlobalManager\AgentService.vb" />
     <Compile Include="Functions\GlobalManager\Auth.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />

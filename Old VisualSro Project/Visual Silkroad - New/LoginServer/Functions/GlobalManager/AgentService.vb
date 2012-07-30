@@ -1,4 +1,5 @@
 ﻿Imports SRFramework
+Imports LoginServer.Framework
 
 
 Namespace GlobalManager
@@ -12,7 +13,7 @@ Namespace GlobalManager
             writer.String(username)
             writer.Word(password.Length)
             writer.String(password)
-            Framework.GlobalManagerCon.Send(writer.GetBytes)
+            GlobalManagerCon.Send(writer.GetBytes)
         End Sub
 
         Public Sub OnUserAuthReply(ByVal packet As PacketReader)
@@ -21,6 +22,7 @@ Namespace GlobalManager
             If succeed = 1 Then
                 Dim UserIndex As Integer = packet.DWord
                 Dim sessionID As UInteger = packet.DWord
+                GlobalManagerCon.GatewayUserAuthReply(sessionID, UserIndex)
             End If
         End Sub
     End Module

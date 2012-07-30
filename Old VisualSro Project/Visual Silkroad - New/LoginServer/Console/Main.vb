@@ -22,7 +22,7 @@ Friend Class Program
         AddHandler GlobalManagerCon.OnError, AddressOf Program.gmc_OnGlobalManagerError
         AddHandler GlobalManagerCon.OnLog, AddressOf Program.gmc_OnGlobalManagerLog
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.ParseGlobalManager
-
+        AddHandler GlobalManagerCon.OnGatewayUserauthReply, AddressOf Functions.LoginSendUserAuthSucceed
 
         Console.WindowHeight = 10
         Console.BufferHeight = 30

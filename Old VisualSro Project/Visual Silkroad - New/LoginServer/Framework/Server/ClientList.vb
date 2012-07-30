@@ -81,12 +81,14 @@ Namespace Framework
     End Class
 
     Public Class _SessionInfo
-        Public Version As UInt32
-        Public ClientName As String
-        Public Locale As Byte
-        Public SRConnectionSetup As SRConnectionStatus
+        Public Version As UInt32 = 0
+        Public ClientName As String = ""
+        Public Locale As Byte = 0
+        Public SRConnectionSetup As SRConnectionStatus = SRConnectionStatus.HANDSHAKE
 
         Public LoginTextIndex As UInt32 = 0
+        Public gameserverId As UShort = 0
+        Public userName As String = ""
 
         Public Enum SRConnectionStatus
             HANDSHAKE = 0

@@ -116,6 +116,9 @@ Public Class GlobalManagerClient
     Public Sub ShutdownComplete()
         RaiseEvent OnGlobalManagerShutdown()
     End Sub
+    Public Sub GatewayUserAuthReply(ByVal sessionID As UInteger, ByVal index_ As Integer)
+        RaiseEvent OnGatewayUserauthReply(sessionID, index_)
+    End Sub
     Public Sub SendPing()
         Dim writer As New PacketWriter
         writer.Create(ClientOpcodes.PING)

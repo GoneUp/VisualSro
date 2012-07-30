@@ -11,7 +11,7 @@ Namespace Agent
             tmp.UserName = packet.String(packet.Word)
             tmp.UserPw = packet.String(packet.Word)
             tmp.SessionId = Id_Gen.GetSessionId
-            tmp.ExpireTime = Date.Now.AddSeconds(20)
+            tmp.ExpireTime = Date.Now.AddSeconds(25)
             UserAuthCache.Add(tmp.SessionId, tmp)
 
             Dim writer As New PacketWriter

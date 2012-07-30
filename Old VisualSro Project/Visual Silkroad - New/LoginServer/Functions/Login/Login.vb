@@ -296,9 +296,9 @@ Namespace Functions
 
 
                 ElseIf LoginDb.Users(userIndex).Name = id And LoginDb.Users(userIndex).Pw = pw Then
-                    Dim serverIndex As Integer = LoginDb.GetServerIndex(serverID)
+                    Dim gs As LoginDb.Server_ = LoginDb.GetServer(serverID)
 
-                    If (LoginDb.Servers(serverIndex).AcUs + 1) >= LoginDb.Servers(serverIndex).MaxUs Then
+                    If (gs.AcUs + 1) >= gs.MaxUs Then
                         writer.Byte(4)
                         writer.Byte(2) 'Server traffic... 
                         Server.Send(writer.GetBytes, Index_)
@@ -307,15 +307,20 @@ Namespace Functions
                         'Sucess!
                         writer.Byte(1)
                         writer.DWord(GetKey(Index_))
-                        writer.Word(LoginDb.Servers(serverIndex).IP.Length)
-                        writer.String(LoginDb.Servers(serverIndex).IP)
-                        writer.Word(LoginDb.Servers(serverIndex).Port)
+                        writer.Word(gs.IP.Length)
+                        writer.String(gs.IP)
+                        writer.Word(gs.Port)
                         Server.Send(writer.GetBytes, Index_)
 
                         Timers.LoginInfoTimer(Index_).Stop()
 
+                        'GlobalManager Part:
+                        ClientList.SessionInfo(Index_).gameserverId = serverID
+                        ClientList.SessionInfo(Index_).userName = id
+                        GlobalManager.OnSendUserAuth(serverID, id, pw, Index_)
+
                         If Settings.Log_Login Then
-                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, LoginDb.Servers(serverIndex).Name))
+                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.Name))
                         End If
                     End If
                 End If
@@ -328,5 +333,27 @@ Namespace Functions
             Dim key As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
             Return key
         End Function
+
+        Public Sub LoginSendUserAuthSucceed(ByVal sessionId As UInteger, ByVal index_ As Integer)
+            'ServerIndex + SessionID + Port + Index
+            Dim user As String = ClientList.SessionInfo(index_).userName
+
+            If ClientList.GetSocket(index_) Is Nothing Then
+                Log.WriteSystemLog("Index_ from GlobalManager dosen't existis! user: " & user)
+            ElseIf Shard_Gameservers.ContainsKey(ClientList.SessionInfo(index_).gameserverId) = False Then
+                Log.WriteSystemLog("GS from GlobalManager dosen't existis! user: " & user)
+            Else
+                Dim gs_new As GameServer = Shard_Gameservers(ClientList.SessionInfo(index_).gameserverId)
+                Dim gs As LoginDb.Server_ = LoginDb.GetServer(ClientList.SessionInfo(index_).gameserverId)
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.LoginAuthInfo)
+                writer.Byte(1)
+                writer.DWord(sessionId)
+                writer.Word(gs.IP.Length)
+                writer.String(gs.IP)
+                writer.Word(gs.Port)
+                Server.Send(writer.GetBytes, index_)
+            End If
+        End Sub
     End Module
 End Namespace

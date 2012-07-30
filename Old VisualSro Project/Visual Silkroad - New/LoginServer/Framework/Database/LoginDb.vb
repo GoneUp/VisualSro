@@ -147,13 +147,13 @@ Namespace LoginDb
             Return -1
         End Function
 
-        Public Function GetServerIndex(ByVal id As Integer) As UShort
+        Public Function GetServer(ByVal id As Integer) As Server_
             For i = 0 To Servers.Count - 1
                 If Servers(i).ServerId = id Then
-                    Return Convert.ToUInt16(i)
+                    Return Servers(i)
                 End If
             Next
-            Throw New Exception("Server couldn't be found! ID: " & id)
+            Return Nothing
         End Function
     End Module
 End Namespace

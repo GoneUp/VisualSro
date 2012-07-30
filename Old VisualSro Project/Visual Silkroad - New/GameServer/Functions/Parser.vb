@@ -1,177 +1,176 @@
-﻿
-Namespace GameServer
-    Public Class Parser
-        Public Shared Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Try
-                Dim length As UInteger = packet.Word
-                Dim opcode As UInteger = packet.Word
-                Dim security As UInteger = packet.Word
+﻿Imports SRFramework
 
-                ClientList.LastPingTime(Index_) = DateTime.Now
+Public Class Parser
+    Public Shared Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Try
+            Dim length As UInteger = packet.Word
+            Dim opcode As UInteger = packet.Word
+            Dim security As UInteger = packet.Word
 
-                Select Case opcode
+            ClientList.LastPingTime(Index_) = DateTime.Now
 
-                    Case ClientOpcodes.Ping
+            Select Case opcode
 
-                        '=============Login=============
-                    Case ClientOpcodes.Handshake 'Client accepts
+                Case ClientOpcodes.Ping
 
-                    Case ClientOpcodes.InfoReq 'GateWay
-                        Functions.GateWay(packet, Index_)
+                    '=============Login=============
+                Case ClientOpcodes.Handshake 'Client accepts
 
-                    Case ClientOpcodes.Login
-                        Functions.CheckLogin(Index_, packet)
+                Case ClientOpcodes.InfoReq 'GateWay
+                    Functions.GateWay(packet, Index_)
 
-                    Case ClientOpcodes.Character
-                        Functions.HandleCharPacket(Index_, packet)
+                Case ClientOpcodes.Login
+                    Functions.CheckLogin(Index_, packet)
 
-                    Case ClientOpcodes.IngameReq
-                        Functions.CharLoading(Index_, packet)
+                Case ClientOpcodes.Character
+                    Functions.HandleCharPacket(Index_, packet)
 
-                    Case ClientOpcodes.JoinWorldReq
-                        Functions.OnJoinWorldRequest(Index_)
+                Case ClientOpcodes.IngameReq
+                    Functions.CharLoading(Index_, packet)
 
-                    Case ClientOpcodes.JoinWorldReq2
-                        Functions.OnJoinWorldRequest(Index_)
+                Case ClientOpcodes.JoinWorldReq
+                    Functions.OnJoinWorldRequest(Index_)
 
-                    Case ClientOpcodes.ClientStatus
-                        Functions.OnClientStatusUpdate(packet, Index_)
+                Case ClientOpcodes.JoinWorldReq2
+                    Functions.OnJoinWorldRequest(Index_)
 
-                        '============Ingame===========
+                Case ClientOpcodes.ClientStatus
+                    Functions.OnClientStatusUpdate(packet, Index_)
 
-                    Case ClientOpcodes.Movement
-                        Functions.OnPlayerMovement(Index_, packet)
+                    '============Ingame===========
 
-                    Case ClientOpcodes.Chat
-                        Functions.OnChat(packet, Index_)
+                Case ClientOpcodes.Movement
+                    Functions.OnPlayerMovement(Index_, packet)
 
-                    Case ClientOpcodes.GameMaster
-                        Functions.OnGM(packet, Index_)
+                Case ClientOpcodes.Chat
+                    Functions.OnChat(packet, Index_)
 
-                    Case ClientOpcodes.Action
-                        Functions.OnPlayerAction(packet, Index_)
+                Case ClientOpcodes.GameMaster
+                    Functions.OnGM(packet, Index_)
 
-                    Case ClientOpcodes.Angle_Update
-                        Functions.OnAngleUpdate(packet, Index_)
+                Case ClientOpcodes.Action
+                    Functions.OnPlayerAction(packet, Index_)
 
-                    Case ClientOpcodes.Teleport_Reply
-                        Functions.OnTeleportRequest(Index_)
+                Case ClientOpcodes.Angle_Update
+                    Functions.OnAngleUpdate(packet, Index_)
 
-                    Case ClientOpcodes.Exit
-                        Functions.OnLogout(packet, Index_)
+                Case ClientOpcodes.Teleport_Reply
+                    Functions.OnTeleportRequest(Index_)
 
-                    Case ClientOpcodes.Emotion
-                        Functions.OnEmotion(packet, Index_)
+                Case ClientOpcodes.Exit
+                    Functions.OnLogout(packet, Index_)
 
-                    Case ClientOpcodes.HelperIcon
-                        Functions.OnHelperIcon(packet, Index_)
+                Case ClientOpcodes.Emotion
+                    Functions.OnEmotion(packet, Index_)
 
-                    Case ClientOpcodes.Hotkey_Update
-                        Functions.OnHotkeyUpdate(packet, Index_)
+                Case ClientOpcodes.HelperIcon
+                    Functions.OnHelperIcon(packet, Index_)
 
-                    Case ClientOpcodes.SetReturnPoint
-                        Functions.OnSetReturnPoint(packet, Index_)
+                Case ClientOpcodes.Hotkey_Update
+                    Functions.OnHotkeyUpdate(packet, Index_)
 
-                    Case ClientOpcodes.Berserk_Activate
-                        Functions.OnUseBerserk(packet, Index_)
+                Case ClientOpcodes.SetReturnPoint
+                    Functions.OnSetReturnPoint(packet, Index_)
 
-                        '=======ATTACK======
+                Case ClientOpcodes.Berserk_Activate
+                    Functions.OnUseBerserk(packet, Index_)
 
-                    Case ClientOpcodes.Target
-                        Functions.OnSelectObject(packet, Index_)
+                    '=======ATTACK======
+
+                Case ClientOpcodes.Target
+                    Functions.OnSelectObject(packet, Index_)
 
 
-                    Case ClientOpcodes.Attack
-                        Functions.OnPlayerAttack(packet, Index_)
+                Case ClientOpcodes.Attack
+                    Functions.OnPlayerAttack(packet, Index_)
 
-                    Case ClientOpcodes.Death_Respawn
-                        Functions.OnPlayerRespawn(packet, Index_)
+                Case ClientOpcodes.Death_Respawn
+                    Functions.OnPlayerRespawn(packet, Index_)
 
-                        '=======NPC========
+                    '=======NPC========
 
-                    Case ClientOpcodes.Npc_Chat
-                        Functions.OnNpcChatSelect(packet, Index_)
+                Case ClientOpcodes.Npc_Chat
+                    Functions.OnNpcChatSelect(packet, Index_)
 
-                    Case ClientOpcodes.Npc_Chat_Left
-                        Functions.OnNpcChatLeft(packet, Index_)
+                Case ClientOpcodes.Npc_Chat_Left
+                    Functions.OnNpcChatLeft(packet, Index_)
 
-                    Case ClientOpcodes.Npc_Teleport
-                        Functions.OnNpcTeleport(packet, Index_)
+                Case ClientOpcodes.Npc_Teleport
+                    Functions.OnNpcTeleport(packet, Index_)
 
-                        '=======ITEMS======
-                    Case ClientOpcodes.Alchemy
-                        Functions.OnAlchemyRequest(packet, Index_)
+                    '=======ITEMS======
+                Case ClientOpcodes.Alchemy
+                    Functions.OnAlchemyRequest(packet, Index_)
 
-                    Case ClientOpcodes.ItemMove
-                        Functions.OnInventory(packet, Index_)
+                Case ClientOpcodes.ItemMove
+                    Functions.OnInventory(packet, Index_)
 
-                    Case ClientOpcodes.ItemUse
-                        Functions.OnUseItem(packet, Index_)
+                Case ClientOpcodes.ItemUse
+                    Functions.OnUseItem(packet, Index_)
 
-                    Case ClientOpcodes.Scroll_Cancel
-                        Functions.OnReturnScroll_Cancel(Index_)
+                Case ClientOpcodes.Scroll_Cancel
+                    Functions.OnReturnScroll_Cancel(Index_)
 
-                        '========STR+INT UP=====
+                    '========STR+INT UP=====
 
-                    Case ClientOpcodes.Str_Up
-                        Functions.UpStrength(Index_)
+                Case ClientOpcodes.Str_Up
+                    Functions.UpStrength(Index_)
 
-                    Case ClientOpcodes.Int_Up
-                        Functions.UpIntelligence(Index_)
+                Case ClientOpcodes.Int_Up
+                    Functions.UpIntelligence(Index_)
 
-                        '======Mastery+Skills
+                    '======Mastery+Skills
 
-                    Case ClientOpcodes.Mastery_Up
-                        Functions.OnUpMastery(packet, Index_)
+                Case ClientOpcodes.Mastery_Up
+                    Functions.OnUpMastery(packet, Index_)
 
-                    Case ClientOpcodes.Skill_Up
-                        Functions.OnAddSkill(packet, Index_)
+                Case ClientOpcodes.Skill_Up
+                    Functions.OnAddSkill(packet, Index_)
 
-                        '=========EXCHANGE======
-                    Case ClientOpcodes.Exchange_Invite
-                        Functions.OnExchangeInvite(packet, Index_)
+                    '=========EXCHANGE======
+                Case ClientOpcodes.Exchange_Invite
+                    Functions.OnExchangeInvite(packet, Index_)
 
-                    Case ClientOpcodes.Exchange_Invite_Accept
-                        Functions.OnExchangeInviteReply(packet, Index_)
+                Case ClientOpcodes.Exchange_Invite_Accept
+                    Functions.OnExchangeInviteReply(packet, Index_)
 
-                    Case ClientOpcodes.Exchange_Confirm
-                        Functions.OnExchangeConfirm(packet, Index_)
+                Case ClientOpcodes.Exchange_Confirm
+                    Functions.OnExchangeConfirm(packet, Index_)
 
-                    Case ClientOpcodes.Exchange_Approve
-                        Functions.OnExchangeApprove(packet, Index_)
+                Case ClientOpcodes.Exchange_Approve
+                    Functions.OnExchangeApprove(packet, Index_)
 
-                    Case ClientOpcodes.Exchange_Abort
-                        Functions.OnExchangeAbort(packet, Index_)
+                Case ClientOpcodes.Exchange_Abort
+                    Functions.OnExchangeAbort(packet, Index_)
 
-                        '========STALL==========
-                    Case ClientOpcodes.Stall_Open
-                        Functions.Stall_Open_Own(packet, Index_)
+                    '========STALL==========
+                Case ClientOpcodes.Stall_Open
+                    Functions.Stall_Open_Own(packet, Index_)
 
-                    Case ClientOpcodes.Stall_Select
-                        Functions.Stall_Open_Other(packet, Index_)
+                Case ClientOpcodes.Stall_Select
+                    Functions.Stall_Open_Other(packet, Index_)
 
-                    Case ClientOpcodes.Stall_Data
-                        Functions.Stall_Data(packet, Index_)
+                Case ClientOpcodes.Stall_Data
+                    Functions.Stall_Data(packet, Index_)
 
-                    Case ClientOpcodes.Stall_Buy
-                        Functions.Stall_Buy(packet, Index_)
+                Case ClientOpcodes.Stall_Buy
+                    Functions.Stall_Buy(packet, Index_)
 
-                    Case ClientOpcodes.Stall_Close_Own
-                        Functions.Stall_Close_Own(Index_)
+                Case ClientOpcodes.Stall_Close_Own
+                    Functions.Stall_Close_Own(Index_)
 
-                    Case ClientOpcodes.Stall_Close_Visitor
-                        Functions.Stall_Close_Other(Index_)
+                Case ClientOpcodes.Stall_Close_Visitor
+                    Functions.Stall_Close_Other(Index_)
 
-                    Case Else
-                        Log.WriteSystemLog(
-                            "opCode: " & opcode & " Packet : " &
-                            BitConverter.ToString(packet.ByteArray(length), 0, length))
-                End Select
+                Case Else
+                    Log.WriteSystemLog(
+                        "opCode: " & opcode & " Packet : " &
+                        BitConverter.ToString(packet.ByteArray(length), 0, length))
+            End Select
 
-            Catch ex As Exception
-                Log.WriteSystemLog("Parsing Error:  " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index_)
-            End Try
-        End Sub
-    End Class
-End Namespace
+        Catch ex As Exception
+            Log.WriteSystemLog("Parsing Error:  " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index_)
+        End Try
+    End Sub
+End Class
 

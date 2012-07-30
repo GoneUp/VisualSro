@@ -1,6 +1,7 @@
-﻿Imports GameServer.GameServer.Functions
+﻿Imports GameServer.Functions
+Imports SRFramework
 
-Namespace GameServer.GameMod
+Namespace GameMod
     Module Costum_Commands
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
             'This Function is for additional Access from a GM
@@ -241,7 +242,7 @@ Namespace GameServer.GameMod
                     '\\dropgold [gold_amout] [drop_amout] [range]
                     If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) And IsNumeric(tmp(3)) Then
                         Dim tmpitem As New cInvItem
-                        tmpitem.OwnerCharID = PlayerData(Index_).UniqueId
+                        tmpitem.OwnerCharID = PlayerData(Index_).UniqueID
                         tmpitem.Amount = tmp(1)
                         tmpitem.Pk2Id = 1
 

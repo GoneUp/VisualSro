@@ -1,6 +1,7 @@
-﻿Imports GameServer.GameServer.Functions
+﻿Imports GameServer.Functions
+Imports SRFramework
 
-Namespace GameServer.Admin
+Namespace Admin
     Module AdminControl
         Public Sub Parse(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Try

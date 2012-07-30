@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Functions
+﻿Namespace Functions
     Public Class cExchange
         Public ExchangeID As Integer
         Public Player1Index As Integer
@@ -20,15 +20,15 @@
         Public ApprovePlyr2 As Boolean = False
 
         Public Aborted As Boolean = False
-        Public AbortedFrom As Integer = - 1
+        Public AbortedFrom As Integer = -1
 
         Sub New()
             For i = 0 To Items1.Length - 1
-                Items1(i) = - 1
+                Items1(i) = -1
             Next
 
             For i = 0 To Items2.Length - 1
-                Items2(i) = - 1
+                Items2(i) = -1
             Next
         End Sub
     End Class

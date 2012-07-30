@@ -1,6 +1,4 @@
-﻿Imports GameServer.GameServer
-
-Module Log
+﻿Module Commands
     Public Sub CheckCommand(ByVal FullMessage As String)
 
         Dim msg() As String = FullMessage.Split(" ")
@@ -59,7 +57,7 @@ Module Log
                 Dim mem As Long = Process.GetCurrentProcess.PrivateMemorySize64
                 GC.Collect()
                 GameServer.Log.WriteSystemLog(
-                    "Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64)/1024/1024)
+                    "Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64) / 1024 / 1024)
             Case "/end"
 
                 GameServer.Log.WriteSystemLog("Ending Server....")

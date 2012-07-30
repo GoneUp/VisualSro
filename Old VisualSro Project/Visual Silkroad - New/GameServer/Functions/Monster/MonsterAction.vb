@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module MonsterAction
         Public Sub KillMob(ByVal UniqueID As Integer)
             If MobList.ContainsKey(UniqueID) = False Then
@@ -108,12 +110,12 @@
             Dim distance_y As Double = MobList(uniqueID).Position.ToGameY - toPos.ToGameY
             Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
 
-            If distance > Range Then
+            If distance > range Then
                 Dim Cosinus As Double = Math.Cos(distance_x / distance)
                 Dim Sinus As Double = Math.Sin(distance_y / distance)
 
-                Dim distance_x_new As Double = Range * Cosinus
-                Dim distance_y_new As Double = Range * Sinus
+                Dim distance_x_new As Double = range * Cosinus
+                Dim distance_y_new As Double = range * Sinus
 
                 Dim new_x As Single = toPos.ToGameX + distance_x_new
                 Dim new_y As Single = toPos.ToGameY + distance_y_new
@@ -227,7 +229,7 @@
         End Sub
 
         Public Function GetMobExpMultiplier(ByVal type As Byte) As Byte
-            Select Case Type
+            Select Case type
                 Case 0
                     Return MobMultiplierExp.Normal
                 Case 1

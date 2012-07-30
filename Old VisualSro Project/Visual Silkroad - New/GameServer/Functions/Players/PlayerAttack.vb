@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module PlayerAttack
         Public Rand As New Random
 
@@ -19,7 +21,7 @@
                             End If
                             For i = 0 To Server.MaxClients
                                 If PlayerData(i) IsNot Nothing Then
-                                    If PlayerData(i).UniqueId = ObjectID Then
+                                    If PlayerData(i).UniqueID = ObjectID Then
                                         PlayerAttackNormal(Index_, ObjectID)
                                     End If
                                 End If
@@ -296,7 +298,7 @@
             writer.Byte(&H30)
 
             writer.DWord(PlayerData(Index_).UsingSkillId)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.DWord(PlayerData(Index_).SkillOverId)
             writer.DWord(PlayerData(Index_).AttackedId)
             writer.Byte(0)

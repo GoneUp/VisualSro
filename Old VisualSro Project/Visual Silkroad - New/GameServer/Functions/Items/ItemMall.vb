@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module ItemMall
         Public Sub OnSendSilks(ByVal Index_ As Integer)
             Dim userIndex As Integer = GameDB.GetUser(PlayerData(Index_).AccountID)
@@ -48,7 +50,7 @@
                         ItemSlots.Add(slot)
 
                         GameDB.Users(UserIndex).Silk -= RefObject.Price
-                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
+                        Database.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
                                                          GameDB.Users(UserIndex).Silk, PlayerData(index_).AccountID))
                         OnSendSilks(index_)
                     Next

@@ -1,8 +1,10 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module MonsterAttack
         Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer,
                                        Optional ByVal SkillID As UInteger = 0)
-            If MobList.ContainsKey(MobUniqueID) = False Or Index_ = - 1 Or PlayerData(Index_) Is Nothing Then
+            If MobList.ContainsKey(MobUniqueID) = False Or Index_ = -1 Or PlayerData(Index_) Is Nothing Then
                 Exit Sub
             End If
             If MobList(MobUniqueID).IsAttacking = True Then
@@ -12,7 +14,7 @@
             Dim Mob_ As cMonster = MobList(MobUniqueID)
             Dim RefSkill As Skill
 
-            Mob_.AttackingId = PlayerData(Index_).UniqueId
+            Mob_.AttackingId = PlayerData(Index_).UniqueID
 
             'Search for the right Skill
             If SkillID = 0 Then
@@ -31,7 +33,7 @@
 
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
-            Dim AttObject As SilkroadObject = GetObject(PlayerData(Index_).Pk2Id)
+            Dim AttObject As SilkroadObject = GetObject(PlayerData(Index_).Pk2ID)
             Dim RefMonster As SilkroadObject = GetObject(Mob_.Pk2ID)
 
 
@@ -53,7 +55,7 @@
             writer.DWord(RefSkill.Pk2Id)
             writer.DWord(Mob_.UniqueID)
             writer.DWord(Id_Gen.GetSkillOverId)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
 
             writer.Byte(1)
             writer.Byte(NumberAttack)
@@ -61,7 +63,7 @@
             '1 victim
 
             For d = 0 To NumberVictims - 1
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
 
                 For i = 0 To NumberAttack - 1
                     Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Pk2Id)

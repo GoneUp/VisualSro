@@ -1,6 +1,7 @@
 ﻿Imports System.Net.Sockets
+Imports SRFramework
 
-Namespace GameServer.Functions
+Namespace Functions
     Module Movement
         Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
 
@@ -31,7 +32,7 @@ Namespace GameServer.Functions
             ElseIf tag = 0 Then
                 Dim tag2 As Byte = packet.Byte
                 Dim to_angle As UShort = packet.Word
-                Dim to_grad As Single = (to_angle/65535)*360
+                Dim to_grad As Single = (to_angle / 65535) * 360
                 SendPm(Index_, "You are tyring to Angle Move to: " & to_grad, "Debug")
 
             End If
@@ -54,7 +55,7 @@ Namespace GameServer.Functions
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Movement)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(1)
                 'destination
                 writer.Byte(ToPos.XSector)
@@ -80,7 +81,7 @@ Namespace GameServer.Functions
                 writer.Byte(BitConverter.GetBytes(CShort(PlayerData(Index_).Position.Y * -1)))
 
 
-                DataBase.SaveQuery(
+                Database.SaveQuery(
                     String.Format(
                         "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                         PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
@@ -243,9 +244,9 @@ Namespace GameServer.Functions
                             CheckRange(PlayerData(Index_).PosTracker.GetCurPos, PlayerData(Other_Index).Position) =
                             False Then
                             'Despawn for both
-                            Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                            Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueID), Other_Index)
                             PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
-                            Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
+                            Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueID), Index_)
                             PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
                         End If
                     End If
@@ -316,7 +317,7 @@ Namespace GameServer.Functions
                             PlayerData(Index_).Busy = True
                             PlayerData(Index_).SetPosition = point.ToPos
 
-                            DataBase.SaveQuery(
+                            Database.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                     PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
@@ -352,8 +353,8 @@ Namespace GameServer.Functions
             '# 7 # 8 # 9#
             '############
             Dim PossibleSectors As New List(Of Position)
-            For x = - 1 To 1
-                For y = - 1 To 1
+            For x = -1 To 1
+                For y = -1 To 1
                     Dim pos As New Position
                     pos.XSector = Pos_1.XSector + x
                     pos.YSector = Pos_1.YSector + y

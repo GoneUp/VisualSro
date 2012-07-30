@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Functions
+﻿Namespace Functions
     Module Respawn
         Dim Random As New Random
 
@@ -54,7 +54,7 @@
             Dim tmp As ReSpawnUnique_ = RefRespawnsUnique(UniqueListID)
             Dim selector As Integer = Random.Next(0, tmp.Spots.Count - 1)
 
-            SpawnMob(tmp.Pk2ID, 3, tmp.Spots(selector), 0, - 2)
+            SpawnMob(tmp.Pk2ID, 3, tmp.Spots(selector), 0, -2)
         End Sub
 
 
@@ -81,7 +81,7 @@
                     Return RefRespawns(SpotIndex)
                 End If
             Next
-            Return New ReSpawn_ With {.SpotID = - 1}
+            Return New ReSpawn_ With {.SpotID = -1}
         End Function
 
         Private Function GetSpawnCount(ByVal SpotID As Long) As Integer
@@ -104,7 +104,7 @@
             For Each key In tmplist
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList.Item(key)
-                    If Mob_.Pk2ID = Pk2ID And Mob_.SpotID <> - 1 Then
+                    If Mob_.Pk2ID = Pk2ID And Mob_.SpotID <> -1 Then
                         Return True
                     End If
                 End If

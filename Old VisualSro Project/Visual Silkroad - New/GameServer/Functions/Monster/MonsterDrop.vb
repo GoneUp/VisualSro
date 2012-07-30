@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Functions
+﻿Namespace Functions
     Module MonsterDrop
         Public Sub DropMonsterItems(ByVal MobUniqueId As UInteger)
             If MobList.ContainsKey(MobUniqueId) = False Then
@@ -14,7 +14,7 @@
 
             'GOLD
             Dim Difference As Long = RefLevel.MaxGold - RefLevel.MinGold
-            Dim Gold As Long = (RefLevel.MinGold + (Rand.NextDouble()*Difference))*Settings.Server_GoldRate*
+            Dim Gold As Long = (RefLevel.MinGold + (Rand.NextDouble() * Difference)) * Settings.Server_GoldRate *
                                GetMobExpMultiplier(MobList(MobUniqueId).Mob_Type)
             If Gold > UInt32.MaxValue Then
                 Gold = UInt32.MaxValue

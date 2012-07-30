@@ -1,6 +1,6 @@
 ﻿Imports System.Timers
 
-Namespace GameServer.Functions
+Namespace Functions
     Public Class cPositionTracker
         WithEvents tmrMovement As Timer
 
@@ -39,7 +39,7 @@ Namespace GameServer.Functions
             Dim ToGoY As Single
             Dim Distance As Double
             Dim Speed As Double
-            
+
             Try
                 Select Case pMoveState
                     Case enumMoveState.Standing
@@ -48,14 +48,14 @@ Namespace GameServer.Functions
                         Dim TimeLeft As Double = Date.Now.Subtract(StartWalkTime).TotalMilliseconds
                         ToGoX = (pPosition.ToGameX - wPosition.ToGameX)
                         ToGoY = (pPosition.ToGameY - wPosition.ToGameY)
-                        Distance = Math.Sqrt((ToGoX*ToGoX) + (ToGoY*ToGoY))
+                        Distance = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
                         Select Case pSpeedMode
                             Case enumSpeedMode.Walking
-                                Speed = ((Speed_Walk/10.0!)*TimeLeft)/1000.0!
+                                Speed = ((Speed_Walk / 10.0!) * TimeLeft) / 1000.0!
                             Case enumSpeedMode.Running
-                                Speed = ((Speed_Run/10.0!)*TimeLeft)/1000.0!
+                                Speed = ((Speed_Run / 10.0!) * TimeLeft) / 1000.0!
                             Case enumSpeedMode.Zerking
-                                Speed = ((Speed_Zerk/10.0!)*TimeLeft)/1000.0!
+                                Speed = ((Speed_Zerk / 10.0!) * TimeLeft) / 1000.0!
                         End Select
 
                         If Distance = 0.0 Then
@@ -63,7 +63,7 @@ Namespace GameServer.Functions
                             Return pPosition
                         End If
 
-                        Dim num6 As Single = CSng((((100.0!/Distance)*Speed)*0.01))
+                        Dim num6 As Single = CSng((((100.0! / Distance) * Speed) * 0.01))
                         ToGoX *= num6
                         ToGoY *= num6
 
@@ -107,11 +107,11 @@ Namespace GameServer.Functions
             Dim WalkTime As Integer
             Select Case pSpeedMode
                 Case enumSpeedMode.Walking
-                    WalkTime = (WalkDistance/Speed_Walk)*10000
+                    WalkTime = (WalkDistance / Speed_Walk) * 10000
                 Case enumSpeedMode.Running
-                    WalkTime = (WalkDistance/Speed_Run)*10000
+                    WalkTime = (WalkDistance / Speed_Run) * 10000
                 Case enumSpeedMode.Zerking
-                    WalkTime = (WalkDistance/Speed_Zerk)*10000
+                    WalkTime = (WalkDistance / Speed_Zerk) * 10000
             End Select
             pMoveState = enumMoveState.Walking
             StartWalkTime = Date.Now
@@ -139,7 +139,7 @@ Namespace GameServer.Functions
                 tmrMovement.Stop()
                 tmrMovement.Dispose()
             End If
-            
+
             pMoveState = enumMoveState.Standing
             pPosition = GetCurPos()
         End Sub

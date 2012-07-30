@@ -1,6 +1,7 @@
 ﻿Imports System.Net.Sockets
+Imports SRFramework
 
-Namespace GameServer.Functions
+Namespace Functions
     Module NPC
 
         '############## Use the new groupspawn class
@@ -235,7 +236,7 @@ Namespace GameServer.Functions
                         Server.Send(writer.GetBytes, Index_)
 
 
-                        DataBase.SaveQuery(
+                        Database.SaveQuery(
                             String.Format(
                                 "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                 PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,

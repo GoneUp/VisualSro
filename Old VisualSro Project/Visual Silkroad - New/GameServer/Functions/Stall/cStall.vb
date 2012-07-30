@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Functions
+﻿Namespace Functions
     Public Class cStall
         Public StallID As UInteger
         Public OwnerIndex As Integer

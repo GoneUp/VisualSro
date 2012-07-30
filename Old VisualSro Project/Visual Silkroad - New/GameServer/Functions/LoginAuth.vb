@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module LoginAuth
         Public Sub GateWay(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim clientString As String = packet.String(packet.Word)

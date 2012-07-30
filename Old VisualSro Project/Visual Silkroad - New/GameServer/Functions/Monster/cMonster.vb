@@ -1,6 +1,6 @@
 ﻿Imports System.Timers
 
-Namespace GameServer.Functions
+Namespace Functions
     Public Class cMonster
         Inherits cGameObject
 
@@ -124,7 +124,7 @@ Namespace GameServer.Functions
     ''' Is for the Damage done from a Player to a Monster.
     ''' </summary>
     ''' <remarks></remarks>
-        Public Class cDamageDone
+    Public Class cDamageDone
         Public PlayerIndex As Integer
         Public Damage As ULong
         Public AttackingAllowed As Boolean = False

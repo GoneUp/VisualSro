@@ -1,6 +1,7 @@
 ﻿Imports System.Net.Sockets
+Imports SRFramework
 
-Namespace GameServer.Functions
+Namespace Functions
     Module ItemSpawn
         Public Sub CreateItemSpawnPacket(ByVal Item_ As cItemDrop, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
             Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
@@ -8,7 +9,7 @@ Namespace GameServer.Functions
             If includePacketHeader Then
                 writer.Create(ServerOpcodes.SingleSpawn)
             End If
-            
+
             writer.DWord(Item_.Item.Pk2Id)
             Select Case refitem.CLASS_A
                 Case 1 'Equipment

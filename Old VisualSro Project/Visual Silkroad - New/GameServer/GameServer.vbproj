@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F08483F9-6798-4AA9-B585-763A52FBF825}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>GameServer.GameServer.Program</StartupObject>
+    <StartupObject>GameServer.Program</StartupObject>
     <RootNamespace>GameServer</RootNamespace>
     <AssemblyName>GameServer</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -109,7 +109,6 @@
   <ItemGroup>
     <Compile Include="Admin\AdminControl.vb" />
     <Compile Include="Console\Commands.vb" />
-    <Compile Include="Framework\Database\DataBase.vb" />
     <Compile Include="Framework\Database\GameDb.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
@@ -119,14 +118,12 @@
     <Compile Include="Framework\Silkroad\SilkroadData.vb" />
     <Compile Include="Framework\Packets\Opcodes.vb" />
     <Compile Include="Framework\Packets\PacketLog.vb" />
-    <Compile Include="Framework\Packets\PacketReader.vb" />
-    <Compile Include="Framework\Packets\PacketWriter.vb" />
     <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Server\Server.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\cGameObject.vb" />
-    <Compile Include="Functions\Global\Global.vb" />
+    <Compile Include="Functions\Global\GlobalGame.vb" />
     <Compile Include="Functions\Global\GroupSpawn.vb" />
     <Compile Include="Functions\Global\Timers.vb" />
     <Compile Include="Functions\Guild\cGuild.vb" />
@@ -170,6 +167,7 @@
     <Compile Include="Functions\Skills\Mastery.vb" />
     <Compile Include="Functions\Stall\cStall.vb" />
     <Compile Include="Functions\Stall\Stall.vb" />
+    <Compile Include="Global\GlobalDef.vb" />
     <Compile Include="Mods\modDamage.vb" />
     <Compile Include="Mods\modGeneral.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

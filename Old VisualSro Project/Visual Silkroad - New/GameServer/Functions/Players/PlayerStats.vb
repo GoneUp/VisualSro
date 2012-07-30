@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module PlayerStats
         Public Sub OnStatsPacket(ByVal Index_ As Integer)
             PlayerData(Index_).SetCharGroundStats()
@@ -21,7 +23,7 @@
             Server.Send(writer.GetBytes, Index_)
 
             'Save all Data to DB
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format(
                     "UPDATE characters SET min_phyatk='{0}', max_phyatk='{1}', min_magatk='{2}', max_magatk='{3}', phydef='{4}', magdef='{5}', hit='{6}', parry='{7}', hp='{8}', mp='{9}', strength='{10}', intelligence='{11}', attribute='{12}' where id='{13}'",
                     PlayerData(Index_).MinPhy, PlayerData(Index_).MaxPhy, PlayerData(Index_).MinMag,
@@ -34,14 +36,14 @@
         Public Sub UpdateHP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.HP_MP_Update)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(&H10)
             writer.Byte(1)
             'type
             writer.DWord(PlayerData(Index_).CHP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
+            Database.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
                                              PlayerData(Index_).CHP, PlayerData(Index_).HP,
                                              PlayerData(Index_).CharacterId))
         End Sub
@@ -49,14 +51,14 @@
         Public Sub UpdateMP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.HP_MP_Update)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(&H10)
             writer.Byte(2)
             'type
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'",
+            Database.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'",
                                              PlayerData(Index_).CMP, PlayerData(Index_).MP,
                                              PlayerData(Index_).CharacterId))
         End Sub
@@ -64,7 +66,7 @@
         Public Sub UpdateHP_MP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.HP_MP_Update)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(&H10)
             writer.Byte(3)
             'type
@@ -72,7 +74,7 @@
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'",
                               PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CMP,
                               PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
@@ -86,7 +88,7 @@
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET gold='{0}' where id='{1}'", PlayerData(Index_).Gold,
+            Database.SaveQuery(String.Format("UPDATE characters SET gold='{0}' where id='{1}'", PlayerData(Index_).Gold,
                                              PlayerData(Index_).CharacterId))
         End Sub
 
@@ -98,7 +100,7 @@
             writer.Byte(0)
             Server.Send(writer.GetBytes, index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'",
+            Database.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'",
                                              PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
         End Sub
 
@@ -110,14 +112,14 @@
             writer.DWord(0)
             Server.Send(writer.GetBytes, index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'",
+            Database.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'",
                                              PlayerData(index_).BerserkBar, PlayerData(index_).CharacterId))
         End Sub
 
         Public Sub UpdateSpeeds(ByVal index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Speed_Update)
-            writer.DWord(PlayerData(index_).UniqueId)
+            writer.DWord(PlayerData(index_).UniqueID)
             writer.Float(PlayerData(index_).WalkSpeed)
             writer.Float(PlayerData(index_).RunSpeed)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
@@ -126,7 +128,7 @@
         Public Sub UpdateSpeedsBerserk(ByVal index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Speed_Update)
-            writer.DWord(PlayerData(index_).UniqueId)
+            writer.DWord(PlayerData(index_).UniqueID)
             writer.Float(PlayerData(index_).WalkSpeed)
             writer.Float(PlayerData(index_).BerserkSpeed)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
@@ -206,8 +208,8 @@
                 End If
             Loop
 
-            Dim Gained_SP As UInteger = Math.Truncate(sp/400)
-            Dim Gained_SPX As UInteger = sp - (Gained_SP*400)
+            Dim Gained_SP As UInteger = Math.Truncate(sp / 400)
+            Dim Gained_SPX As UInteger = sp - (Gained_SP * 400)
 
             'Error Prevention
             If _
@@ -242,7 +244,7 @@
             Server.Send(writer.GetBytes, index_)
 
             UpdateSP(index_)
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format("UPDATE characters SET level='{0}', experience='{1}', sp='{2}' where id='{3}'",
                               PlayerData(index_).Level, PlayerData(index_).Experience, PlayerData(index_).SkillPoints,
                               PlayerData(index_).CharacterId))
@@ -251,12 +253,12 @@
         Public Sub SendLevelUpAnimation(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LevelUp_Animation)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
         Public Sub SavePlayerPositionToDB(ByVal Index_ As Integer)
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format(
                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                     PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,

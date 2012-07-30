@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module PlayerBuff
         Public Sub PlayerBuff_BeginnCasting(ByVal SkillID As UInt32, ByVal Index_ As Integer)
             Dim RefSkill As Skill = GetSkill(SkillID)
@@ -25,7 +27,7 @@
             tmp.OverID = Id_Gen.GetSkillOverId
             tmp.CastingId = Id_Gen.GetCastingId
             tmp.SkillID = SkillID
-            tmp.OwnerID = PlayerData(Index_).UniqueId
+            tmp.OwnerID = PlayerData(Index_).UniqueID
             tmp.DurationStart = Date.Now
             tmp.DurationEnd = Date.Now.AddSeconds(RefSkill.UseDuration)
             tmp.Type = BuffType_.SkillBuff
@@ -50,7 +52,7 @@
             writer.Byte(&H30)
 
             writer.DWord(PlayerData(Index_).UsingSkillId)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.DWord(PlayerData(Index_).CastingId)
             writer.DWord(0)
             writer.Byte(0)
@@ -99,7 +101,7 @@
         Public Sub PlayerBuff_Iconpacket(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Buff_Icon)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.DWord(PlayerData(Index_).UsingSkillId)
             writer.DWord(PlayerData(Index_).SkillOverId)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)

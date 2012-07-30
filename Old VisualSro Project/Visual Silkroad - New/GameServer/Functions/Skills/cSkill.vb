@@ -1,6 +1,6 @@
 ﻿Imports System.Timers
 
-Namespace GameServer
+Namespace Functions
     Public Class cSkill
         Public SkillID As UInteger
         Public OwnerID As UInteger
@@ -42,7 +42,7 @@ Namespace GameServer
             Try
                 For i As Integer = 0 To Server.MaxClients
                     If Functions.PlayerData(i) IsNot Nothing Then
-                        If Functions.PlayerData(i).UniqueId = OwnerID Then
+                        If Functions.PlayerData(i).UniqueID = OwnerID Then
                             Functions.PlayerBuff_End(OverID, i)
                         End If
                     End If

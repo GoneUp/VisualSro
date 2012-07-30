@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Character
         Public Sub HandleCharPacket(ByVal Index_ As Integer, ByVal pack As PacketReader)
 
@@ -162,7 +164,7 @@
                     Dim dat As DateTime = DateTime.Now
                     Dim dat1 = dat.AddDays(7)
                     ClientList.CharListing(Index_).Chars(i).DeletionTime = dat1
-                    DataBase.SaveQuery(
+                    Database.SaveQuery(
                         String.Format("UPDATE characters SET deletion_mark='1', deletion_time='{0}' where id='{1}'",
                                       dat1.ToString, ClientList.CharListing(Index_).Chars(i).CharacterId))
 
@@ -181,7 +183,7 @@
             For i = 0 To ClientList.CharListing(Index_).NumberOfChars - 1
                 If ClientList.CharListing(Index_).Chars(i).CharacterName = nick Then
                     ClientList.CharListing(Index_).Chars(i).Deleted = False
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'",
+                    Database.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'",
                                                      ClientList.CharListing(Index_).Chars(i).CharacterId))
 
                     Dim writer As New PacketWriter
@@ -299,7 +301,7 @@
                     .SetCharGroundStats()
                 End With
 
-                DataBase.SaveQuery(
+                Database.SaveQuery(
                     String.Format(
                         "INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
                         GameDB.Chars(newCharacterIndex).CharacterId, GameDB.Chars(newCharacterIndex).AccountID,
@@ -307,7 +309,7 @@
                         GameDB.Chars(newCharacterIndex).Volume, GameDB.Chars(newCharacterIndex).Level,
                         GameDB.Chars(newCharacterIndex).Gold, GameDB.Chars(newCharacterIndex).SkillPoints,
                         CInt(GameDB.Chars(newCharacterIndex).GM)))
-                DataBase.SaveQuery(
+                Database.SaveQuery(
                     String.Format(
                         "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                         GameDB.Chars(newCharacterIndex).Position.XSector,
@@ -316,9 +318,9 @@
                         Math.Round(GameDB.Chars(newCharacterIndex).Position.Z),
                         Math.Round(GameDB.Chars(newCharacterIndex).Position.Y),
                         GameDB.Chars(newCharacterIndex).CharacterId))
-                DataBase.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')",
+                Database.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')",
                                                  GameDB.Chars(newCharacterIndex).CharacterId))
-                DataBase.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')",
+                Database.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')",
                                                  GameDB.Chars(newCharacterIndex).CharacterId))
 
                 ' Masterys
@@ -539,13 +541,13 @@
             Array.Resize(GameDB.Masterys, GameDB.Masterys.Length + 1)
             GameDB.Masterys(GameDB.Masterys.Length - 1) = toadd
 
-            DataBase.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}','{1}','{2}')",
+            Database.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}','{1}','{2}')",
                                              toadd.OwnerID, toadd.MasteryID, toadd.Level))
         End Sub
 
         Public Sub AddHotKeyToDB(ByVal toadd As cHotKey)
             GameDB.Hotkeys.Add(toadd)
-            DataBase.SaveQuery(String.Format("INSERT INTO hotkeys(OwnerID, slot) VALUE ('{0}','{1}')", toadd.OwnerID,
+            Database.SaveQuery(String.Format("INSERT INTO hotkeys(OwnerID, slot) VALUE ('{0}','{1}')", toadd.OwnerID,
                                              toadd.Slot))
         End Sub
 
@@ -581,6 +583,7 @@
             CleanUpPlayer(Index_)
             Player_CheckDeath(Index_, True)
             GameMod.Damage.OnPlayerLogon(Index_)
+
 
             'Packet's
             writer = New PacketWriter
@@ -834,7 +837,7 @@
                                 'Free ;)
                                 .CharacterName = NewCharname
 
-                                DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0} where id='{1}'", .CharacterName, .CharacterId))
+                                Database.SaveQuery(String.Format("UPDATE characters SET name='{0} where id='{1}'", .CharacterName, .CharacterId))
                             End If
                         End If
                     End If
@@ -849,14 +852,14 @@
             If PlayerData(Index_).CHP = 0 Then
                 PlayerData(Index_).Alive = True
                 PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
-                DataBase.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
+                Database.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
                                                  PlayerData(Index_).CHP, PlayerData(Index_).HP,
                                                  PlayerData(Index_).CharacterId))
 
 
                 If SetPosToTown Then
                     PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn
-                    DataBase.SaveQuery(
+                    Database.SaveQuery(
                         String.Format(
                             "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                             PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,

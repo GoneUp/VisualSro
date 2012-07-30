@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Mastery
         Public Sub OnUpMastery(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim MasteryID As UInteger = packet.DWord
@@ -18,7 +20,7 @@
                     End If
                 End If
             Next
-            If PlayerData(index_).Pk2Id >= 1907 And PlayerData(index_).Pk2Id <= 1932 Then
+            If PlayerData(index_).Pk2ID >= 1907 And PlayerData(index_).Pk2ID <= 1932 Then
                 'Chinese Char
                 If masterycount < Settings.Server_MasteryCap Then
                     'Free mastery
@@ -35,7 +37,7 @@
                                 PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                 UpdateSP(index_)
 
-                                DataBase.SaveQuery(
+                                Database.SaveQuery(
                                     String.Format(
                                         "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ",
                                         GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
@@ -67,9 +69,9 @@
                 End If
 
 
-            ElseIf PlayerData(index_).Pk2Id >= 14717 And PlayerData(index_).Pk2Id <= 14743 Then
+            ElseIf PlayerData(index_).Pk2ID >= 14717 And PlayerData(index_).Pk2ID <= 14743 Then
                 'Europe Char = Diffrent Mastery Max system
-                Dim maxmastery As UInteger = PlayerData(index_).Level*2
+                Dim maxmastery As UInteger = PlayerData(index_).Level * 2
 
                 If masterycount < maxmastery Then
                     'Free mastery
@@ -86,7 +88,7 @@
                                     PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                     UpdateSP(index_)
 
-                                    DataBase.SaveQuery(
+                                    Database.SaveQuery(
                                         String.Format(
                                             "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}'",
                                             GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
@@ -165,7 +167,7 @@
             Array.Resize(GameDB.Skills, NewIndex)
             GameDB.Skills(NewIndex - 1) = toadd
 
-            DataBase.SaveQuery(String.Format("INSERT INTO skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
+            Database.SaveQuery(String.Format("INSERT INTO skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
                                              toadd.SkillID))
         End Sub
 

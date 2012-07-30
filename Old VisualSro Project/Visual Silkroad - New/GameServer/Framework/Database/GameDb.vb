@@ -1,7 +1,7 @@
 ﻿Imports System.Timers
-Imports GameServer.GameServer.Functions
+Imports GameServer.Functions
 
-Namespace GameServer.GameDB
+Namespace GameDB
     Module GameDb
         'Timer
         Public WithEvents GameDbUpdate As New Timer
@@ -62,7 +62,7 @@ Namespace GameServer.GameDB
 
         Public Sub GetUserData()
 
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From Users")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
             Dim UserCount = tmp.Tables(0).Rows.Count
 
             ReDim Users(UserCount - 1)
@@ -81,7 +81,7 @@ Namespace GameServer.GameDB
 
         Public Sub GetCharData()
 
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From characters")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From characters")
             Dim CharCount = tmp.Tables(0).Rows.Count
 
             If CharCount >= 1 Then
@@ -94,7 +94,7 @@ Namespace GameServer.GameDB
                     Chars(i).CharacterId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                     Chars(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                     Chars(i).CharacterName = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                    Chars(i).Pk2Id = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                    Chars(i).Pk2ID = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
                     Chars(i).Volume = CUInt(tmp.Tables(0).Rows(i).ItemArray(4))
                     Chars(i).Level = CUInt(tmp.Tables(0).Rows(i).ItemArray(5))
                     Chars(i).Experience = CULng(tmp.Tables(0).Rows(i).ItemArray(6))
@@ -146,7 +146,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetItemData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From items")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
             Dim ItemCount = tmp.Tables(0).Rows.Count
 
             If ItemCount >= 1 Then
@@ -184,7 +184,7 @@ Namespace GameServer.GameDB
 
         Public Sub GetMasteryData()
 
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From masteries")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From masteries")
             Dim MasteryCount = tmp.Tables(0).Rows.Count
 
             If MasteryCount >= 1 Then
@@ -203,7 +203,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetSkillData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From skills")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From skills")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             If Count >= 1 Then
@@ -221,7 +221,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetPositionData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From positions")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From positions")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -251,7 +251,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetHotkeyData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From hotkeys")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From hotkeys")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -266,7 +266,7 @@ Namespace GameServer.GameDB
         End Sub
 
         Public Sub GetGuildData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From guild_main")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From guild_main")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -282,7 +282,7 @@ Namespace GameServer.GameDB
             Next
 
 
-            tmp = DataBase.GetDataSet("SELECT * From guild_member")
+            tmp = Database.GetDataSet("SELECT * From guild_member")
             Count = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -298,7 +298,7 @@ Namespace GameServer.GameDB
                 tmp_.Rights.Union = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
                 tmp_.Rights.Storage = CBool(tmp.Tables(0).Rows(i).ItemArray(9))
 
-                If tmp_.GuildID <> - 1 Then
+                If tmp_.GuildID <> -1 Then
                     For g = 0 To Guilds.Count - 1
                         If Guilds(g).GuildID = tmp_.GuildID Then
                             Guilds(g).Member.Add(tmp_)

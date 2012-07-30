@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Stall
         Public Sub Stall_Open_Own(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim NameLen As UShort = packet.Word
@@ -12,7 +14,7 @@
 
                 Dim tmp As New cStall
                 tmp.StallID = PlayerData(Index_).StallID
-                tmp.OwnerID = PlayerData(Index_).UniqueId
+                tmp.OwnerID = PlayerData(Index_).UniqueID
                 tmp.OwnerIndex = Index_
                 tmp.StallName = Name
                 tmp.Init()
@@ -25,7 +27,7 @@
                 Server.Send(writer.GetBytes, Index_)
 
                 writer.Create(ServerOpcodes.Stall_Open_ToOther)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(tmp.StallName.Length)
                 writer.UString(tmp.StallName)
                 writer.DWord(0)
@@ -94,7 +96,7 @@
 
 
                 writer.Create(ServerOpcodes.Stall_Name)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(NameLen)
                 writer.UString(Name)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
@@ -215,7 +217,7 @@
                 If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then
                     If _
                         CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 And
-                        GetFreeItemSlot(Index_) <> - 1 Then
+                        GetFreeItemSlot(Index_) <> -1 Then
                         PlayerData(Index_).Gold -= Stalls(Stall_index).Items(slot).Gold
                         UpdateGold(Index_)
 
@@ -318,11 +320,11 @@
 
             For i = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).UniqueId = ToUniqueID Then
+                    If PlayerData(i).UniqueID = ToUniqueID Then
                         Dim writer As New PacketWriter
                         writer.Create(ServerOpcodes.Stall_Message)
                         writer.Byte(2)
-                        writer.DWord(PlayerData(Index_).UniqueId)
+                        writer.DWord(PlayerData(Index_).UniqueID)
                         Server.SendToStallSession(writer.GetBytes, PlayerData(i).StallID, True)
 
                         Dim Stall_index As Integer = GetStallIndex(PlayerData(i).StallID)
@@ -345,7 +347,7 @@
             If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 Then
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Stall_Close_Owner_Other)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(&H17)
                 writer.Byte(&H3C)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
@@ -372,7 +374,7 @@
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.Stall_Message)
                     writer.Byte(1)
-                    writer.DWord(PlayerData(Index_).UniqueId)
+                    writer.DWord(PlayerData(Index_).UniqueID)
                     Server.SendToStallSession(writer.GetBytes, PlayerData(i).StallID, True)
 
                     writer.Create(ServerOpcodes.Stall_Close_Visitor)
@@ -456,7 +458,7 @@
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Stall_Open_ToOther)
-                writer.DWord(PlayerData(FromIndex).UniqueId)
+                writer.DWord(PlayerData(FromIndex).UniqueID)
                 writer.Word(Stalls(Index).StallName.Length)
                 writer.UString(Stalls(Index).StallName)
                 writer.DWord(0)
@@ -470,7 +472,7 @@
                     Return i
                 End If
             Next
-            Return - 1
+            Return -1
         End Function
     End Module
 End Namespace

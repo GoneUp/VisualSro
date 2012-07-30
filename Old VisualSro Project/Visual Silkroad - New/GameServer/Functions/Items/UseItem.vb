@@ -1,6 +1,7 @@
 ﻿Imports System.Text
+Imports SRFramework
 
-Namespace GameServer.Functions
+Namespace Functions
     Module UseItem
         Public Sub OnUseItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim slot As Byte = packet.Byte
@@ -58,7 +59,7 @@ Namespace GameServer.Functions
                         PlayerData(Index_).CHP += refitem.USE_TIME_HP
                     End If
 
-                    UpdateAmout(Index_, Slot, - 1)
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateHP(Index_)
 
                     Dim writer As New PacketWriter
@@ -88,7 +89,7 @@ Namespace GameServer.Functions
                         PlayerData(Index_).CMP += refitem.USE_TIME_MP
                     End If
 
-                    UpdateAmout(Index_, Slot, - 1)
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateMP(Index_)
 
                     Dim writer As New PacketWriter
@@ -125,7 +126,7 @@ Namespace GameServer.Functions
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 3 Then 'Check for right Item
-                    UpdateAmout(Index_, Slot, - 1)
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -175,7 +176,7 @@ Namespace GameServer.Functions
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 1 Then
-                    UpdateAmout(Index_, Slot, - 1)
+                    UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -198,7 +199,7 @@ Namespace GameServer.Functions
 
         Public Sub OnUseGlobal(ByVal Slot As Byte, ByVal Index_ As Integer, ByVal packet As PacketReader)
             Dim messagelength As UInt16 = packet.Word
-            Dim bmessage As Byte() = packet.ByteArray(messagelength*2)
+            Dim bmessage As Byte() = packet.ByteArray(messagelength * 2)
             Dim message As String = Encoding.Unicode.GetString(bmessage)
 
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
@@ -209,7 +210,7 @@ Namespace GameServer.Functions
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
-                    UpdateAmout(Index_, Slot, - 1)
+                    UpdateAmout(Index_, Slot, -1)
 
                     writer.Create(ServerOpcodes.ItemUse)
                     writer.Byte(1)
@@ -258,7 +259,7 @@ Namespace GameServer.Functions
                     End If
 
                     '==============Using..
-                    UpdateAmout(Index_, Slot, - 1)
+                    UpdateAmout(Index_, Slot, -1)
 
 
                     writer.Create(ServerOpcodes.ItemUse)
@@ -272,11 +273,11 @@ Namespace GameServer.Functions
                     ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
 
-                    PlayerData(Index_).Pk2Id = NewModel
+                    PlayerData(Index_).Pk2ID = NewModel
                     PlayerData(Index_).Volume = NewVolume
 
-                    DataBase.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'",
-                                                     PlayerData(Index_).Pk2Id, PlayerData(Index_).Volume,
+                    Database.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'",
+                                                     PlayerData(Index_).Pk2ID, PlayerData(Index_).Volume,
                                                      PlayerData(Index_).CharacterId))
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                 End If
@@ -290,7 +291,7 @@ Namespace GameServer.Functions
             If _item.Pk2Id <> 0 Then
                 Dim refitem As cItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 8 Then
-                    UpdateAmout(Index_, Slot, - 1)
+                    UpdateAmout(Index_, Slot, -1)
 
                     PlayerData(Index_).BerserkBar = 5
                     UpdateBerserk(Index_)
@@ -330,7 +331,7 @@ Namespace GameServer.Functions
         Public Sub ShowOtherPlayerItemUse(ByVal ItemID As Integer, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.ItemUseOtherPlayer)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.DWord(ItemID)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub

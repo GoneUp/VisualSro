@@ -1,7 +1,8 @@
 ﻿Imports System.IO
+
 Public Class PacketWriter
     Private bw As BinaryWriter
-    Private dataLen As Integer
+    Private dataLen As UInt16
     Private ms As New MemoryStream()
 
     Public Sub [Byte](ByVal data As Byte)
@@ -15,6 +16,7 @@ Public Class PacketWriter
             Me.dataLen += 2
         Next
     End Sub
+
     Public Sub Create(ByVal opcode As UShort)
         Me.bw = Nothing
         Me.ms = Nothing
@@ -50,7 +52,7 @@ Public Class PacketWriter
     Public Sub HexString(ByVal data As String)
         Dim chArray(data.Length - 1) As Char
         For i As Integer = 0 To data.Length - 1
-            chArray(i) = System.Convert.ToChar(data.Substring(i, 1))
+            chArray(i) = Convert.ToChar(data.Substring(i, 1))
             Me.bw.Write(chArray(i))
         Next i
         Me.dataLen += data.Length
@@ -64,7 +66,7 @@ Public Class PacketWriter
     Public Sub [String](ByVal data As String)
         Dim chArray(data.Length - 1) As Char
         For i As Integer = 0 To data.Length - 1
-            chArray(i) = System.Convert.ToChar(data.Substring(i, 1))
+            chArray(i) = Convert.ToChar(data.Substring(i, 1))
             Me.bw.Write(chArray(i))
         Next i
         Me.dataLen += data.Length * 2
@@ -73,7 +75,7 @@ Public Class PacketWriter
     Public Sub UString(ByVal data As String)
         Dim chArray(data.Length - 1) As Char
         For i As Integer = 0 To data.Length - 1
-            chArray(i) = System.Convert.ToChar(data.Substring(i, 1))
+            chArray(i) = Convert.ToChar(data.Substring(i, 1))
             Me.bw.Write(chArray(i))
             Me.bw.Write(CByte(0))
         Next i
@@ -84,5 +86,15 @@ Public Class PacketWriter
         Me.bw.Write(data)
         Me.dataLen += 4
     End Sub
+
+    Public ReadOnly Property Length() As UInt16
+        Get
+            If dataLen = 0 Then
+                Return 0
+            End If
+            Return dataLen / 2
+        End Get
+    End Property
+
 End Class
 

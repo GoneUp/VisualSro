@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Functions
+﻿Namespace Functions
     Public Class cCharListing
         Public Structure UserArray
             Public Id As Integer

@@ -1,12 +1,12 @@
-﻿Imports GameServer.GameServer.Functions
+﻿Imports GameServer.Functions
 
-Namespace GameServer.GameMod.Damage
+Namespace GameMod.Damage
     Module modDamage
         Public ModName As String = "mod_Damage"
         Public Settings(1500) As Settings_
 
         Public Sub SendDamageInfo(ByVal mobUniqueId As Integer)
-            Dim mob As cMonster = MobList(MobUniqueId)
+            Dim mob As cMonster = MobList(mobUniqueId)
             Dim ref As SilkroadObject = GetObject(mob.Pk2ID)
 
             'Sort
@@ -31,7 +31,7 @@ Namespace GameServer.GameMod.Damage
         End Sub
 
         Public Sub OnServerStart(ByVal slots As Integer)
-            ReDim Settings(Slots)
+            ReDim Settings(slots)
 
             For i = 0 To Settings.Count - 1
                 Settings(i) = New Settings_
@@ -40,7 +40,7 @@ Namespace GameServer.GameMod.Damage
 
         Public Sub OnPlayerCreate(ByVal CharId As UInteger, ByVal Index_ As Integer)
             Try
-                DataBase.SaveQuery(
+                Database.SaveQuery(
                     String.Format("INSERT INTO coustum(ownerid, name, settings) VALUE ('{0}','damage','0,255,255')",
                                   CharId))
             Catch ex As Exception
@@ -51,7 +51,7 @@ Namespace GameServer.GameMod.Damage
         Public Sub OnPlayerLogon(ByVal Index_)
             Try
                 Dim tmpSet_ As DataSet =
-                        DataBase.GetDataSet(String.Format("SELECT * FROM coustum WHERE ownerid='{0}' AND name='damage'",
+                        Database.GetDataSet(String.Format("SELECT * FROM coustum WHERE ownerid='{0}' AND name='damage'",
                                                           PlayerData(Index_).CharacterId))
                 Dim tmp As New Settings_
                 tmp.CharacterId = PlayerData(Index_).CharacterId
@@ -77,7 +77,7 @@ Namespace GameServer.GameMod.Damage
         End Sub
 
         Public Sub OnPlayerLogoff(ByVal Index_)
-            DataBase.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'",
+            Database.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'",
                                              GenerateSettings(Index_), PlayerData(Index_).CharacterId))
             Settings(Index_) = New Settings_
         End Sub
@@ -89,7 +89,7 @@ Namespace GameServer.GameMod.Damage
                     Settings(Index_).Send_Normal = tmpString(0)
                     Settings(Index_).Send_Giant = tmpString(1)
                     Settings(Index_).Send_Unique = tmpString(2)
-                    DataBase.SaveQuery(
+                    Database.SaveQuery(
                         String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'",
                                       GenerateSettings(Index_), PlayerData(Index_).CharacterId))
                     SendPm(Index_,

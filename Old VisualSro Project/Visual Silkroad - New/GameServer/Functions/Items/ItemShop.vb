@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module ItemShop
         Public Sub OnBuyItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
@@ -114,7 +116,7 @@
                     Case 2
                         Gold = Item.SELL_PRICE
                     Case 3
-                        Gold = Item.SELL_PRICE*Inventorys(index_).UserItems(slot).Amount
+                        Gold = Item.SELL_PRICE * Inventorys(index_).UserItems(slot).Amount
                 End Select
 
                 Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))

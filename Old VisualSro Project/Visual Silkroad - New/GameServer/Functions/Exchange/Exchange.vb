@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Exchange
         Public Sub OnExchangeInvite(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim Others_ID As UInt32 = Packet.DWord
@@ -7,10 +9,10 @@
             writer.Create(ServerOpcodes.Exchange_Invite)
 
             writer.Byte(1)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
 
             For i As Integer = 0 To Server.OnlineClient
-                If PlayerData(i).UniqueId = Others_ID Then
+                If PlayerData(i).UniqueID = Others_ID Then
                     Server.Send(writer.GetBytes, i)
                     PlayerData(Index_).InExchangeWith = i
                     PlayerData(i).InExchangeWith = Index_
@@ -27,12 +29,12 @@
             If succes = True Then
 
                 writer.Create(ServerOpcodes.Exchange_Start)
-                writer.DWord(PlayerData(PlayerData(Index_).InExchangeWith).UniqueId)
+                writer.DWord(PlayerData(PlayerData(Index_).InExchangeWith).UniqueID)
                 Server.Send(writer.GetBytes, Index_)
 
                 writer.Create(ServerOpcodes.Exchange_Invite_Reply)
                 writer.Byte(1)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
 
                 Dim tmp_ex As New cExchange
@@ -74,17 +76,17 @@
             For own_decider = 0 To 1
                 itemcount = 0
                 writer.Create(ServerOpcodes.Exchange_UpdateItems)
-                writer.DWord(PlayerData(ExchangeData(ExchangeId).Player1Index).UniqueId)
+                writer.DWord(PlayerData(ExchangeData(ExchangeId).Player1Index).UniqueID)
 
                 For i = 0 To 11 'Count items
-                    If ExchangeData(ExchangeId).Items1(i) <> - 1 Then
+                    If ExchangeData(ExchangeId).Items1(i) <> -1 Then
                         itemcount += 1
                     End If
                 Next
                 writer.Byte(itemcount)
 
                 For i = 0 To 11 'Send Item Data
-                    If ExchangeData(ExchangeId).Items1(i) <> - 1 Then
+                    If ExchangeData(ExchangeId).Items1(i) <> -1 Then
 
                         Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items1(i))
                         Dim refitem As cItem = GetItemByID(_item.Pk2Id)
@@ -114,17 +116,17 @@
             For own_decider = 0 To 1
                 itemcount = 0
                 writer.Create(ServerOpcodes.Exchange_UpdateItems)
-                writer.DWord(PlayerData(ExchangeData(ExchangeId).Player2Index).UniqueId)
+                writer.DWord(PlayerData(ExchangeData(ExchangeId).Player2Index).UniqueID)
 
                 For i = 0 To 11 'Count items
-                    If ExchangeData(ExchangeId).Items2(i) <> - 1 Then
+                    If ExchangeData(ExchangeId).Items2(i) <> -1 Then
                         itemcount += 1
                     End If
                 Next
                 writer.Byte(itemcount)
 
                 For i = 0 To 11 'Send Item Data
-                    If ExchangeData(ExchangeId).Items2(i) <> - 1 Then
+                    If ExchangeData(ExchangeId).Items2(i) <> -1 Then
 
                         Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items2(i))
                         Dim refitem As cItem = GetItemByID(_item.Pk2Id)
@@ -234,7 +236,7 @@
             Dim tmp_ex As cExchange = ExchangeData(ExchangeId)
             'Player 1 items --> Player 2
             For i = 0 To 11
-                If tmp_ex.Items1(i) <> - 1 Then
+                If tmp_ex.Items1(i) <> -1 Then
                     Dim From_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
                     Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player2Index)
                     Dim To_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(To_Slot)
@@ -275,7 +277,7 @@
 
             'Player 2 Items --> Player 1 
             For i = 0 To 11
-                If tmp_ex.Items2(i) <> - 1 Then
+                If tmp_ex.Items2(i) <> -1 Then
 
                     Dim From_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
                     Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player1Index)
@@ -404,7 +406,7 @@
                     Return r
                 End If
             Next
-            Return - 1
+            Return -1
         End Function
     End Module
 End Namespace

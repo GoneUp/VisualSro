@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Functions
+﻿Namespace Functions
     Public Class cNPC
         Inherits cGameObject
         Public Position As New Position

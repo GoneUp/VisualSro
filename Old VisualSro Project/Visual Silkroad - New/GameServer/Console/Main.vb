@@ -1,137 +1,137 @@
 ﻿Imports System.Threading
+Imports SRFramework
 
-Namespace GameServer
-    Friend Class Program
-        Public Shared Logpackets As Boolean = False
+Friend Class Program
+    Public Shared Logpackets As Boolean = False
 
-        Public Shared TheardDB As New Thread(AddressOf GameDB.UpdateData)
-        Public Shared TheardTimer As New Thread(AddressOf Functions.LoadTimers)
-        Public Shared TheardServer As New Thread(AddressOf Server.Start)
+    Public Shared TheardDB As New Thread(AddressOf GameDB.UpdateData)
+    Public Shared TheardTimer As New Thread(AddressOf Functions.LoadTimers)
+    Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
-        Shared Sub Main()
-            AddHandler Server.OnClientConnect, AddressOf Server_OnClientConnect
-            AddHandler Server.OnClientDisconnect, AddressOf Server_OnClientDisconnect
-            AddHandler Server.OnReceiveData, AddressOf Server_OnReceiveData
-            AddHandler Server.OnServerError, AddressOf Server_OnServerError
-            AddHandler Server.OnServerStarted, AddressOf Server_OnServerStarted
-            AddHandler Server.OnServerStopped, AddressOf Server_OnServerStopped
-            AddHandler DataBase.OnDatabaseError, AddressOf db_OnDatabaseError
-            AddHandler DataBase.OnConnectedToDatabase, AddressOf db_OnConnectedToDatabase
+    Shared Sub Main()
+        AddHandler Server.OnClientConnect, AddressOf Server_OnClientConnect
+        AddHandler Server.OnClientDisconnect, AddressOf Server_OnClientDisconnect
+        AddHandler Server.OnReceiveData, AddressOf Server_OnReceiveData
+        AddHandler Server.OnServerError, AddressOf Server_OnServerError
+        AddHandler Server.OnServerStarted, AddressOf Server_OnServerStarted
+        AddHandler Server.OnServerStopped, AddressOf Server_OnServerStopped
+        AddHandler Database.OnDatabaseError, AddressOf db_OnDatabaseError
+        AddHandler Database.OnDatabaseConnected, AddressOf db_OnConnectedToDatabase
 
-            Console.WindowHeight = 20
-            Console.BufferHeight = 50
-            Console.WindowWidth = 70
-            Console.BufferWidth = 70
-            Console.BackgroundColor = ConsoleColor.White
-            Console.ForegroundColor = ConsoleColor.DarkGreen
-            Console.Clear()
-            Console.Title = "GAMESERVER ALPHA"
+        Console.WindowHeight = 20
+        Console.BufferHeight = 50
+        Console.WindowWidth = 70
+        Console.BufferWidth = 70
+        Console.BackgroundColor = ConsoleColor.White
+        Console.ForegroundColor = ConsoleColor.DarkGreen
+        Console.Clear()
+        Console.Title = "GAMESERVER ALPHA"
 
 
-            Log.WriteSystemLog("Loading Settings.")
-            Settings.LoadSettings()
-            Settings.SetToServer()
+        Log.WriteSystemLog("Loading Settings.")
+        Settings.LoadSettings()
+        Settings.SetToServer()
 
-            Log.WriteSystemLog("Connecting Database.")
-            DataBase.Connect()
-            Log.WriteSystemLog("Connected Database. Loading Data now.")
+        Log.WriteSystemLog("Connecting Database.")
+        Database.Connect()
+        Log.WriteSystemLog("Connected Database. Loading Data now.")
 
-            ClientList.SetupClientList(Server.MaxClients)
-            Functions.GlobalInit(Server.MaxClients)
-            DumpDataFiles()
-            TheardDB.Start()
-            TheardTimer.Start(1500)
-            GameMod.Damage.OnServerStart(Server.MaxClients)
+        ClientList.SetupClientList(Server.MaxClients)
+        Functions.GlobalInit(Server.MaxClients)
+        DumpDataFiles()
+        TheardDB.Start()
+        TheardTimer.Start(1500)
+        GameMod.Damage.OnServerStart(Server.MaxClients)
 
-            Log.WriteSystemLog("Data Loaded. Starting Server.")
+        Log.WriteSystemLog("Data Loaded. Starting Server.")
 
-            TheardServer.Start()
-            Log.WriteSystemLog("Inital Loading complete!")
-            Log.WriteSystemLog("Slotcount: " & Settings.Server_Slots)
+        TheardServer.Start()
+        Log.WriteSystemLog("Inital Loading complete!")
+        Log.WriteSystemLog("Slotcount: " & Settings.Server_Slots)
 
-            Do While True
-                Dim msg As String = Console.ReadLine()
-                CheckCommand(msg)
-                Thread.Sleep(10)
-            Loop
-        End Sub
+        Do While True
+            Dim msg As String = Console.ReadLine()
+            CheckCommand(msg)
+            Thread.Sleep(10)
+        Loop
+    End Sub
 
-        Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-            If Settings.Log_Detail Then
-                Log.WriteSystemLog("Client Connected : " & ip)
+    Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
+        If Settings.Log_Detail Then
+            Log.WriteSystemLog("Client Connected : " & ip)
+        End If
+
+        Server.OnlineClient += 1
+
+        Dim packet As New PacketWriter
+        packet.Create(ServerOpcodes.Handshake)
+        packet.Byte(1)
+        Server.Send(packet.GetBytes, index)
+    End Sub
+
+    Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
+
+        Dim Position As Integer = 0
+
+        Do While True
+            Dim length As Integer = BitConverter.ToUInt16(buffer, Position)
+            Dim opc As Integer = BitConverter.ToUInt16(buffer, Position + 2)
+
+            If length = 0 And opc = 0 Then 'endless prevention
+                Exit Do
             End If
 
-            Server.OnlineClient += 1
+            Dim newbuff(length + 5) As Byte
+            Array.ConstrainedCopy(buffer, Position, newbuff, 0, length + 6)
+            Position = Position + length + 6
 
-            Dim packet As New PacketWriter
-            packet.Create(ServerOpcodes.Handshake)
-            packet.Byte(1)
-            Server.Send(packet.GetBytes, index)
-        End Sub
+            Dim packet As New PacketReader(newbuff)
+            If Logpackets = True Then
+                Log.LogPacket(newbuff, False)
+            End If
 
-        Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
+            Parser.Parse(packet, index_)
+        Loop
+    End Sub
 
-            Dim Position As Integer = 0
+    Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
+        Log.WriteSystemLog("Server Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
+        '-1 = on client connect + -2 = on server start
+    End Sub
 
-            Do While True
-                Dim length As Integer = BitConverter.ToUInt16(buffer, Position)
-                Dim opc As Integer = BitConverter.ToUInt16(buffer, Position + 2)
+    Private Shared Sub Server_OnServerStarted(ByVal time As String)
+        Log.WriteSystemLog("Server Started: " & time)
+    End Sub
 
-                If length = 0 And opc = 0 Then 'endless prevention
-                    Exit Do
-                End If
+    Private Shared Sub Server_OnServerStopped(ByVal time As String)
+        Log.WriteSystemLog("Server Stopped: " & time)
+    End Sub
 
-                Dim newbuff(length + 5) As Byte
-                Array.ConstrainedCopy(buffer, Position, newbuff, 0, length + 6)
-                Position = Position + length + 6
+    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
+        Try
+            Server.OnlineClient -= 1
+            If Functions.PlayerData(index) IsNot Nothing Then
+                Functions.DespawnPlayer(index)
+                Functions.CleanUpPlayer(index)
+            End If
+            ClientList.CharListing(index) = Nothing
+            Functions.PlayerData(index) = Nothing
 
-                Dim packet As New PacketReader(newbuff)
-                If Logpackets = True Then
-                    Log.LogPacket(newbuff, False)
-                End If
+            'Server.RevTheard(index).Abort()
+            'Server.RevTheard(index) = Nothing
+        Catch ex As Exception
+            Functions.PlayerData(index) = Nothing
+        End Try
+    End Sub
 
-                Parser.Parse(packet, index_)
-            Loop
-        End Sub
+    Private Shared Sub db_OnConnectedToDatabase()
+        Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
+    End Sub
 
-        Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
-            Log.WriteSystemLog("Server Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
-            '-1 = on client connect + -2 = on server start
-        End Sub
+    Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
+        Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
+    End Sub
+End Class
 
-        Private Shared Sub Server_OnServerStarted(ByVal time As String)
-            Log.WriteSystemLog("Server Started: " & time)
-        End Sub
-
-        Private Shared Sub Server_OnServerStopped(ByVal time As String)
-            Log.WriteSystemLog("Server Stopped: " & time)
-        End Sub
-
-        Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
-            Try
-                Server.OnlineClient -= 1
-                If Functions.PlayerData(index) IsNot Nothing Then
-                    Functions.DespawnPlayer(index)
-                    Functions.CleanUpPlayer(index)
-                End If
-                ClientList.CharListing(index) = Nothing
-                Functions.PlayerData(index) = Nothing
-
-                'Server.RevTheard(index).Abort()
-                'Server.RevTheard(index) = Nothing
-            Catch ex As Exception
-                Functions.PlayerData(index) = Nothing
-            End Try
-        End Sub
-
-        Private Shared Sub db_OnConnectedToDatabase()
-            Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
-        End Sub
-
-        Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
-            Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
-        End Sub
-    End Class
-End Namespace
 
 

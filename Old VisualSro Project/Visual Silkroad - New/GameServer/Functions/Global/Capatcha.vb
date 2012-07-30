@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Capatcha
         Dim payload As Byte() = New Byte() {&H0, &H6D, &H2, &H65, &H2, &HC8,
                                             &H32, &HC8, &H0, &H40, &H0, &H78,

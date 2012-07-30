@@ -1,6 +1,7 @@
 ﻿Imports System.Net.Sockets
+Imports SRFramework
 
-Namespace GameServer.Functions
+Namespace Functions
     Module MonsterSpawn
         Public Sub CreateMonsterSpawnPacket(ByVal mob As cMonster, ByVal obj As SilkroadObject, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
             If includePacketHeader Then

@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module GameMaster
         Public Sub OnGM(ByVal Packet As PacketReader, ByVal Index_ As Integer)
 
@@ -54,7 +56,7 @@
             'Or Count
             Dim slot As Byte = GetFreeItemSlot(index_)
 
-            If slot <> - 1 Then
+            If slot <> -1 Then
                 Dim temp_item As cInvItem = Inventorys(index_).UserItems(slot)
                 temp_item.Pk2Id = pk2id
                 temp_item.OwnerCharID = PlayerData(index_).CharacterId
@@ -116,7 +118,7 @@
             PlayerData(index_).TeleportType = TeleportType_.GM
 
 
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format(
                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                     PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector,
@@ -148,7 +150,7 @@
 
                         PlayerData(index_).SetPosition = PlayerData(i).Position
 
-                        DataBase.SaveQuery(
+                        Database.SaveQuery(
                             String.Format(
                                 "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                 PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector,
@@ -173,7 +175,7 @@
 
                         PlayerData(i).SetPosition = PlayerData(index_).Position
 
-                        DataBase.SaveQuery(
+                        Database.SaveQuery(
                             String.Format(
                                 "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                 PlayerData(i).Position.XSector, PlayerData(i).Position.YSector,
@@ -193,7 +195,7 @@
 
             For i As Integer = 0 To GameDB.Chars.Length - 1
                 If GameDB.Chars(i).CharacterName = Name Then
-                    DataBase.InsertData(
+                    Database.InsertData(
                         String.Format(
                             "UPDATE users SET banned='1', bantime = '3000-01-01 00:00:00', banreason = 'You got banned by: {0}' where id='{1}'",
                             PlayerData(index_).CharacterName, GameDB.Chars(i).AccountID))
@@ -227,7 +229,7 @@
             'Teleport the GM to Town
             PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn
             'Set new Pos
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format(
                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                     PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,

@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Players
         ''' <summary>
         ''' For Players
@@ -9,10 +11,10 @@
         Public Function CreateSpawnPacket(ByVal Index As Integer) As Byte()
 
             Dim chari As [cChar] = PlayerData(Index) 'Only for faster Code writing
-            
+
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.SingleSpawn)
-            writer.DWord(chari.Pk2Id)
+            writer.DWord(chari.Pk2ID)
             writer.Byte(chari.Volume)
             writer.Byte(0)
             writer.Byte(0)
@@ -64,7 +66,7 @@
             writer.Byte(0)
             'Duplicate List
 
-            writer.DWord(chari.UniqueId)
+            writer.DWord(chari.UniqueID)
             writer.Byte(chari.Position.XSector)
             writer.Byte(chari.Position.YSector)
             writer.Float(chari.Position.X)
@@ -204,10 +206,10 @@
                 If _
                     PlayerData(Other_Index) IsNot Nothing And
                     PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
-                    Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                    Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueID), Other_Index)
                     PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
 
-                    Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueId), Index_)
+                    Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueID), Index_)
                 End If
             Next
 
@@ -251,7 +253,7 @@
                 Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
                 If PlayerData(Other_Index) IsNot Nothing Then
                     If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
-                        Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueId), Other_Index)
+                        Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueID), Other_Index)
                         PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
                     End If
                 End If
@@ -265,7 +267,7 @@
             PlayerData(Index_).SpawnedNPCs.Clear()
             PlayerData(Index_).SpawnedMonsters.Clear()
             PlayerData(Index_).SpawnedItems.Clear()
-            
+
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Alive = True
             PlayerData(Index_).Attacking = False
@@ -309,7 +311,7 @@
 
         Public Sub CheckStall(ByVal Index_ As Integer)
             For i = 0 To Stalls.Count - 1
-                If Stalls(i).OwnerID = PlayerData(Index_).UniqueId Then
+                If Stalls(i).OwnerID = PlayerData(Index_).UniqueID Then
                     Stall_Close_Own(Index_)
                 End If
             Next

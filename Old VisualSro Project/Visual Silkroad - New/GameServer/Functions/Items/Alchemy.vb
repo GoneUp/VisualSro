@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Alchemy
         Public Sub OnAlchemyRequest(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim tag As Byte = Packet.Byte
@@ -171,7 +173,7 @@
         Public Function CheckForSuccess(ByVal Old_Plus As Byte, ByVal Lucky As Integer) As Boolean
             Dim New_Plus As Integer = Old_Plus + 1
             Dim ToReach As Integer = Old_Plus - Lucky
-            Dim Rad As Integer = Math.Round((Rnd()*New_Plus), 0)
+            Dim Rad As Integer = Math.Round((Rnd() * New_Plus), 0)
             If ToReach <= Rad Then
                 'Success
                 Return True

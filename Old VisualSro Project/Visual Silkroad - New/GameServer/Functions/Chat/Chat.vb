@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Chat
         Public Sub OnChat(ByVal Packet As PacketReader, ByVal Index_ As Integer)
             Dim tag As Byte = Packet.Byte
@@ -46,7 +48,7 @@
 
                 writer.Create(ServerOpcodes.Chat)
                 writer.Byte(1)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(messagelength)
                 writer.UString(message)
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
@@ -63,7 +65,7 @@
             Dim items_linked As Byte = Packet.Byte()
             Dim senderlength As UInt16 = Packet.Word
             Dim receiver As String = Packet.String(senderlength)
-            Dim receiverIndex As Integer = - 1
+            Dim receiverIndex As Integer = -1
 
             Dim messagelength As UInt16 = Packet.Word
             Dim message As String = Packet.UString(messagelength)
@@ -79,7 +81,7 @@
 
             Dim writer As New PacketWriter
 
-            If receiverIndex <> - 1 Then
+            If receiverIndex <> -1 Then
                 writer.Create(ServerOpcodes.Chat_Accept)
                 writer.Byte(1)
                 writer.Byte(ChatModes.PmIncome)

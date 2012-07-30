@@ -1,5 +1,5 @@
-﻿Namespace GameServer.Functions
-    Module [Global]
+﻿Namespace Functions
+    Module GlobalGame
         'Players
         Public PlayerData(1) As [cChar]
         'Items

@@ -1,6 +1,6 @@
-﻿Imports GameServer.GameServer.Functions
+﻿Imports GameServer.Functions
 
-Namespace GameServer.Settings
+Namespace Settings
     Module Settings
         'Loading File
         Private File As New cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_game\settings.ini")
@@ -114,11 +114,11 @@ Namespace GameServer.Settings
 
 
         Public Sub SetToServer()
-            DataBase.DB_IP = Database_IP
-            DataBase.DB_PORT = Database_Port
-            DataBase.DB_DATABASE = Database_Database
-            DataBase.DB_USERNAME = Database_User
-            DataBase.DB_PASSWORD = Database_Password
+            Database.DbIP = Database_IP
+            Database.DbPort = Database_Port
+            Database.DbDatabase = Database_Database
+            Database.DbUsername = Database_User
+            Database.DbPassword = Database_Password
 
             Server.Ip = Server_Ip
             Server.Port = Server_Port

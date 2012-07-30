@@ -1,4 +1,4 @@
-﻿Namespace GameServer
+﻿Namespace Functions
     Public Class cGuild
         Public GuildID As UInteger
         Public Name As String

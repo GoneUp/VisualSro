@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Inventory
         Public Sub OnInventory(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim type As Byte = packet.Byte
@@ -271,7 +273,7 @@
                 Dim item As New cInvItem
                 item.Amount = amout
                 item.Pk2Id = 1
-                item.OwnerCharID = PlayerData(index_).UniqueId
+                item.OwnerCharID = PlayerData(index_).UniqueID
 
                 DropItem(item, PlayerData(index_).Position)
 
@@ -302,7 +304,7 @@
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.PickUp_Move)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(_item.Position.XSector)
                 writer.Byte(_item.Position.YSector)
                 writer.Float(_item.Position.X)
@@ -312,7 +314,7 @@
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
                 writer.Create(ServerOpcodes.PickUp_Item)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(0)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
@@ -325,7 +327,7 @@
                     End If
                 Else
                     Dim slot As Byte = GetFreeItemSlot(Index_)
-                    If slot <> - 1 Then
+                    If slot <> -1 Then
                         Dim ref As cItem = GetItemByID(_item.Item.Pk2Id)
                         Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
 
@@ -362,14 +364,14 @@
             Dim ExListInd As Integer = PlayerData(index_).ExchangeID
 
             If _
-                ExListInd = - 1 Or Inventorys(index_).UserItems(slot).Pk2Id = 0 Or PlayerData(index_).InExchange = False Or
+                ExListInd = -1 Or Inventorys(index_).UserItems(slot).Pk2Id = 0 Or PlayerData(index_).InExchange = False Or
                 Inventorys(index_).UserItems(slot).Locked = True Then 'Security...
                 Exit Sub
             End If
 
             If ExchangeData(ExListInd).Player1Index = index_ Then
                 For i = 0 To 11 'Find free Exchange Slot
-                    If ExchangeData(ExListInd).Items1(i) = - 1 Then
+                    If ExchangeData(ExListInd).Items1(i) = -1 Then
                         ExchangeData(ExListInd).Items1(i) = slot
                         Inventorys(index_).UserItems(slot).Locked = True
 
@@ -388,7 +390,7 @@
 
             ElseIf ExchangeData(ExListInd).Player2Index = index_ Then
                 For i = 0 To 11 'Find free Exchange Slot
-                    If ExchangeData(ExListInd).Items2(i) = - 1 Then
+                    If ExchangeData(ExListInd).Items2(i) = -1 Then
                         ExchangeData(ExListInd).Items2(i) = slot
                         Inventorys(index_).UserItems(slot).Locked = True
 
@@ -411,13 +413,13 @@
             Dim slot As Byte = packet.Byte
             Dim ExListInd As Integer = PlayerData(index_).ExchangeID
 
-            If ExListInd = - 1 Then 'Security...
+            If ExListInd = -1 Then 'Security...
                 Exit Sub
             End If
 
             If ExchangeData(ExListInd).Player1Index = index_ Then
-                If ExchangeData(ExListInd).Items1(slot) <> - 1 Then
-                    ExchangeData(ExListInd).Items1(slot) = - 1
+                If ExchangeData(ExListInd).Items1(slot) <> -1 Then
+                    ExchangeData(ExListInd).Items1(slot) = -1
                     Inventorys(index_).UserItems(slot).Locked = False
 
                     Dim writer As New PacketWriter
@@ -432,8 +434,8 @@
                 End If
 
             ElseIf ExchangeData(ExListInd).Player2Index = index_ Then
-                If ExchangeData(ExListInd).Items1(slot) <> - 1 Then
-                    ExchangeData(ExListInd).Items1(slot) = - 1
+                If ExchangeData(ExListInd).Items1(slot) <> -1 Then
+                    ExchangeData(ExListInd).Items1(slot) = -1
                     Inventorys(index_).UserItems(slot).Locked = False
 
                     Dim writer As New PacketWriter
@@ -598,13 +600,13 @@
             Dim Gender As Integer = 0
 
             If _
-                (PlayerData(Index_).Pk2Id >= 1907 And PlayerData(Index_).Pk2Id <= 1919) Or
-                (PlayerData(Index_).Pk2Id >= 14717 And PlayerData(Index_).Pk2Id <= 14729) Then
+                (PlayerData(Index_).Pk2ID >= 1907 And PlayerData(Index_).Pk2ID <= 1919) Or
+                (PlayerData(Index_).Pk2ID >= 14717 And PlayerData(Index_).Pk2ID <= 14729) Then
                 Gender = 1
             End If
             If _
-                (PlayerData(Index_).Pk2Id >= 1920 And PlayerData(Index_).Pk2Id <= 1932) Or
-                (PlayerData(Index_).Pk2Id >= 14730 And PlayerData(Index_).Pk2Id <= 14742) Then
+                (PlayerData(Index_).Pk2ID >= 1920 And PlayerData(Index_).Pk2ID <= 1932) Or
+                (PlayerData(Index_).Pk2ID >= 14730 And PlayerData(Index_).Pk2ID <= 14742) Then
                 Gender = 0
             End If
 
@@ -677,7 +679,7 @@
                                            ByVal Avatar As Boolean) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.EquipItem)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(New_Slot)
             If Avatar = False Then
                 writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
@@ -694,7 +696,7 @@
             As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.UnEquipItem)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(Old_Slot)
             writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
             Return writer.GetBytes
@@ -704,7 +706,7 @@
             Array.Resize(GameDB.AllItems, GameDB.AllItems.Count + 1)
             GameDB.AllItems(GameDB.AllItems.Count - 1) = item
 
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format(
                     "INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')",
                     item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability,
@@ -718,7 +720,7 @@
                         GameDB.AllItems(i).OwnerCharID = item.OwnerCharID And GameDB.AllItems(i).Slot = item.Slot And
                         GameDB.AllItems(i).ItemType = item.ItemType Then
                         GameDB.AllItems(i) = item
-                        DataBase.SaveQuery(
+                        Database.SaveQuery(
                             String.Format(
                                 "UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='{5}'",
                                 item.Pk2Id, item.Plus, item.Durability, item.Amount, item.OwnerCharID,
@@ -730,7 +732,7 @@
         End Sub
 
         Public Sub DeleteItemFromDB(ByVal slot As Byte, ByVal Index_ As Integer)
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format(
                     "UPDATE items SET itemtype='0', plusvalue='0', durability='0', quantity='0' WHERE owner='{0}' AND itemnumber='item{1}'",
                     PlayerData(Index_).CharacterId, slot))
@@ -754,7 +756,7 @@
                     Return i
                 End If
             Next
-            Return - 1
+            Return -1
         End Function
 
         Function FillItem(ByVal From_item As cInvItem) As cInvItem

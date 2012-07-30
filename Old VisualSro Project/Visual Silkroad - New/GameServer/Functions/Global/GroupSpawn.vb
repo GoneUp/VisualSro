@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Public Class GroupSpawn
 
         Private m_UniqueIDs As New List(Of UInt32)
@@ -85,12 +87,12 @@
                     packets.Add(data)
                     packets.Add(finsih)
                 End If
-                
+
                 If tmpUniqueIDs.Count = 0 Then
                     finsihed = True
                 End If
             Loop While finsihed = False
-     
+
             Return packets.ToArray
         End Function
 

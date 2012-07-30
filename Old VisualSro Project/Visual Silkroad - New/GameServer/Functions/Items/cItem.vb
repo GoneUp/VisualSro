@@ -1,4 +1,4 @@
-﻿Namespace GameServer.Functions
+﻿Namespace Functions
     Public Class cInventory
         Sub New(ByVal slots As Integer)
             ReDim UserItems(slots - 1)
@@ -156,36 +156,36 @@
                     Select Case item.CLASS_B
                         Case 1, 2, 3, 9, 10, 11 'Equipment
 
-                            ws += Math.Round(31*PerDurability/100)
-                            ws += Math.Round(31*PerPhyRef/100)*32
-                            ws += Math.Round(31*PerMagRef/100)*1024
-                            ws += Math.Round(31*PerPhyDef/100)*32768
-                            ws += Math.Round(31*PerMagDef/100)*1048576
-                            ws += Math.Round(31*PerParryRate/100)*33554432
+                            ws += Math.Round(31 * PerDurability / 100)
+                            ws += Math.Round(31 * PerPhyRef / 100) * 32
+                            ws += Math.Round(31 * PerMagRef / 100) * 1024
+                            ws += Math.Round(31 * PerPhyDef / 100) * 32768
+                            ws += Math.Round(31 * PerMagDef / 100) * 1048576
+                            ws += Math.Round(31 * PerParryRate / 100) * 33554432
 
                         Case 4 'Shield
 
-                            ws += Math.Round(31*PerDurability/100)
-                            ws += Math.Round(31*PerPhyRef/100)*32
-                            ws += Math.Round(31*PerMagRef/100)*1024
-                            ws += Math.Round(31*PerBlock/100)*32768
-                            ws += Math.Round(31*PerPhyDef/100)*1048576
-                            ws += Math.Round(31*PerMagDef/100)*33554432
+                            ws += Math.Round(31 * PerDurability / 100)
+                            ws += Math.Round(31 * PerPhyRef / 100) * 32
+                            ws += Math.Round(31 * PerMagRef / 100) * 1024
+                            ws += Math.Round(31 * PerBlock / 100) * 32768
+                            ws += Math.Round(31 * PerPhyDef / 100) * 1048576
+                            ws += Math.Round(31 * PerMagDef / 100) * 33554432
 
                         Case 6 'Weapon
 
-                            ws += Math.Round(31*PerDurability/100)
-                            ws += Math.Round(31*PerPhyRef/100)*32
-                            ws += Math.Round(31*PerMagRef/100)*1024
-                            ws += Math.Round(31*PerAttackRate/100)*32768
-                            ws += Math.Round(31*PerPhyAtk/100)*1048576
-                            ws += Math.Round(31*PerMagAtk/100)*33554432
-                            ws += Math.Round(31*PerCritical/100)*1073741824
+                            ws += Math.Round(31 * PerDurability / 100)
+                            ws += Math.Round(31 * PerPhyRef / 100) * 32
+                            ws += Math.Round(31 * PerMagRef / 100) * 1024
+                            ws += Math.Round(31 * PerAttackRate / 100) * 32768
+                            ws += Math.Round(31 * PerPhyAtk / 100) * 1048576
+                            ws += Math.Round(31 * PerMagAtk / 100) * 33554432
+                            ws += Math.Round(31 * PerCritical / 100) * 1073741824
 
                         Case 5, 12 'Accessory
 
-                            ws += Math.Round(31*PerPhyAbs/100)
-                            ws += Math.Round(31*PerMagAbs/100)*32
+                            ws += Math.Round(31 * PerPhyAbs / 100)
+                            ws += Math.Round(31 * PerMagAbs / 100) * 32
 
                     End Select
                 End If

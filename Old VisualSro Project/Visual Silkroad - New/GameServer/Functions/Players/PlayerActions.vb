@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module PlayerActions
         Public Sub OnLogout(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim tag As Byte = packet.Byte
@@ -72,7 +74,7 @@
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Action)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(Type)
             writer.Byte(State)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
@@ -82,7 +84,7 @@
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal State2 As Byte, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Action)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(Type)
             writer.Byte(State)
             writer.Byte(State2)
@@ -111,7 +113,7 @@
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)
             DespawnPlayerTeleport(Index_)
             PlayerData(Index_).Ingame = False
-            
+
             Dim writer As New PacketWriter
 
 
@@ -137,7 +139,7 @@
 
             writer = New PacketWriter
             writer.Create(ServerOpcodes.CharacterID)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             'charid
             writer.Word(Date.Now.Day)
             'moon pos
@@ -156,7 +158,7 @@
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Angle_Update)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(PlayerData(Index_).Angle)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
@@ -164,7 +166,7 @@
         Public Sub OnEmotion(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Emotion)
-            writer.DWord(PlayerData(index_).UniqueId)
+            writer.DWord(PlayerData(index_).UniqueID)
             writer.Byte(packet.Byte)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
         End Sub
@@ -174,11 +176,11 @@
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.HelperIcon)
-            writer.DWord(PlayerData(index_).UniqueId)
+            writer.DWord(PlayerData(index_).UniqueID)
             writer.Byte(PlayerData(index_).HelperIcon)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
 
-            DataBase.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'",
+            Database.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'",
                                              PlayerData(index_).HelperIcon, PlayerData(index_).CharacterId))
         End Sub
 
@@ -207,7 +209,7 @@
                     PlayerData(index_).PotAbormal = packet.Word
                     PlayerData(index_).PotDelay = packet.Word
 
-                    DataBase.SaveQuery(
+                    Database.SaveQuery(
                         String.Format(
                             "UPDATE characters SET pot_hp='{0}', pot_mp='{1}', pot_abnormal='{2}', pot_delay='{3}' where id='{4}'",
                             PlayerData(index_).PotHp,
@@ -225,7 +227,7 @@
                 End If
             Next
 
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format("UPDATE hotkeys SET Type='{0}', IconID='{1}' WHERE OwnerID='{2}' AND Slot='{3}' ",
                               hotkey.Type, hotkey.IconID, hotkey.OwnerID, hotkey.Slot))
         End Sub
@@ -238,20 +240,20 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Target)
 
-            If ObjectID = PlayerData(Index_).UniqueId Then
+            If ObjectID = PlayerData(Index_).UniqueID Then
                 writer.Byte(1)
                 'Sucess
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 Server.Send(writer.GetBytes, Index_)
                 Exit Sub
             End If
 
             For i = 0 To Server.MaxClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).UniqueId = ObjectID Then
+                    If PlayerData(i).UniqueID = ObjectID Then
                         writer.Byte(1)
                         'Sucess
-                        writer.DWord(PlayerData(i).UniqueId)
+                        writer.DWord(PlayerData(i).UniqueID)
                         writer.Byte(1)
                         'unknown
                         writer.Byte(5)
@@ -331,7 +333,7 @@
             UpdateHP(Index_)
             'GetXP(GetLevelDataByLevel(PlayerData(Index_).Level).Experience * 0.01, 0, Index_, PlayerData(Index_).UniqueId) 'Reduce Experience by 1 %
 
-            DataBase.SaveQuery(
+            Database.SaveQuery(
                 String.Format(
                     "UPDATE positions SET dead_xsect='{0}', dead_ysect='{1}', dead_xpos='{2}', dead_zpos='{3}', dead_ypos='{4}' where OwnerCharID='{5}'",
                     PlayerData(Index_).PositionRecall.XSector, PlayerData(Index_).PositionRecall.YSector,
@@ -388,7 +390,7 @@
             Dim ref As SilkroadObject = GetObject(NpcList(ObjectId).Pk2ID)
             PlayerData(Index_).PositionReturn = GetTeleportPoint(ref.Pk2ID).ToPos
 
-            DataBase.SaveQuery(String.Format(
+            Database.SaveQuery(String.Format(
                             "UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'",
                             PlayerData(Index_).PositionReturn.XSector, PlayerData(Index_).PositionReturn.YSector,
                             Math.Round(PlayerData(Index_).PositionReturn.X),
@@ -413,7 +415,7 @@
                     UpdateState(4, 1, 0, Index_)
                     UpdateSpeedsBerserk(Index_)
 
-                    PlayerBerserkTimer(Index_).Interval = 60*1000
+                    PlayerBerserkTimer(Index_).Interval = 60 * 1000
                     PlayerBerserkTimer(Index_).Start()
                 End If
             End If

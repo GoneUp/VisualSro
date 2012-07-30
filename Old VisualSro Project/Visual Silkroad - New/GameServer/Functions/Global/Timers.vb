@@ -1,6 +1,6 @@
 ﻿Imports System.Timers
 
-Namespace GameServer.Functions
+Namespace Functions
     Module Timers
         Public PlayerAttackTimer As Timer() = New Timer(14999) {}
         Public PlayerMoveTimer As Timer() = New Timer(14999) {}
@@ -67,7 +67,7 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub AttackTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = - 1
+            Dim Index As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
                 For i As Integer = LBound(PlayerAttackTimer, 1) To UBound(PlayerAttackTimer, 1)
@@ -78,7 +78,7 @@ Namespace GameServer.Functions
                 Next
 
                 PlayerAttackTimer(Index).Stop()
-                If Index <> - 1 And PlayerData(Index) IsNot Nothing Then
+                If Index <> -1 And PlayerData(Index) IsNot Nothing Then
                     PlayerData(Index).Busy = False
                     PlayerData(Index).Attacking = False
 
@@ -107,7 +107,7 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub UseItemTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = - 1
+            Dim Index As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
                 For i As Integer = LBound(UsingItemTimer, 1) To UBound(UsingItemTimer, 1)
@@ -118,7 +118,7 @@ Namespace GameServer.Functions
                 Next
 
                 UsingItemTimer(Index).Stop()
-                If Index <> - 1 Then
+                If Index <> -1 Then
                     Select Case PlayerData(Index).UsedItem
                         Case UseItemTypes.Return_Scroll
                             PlayerData(Index).PositionRecall = PlayerData(Index).Position
@@ -195,7 +195,7 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub SitUpTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = - 1
+            Dim Index As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
                 For i As Integer = LBound(SitUpTimer, 1) To UBound(SitUpTimer, 1)
@@ -205,7 +205,7 @@ Namespace GameServer.Functions
                     End If
                 Next
 
-                If Index <> - 1 Then
+                If Index <> -1 Then
                     SitUpTimer(Index).Stop()
 
                     If PlayerData(Index).ActionFlag = 4 Then
@@ -221,7 +221,7 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub PickUpTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = - 1
+            Dim Index As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
                 For i As Integer = LBound(PickUpTimer, 1) To UBound(PickUpTimer, 1)
@@ -231,7 +231,7 @@ Namespace GameServer.Functions
                     End If
                 Next
 
-                If Index <> - 1 Then
+                If Index <> -1 Then
                     PickUpTimer(Index).Stop()
 
                     If ItemList.ContainsKey(PlayerData(Index).PickUpId) Then
@@ -331,7 +331,7 @@ Namespace GameServer.Functions
                                 obj.WalkSpeed > 0 And Mob_.GetsAttacked = False And Mob_.IsAttacking = False Then
                                 Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
-                                If Dist_FromSpawn < Settings.Server_Range/1.25 Then
+                                If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
                                     Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
                                     Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
                                     Dim vaildCords As Boolean = False
@@ -379,7 +379,7 @@ Namespace GameServer.Functions
         End Sub
 
         Public Sub PlayerMoveTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            Dim Index As Integer = - 1
+            Dim Index As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
                 For i As Integer = LBound(PlayerMoveTimer, 1) To UBound(PickUpTimer, 1)
@@ -389,7 +389,7 @@ Namespace GameServer.Functions
                     End If
                 Next
 
-                If Index <> - 1 Then
+                If Index <> -1 Then
                     PlayerMoveTimer(Index).Stop()
 
                     If PlayerData(Index) IsNot Nothing Then

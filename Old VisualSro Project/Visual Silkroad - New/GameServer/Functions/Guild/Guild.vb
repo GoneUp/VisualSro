@@ -1,4 +1,6 @@
-﻿Namespace GameServer.Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Guild
         Public Sub SendGuildInfo(ByVal Index_ As Integer, ByVal update As Boolean)
             Dim writer As New PacketWriter
@@ -46,7 +48,7 @@
 
                     writer.Word(guild.Member(i).GrantName.Length)
                     writer.String(guild.Member(i).GrantName)
-                    writer.DWord(char_.Pk2Id)
+                    writer.DWord(char_.Pk2ID)
                     writer.Word(0)
                 Next
 
@@ -62,19 +64,19 @@
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Guild_Logon)
             writer.Byte(6)
-            writer.DWord(PlayerData(Index_).UniqueId)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(2)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
         Public Sub LinkPlayerToGuild(ByVal Index_ As Integer)
-            If PlayerData(Index_).GuildID <> - 1 Then
+            If PlayerData(Index_).GuildID <> -1 Then
                 Dim guild As cGuild = GameDB.GetGuild(PlayerData(Index_).GuildID)
                 Dim member As cGuild.GuildMember_ = GetMember(PlayerData(Index_).GuildID, PlayerData(Index_).CharacterId)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.Guild_Link)
-                writer.DWord(PlayerData(Index_).UniqueId)
+                writer.DWord(PlayerData(Index_).UniqueID)
                 writer.DWord(PlayerData(Index_).GuildID)
                 writer.Word(guild.Name.Length)
                 writer.String(guild.Name)

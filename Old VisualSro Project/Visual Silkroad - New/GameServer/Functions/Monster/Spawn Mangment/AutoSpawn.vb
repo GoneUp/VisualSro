@@ -2,7 +2,7 @@
 Imports System.Globalization
 Imports System.Text
 
-Namespace GameServer.Functions
+Namespace Functions
     Module AutoSpawn
         Public Sub LoadAutoSpawn(ByVal path As String)
             Dim lines As String() = File.ReadAllLines(path)

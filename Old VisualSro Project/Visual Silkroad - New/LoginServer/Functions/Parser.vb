@@ -44,10 +44,19 @@ Namespace Functions
             Dim security As UInteger = packet.Word
 
             Select Case opcode
-                Case ClientOpcodes.Handshake_Confirm  'Client accepts
+                Case ServerOpcodes.Handshake   'Client accepts
                     GlobalManager.OnHandshake(packet)
+                Case ServerOpcodes.ServerInfo
+                    GlobalManager.OnServerInfo(packet)
 
-     
+                Case InternalServerOpcodes.SERVER_INIT
+                    GlobalManager.OnServerInit(packet)
+
+                Case InternalServerOpcodes.SERVER_SHUTDOWN
+                    GlobalManager.OnServerShutdown(packet)
+
+                Case InternalServerOpcodes.GLOBAL_INFO
+                    GlobalManager.OnGlobalInfo(packet)
 
                 Case Else
                     Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)

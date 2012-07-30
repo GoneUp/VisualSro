@@ -9,7 +9,7 @@ Namespace Shard
             If ClientList.SessionInfo(Index_).Type = _SessionInfo._ServerTypes.GameServer Then
                 If Server_Game.ContainsKey(ServerId) Then
                     Dim writer As New PacketWriter
-                    writer.Create(InternalServerOpcodes.Server_Update)
+                    writer.Create(InternalServerOpcodes.SERVER_UPDATE)
                     writer.Word(Server_Game(ServerId).Server_XPRate)
                     writer.Word(Server_Game(ServerId).Server_SPRate)
                     writer.Word(Server_Game(ServerId).Server_GoldRate)

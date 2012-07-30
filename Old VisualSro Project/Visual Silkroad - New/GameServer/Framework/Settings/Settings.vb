@@ -5,6 +5,22 @@ Namespace GameServer.Settings
         'Loading File
         Private File As New cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_game\settings.ini")
 
+        'Genral 
+        Public Server_Ip As String = "0.0.0.0"
+        Public Server_Port As UShort = 15580
+        Public Server_Slots As UInteger = 100
+        Public Server_Id As UShort = 0
+
+        Public Database_IP As String
+        Public Database_Port As UShort
+        Public Database_User As String
+        Public Database_Password As String
+        Public Database_Database As String
+
+        Public GlobalManger_Ip As String = "0.0.0.0"
+        Public GlobalManger_Port As UShort = 32000
+        Public Const GlobalManager_ProtocolVersion As UInteger = 1
+
         'Here is Place for Settings like Xp Rates, etc...
         Public PlayerStartPosCh As New Position
         Public Player_StartPos_Eu As New Position
@@ -15,21 +31,11 @@ Namespace GameServer.Settings
         Public Player_StartSP As UInteger
         Public Player_StartGM As Boolean
 
-        Public Database_IP As String
-        Public Database_Port As UShort
-        Public Database_User As String
-        Public Database_Password As String
-        Public Database_Database As String
-
         Public Server_XPRate As Long = 1
         Public Server_SPRate As Long = 1
         Public Server_GoldRate As Long = 1
         Public Server_DropRate As Long = 1
         Public Server_PingDc As Boolean = True
-
-        Public Server_Ip As String = "0.0.0.0"
-        Public Server_Port As UShort = 15580
-        Public Server_Slots As UInteger = 100
 
         Public Server_LevelCap As Byte = 100
         Public Server_MasteryCap As UInteger = 300
@@ -51,12 +57,16 @@ Namespace GameServer.Settings
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
             Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
             Server_Slots = File.Read("SERVER_INTERNAL", "Max_Slots", "1000")
+            Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
 
             Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
             Database_Port = File.Read("DATABASE", "Port", "3306")
             Database_Database = File.Read("DATABASE", "Database", "visualsro")
             Database_User = File.Read("DATABASE", "User", "root")
             Database_Password = File.Read("DATABASE", "Password", "")
+
+            GlobalManger_Ip = File.Read("GLOBALMANAGER", "Ip", "127.0.0.1")
+            GlobalManger_Port = File.Read("GLOBALMANAGER", "Port", "32000")
 
             Server_XPRate = File.Read("SERVER", "XP_Rate", "1")
             Server_SPRate = File.Read("SERVER", "SP_Rate", "1")

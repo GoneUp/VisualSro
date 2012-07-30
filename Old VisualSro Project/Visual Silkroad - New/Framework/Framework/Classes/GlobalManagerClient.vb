@@ -4,8 +4,10 @@ Imports System.Net.Sockets, System.Net
 Public Class GlobalManagerClient
     Public ManagerSocket As Socket
     Public ReceiveThread As New Threading.Thread(AddressOf ReceiveData)
-    Public LastPingTime As DateTime
 
+    Public LastPingTime As DateTime
+    Public LastInfoTime As DateTime
+    Public UpdateInfoAllowed As Boolean = False
 
 #Region "Events"
     Public Event OnGlobalManagerInit As dGlobalManagerInit
@@ -23,7 +25,7 @@ Public Class GlobalManagerClient
 #Region "Connect"
     Public Sub Connect(ByVal Ip As String, ByVal port As UShort)
         Try
-            ManagerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Unknown, ProtocolType.Tcp)
+            ManagerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             ManagerSocket.Connect(New IPEndPoint(IPAddress.Parse(Ip), port))
             ReceiveThread.Start()
 
@@ -92,8 +94,11 @@ Public Class GlobalManagerClient
 #End Region
 #Region "Send"
     Public Sub Send(ByVal buff() As Byte)
-        If ManagerSocket.Connected Then
-            ManagerSocket.Send(buff)
+        If ManagerSocket IsNot Nothing Then
+            If ManagerSocket.Connected Then
+                ManagerSocket.Send(buff)
+                LastPingTime = Date.Now
+            End If
         End If
     End Sub
 #End Region
@@ -104,6 +109,11 @@ Public Class GlobalManagerClient
     End Sub
     Public Sub ShutdownComplete()
         RaiseEvent OnGlobalManagerShutdown()
+    End Sub
+    Public Sub SendPing()
+        Dim writer As New PacketWriter
+        writer.Create(ClientOpcodes.PING)
+        Me.Send(writer.GetBytes)
     End Sub
 #End Region
 

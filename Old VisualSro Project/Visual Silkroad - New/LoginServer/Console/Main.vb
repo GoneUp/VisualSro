@@ -51,6 +51,8 @@ Friend Class Program
         Log.WriteSystemLog("Slotcount: " & Settings.Server_Slots)
 
 
+        GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
         Do While True
             Dim msg As String = Console.ReadLine()
             CheckCommand(msg)
@@ -127,6 +129,7 @@ Friend Class Program
 
     Private Shared Sub gmc_OnGlobalManagerInit()
         Server.Start()
+        Log.WriteSystemLog("We are ready!")
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerShutdown()

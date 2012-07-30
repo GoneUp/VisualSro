@@ -13,7 +13,7 @@ Namespace Settings
 
         Public GlobalManger_Ip As String = "0.0.0.0"
         Public GlobalManger_Port As UShort = 32000
-        Public GlobalManager_ProtocolVersion As UInteger = 1
+        Public Const GlobalManager_ProtocolVersion As UInteger = 1
 
         Public Server_Ip As String = "0.0.0.0"
         Public Server_Port As UShort = 15780
@@ -35,7 +35,7 @@ Namespace Settings
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
             Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
             Server_Slots = File.Read("SERVER_INTERNAL", "Max_Slots", "1000")
-            Server_Ip = File.Read("SERVER_INTERNAL", "ServerId", "0")
+            Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
 
             Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
             Database_Port = File.Read("DATABASE", "Port", "3306")

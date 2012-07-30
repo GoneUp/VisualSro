@@ -216,18 +216,18 @@
     End Enum
 
     Enum InternalServerOpcodes As UShort
-        Server_Init = &HC000
-        Server_Shutdown = &HC001
-        ShardInfo = &HC002
-        Server_Update = &HC003
+        SERVER_INIT = &HC000
+        SERVER_SHUTDOWN = &HC001
+        GLOBAL_INFO = &HC002
+        SERVER_UPDATE = &HC003
 
         Admin_Auth = &HC004
         Admin_UpdateServer = &HC005
         Admin_GetInfo = &HC006
         Admin_UpdateInfo = &HC007
 
-        GateWay_SendUserAuth = &HC010
-        GameServer_CheckUserAuth = &HC011
+        GATEWAY_SEND_USERAUTH = &HC010
+        GAMESERVER_CHECK_USERAUTH = &HC011
     End Enum
 
 

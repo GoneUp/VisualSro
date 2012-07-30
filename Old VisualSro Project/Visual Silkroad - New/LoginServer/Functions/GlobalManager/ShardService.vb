@@ -40,7 +40,7 @@ Namespace GlobalManager
             End If
         End Sub
 
-        Public Sub OnSendClientInfo()
+        Public Sub OnSendMyInfo()
             Dim writer As New PacketWriter
             writer.Create(InternalClientOpcodes.Server_Info)
             writer.Word(Settings.Server_Id)
@@ -48,6 +48,7 @@ Namespace GlobalManager
             writer.Word(Server.MaxClients)
 
             GlobalManagerCon.Send(writer.GetBytes)
+            GlobalManagerCon.LastInfoTime = Date.Now
         End Sub
 
         Public Sub OnGlobalInfo(ByVal packet As PacketReader)

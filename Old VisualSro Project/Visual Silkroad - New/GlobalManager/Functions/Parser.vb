@@ -14,6 +14,7 @@ Namespace Functions
             If ClientList.SessionInfo(Index_).Authorized = False Then
                 '===Pre-Game===
                 Select Case opcode
+                    Case ClientOpcodes.PING
                     Case ClientOpcodes.HANDSHAKE
                         Auth.OnVerifyIdentity(packet, Index_)
                     Case ClientOpcodes.LOGIN_WHO_AM_I
@@ -24,18 +25,18 @@ Namespace Functions
             ElseIf ClientList.SessionInfo(Index_).Authorized Then
                 '===SECURE===
                 Select Case opcode
-                    Case InternalServerOpcodes.Server_Init
+                    Case ClientOpcodes.PING
+                    Case InternalClientOpcodes.Server_Init
                         Shard.OnInitServer(packet, Index_)
-                    Case InternalServerOpcodes.Server_Shutdown
+                    Case InternalClientOpcodes.Server_Shutdown
                         Shard.OnShutdownServer(packet, Index_)
-                    Case InternalServerOpcodes.ShardInfo
+                    Case InternalClientOpcodes.Server_Info
                         Shard.OnServerInfo(packet, Index_)
-                    Case InternalServerOpcodes.GateWay_SendUserAuth
+                    Case InternalClientOpcodes.GateWay_SendUserAuth
                         Agent.OnSendUserAuth(packet, Index_)
-                    Case InternalServerOpcodes.GameServer_CheckUserAuth
+                    Case InternalClientOpcodes.GameServer_CheckUserAuth
                         Agent.OnCheckUserAuth(packet, Index_)
                 End Select
-
             End If
         End Sub
     End Module

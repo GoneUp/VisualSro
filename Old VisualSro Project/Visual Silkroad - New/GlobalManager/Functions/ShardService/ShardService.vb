@@ -43,7 +43,7 @@ Namespace Shard
 
         Private Sub SendServerInit(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(InternalServerOpcodes.Server_Init)
+            writer.Create(InternalServerOpcodes.SERVER_INIT)
             Server.Send(writer.GetBytes, index_)
         End Sub
 
@@ -79,7 +79,7 @@ Namespace Shard
 
         Private Sub SendShutdown(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(InternalServerOpcodes.Server_Shutdown)
+            writer.Create(InternalServerOpcodes.SERVER_SHUTDOWN)
             Server.Send(writer.GetBytes, index_)
         End Sub
 
@@ -145,7 +145,7 @@ Namespace Shard
 
         Friend Sub SendGlobalInfo(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(InternalServerOpcodes.ShardInfo)
+            writer.Create(InternalServerOpcodes.GLOBAL_INFO)
             writer.Word(Server_GateWay.Count)
             Dim tmplist = Server_GateWay.Keys.ToList
             For i = 0 To tmplist.Count - 1

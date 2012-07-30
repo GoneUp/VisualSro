@@ -10,22 +10,22 @@ Namespace Auth
         End Function
 
         'Calulation in Client:
-        'Base *= 1.1
+        'Base *= 4
         'Base *= Date.Now.DayOfYear
-        'Base *= Date.Now.DayOfWeek
+        'Base *= Date.Now.Day
 
         Public Sub OnVerifyIdentity(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim CalculatedKey As UInt32
             Dim Key As UInt32 = packet.DWord
-            Key /= Date.Now.DayOfWeek
+            Key /= Date.Now.Day
             Key /= Date.Now.DayOfYear
-            CalculatedKey = Key / 1.1
+            CalculatedKey = Key / 4
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.Handshake)
 
             If CalculatedKey = Framework.ClientList.SessionInfo(Index_).BaseKey Then
-                writer.Byte(True)
+                writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
                 ClientList.SessionInfo(Index_).HandshakeComplete = True
             Else
@@ -62,8 +62,8 @@ Namespace Auth
             If tmp.HandshakeComplete Then
                 If tmp.Type <> _SessionInfo._ServerTypes.Unknown Then
                     If tmp.ProtocolVersion = Settings.Server_ProtocolVersion Then
-                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, ClientList.GetIp(Index_)) Then
-                            writer.Byte(True)
+                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, ClientList.GetIp(Index_).Split(":")(0)) Then
+                            writer.Byte(1)
                             tmp.Authorized = True
                         Else
                             writer.Byte(2)

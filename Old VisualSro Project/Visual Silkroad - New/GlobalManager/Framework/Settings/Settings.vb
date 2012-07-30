@@ -15,8 +15,9 @@ Namespace Settings
         Public Server_Ip As String = "0.0.0.0"
         Public Server_Port As UShort = 15580
         Public Server_Slots As UInteger = 100
+        Public Server_Id As UShort = 0
 
-        Public Server_ProtocolVersion As UInteger = 1
+        Public Const Server_ProtocolVersion As UInteger = 1
 
         Public Log_Connect As Boolean = False
         Public Log_Packets As Boolean = False
@@ -25,6 +26,7 @@ Namespace Settings
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
             Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
             Server_Slots = File.Read("SERVER_INTERNAL", "Max_Slots", "1000")
+            Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
 
             Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
             Database_Port = File.Read("DATABASE", "Port", "3306")

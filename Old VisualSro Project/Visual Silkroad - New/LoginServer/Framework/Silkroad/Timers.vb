@@ -5,12 +5,11 @@ Namespace Timers
     Module Timers
 
 
-        Public QueryTimer As New Timer
+        Public GenralTimer As New Timer
         Public LoginInfoTimer(10) As Timer
 
 
         Public Sub LoadTimers(ByVal timerCount As Integer)
-
             'Initalize
             ReDim LoginInfoTimer(timerCount)
 
@@ -20,29 +19,35 @@ Namespace Timers
             Next
 
             'Handlers
-            AddHandler QueryTimer.Elapsed, AddressOf QueryTimerElapsed
+            AddHandler GenralTimer.Elapsed, AddressOf QueryTimerElapsed
 
 
             'Starting
-            QueryTimer.Interval = 2500
-            QueryTimer.Start()
-
+            GenralTimer.Interval = 2500
+            GenralTimer.Start()
         End Sub
 
 
         Public Sub QueryTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            QueryTimer.Stop()
+            GenralTimer.Stop()
+
+            'For Database Execute Querys, GlobalManager Ping, GlobalManager Update
 
             Try
-
                 Database.ExecuteQuerys()
 
+                If DateDiff(DateInterval.Second, GlobalManagerCon.LastPingTime, Date.Now) > 5 Then
+                    GlobalManagerCon.SendPing()
+                End If
 
+                If DateDiff(DateInterval.Second, GlobalManagerCon.LastInfoTime, Date.Now) > 10 And GlobalManagerCon.UpdateInfoAllowed Then
+                    GlobalManager.OnSendMyInfo()
+                End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: QT")
             End Try
 
-            QueryTimer.Start()
+            GenralTimer.Start()
         End Sub
 
         Public Sub LoginInfoTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)

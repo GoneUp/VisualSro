@@ -56,9 +56,8 @@ Class Program
         ClientList.SessionInfo(index).BaseKey = Auth.GenarateKey
         Dim writer As New PacketWriter
         writer.Create(ServerOpcodes.Handshake)
-        writer.Word(Auth.GenarateKey)
+        writer.Word(ClientList.SessionInfo(index).BaseKey)
         Server.Send(writer.GetBytes, index)
-
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)

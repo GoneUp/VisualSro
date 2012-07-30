@@ -4,19 +4,21 @@ Imports LoginServer.Framework
 Namespace GlobalManager
     Module Auth
         Public Sub OnHandshake(ByVal packet As PacketReader)
-            If packet.DataLen = 2 Then
+            If packet.DataLen = 8 Then
                 Dim BaseKey As UInt16 = packet.Word
+                Dim NewKey = CalculateNewKey(BaseKey)
 
                 Dim writer As New PacketWriter
-                writer.Create(ClientOpcodes.Handshake)
-                writer.DWord(CalculateNewKey(BaseKey))
+                writer.Create(ClientOpcodes.HANDSHAKE)
+                writer.DWord(NewKey)
                 GlobalManagerCon.Send(writer.GetBytes)
 
-            ElseIf packet.DataLen = 1 Then
+            ElseIf packet.DataLen = 7 Then
                 Dim success As Byte = packet.Byte
 
                 If success = 1 Then
                     Log.WriteSystemLog("Handshake with GlobalManager Succeed!!!")
+                    OnSendAuthInfo()
                 Else
                     Log.WriteSystemLog("Handshake with GlobalManager Failed!!!")
                     Log.WriteSystemLog("Cannot start GameServer!")
@@ -25,9 +27,11 @@ Namespace GlobalManager
         End Sub
 
         Private Function CalculateNewKey(ByVal BaseKey As UInt16) As UInt32
-            BaseKey *= 1.1
-            BaseKey *= Date.Now.DayOfYear
-            BaseKey *= Date.Now.DayOfWeek
+            CalculateNewKey = BaseKey
+            CalculateNewKey *= 4
+            CalculateNewKey *= Date.Now.DayOfYear
+            CalculateNewKey *= Date.Now.Day
+            Return CalculateNewKey
         End Function
 
         Public Sub OnSendAuthInfo()
@@ -49,6 +53,9 @@ Namespace GlobalManager
 
             If success = 1 Then
                 Log.WriteSystemLog("GlobalManager: Auth completed!")
+                GlobalManagerCon.UpdateInfoAllowed = True
+                OnSendMyInfo()
+                OnSendServerInit()
             Else
                 Dim errortag As Byte = packet.Byte
                 Select Case errortag
@@ -66,5 +73,7 @@ Namespace GlobalManager
                 Log.WriteSystemLog("Cannot start Loginserver!")
             End If
         End Sub
+
+
     End Module
 End Namespace

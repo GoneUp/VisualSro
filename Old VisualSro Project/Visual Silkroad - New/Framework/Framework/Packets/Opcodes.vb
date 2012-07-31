@@ -16,6 +16,7 @@
         LOGIN_LOGIN_REQ = &H6102
 
         'Agent
+        GAME_AUTH = &H6103
         GAME_CHARACTER = &H7007
         GAME_INGAME_REQ = &H7001
         GAME_JOIN_WORLD_REQ = &H3012
@@ -23,7 +24,7 @@
 
         'Ingame
         GAME_MOVEMENT = &H7021
-        GAME_GAME_MASTER = &H7010
+        GAME_GAMEMASTER = &H7010
         GAME_CHAT = &H7025
         GAME_ACTION = &H704F
         GAME_EMOTION = &H3091
@@ -72,132 +73,137 @@
         GAME_STALL_BUY = &H70B4
         GAME_STALL_CLOSE_VISITOR = &H70B5
         GAME_STALL_DATA = &H70BA
+
+        'SR_ADMIN #### Only for comability, remove after globalmanager integration
+        SR_Admin = &HAD01
     End Enum
 
 
 
     'S --> C 
     Public Enum ServerOpcodes
-        Handshake = &H5000
-        ServerInfo = &H2001 'Gateway
-        MassiveMessage = &H600D 'Patch Info
-        LaucherInfo = &HA104
-        ServerList = &HA101
-        LoginAuthInfo = &HA102
+        HANDSHAKE = &H5000
+        LOGIN_SERVER_INFO = &H2001 'Gateway
+        LOGIN_MASSIVE_MESSAGE = &H600D 'Patch Info
+        LOGIN_LAUNCHER_INFO = &HA104
+        LOGIN_SERVER_LIST = &HA101
+        LOGIN_AUTH = &HA102
 
-        Character = &HB007
-        IngameReqRepley = &HB001
+        GAME_AUTH = &HA102
+        GAME_CHARACTER = &HB007
+        GAME_INGAME_REQ_REPLY = &HB001
 
-        Capatcha = &H2322
+        GAME_CAPATCHA = &H2322
 
-        LoadingStart = &H34A5
-        LoadingEnd = &H34A6
-        LoadingStart2 = &H34B5
-        LoadingEnd2 = &H34B6
-        CharacterInfo = &H3013
-        CharacterID = &H3020
-        CharacterStats = &H303D
-        JoinWorldReply = &H3809
-        JoinWorldUnknown = &H3077
-        JoinWorldUnknown2 = &H3305
-        MessageNotice = &H3B07
-        ClientStatus = &HB0EA
+        GAME_LOADING_START = &H34A5
+        GAME_LOADING_END = &H34A6
+        GAME_LOADING_START_2 = &H34B5
+        GAME_LOADING_END_2 = &H34B6
+        GAME_CHARACTER_INFO = &H3013
+        GAME_CHARACTER_ID = &H3020
+        GAME_CHARACTER_STATS = &H303D
+        GAME_JOIN_WORLD_REPLY = &H3809
+        GAME_MESSAGE_NOTICE = &H3B07
+        GAME_CLIENT_STATUS = &HB0EA
 
-        Movement = &HB021
-        Chat_Accept = &HB025
-        Chat = &H3026
-        Action = &H30BF
-        ItemMove = &HB034
-        UniqueAnnonce = &H300C
-        Alchemy = &HB150
-        Angle_Update = &HB024
-        Teleport_Start = &HB05A
-        Weather = &H3809
-        Teleport_Annonce = &H34B5
-        Emotion = &H3091
-        HelperIcon = &HB402
-        Silk = &H3153
+        GAME_MOVEMENT = &HB021
+        GAME_CHAT_ACCEPT = &HB025
+        GAME_CHAT = &H3026
+        GAME_ACTION = &H30BF
+        GAME_ITEM_MOVE = &HB034
+        GAME_UNIQUE_ANNONCE = &H300C
+        GAME_ALCHEMY = &HB150
+        GAME_ANGLE_UPDATE = &HB024
+        GAME_TELEPORT_START = &HB05A
+        GAME_WEATHER = &H3809
+        GAME_TELEPORT_ANNONCE = &H34B5
+        GAME_EMOTION = &H3091
+        GAME_HELPER_ICON = &HB402
+        GAME_SILK = &H3153
 
-        Npc_Chat = &HB046
-        Npc_Chat_Left = &HB04B
-        Npc_Teleport_Confirm = &HB05A
+        GAME_NPC_CHAT = &HB046
+        GAME_NPC_CHAT_LEFT = &HB04B
+        GAME_NPC_TELEPORT_CONFIRM = &HB05A
 
         'Updates
-        HP_MP_Update = &H3057
-        Gold_Update = &H304E
-        Exp_Update = &H3056
-        LevelUp_Animation = &H3054
-        Speed_Update = &H30D0
+        GAME_HP_MP_UPDATE = &H3057
+        GAME_GOLD_UPDATE = &H304E
+        GAME_EXP_UPDATE = &H3056
+        GAME_LEVELUP_ANIMATION = &H3054
+        GAME_SPEED_UPDATE = &H30D0
 
         'Guild
-        Guild_Info = &H3101
-        Guild_Link = &H30FF
-        Guild_Logon = &H38F5
+        GAME_GUILD_INFO = &H3101
+        GAME_GUILD_LINK = &H30FF
+        GAME_GUILD_LOGON = &H38F5
 
         'Die
-        Die_1 = &H3011
-        Die_2 = &H30D2
+        GAME_DIE_1 = &H3011
+        GAME_DIE_2 = &H30D2
 
         'Items
-        ItemUse = &HB04C
-        ItemUseOtherPlayer = &H305C
-        EquipItem = &H3038
-        UnEquipItem = &H3039
-        PickUp_Item = &H3036
-        PickUp_Move = &HB023
-        ItemDelete = &H304D
+        GAME_ITEM_USE = &HB04C
+        GAME_ITEM_USE_OTHERPLAYER = &H305C
+        GAME_EQUIP_ITEM = &H3038
+        GAME_UNEQUIP_ITEM = &H3039
+        GAME_PICKUP_ITEM = &H3036
+        GAME_PICKUP_MOVE = &HB023
+        GAME_ITEM_DELETE = &H304D
 
         'Spawns
-        SingleSpawn = &H3015
-        SingleDespawn = &H3016
-        GroupSpawnStart = &H3017
-        GroupSpawnData = &H3019
-        GroupSpawnEnd = &H3018
+        GAME_SINGLE_SPAWN = &H3015
+        GAME_SINGLE_DESPAWN = &H3016
+        GAME_GROUP_SPAWN_START = &H3017
+        GAME_GROUP_SPAWN_DATA = &H3019
+        GAME_GROUP_SPAWN_END = &H3018
 
         'Monster Stuff
-        Target = &HB045
-        Attack_Reply = &HB074
-        Attack_Main = &HB070
+        GAME_TARGET = &HB045
+        GAME_ATTACK_REPLY = &HB074
+        GAME_ATTACK_MAIN = &HB070
 
-        Buff_Info = &HB071
-        Buff_Icon = &HB0BD
-        Buff_End = &HB072
+        GAME_BUFF_INFO = &HB071
+        GAME_BUFF_ICON = &HB0BD
+        GAME_BUFF_END = &HB072
 
-        Str_Up = &HB050
-        Int_Up = &HB051
+        GAME_STR_UP = &HB050
+        GAME_INT_UP = &HB051
 
         'Skills
-        Mastery_Up = &HB0A2
-        Skill_Up = &HB0A1
+        GAME_MASTERY_UP = &HB0A2
+        GAME_SKILL_UP = &HB0A1
 
         'Exchange
-        Exchange_Invite = &H3080
-        Exchange_Invite_Reply = &HB081
-        Exchange_Start = &H3085
-        Exchange_UpdateItems = &H308C
-        Exchange_Confirm_Reply = &HB082
-        Exchange_Confirm_Other = &H3086
-        Exchange_Approve_Reply = &HB083
-        Exchange_Finsih = &H3087
-        Exchange_Error = &H3088
-        Exchange_Gold = &H3089
-        Exchange_Abort_Reply = &HB084
+        GAME_EXCHANGE_INVITE = &H3080
+        GAME_EXCHANGE_INVITE_REPLY = &HB081
+        GAME_EXCHANGE_START = &H3085
+        GAME_EXCHANGE_UPDATE_ITEMS = &H308C
+        GAME_EXCHANGE_CONFIRM_REPLY = &HB082
+        GAME_EXCHANGE_CONFIRM_OTHER = &H3086
+        GAME_EXCHANGE_APPROVE_REPLY = &HB083
+        GAME_EXCHANGE_FINISH = &H3087
+        GAME_EXCHANGE_ERROR = &H3088
+        GAME_EXCHANGE_GOLD = &H3089
+        GAME_EXCHANGE_ABORT_REPLY = &HB084
 
         'Stall
-        Stall_Open_ToOther = &H30B8
-        Stall_Open_Reply = &HB0B1
-        Stall_Data = &HB0BA
-        Stall_Name = &H30BB
-        Stall_Items = &HB0B3
-        Stall_Buy = &HB0B4
-        Stall_Message = &H30B7
-        Stall_Close_Owner_Other = &H30B9
-        Stall_Close_Owner = &HB0B2
-        Stall_Close_Visitor = &HB0B5
+        GAME_STALL_OPEN_TO_OTHER = &H30B8
+        GAME_STALL_REPLY = &HB0B1
+        GAME_STALL_DATA = &HB0BA
+        GAME_STALL_NAME = &H30BB
+        GAME_STALL_ITEMS = &HB0B3
+        GAME_STALL_BUY = &HB0B4
+        GAME_STALL_MESSAGE = &H30B7
+        GAME_STALL_CLOSE_OWNER_OTHER = &H30B9
+        GAME_STALL_CLOSE_OWNER = &HB0B2
+        GAME_STALL_CLOSE_VISITOR = &HB0B5
 
         'Exit
-        [Exit] = &HB005
-        Exit2 = &H300A
+        GAME_EXIT_COUNTDOWN = &HB005
+        GAME_EXIT_FINAL = &H300A
+
+        'SR_ADMIN #### Only for comability, remove after globalmanager integration
+        SR_Admin = &HBD01
     End Enum
 
     Enum InternalClientOpcodes

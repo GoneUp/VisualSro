@@ -40,13 +40,13 @@ Namespace Functions
             If message.Contains("\n") = False Then 'Filter :P
                 Dim writer As New PacketWriter
                 'Reply to sender
-                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Create(ServerOpcodes.GAME_CHAT_ACCEPT)
                 writer.Byte(1)
                 writer.Byte(1)
                 writer.Byte(counter)
                 Server.Send(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Chat)
+                writer.Create(ServerOpcodes.GAME_CHAT)
                 writer.Byte(1)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(messagelength)
@@ -82,13 +82,13 @@ Namespace Functions
             Dim writer As New PacketWriter
 
             If receiverIndex <> -1 Then
-                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Create(ServerOpcodes.GAME_CHAT_ACCEPT)
                 writer.Byte(1)
                 writer.Byte(ChatModes.PmIncome)
                 writer.Byte(counter)
                 Server.Send(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Chat)
+                writer.Create(ServerOpcodes.GAME_CHAT)
                 writer.Byte(ChatModes.PmIncome)
                 writer.Word(PlayerData(Index_).CharacterName.Length)
                 writer.String(PlayerData(Index_).CharacterName)
@@ -109,7 +109,7 @@ Namespace Functions
                 SendNotice("Easteregg: " & message, Index_)
             Else
                 'Opposite not online
-                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Create(ServerOpcodes.GAME_CHAT_ACCEPT)
                 writer.Byte(2)
                 writer.Word(3)
                 'error byte
@@ -122,7 +122,7 @@ Namespace Functions
 
         Public Sub SendPm(ByVal Rev_Index As Integer, ByVal Message As String, ByVal SenderName As String)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Chat)
+            writer.Create(ServerOpcodes.GAME_CHAT)
             writer.Byte(ChatModes.PmIncome)
             writer.Word(SenderName.Length)
             writer.String(SenderName)
@@ -143,13 +143,13 @@ Namespace Functions
 
                 Dim writer As New PacketWriter
                 'Reply to sender
-                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Create(ServerOpcodes.GAME_CHAT_ACCEPT)
                 writer.Byte(1)
                 writer.Byte(ChatModes.GameMaster)
                 writer.Byte(counter)
                 Server.Send(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Chat)
+                writer.Create(ServerOpcodes.GAME_CHAT)
                 writer.Byte(ChatModes.GameMaster)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(messagelength)
@@ -186,7 +186,7 @@ Namespace Functions
         ''' <remarks></remarks>
         Public Sub SendNotice(ByVal message As String)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Chat)
+            writer.Create(ServerOpcodes.GAME_CHAT)
             writer.Byte(ChatModes.Notice)
             writer.Word(message.Length)
             writer.UString(message)
@@ -195,7 +195,7 @@ Namespace Functions
 
         Public Sub OnGlobalChat(ByVal Message As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Chat)
+            writer.Create(ServerOpcodes.GAME_CHAT)
             writer.Byte(ChatModes.Globals)
             writer.Word(PlayerData(Index_).CharacterName.Length)
             writer.String(PlayerData(Index_).CharacterName)
@@ -216,7 +216,7 @@ Namespace Functions
         ''' <remarks></remarks>
         Public Sub SendNotice(ByVal message As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Chat)
+            writer.Create(ServerOpcodes.GAME_CHAT)
             writer.Byte(ChatModes.Notice)
             writer.Word(message.Length)
             writer.UString(message)

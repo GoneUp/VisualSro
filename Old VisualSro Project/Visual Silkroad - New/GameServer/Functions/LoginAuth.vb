@@ -8,7 +8,7 @@ Namespace Functions
             If clientString = "SR_Client" Then
                 Dim writer As New PacketWriter
                 Dim name As String = "AgentServer"
-                writer.Create(ServerOpcodes.ServerInfo)
+                writer.Create(ServerOpcodes.LOGIN_SERVER_INFO)
                 writer.Word(name.Length)
                 writer.HexString(name)
                 writer.Byte(0)
@@ -59,7 +59,7 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.LoginAuthInfo)
+            writer.Create(ServerOpcodes.GAME_AUTH)
 
             If loggedIn = True Or GameDB.Users(userIndex).Banned = True Then
                 writer.Byte(2)

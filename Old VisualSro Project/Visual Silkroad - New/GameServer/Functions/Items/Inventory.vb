@@ -200,7 +200,7 @@ Namespace Functions
                 UpdateItem(Inventorys(Index_).UserItems(New_Slot))
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.ItemMove)
+                writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                 writer.Byte(1)
                 'success
                 writer.Byte(0)
@@ -249,11 +249,11 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ItemDelete)
+            writer.Create(ServerOpcodes.GAME_ITEM_DELETE)
             writer.DWord(item_uniqueid)
             Server.Send(writer.GetBytes, index_)
 
-            writer.Create(ServerOpcodes.ItemMove)
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
             writer.Byte(&HF)
             writer.Byte(slot)
@@ -281,7 +281,7 @@ Namespace Functions
                 UpdateGold(index_)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.ItemMove)
+                writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                 writer.Byte(1)
                 writer.Byte(10)
                 writer.QWord(amout)
@@ -303,7 +303,7 @@ Namespace Functions
                 UpdateState(1, 1, Index_)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.PickUp_Move)
+                writer.Create(ServerOpcodes.GAME_PICKUP_MOVE)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(_item.Position.XSector)
                 writer.Byte(_item.Position.YSector)
@@ -313,7 +313,7 @@ Namespace Functions
                 writer.Word(0)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.PickUp_Item)
+                writer.Create(ServerOpcodes.GAME_PICKUP_ITEM)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(0)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
@@ -341,7 +341,7 @@ Namespace Functions
                         UpdateItem(Inventorys(Index_).UserItems(slot))
                         'SAVE IT
 
-                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)
                         writer.Byte(6)
                         'type = new item
@@ -376,7 +376,7 @@ Namespace Functions
                         Inventorys(index_).UserItems(slot).Locked = True
 
                         Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)
                         writer.Byte(4)
                         writer.Byte(slot)
@@ -395,7 +395,7 @@ Namespace Functions
                         Inventorys(index_).UserItems(slot).Locked = True
 
                         Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)
                         writer.Byte(4)
                         writer.Byte(slot)
@@ -423,7 +423,7 @@ Namespace Functions
                     Inventorys(index_).UserItems(slot).Locked = False
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ItemMove)
+                    writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                     writer.Byte(1)
                     writer.Byte(5)
                     writer.Byte(0)
@@ -439,7 +439,7 @@ Namespace Functions
                     Inventorys(index_).UserItems(slot).Locked = False
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ItemMove)
+                    writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                     writer.Byte(1)
                     writer.Byte(5)
                     writer.Byte(0)
@@ -461,13 +461,13 @@ Namespace Functions
                 If PlayerData(index_).Gold - add_gold >= 0 Then 'Prevent negative gold
                     If ExchangeData(PlayerData(index_).ExchangeID).Player1Index = index_ Then
                         ExchangeData(PlayerData(index_).ExchangeID).Player1Gold = add_gold
-                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)
                         writer.Byte(&HD)
                         writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, index_)
 
-                        writer.Create(ServerOpcodes.Exchange_Gold)
+                        writer.Create(ServerOpcodes.GAME_EXCHANGE_GOLD)
                         writer.Byte(2)
                         writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, PlayerData(index_).InExchangeWith)
@@ -475,13 +475,13 @@ Namespace Functions
                     ElseIf ExchangeData(PlayerData(index_).ExchangeID).Player2Index = index_ Then
                         ExchangeData(PlayerData(index_).ExchangeID).Player2Gold = add_gold
 
-                        writer.Create(ServerOpcodes.ItemMove)
+                        writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)
                         writer.Byte(&HD)
                         writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, index_)
 
-                        writer.Create(ServerOpcodes.Exchange_Gold)
+                        writer.Create(ServerOpcodes.GAME_EXCHANGE_GOLD)
                         writer.Byte(2)
                         writer.QWord(add_gold)
                         Server.Send(writer.GetBytes, PlayerData(index_).InExchangeWith)
@@ -529,7 +529,7 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ItemMove)
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
             'success
             writer.Byte(36)
@@ -577,7 +577,7 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ItemMove)
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
             'success
             writer.Byte(35)
@@ -678,7 +678,7 @@ Namespace Functions
         Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte,
                                            ByVal Avatar As Boolean) As Byte()
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.EquipItem)
+            writer.Create(ServerOpcodes.GAME_EQUIP_ITEM)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(New_Slot)
             If Avatar = False Then
@@ -695,7 +695,7 @@ Namespace Functions
         Private Function CreateUnEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte) _
             As Byte()
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.UnEquipItem)
+            writer.Create(ServerOpcodes.GAME_UNEQUIP_ITEM)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(Old_Slot)
             writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
@@ -877,7 +877,7 @@ Namespace Functions
 
         Public Sub OnItemMoveError(ByVal Index_ As Integer, ByVal Byte1 As Byte, ByVal Byte2 As Byte)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ItemMove)
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(2)
             writer.Byte(Byte1)
             writer.Byte(Byte2)

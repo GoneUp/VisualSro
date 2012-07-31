@@ -7,31 +7,25 @@ Namespace Functions
             Select Case tag
                 Case 1 'Normal Exit
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Exit)
-                    writer.Byte(1)
-                    'sucees
-                    writer.Byte(5)
-                    '1 sekunde
-                    writer.Byte(1)
-                    'modew
+                    writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
+                    writer.Byte(1) 'succeed
+                    writer.Byte(5) '5 secounds
+                    writer.Byte(1) 'mode
                     Server.Send(writer.GetBytes, Index_)
 
                     writer = New PacketWriter
-                    writer.Create(ServerOpcodes.Exit2)
+                    writer.Create(ServerOpcodes.GAME_EXIT_FINAL)
                     Server.Send(writer.GetBytes, Index_)
                 Case 2 'Restart
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Exit)
-                    writer.Byte(1)
-                    'sucees
-                    writer.Byte(5)
-                    '1 sekunde
-                    writer.Byte(2)
-                    'mode 
+                    writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
+                    writer.Byte(1) 'succeed
+                    writer.Byte(5) '5 secounds
+                    writer.Byte(2) 'mode
                     Server.Send(writer.GetBytes, Index_)
             End Select
 
-            GameServer.GameMod.Damage.OnPlayerLogoff(Index_)
+            GameMod.Damage.OnPlayerLogoff(Index_)
             Server.Disconnect(Index_)
         End Sub
 
@@ -73,7 +67,7 @@ Namespace Functions
 
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Action)
+            writer.Create(ServerOpcodes.GAME_ACTION)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(Type)
             writer.Byte(State)
@@ -83,7 +77,7 @@ Namespace Functions
 
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal State2 As Byte, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Action)
+            writer.Create(ServerOpcodes.GAME_ACTION)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(Type)
             writer.Byte(State)
@@ -93,7 +87,7 @@ Namespace Functions
 
         Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Mob_ As cMonster)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Action)
+            writer.Create(ServerOpcodes.GAME_ACTION)
             writer.DWord(Mob_.UniqueID)
             writer.Byte(Type)
             writer.Byte(State)
@@ -102,7 +96,7 @@ Namespace Functions
 
         Public Sub OnTeleportUser(ByVal Index_ As Integer, ByVal XSec As Byte, ByVal YSec As Byte)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Teleport_Annonce)
+            writer.Create(ServerOpcodes.GAME_TELEPORT_ANNONCE)
             writer.Byte(XSec)
             writer.Byte(YSec)
             Server.Send(writer.GetBytes, Index_)
@@ -118,7 +112,7 @@ Namespace Functions
 
 
             If PlayerData(Index_).TeleportType = TeleportType_.Npc Then
-                writer.Create(ServerOpcodes.LoadingStart2)
+                writer.Create(ServerOpcodes.GAME_LOADING_START_2)
                 writer.Byte(PlayerData(Index_).Position.XSector)
                 writer.Byte(PlayerData(Index_).Position.YSector)
                 Server.Send(writer.GetBytes, Index_)
@@ -126,19 +120,19 @@ Namespace Functions
                 OnCharacterInfo(Index_)
 
             Else
-                writer.Create(ServerOpcodes.LoadingStart)
+                writer.Create(ServerOpcodes.GAME_LOADING_START)
                 Server.Send(writer.GetBytes, Index_)
 
                 OnCharacterInfo(Index_)
 
                 writer = New PacketWriter
-                writer.Create(ServerOpcodes.LoadingEnd)
+                writer.Create(ServerOpcodes.GAME_LOADING_END)
                 Server.Send(writer.GetBytes, Index_)
             End If
 
 
             writer = New PacketWriter
-            writer.Create(ServerOpcodes.CharacterID)
+            writer.Create(ServerOpcodes.GAME_CHARACTER_ID)
             writer.DWord(PlayerData(Index_).UniqueID)
             'charid
             writer.Word(Date.Now.Day)
@@ -157,7 +151,7 @@ Namespace Functions
             PlayerData(Index_).Angle = new_angle
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Angle_Update)
+            writer.Create(ServerOpcodes.GAME_ANGLE_UPDATE)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(PlayerData(Index_).Angle)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
@@ -165,7 +159,7 @@ Namespace Functions
 
         Public Sub OnEmotion(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Emotion)
+            writer.Create(ServerOpcodes.GAME_EMOTION)
             writer.DWord(PlayerData(index_).UniqueID)
             writer.Byte(packet.Byte)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
@@ -175,7 +169,7 @@ Namespace Functions
             PlayerData(index_).HelperIcon = packet.Byte
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.HelperIcon)
+            writer.Create(ServerOpcodes.GAME_HELPER_ICON)
             writer.DWord(PlayerData(index_).UniqueID)
             writer.Byte(PlayerData(index_).HelperIcon)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
@@ -238,7 +232,7 @@ Namespace Functions
             PlayerData(Index_).LastSelected = ObjectID
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Target)
+            writer.Create(ServerOpcodes.GAME_TARGET)
 
             If ObjectID = PlayerData(Index_).UniqueID Then
                 writer.Byte(1)
@@ -298,14 +292,14 @@ Namespace Functions
             Select Case status
                 Case 1
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ClientStatus)
+                    writer.Create(ServerOpcodes.GAME_CLIENT_STATUS)
                     writer.Byte(1)
                     writer.QWord(status)
                     Server.Send(writer.GetBytes, Index_)
                 Case 2
                     'moving
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ClientStatus)
+                    writer.Create(ServerOpcodes.GAME_CLIENT_STATUS)
                     writer.Byte(1)
                     writer.QWord(status)
                     Server.Send(writer.GetBytes, Index_)
@@ -343,14 +337,14 @@ Namespace Functions
 
         Public Sub Player_Die1(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Die_1)
+            writer.Create(ServerOpcodes.GAME_DIE_1)
             writer.Byte(4)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
         Public Sub Player_Die2(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Die_2)
+            writer.Create(ServerOpcodes.GAME_DIE_2)
             writer.DWord(0)
             Server.Send(writer.GetBytes, Index_)
         End Sub

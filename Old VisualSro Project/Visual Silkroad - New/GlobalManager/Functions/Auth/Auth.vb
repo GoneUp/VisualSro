@@ -22,7 +22,7 @@ Namespace Auth
             CalculatedKey = Key / 4
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Handshake)
+            writer.Create(ServerOpcodes.HANDSHAKE)
 
             If CalculatedKey = Framework.ClientList.SessionInfo(Index_).BaseKey Then
                 writer.Byte(1)
@@ -55,7 +55,7 @@ Namespace Auth
 
             Dim writer As New PacketWriter
             Dim name As String = "GlobalManager"
-            writer.Create(ServerOpcodes.ServerInfo)
+            writer.Create(ServerOpcodes.LOGIN_SERVER_INFO)
             writer.Word(name.Length)
             writer.HexString(name)
 

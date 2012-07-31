@@ -71,7 +71,7 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Movement)
+            writer.Create(ServerOpcodes.GAME_MOVEMENT)
             writer.DWord(UniqueID)
             writer.Byte(1)
             'destination
@@ -137,7 +137,7 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Movement)
+            writer.Create(ServerOpcodes.GAME_MOVEMENT)
             writer.DWord(uniqueID)
             writer.Byte(1)
             'destination

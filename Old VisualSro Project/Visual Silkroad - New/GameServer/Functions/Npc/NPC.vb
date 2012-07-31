@@ -38,7 +38,7 @@ Namespace Functions
             Dim obj As SilkroadObject = GetObject(npc.Pk2ID)
 
             If includePacketHeader Then
-                writer.Create(ServerOpcodes.GroupSpawnData)
+                writer.Create(ServerOpcodes.GAME_GROUP_SPAWN_DATA)
             End If
 
             writer.DWord(npc.Pk2ID)
@@ -122,7 +122,7 @@ Namespace Functions
             Dim obj As SilkroadObject = GetObject(NpcList(NpcUniqueId).Pk2ID)
             Dim name As String() = obj.TypeName.Split("_")
 
-            writer.Create(ServerOpcodes.Target)
+            writer.Create(ServerOpcodes.GAME_TARGET)
             writer.Byte(1)
             'Sucess
             writer.DWord(NpcList(NpcUniqueId).UniqueID)
@@ -153,7 +153,7 @@ Namespace Functions
                 refObj = GetObject(NpcList(uniqueID).Pk2ID)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Npc_Chat)
+                writer.Create(ServerOpcodes.GAME_NPC_CHAT)
                 writer.Byte(1)
                 'Sucess
                 If refObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
@@ -173,7 +173,7 @@ Namespace Functions
             Dim ObjectID As UInteger = packet.DWord
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Npc_Chat_Left)
+            writer.Create(ServerOpcodes.GAME_NPC_CHAT_LEFT)
             writer.Byte(1)
             'Sucess
             Server.Send(writer.GetBytes, Index_)
@@ -201,7 +201,7 @@ Namespace Functions
                     Dim Link As TeleportLink = Point_.Links(TeleportNumber)
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
+                    writer.Create(ServerOpcodes.GAME_NPC_TELEPORT_CONFIRM)
 
                     If CSng(PlayerData(Index_).Gold) - Link.Cost < 0 Then
                         'Not enough Gold...
@@ -231,7 +231,7 @@ Namespace Functions
                         PlayerData(Index_).Gold -= Link.Cost
                         UpdateGold(Index_)
 
-                        writer.Create(ServerOpcodes.Npc_Teleport_Confirm)
+                        writer.Create(ServerOpcodes.GAME_NPC_TELEPORT_CONFIRM)
                         writer.Byte(1)
                         Server.Send(writer.GetBytes, Index_)
 

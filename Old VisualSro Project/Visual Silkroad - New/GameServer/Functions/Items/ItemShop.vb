@@ -78,7 +78,7 @@ Namespace Functions
 
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.ItemMove)
+                writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                 writer.Byte(1)
                 writer.Byte(8)
                 writer.Byte(shopline)
@@ -126,7 +126,7 @@ Namespace Functions
                 UpdateGold(index_)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.ItemMove)
+                writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                 writer.Byte(1)
                 writer.Byte(9)
                 writer.Byte(slot)

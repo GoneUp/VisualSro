@@ -47,7 +47,7 @@ Namespace Functions
             UpdateState(1, 3, Mob_)
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Main)
+            writer.Create(ServerOpcodes.GAME_ATTACK_MAIN)
             writer.Byte(1)
             writer.Byte(2)
             writer.Byte(&H30)

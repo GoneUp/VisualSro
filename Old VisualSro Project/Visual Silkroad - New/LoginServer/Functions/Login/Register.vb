@@ -51,7 +51,7 @@ Namespace Functions
 
         Public Sub LoginWriteSpecialText(ByVal Text As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.LoginAuthInfo)
+            writer.Create(ServerOpcodes.LOGIN_AUTH)
             writer.Byte(3) 'failed
             writer.Word(527) 'failed
             writer.Word(Text.Length)

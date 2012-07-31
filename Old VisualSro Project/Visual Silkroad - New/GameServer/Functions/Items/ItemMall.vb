@@ -5,7 +5,7 @@ Namespace Functions
         Public Sub OnSendSilks(ByVal Index_ As Integer)
             Dim userIndex As Integer = GameDB.GetUser(PlayerData(Index_).AccountID)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Silk)
+            writer.Create(ServerOpcodes.GAME_SILK)
             writer.DWord(GameDB.Users(userIndex).Silk)
             writer.DWord(GameDB.Users(userIndex).Silk_Bonus)
             writer.DWord(GameDB.Users(userIndex).Silk_Points)
@@ -55,7 +55,7 @@ Namespace Functions
                         OnSendSilks(index_)
                     Next
 
-                    writer.Create(ServerOpcodes.ItemMove)
+                    writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                     writer.Byte(1)
                     writer.Byte(24)
                     writer.Byte(type1)
@@ -73,7 +73,7 @@ Namespace Functions
                     Log.WriteGameLog(index_, "Item_Mall", "Buy",
                                      String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, RefObject.Price))
                 Else
-                    writer.Create(ServerOpcodes.ItemMove)
+                    writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                     writer.Byte(2)
                     writer.Byte(24)
                     writer.Byte(1)

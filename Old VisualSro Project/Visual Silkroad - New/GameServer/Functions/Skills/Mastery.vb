@@ -43,7 +43,7 @@ Namespace Functions
                                         GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
                                         GameDB.Masterys(i).MasteryID))
 
-                                writer.Create(ServerOpcodes.Mastery_Up)
+                                writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                 writer.Byte(1)
                                 writer.DWord(GameDB.Masterys(i).MasteryID)
                                 writer.Byte(GameDB.Masterys(i).Level)
@@ -51,7 +51,7 @@ Namespace Functions
 
                             Else
                                 'Not enough SP's
-                                writer.Create(ServerOpcodes.Mastery_Up)
+                                writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                 writer.Byte(2)
                                 writer.Byte(4)
                                 'Server.Send(writer.GetBytes, index_)
@@ -62,7 +62,7 @@ Namespace Functions
                         End If
                     Next
                 ElseIf masterycount >= Settings.Server_MasteryCap Then
-                    writer.Create(ServerOpcodes.Mastery_Up)
+                    writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                     writer.Byte(2)
                     writer.Byte(4)
                     'Server.Send(writer.GetBytes, index_)
@@ -94,7 +94,7 @@ Namespace Functions
                                             GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
                                             GameDB.Masterys(i).MasteryID))
 
-                                    writer.Create(ServerOpcodes.Mastery_Up)
+                                    writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                     writer.Byte(1)
                                     writer.DWord(GameDB.Masterys(i).MasteryID)
                                     writer.Byte(GameDB.Masterys(i).Level)
@@ -102,7 +102,7 @@ Namespace Functions
 
                                 Else
                                     'Not enough SP's
-                                    writer.Create(ServerOpcodes.Mastery_Up)
+                                    writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                     writer.Byte(2)
                                     writer.Byte(4)
                                     'Server.Send(writer.GetBytes, index_) 
@@ -112,7 +112,7 @@ Namespace Functions
                         End If
                     Next
                 ElseIf masterycount >= maxmastery Then
-                    writer.Create(ServerOpcodes.Mastery_Up)
+                    writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                     writer.Byte(2)
                     writer.Byte(4)
                     'Server.Send(writer.GetBytes, index_)
@@ -150,7 +150,7 @@ Namespace Functions
                 UpdateSP(Index_)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Skill_Up)
+                writer.Create(ServerOpcodes.GAME_SKILL_UP)
                 writer.Byte(1)
                 writer.DWord(SkillID)
                 Server.Send(writer.GetBytes, Index_)

@@ -65,7 +65,7 @@ Friend Class Program
         Server.OnlineClient += 1
 
         Dim writer As New PacketWriter
-        writer.Create(ServerOpcodes.Handshake)
+        writer.Create(ServerOpcodes.HANDSHAKE)
         writer.Byte(1)
         Server.Send(writer.GetBytes, index)
     End Sub

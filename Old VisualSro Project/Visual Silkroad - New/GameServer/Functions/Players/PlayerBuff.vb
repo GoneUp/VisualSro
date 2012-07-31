@@ -41,12 +41,12 @@ Namespace Functions
             PlayerData(Index_).CastingId = tmp.CastingId
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Reply)
+            writer.Create(ServerOpcodes.GAME_ATTACK_REPLY)
             writer.Byte(1)
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.Attack_Main)
+            writer.Create(ServerOpcodes.GAME_ATTACK_MAIN)
             writer.Byte(1)
             writer.Byte(0)
             writer.Byte(&H30)
@@ -88,7 +88,7 @@ Namespace Functions
 
         Public Sub PlayerBuff_Info(ByVal Index_ As Integer, ByVal Type As Byte)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Buff_Info)
+            writer.Create(ServerOpcodes.GAME_BUFF_INFO)
             writer.Byte(1)
             writer.DWord(PlayerData(Index_).CastingId)
             writer.Byte(Type)
@@ -100,7 +100,7 @@ Namespace Functions
 
         Public Sub PlayerBuff_Iconpacket(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Buff_Icon)
+            writer.Create(ServerOpcodes.GAME_BUFF_ICON)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.DWord(PlayerData(Index_).UsingSkillId)
             writer.DWord(PlayerData(Index_).SkillOverId)
@@ -110,7 +110,7 @@ Namespace Functions
 
         Public Sub PlayerBuff_End(ByVal SkillOverId As UInteger, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Buff_End)
+            writer.Create(ServerOpcodes.GAME_BUFF_END)
             writer.Byte(1)
             writer.DWord(PlayerData(Index_).Buffs(SkillOverId).OverID)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)

@@ -26,7 +26,7 @@ Namespace Functions
                 Dim writtenUniqueIds As New List(Of UInt32)
                 Dim writtenBytes As UInt32 = 0
 
-                data.Create(ServerOpcodes.GroupSpawnData)
+                data.Create(ServerOpcodes.GAME_GROUP_SPAWN_DATA)
                 For Each UniqueID In tmpUniqueIDs.ToArray()
                     If writtenBytes + 56 > 8192 Then
                         '56 seems to be the maximum of bytes added in one spawn.
@@ -77,11 +77,11 @@ Namespace Functions
                 Next
 
                 If writtenUniqueIds.Count > 0 Then
-                    start.Create(ServerOpcodes.GroupSpawnStart)
+                    start.Create(ServerOpcodes.GAME_GROUP_SPAWN_START)
                     start.Byte(mode)
                     start.Word(writtenUniqueIds.Count)
 
-                    finsih.Create(ServerOpcodes.GroupSpawnEnd)
+                    finsih.Create(ServerOpcodes.GAME_GROUP_SPAWN_END)
 
                     packets.Add(start)
                     packets.Add(data)

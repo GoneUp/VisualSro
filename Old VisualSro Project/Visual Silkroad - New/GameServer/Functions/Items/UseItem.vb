@@ -63,7 +63,7 @@ Namespace Functions
                     UpdateHP(Index_)
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
@@ -93,7 +93,7 @@ Namespace Functions
                     UpdateMP(Index_)
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
@@ -114,7 +114,7 @@ Namespace Functions
             Dim id As UInteger = 0
 
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
-                writer.Create(ServerOpcodes.ItemUse)
+                writer.Create(ServerOpcodes.GAME_ITEM_USE)
                 writer.Byte(2)
                 'error
                 writer.Byte(&H5D)
@@ -129,7 +129,7 @@ Namespace Functions
                     UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
 
-                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
@@ -163,7 +163,7 @@ Namespace Functions
             Dim writer As New PacketWriter
 
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
-                writer.Create(ServerOpcodes.ItemUse)
+                writer.Create(ServerOpcodes.GAME_ITEM_USE)
                 writer.Byte(2)
                 'error
                 writer.Byte(&H5D)
@@ -179,7 +179,7 @@ Namespace Functions
                     UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
 
-                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
@@ -212,7 +212,7 @@ Namespace Functions
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
                     UpdateAmout(Index_, Slot, -1)
 
-                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
@@ -262,7 +262,7 @@ Namespace Functions
                     UpdateAmout(Index_, Slot, -1)
 
 
-                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
@@ -297,7 +297,7 @@ Namespace Functions
                     UpdateBerserk(Index_)
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.ItemUse)
+                    writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
@@ -312,7 +312,7 @@ Namespace Functions
 
         Public Sub UseItemError(ByVal Index_ As Integer, ByVal ErrorByte As Byte)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ItemUse)
+            writer.Create(ServerOpcodes.GAME_ITEM_USE)
             writer.Byte(2)
             writer.Byte(ErrorByte)
             Server.Send(writer.GetBytes, Index_)
@@ -330,7 +330,7 @@ Namespace Functions
 
         Public Sub ShowOtherPlayerItemUse(ByVal ItemID As Integer, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.ItemUseOtherPlayer)
+            writer.Create(ServerOpcodes.GAME_ITEM_USE_OTHERPLAYER)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.DWord(ItemID)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)

@@ -1,4 +1,5 @@
 ﻿Imports GameServer.Functions
+Imports SRFramework
 
 Namespace Settings
     Module Settings

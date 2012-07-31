@@ -52,7 +52,7 @@ Namespace GameMod
                             If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId Then
                                 GameDB.Masterys(i).Level = tmp(1)
 
-                                writer.Create(ServerOpcodes.Mastery_Up)
+                                writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                 writer.Byte(1)
                                 writer.DWord(GameDB.Masterys(i).MasteryID)
                                 writer.Byte(GameDB.Masterys(i).Level)
@@ -132,9 +132,10 @@ Namespace GameMod
                 Case "\\name_me"
                     If tmp(1) <> "" Then
                         PlayerData(Index_).CharacterName = tmp(1)
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
+                        Database.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
                                                          PlayerData(Index_).CharacterName,
                                                          PlayerData(Index_).CharacterId))
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
 
                 Case "\\name_world"
@@ -147,6 +148,7 @@ Namespace GameMod
                                     DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
                                                                      PlayerData(i).CharacterName,
                                                                      PlayerData(i).CharacterId))
+                                    OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                                     Exit For
                                 End If
                             End If
@@ -191,7 +193,7 @@ Namespace GameMod
                             UpdateItem(Inventorys(Index_).UserItems(i))
                             'SAVE IT
 
-                            writer.Create(ServerOpcodes.ItemMove)
+                            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                             writer.Byte(1)
                             writer.Byte(6)
                             'type = new item

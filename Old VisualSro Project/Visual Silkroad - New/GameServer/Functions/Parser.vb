@@ -16,150 +16,149 @@ Public Class Parser
                     '=============Login=============
                 Case ClientOpcodes.Handshake 'Client accepts
 
-                Case ClientOpcodes.InfoReq 'GateWay
+                Case ClientOpcodes.LOGIN_WHO_AM_I 'GateWay
                     Functions.GateWay(packet, Index_)
 
-                Case ClientOpcodes.Login
+                Case ClientOpcodes.GAME_AUTH
                     Functions.CheckLogin(Index_, packet)
 
-                Case ClientOpcodes.Character
+                Case ClientOpcodes.GAME_CHARACTER
                     Functions.HandleCharPacket(Index_, packet)
 
-                Case ClientOpcodes.IngameReq
+                Case ClientOpcodes.GAME_INGAME_REQ
                     Functions.CharLoading(Index_, packet)
 
-                Case ClientOpcodes.JoinWorldReq
+                Case ClientOpcodes.GAME_JOIN_WORLD_REQ
                     Functions.OnJoinWorldRequest(Index_)
 
-                Case ClientOpcodes.JoinWorldReq2
+                Case ClientOpcodes.GAME_JOIN_WORLD_REQ2
                     Functions.OnJoinWorldRequest(Index_)
 
-                Case ClientOpcodes.ClientStatus
+                Case ClientOpcodes.GAME_CLIENT_STATUS
                     Functions.OnClientStatusUpdate(packet, Index_)
 
                     '============Ingame===========
 
-                Case ClientOpcodes.Movement
+                Case ClientOpcodes.GAME_MOVEMENT
                     Functions.OnPlayerMovement(Index_, packet)
 
-                Case ClientOpcodes.Chat
+                Case ClientOpcodes.GAME_CHAT
                     Functions.OnChat(packet, Index_)
 
-                Case ClientOpcodes.GameMaster
+                Case ClientOpcodes.GAME_GAMEMASTER
                     Functions.OnGM(packet, Index_)
 
-                Case ClientOpcodes.Action
+                Case ClientOpcodes.GAME_ACTION
                     Functions.OnPlayerAction(packet, Index_)
 
-                Case ClientOpcodes.Angle_Update
+                Case ClientOpcodes.GAME_ANGLE_UPDATE
                     Functions.OnAngleUpdate(packet, Index_)
 
-                Case ClientOpcodes.Teleport_Reply
+                Case ClientOpcodes.GAME_TELEPORT_REPLY
                     Functions.OnTeleportRequest(Index_)
 
-                Case ClientOpcodes.Exit
+                Case ClientOpcodes.GAME_EXIT
                     Functions.OnLogout(packet, Index_)
 
-                Case ClientOpcodes.Emotion
+                Case ClientOpcodes.GAME_EMOTION
                     Functions.OnEmotion(packet, Index_)
 
-                Case ClientOpcodes.HelperIcon
+                Case ClientOpcodes.GAME_HELPER_ICON
                     Functions.OnHelperIcon(packet, Index_)
 
-                Case ClientOpcodes.Hotkey_Update
+                Case ClientOpcodes.GAME_HOTKEY_UPDATE
                     Functions.OnHotkeyUpdate(packet, Index_)
 
-                Case ClientOpcodes.SetReturnPoint
+                Case ClientOpcodes.GAME_SET_RETURN_POINT
                     Functions.OnSetReturnPoint(packet, Index_)
 
-                Case ClientOpcodes.Berserk_Activate
+                Case ClientOpcodes.GAME_BERSERK_ACTIVATE
                     Functions.OnUseBerserk(packet, Index_)
 
                     '=======ATTACK======
 
-                Case ClientOpcodes.Target
+                Case ClientOpcodes.GAME_TARGET
                     Functions.OnSelectObject(packet, Index_)
 
-
-                Case ClientOpcodes.Attack
+                Case ClientOpcodes.GAME_ATTACK
                     Functions.OnPlayerAttack(packet, Index_)
 
-                Case ClientOpcodes.Death_Respawn
+                Case ClientOpcodes.GAME_DEATH_RESPAWN
                     Functions.OnPlayerRespawn(packet, Index_)
 
                     '=======NPC========
 
-                Case ClientOpcodes.Npc_Chat
+                Case ClientOpcodes.GAME_NPC_CHAT
                     Functions.OnNpcChatSelect(packet, Index_)
 
-                Case ClientOpcodes.Npc_Chat_Left
+                Case ClientOpcodes.GAME_NPC_CHAT_LEFT
                     Functions.OnNpcChatLeft(packet, Index_)
 
-                Case ClientOpcodes.Npc_Teleport
+                Case ClientOpcodes.GAME_NPC_TELEPORT
                     Functions.OnNpcTeleport(packet, Index_)
 
                     '=======ITEMS======
-                Case ClientOpcodes.Alchemy
+                Case ClientOpcodes.GAME_ALCHEMY
                     Functions.OnAlchemyRequest(packet, Index_)
 
-                Case ClientOpcodes.ItemMove
+                Case ClientOpcodes.GAME_ITEM_MOVE
                     Functions.OnInventory(packet, Index_)
 
-                Case ClientOpcodes.ItemUse
+                Case ClientOpcodes.GAME_ITEM_USE
                     Functions.OnUseItem(packet, Index_)
 
-                Case ClientOpcodes.Scroll_Cancel
+                Case ClientOpcodes.GAME_SCROLL_CANCEL
                     Functions.OnReturnScroll_Cancel(Index_)
 
                     '========STR+INT UP=====
 
-                Case ClientOpcodes.Str_Up
+                Case ClientOpcodes.GAME_STR_UP
                     Functions.UpStrength(Index_)
 
-                Case ClientOpcodes.Int_Up
+                Case ClientOpcodes.GAME_INT_UP
                     Functions.UpIntelligence(Index_)
 
                     '======Mastery+Skills
 
-                Case ClientOpcodes.Mastery_Up
+                Case ClientOpcodes.GAME_MASTERY_UP
                     Functions.OnUpMastery(packet, Index_)
 
-                Case ClientOpcodes.Skill_Up
+                Case ClientOpcodes.GAME_SKILL_UP
                     Functions.OnAddSkill(packet, Index_)
 
                     '=========EXCHANGE======
-                Case ClientOpcodes.Exchange_Invite
+                Case ClientOpcodes.GAME_EXCHANGE_INVITE
                     Functions.OnExchangeInvite(packet, Index_)
 
-                Case ClientOpcodes.Exchange_Invite_Accept
+                Case ClientOpcodes.GAME_EXCHANGE_INVITE_ACCEPT
                     Functions.OnExchangeInviteReply(packet, Index_)
 
-                Case ClientOpcodes.Exchange_Confirm
+                Case ClientOpcodes.GAME_EXCHANGE_CONFIRM
                     Functions.OnExchangeConfirm(packet, Index_)
 
-                Case ClientOpcodes.Exchange_Approve
+                Case ClientOpcodes.GAME_EXCHANGE_APPROVE
                     Functions.OnExchangeApprove(packet, Index_)
 
-                Case ClientOpcodes.Exchange_Abort
+                Case ClientOpcodes.GAME_EXCHANGE_ABORT
                     Functions.OnExchangeAbort(packet, Index_)
 
                     '========STALL==========
-                Case ClientOpcodes.Stall_Open
+                Case ClientOpcodes.GAME_STALL_OPEN
                     Functions.Stall_Open_Own(packet, Index_)
 
-                Case ClientOpcodes.Stall_Select
+                Case ClientOpcodes.GAME_STALL_SELECT
                     Functions.Stall_Open_Other(packet, Index_)
 
-                Case ClientOpcodes.Stall_Data
+                Case ClientOpcodes.GAME_STALL_DATA
                     Functions.Stall_Data(packet, Index_)
 
-                Case ClientOpcodes.Stall_Buy
+                Case ClientOpcodes.GAME_STALL_BUY
                     Functions.Stall_Buy(packet, Index_)
 
-                Case ClientOpcodes.Stall_Close_Own
+                Case ClientOpcodes.GAME_STALL_CLOSE_OWN
                     Functions.Stall_Close_Own(Index_)
 
-                Case ClientOpcodes.Stall_Close_Visitor
+                Case ClientOpcodes.GAME_STALL_CLOSE_VISITOR
                     Functions.Stall_Close_Other(Index_)
 
                 Case Else

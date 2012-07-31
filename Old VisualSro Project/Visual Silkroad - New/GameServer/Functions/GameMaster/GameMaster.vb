@@ -81,7 +81,7 @@ Namespace Functions
                 'SAVE IT
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.ItemMove)
+                writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                 writer.Byte(1)
                 writer.Byte(6)
                 'type = new item
@@ -126,7 +126,7 @@ Namespace Functions
                     Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).CharacterId))
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Teleport_Annonce)
+            writer.Create(ServerOpcodes.GAME_TELEPORT_ANNONCE)
             writer.Byte(PlayerData(index_).Position.XSector)
             writer.Byte(PlayerData(index_).Position.YSector)
             Server.Send(writer.GetBytes, index_)
@@ -134,7 +134,7 @@ Namespace Functions
 
         Public Sub OnSetWeather(ByVal Type As Byte, ByVal Strength As Byte)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Weather)
+            writer.Create(ServerOpcodes.GAME_WEATHER)
             writer.Byte(Type)
             writer.Byte(Strength)
             Server.SendToAllIngame(writer.GetBytes)
@@ -314,7 +314,7 @@ Namespace Functions
 
         Public Sub OnWorldStatus(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Gold_Update)
+            writer.Create(ServerOpcodes.GAME_GOLD_UPDATE)
 
         End Sub
 

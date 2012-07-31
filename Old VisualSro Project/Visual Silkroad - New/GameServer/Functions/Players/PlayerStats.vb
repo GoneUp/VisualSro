@@ -7,7 +7,7 @@ Namespace Functions
             PlayerData(Index_).AddItemsToStats(Index_)
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.CharacterStats)
+            writer.Create(ServerOpcodes.GAME_CHARACTER_STATS)
             writer.DWord(PlayerData(Index_).MinPhy)
             writer.DWord(PlayerData(Index_).MaxPhy)
             writer.DWord(PlayerData(Index_).MinMag)
@@ -35,7 +35,7 @@ Namespace Functions
 
         Public Sub UpdateHP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.HP_MP_Update)
+            writer.Create(ServerOpcodes.GAME_HP_MP_UPDATE)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(&H10)
             writer.Byte(1)
@@ -50,7 +50,7 @@ Namespace Functions
 
         Public Sub UpdateMP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.HP_MP_Update)
+            writer.Create(ServerOpcodes.GAME_HP_MP_UPDATE)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(&H10)
             writer.Byte(2)
@@ -65,7 +65,7 @@ Namespace Functions
 
         Public Sub UpdateHP_MP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.HP_MP_Update)
+            writer.Create(ServerOpcodes.GAME_HP_MP_UPDATE)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(&H10)
             writer.Byte(3)
@@ -82,7 +82,7 @@ Namespace Functions
 
         Public Sub UpdateGold(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Gold_Update)
+            writer.Create(ServerOpcodes.GAME_GOLD_UPDATE)
             writer.Byte(1)
             writer.QWord(PlayerData(Index_).Gold)
             writer.Byte(0)
@@ -94,7 +94,7 @@ Namespace Functions
 
         Public Sub UpdateSP(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Gold_Update)
+            writer.Create(ServerOpcodes.GAME_GOLD_UPDATE)
             writer.Byte(2)
             writer.DWord(PlayerData(index_).SkillPoints)
             writer.Byte(0)
@@ -106,7 +106,7 @@ Namespace Functions
 
         Public Sub UpdateBerserk(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Gold_Update)
+            writer.Create(ServerOpcodes.GAME_GOLD_UPDATE)
             writer.Byte(4)
             writer.Byte(PlayerData(index_).BerserkBar)
             writer.DWord(0)
@@ -118,7 +118,7 @@ Namespace Functions
 
         Public Sub UpdateSpeeds(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Speed_Update)
+            writer.Create(ServerOpcodes.GAME_SPEED_UPDATE)
             writer.DWord(PlayerData(index_).UniqueID)
             writer.Float(PlayerData(index_).WalkSpeed)
             writer.Float(PlayerData(index_).RunSpeed)
@@ -127,7 +127,7 @@ Namespace Functions
 
         Public Sub UpdateSpeedsBerserk(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Speed_Update)
+            writer.Create(ServerOpcodes.GAME_SPEED_UPDATE)
             writer.DWord(PlayerData(index_).UniqueID)
             writer.Float(PlayerData(index_).WalkSpeed)
             writer.Float(PlayerData(index_).BerserkSpeed)
@@ -138,13 +138,13 @@ Namespace Functions
         Public Sub UpStrength(ByVal Index_ As Integer)
             If PlayerData(Index_).Attributes > 0 Then
                 PlayerData(Index_).Attributes -= 1
-                If PlayerData(Index_).Strength < UShort.MaxValue Then 'Prevent Errors
+                If PlayerData(Index_).Strength + 1 < UShort.MaxValue Then 'Prevent Errors
                     PlayerData(Index_).Strength += 1
 
                     OnStatsPacket(Index_)
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Str_Up)
+                    writer.Create(ServerOpcodes.GAME_STR_UP)
                     writer.Byte(1)
                     Server.Send(writer.GetBytes, Index_)
                 End If
@@ -155,13 +155,13 @@ Namespace Functions
         Public Sub UpIntelligence(ByVal Index_ As Integer)
             If PlayerData(Index_).Attributes > 0 Then
                 PlayerData(Index_).Attributes -= 1
-                If PlayerData(Index_).Intelligence < UShort.MaxValue Then 'Prevent Errors
+                If PlayerData(Index_).Intelligence + 1 < UShort.MaxValue Then 'Prevent Errors
                     PlayerData(Index_).Intelligence += 1
 
                     OnStatsPacket(Index_)
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Int_Up)
+                    writer.Create(ServerOpcodes.GAME_INT_UP)
                     writer.Byte(1)
                     Server.Send(writer.GetBytes, Index_)
                 End If
@@ -225,7 +225,7 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Exp_Update)
+            writer.Create(ServerOpcodes.GAME_EXP_UPDATE)
             writer.DWord(FromID)
             writer.QWord(exp)
             writer.QWord(sp)
@@ -252,7 +252,7 @@ Namespace Functions
 
         Public Sub SendLevelUpAnimation(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.LevelUp_Animation)
+            writer.Create(ServerOpcodes.GAME_LEVELUP_ANIMATION)
             writer.DWord(PlayerData(Index_).UniqueID)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub

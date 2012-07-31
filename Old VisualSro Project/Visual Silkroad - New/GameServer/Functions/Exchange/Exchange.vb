@@ -6,7 +6,7 @@ Namespace Functions
             Dim Others_ID As UInt32 = Packet.DWord
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Exchange_Invite)
+            writer.Create(ServerOpcodes.GAME_EXCHANGE_INVITE)
 
             writer.Byte(1)
             writer.DWord(PlayerData(Index_).UniqueID)
@@ -28,11 +28,11 @@ Namespace Functions
 
             If succes = True Then
 
-                writer.Create(ServerOpcodes.Exchange_Start)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_START)
                 writer.DWord(PlayerData(PlayerData(Index_).InExchangeWith).UniqueID)
                 Server.Send(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Exchange_Invite_Reply)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_INVITE_REPLY)
                 writer.Byte(1)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
@@ -50,11 +50,11 @@ Namespace Functions
                 PlayerData(PlayerData(Index_).InExchangeWith).InExchange = True
 
             ElseIf succes = False Then
-                writer.Create(ServerOpcodes.Exchange_Error)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_ERROR)
                 writer.Byte(&H28)
                 Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
 
-                writer.Create(ServerOpcodes.Exchange_Error)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_ERROR)
                 writer.Byte(&H28)
                 Server.Send(writer.GetBytes, Index_)
 
@@ -75,7 +75,7 @@ Namespace Functions
 
             For own_decider = 0 To 1
                 itemcount = 0
-                writer.Create(ServerOpcodes.Exchange_UpdateItems)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_UPDATE_ITEMS)
                 writer.DWord(PlayerData(ExchangeData(ExchangeId).Player1Index).UniqueID)
 
                 For i = 0 To 11 'Count items
@@ -115,7 +115,7 @@ Namespace Functions
 
             For own_decider = 0 To 1
                 itemcount = 0
-                writer.Create(ServerOpcodes.Exchange_UpdateItems)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_UPDATE_ITEMS)
                 writer.DWord(PlayerData(ExchangeData(ExchangeId).Player2Index).UniqueID)
 
                 For i = 0 To 11 'Count items
@@ -171,11 +171,11 @@ Namespace Functions
                     End If
                 End If
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Exchange_Confirm_Reply)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_CONFIRM_REPLY)
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Exchange_Confirm_Other)
+                writer.Create(ServerOpcodes.GAME_EXCHANGE_CONFIRM_OTHER)
                 Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
             End If
         End Sub
@@ -190,7 +190,7 @@ Namespace Functions
                     If ExchangeData(exlist).ApprovePlyr1 = False And ExchangeData(exlist).ApprovePlyr2 = False Then
                         ExchangeData(exlist).ApprovePlyr1 = True
 
-                        writer.Create(ServerOpcodes.Exchange_Approve_Reply)
+                        writer.Create(ServerOpcodes.GAME_EXCHANGE_APPROVE_REPLY)
                         writer.Byte(1)
                         Server.Send(writer.GetBytes, Index_)
 
@@ -208,7 +208,7 @@ Namespace Functions
                     If ExchangeData(exlist).ApprovePlyr2 = False And ExchangeData(exlist).ApprovePlyr1 = False Then
                         ExchangeData(exlist).ApprovePlyr2 = True
 
-                        writer.Create(ServerOpcodes.Exchange_Approve_Reply)
+                        writer.Create(ServerOpcodes.GAME_EXCHANGE_APPROVE_REPLY)
                         writer.Byte(1)
                         Server.Send(writer.GetBytes, Index_)
 
@@ -227,9 +227,9 @@ Namespace Functions
 
         Public Sub FinishExchange(ByVal ExchangeId As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Exchange_Finsih)
+            writer.Create(ServerOpcodes.GAME_EXCHANGE_FINISH)
             Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player1Index)
-            writer.Create(ServerOpcodes.Exchange_Finsih)
+            writer.Create(ServerOpcodes.GAME_EXCHANGE_FINISH)
             Server.Send(writer.GetBytes, ExchangeData(ExchangeId).Player2Index)
 
 
@@ -342,11 +342,11 @@ Namespace Functions
             If PlayerData(Index_).InExchange = True Then
                 If ExchangeData(PlayerData(Index_).ExchangeID).Aborted = False Then
 
-                    writer.Create(ServerOpcodes.Exchange_Error)
+                    writer.Create(ServerOpcodes.GAME_EXCHANGE_ERROR)
                     writer.Byte(&H2C)
                     Server.Send(writer.GetBytes, Index_)
 
-                    writer.Create(ServerOpcodes.Exchange_Error)
+                    writer.Create(ServerOpcodes.GAME_EXCHANGE_ERROR)
                     writer.Byte(&H2C)
                     Server.Send(writer.GetBytes, PlayerData(Index_).InExchangeWith)
 
@@ -354,11 +354,11 @@ Namespace Functions
                     ExchangeData(PlayerData(Index_).ExchangeID).AbortedFrom = Index_
                 Else
                     If ExchangeData(PlayerData(Index_).ExchangeID).AbortedFrom = Index_ Then
-                        writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+                        writer.Create(ServerOpcodes.GAME_EXCHANGE_ABORT_REPLY)
                         writer.Byte(1)
                         Server.Send(writer.GetBytes, Index_)
 
-                        writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+                        writer.Create(ServerOpcodes.GAME_EXCHANGE_ABORT_REPLY)
                         writer.Byte(2)
                         writer.Byte(&H1B)
                         Server.Send(writer.GetBytes, Index_)
@@ -371,7 +371,7 @@ Namespace Functions
 
 
                     Else
-                        writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+                        writer.Create(ServerOpcodes.GAME_EXCHANGE_ABORT_REPLY)
                         writer.Byte(2)
                         writer.Byte(&H1B)
                         Server.Send(writer.GetBytes, Index_)
@@ -390,7 +390,7 @@ Namespace Functions
 
         Public Sub Exchange_AbortFromServer(ByVal index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Exchange_Abort_Reply)
+            writer.Create(ServerOpcodes.GAME_EXCHANGE_ABORT_REPLY)
             writer.Byte(2)
             writer.Byte(&H1B)
             Server.Send(writer.GetBytes, PlayerData(index_).InExchangeWith)

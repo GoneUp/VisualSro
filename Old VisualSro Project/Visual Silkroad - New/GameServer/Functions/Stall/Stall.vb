@@ -22,11 +22,11 @@ Namespace Functions
                 Stalls.Add(tmp)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Stall_Open_Reply)
+                writer.Create(ServerOpcodes.GAME_STALL_REPLY)
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Stall_Open_ToOther)
+                writer.Create(ServerOpcodes.GAME_STALL_OPEN_TO_OTHER)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(tmp.StallName.Length)
                 writer.UString(tmp.StallName)
@@ -70,7 +70,7 @@ Namespace Functions
                 Stalls(Index).WelcomeMessage = Name
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Stall_Data)
+                writer.Create(ServerOpcodes.GAME_STALL_DATA)
                 writer.Byte(1)
                 writer.Byte(6)
                 writer.Word(NameLen)
@@ -89,13 +89,13 @@ Namespace Functions
                 Stalls(Stall_Index).StallName = Name
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Stall_Data)
+                writer.Create(ServerOpcodes.GAME_STALL_DATA)
                 writer.Byte(1)
                 writer.Byte(7)
                 Server.Send(writer.GetBytes, Index_)
 
 
-                writer.Create(ServerOpcodes.Stall_Name)
+                writer.Create(ServerOpcodes.GAME_STALL_NAME)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(NameLen)
                 writer.UString(Name)
@@ -156,7 +156,7 @@ Namespace Functions
                 If State = 1 And Stalls(index).Open = False Then
                     'Open Stall
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Stall_Data)
+                    writer.Create(ServerOpcodes.GAME_STALL_DATA)
                     writer.Byte(1)
                     writer.Byte(5)
                     writer.Byte(State)
@@ -167,7 +167,7 @@ Namespace Functions
                 ElseIf State = 0 And Stalls(index).Open Then
                     'Close Stall
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Stall_Data)
+                    writer.Create(ServerOpcodes.GAME_STALL_DATA)
                     writer.Byte(1)
                     writer.Byte(5)
                     writer.Byte(State)
@@ -194,7 +194,7 @@ Namespace Functions
                     Stalls(Stall_index).Items(slot).Gold = price
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Stall_Data)
+                    writer.Create(ServerOpcodes.GAME_STALL_DATA)
                     writer.Byte(1)
                     writer.Byte(1)
                     writer.Byte(slot)
@@ -264,12 +264,12 @@ Namespace Functions
 
                         'Packets..
                         Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.Stall_Buy)
+                        writer.Create(ServerOpcodes.GAME_STALL_BUY)
                         writer.Byte(1)
                         writer.Byte(slot)
                         Server.Send(writer.GetBytes, Index_)
 
-                        writer.Create(ServerOpcodes.Stall_Message)
+                        writer.Create(ServerOpcodes.GAME_STALL_MESSAGE)
                         writer.Byte(3)
                         writer.Byte(slot)
                         writer.Word(PlayerData(Index_).CharacterName.Length)
@@ -290,13 +290,13 @@ Namespace Functions
 
                 Dim writer As New PacketWriter
                 'Reply to sender
-                writer.Create(ServerOpcodes.Chat_Accept)
+                writer.Create(ServerOpcodes.GAME_CHAT_ACCEPT)
                 writer.Byte(1)
                 writer.Byte(ChatModes.Stall)
                 writer.Byte(counter)
                 Server.Send(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Chat)
+                writer.Create(ServerOpcodes.GAME_CHAT)
                 writer.Byte(ChatModes.Stall)
                 writer.Word(PlayerData(Index_).CharacterName.Length)
                 writer.String(PlayerData(Index_).CharacterName)
@@ -322,7 +322,7 @@ Namespace Functions
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).UniqueID = ToUniqueID Then
                         Dim writer As New PacketWriter
-                        writer.Create(ServerOpcodes.Stall_Message)
+                        writer.Create(ServerOpcodes.GAME_STALL_MESSAGE)
                         writer.Byte(2)
                         writer.DWord(PlayerData(Index_).UniqueID)
                         Server.SendToStallSession(writer.GetBytes, PlayerData(i).StallID, True)
@@ -346,13 +346,13 @@ Namespace Functions
 
             If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 Then
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Stall_Close_Owner_Other)
+                writer.Create(ServerOpcodes.GAME_STALL_CLOSE_OWNER_OTHER)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(&H17)
                 writer.Byte(&H3C)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
-                writer.Create(ServerOpcodes.Stall_Close_Owner)
+                writer.Create(ServerOpcodes.GAME_STALL_CLOSE_OWNER)
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
 
@@ -372,12 +372,12 @@ Namespace Functions
                 If Stalls(i).Visitors.Contains(Index_) Then
                     Stalls(i).Visitors.Remove(Index_)
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Stall_Message)
+                    writer.Create(ServerOpcodes.GAME_STALL_MESSAGE)
                     writer.Byte(1)
                     writer.DWord(PlayerData(Index_).UniqueID)
                     Server.SendToStallSession(writer.GetBytes, PlayerData(i).StallID, True)
 
-                    writer.Create(ServerOpcodes.Stall_Close_Visitor)
+                    writer.Create(ServerOpcodes.GAME_STALL_CLOSE_VISITOR)
                     writer.Byte(1)
                     Server.Send(writer.GetBytes, Index_)
 
@@ -392,7 +392,7 @@ Namespace Functions
 
         Public Sub Stall_SendItemsOwn(ByVal Stall_Index As Integer, ByVal Index_ As Integer, ByVal Mode As Byte)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Stall_Data)
+            writer.Create(ServerOpcodes.GAME_STALL_DATA)
             writer.Byte(1)
             writer.Byte(Mode)
             writer.Word(0)
@@ -421,7 +421,7 @@ Namespace Functions
 
         Public Function Stall_SendItemsOther(ByVal Stall_Index As Integer, ByVal Index_ As Integer) As Byte()
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Stall_Items)
+            writer.Create(ServerOpcodes.GAME_STALL_ITEMS)
             writer.Byte(1)
             writer.DWord(Stalls(Stall_Index).OwnerID)
             writer.Word(Stalls(Stall_Index).WelcomeMessage.Length)
@@ -457,7 +457,7 @@ Namespace Functions
                 Dim Index As Integer = GetStallIndex(PlayerData(FromIndex).StallID)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Stall_Open_ToOther)
+                writer.Create(ServerOpcodes.GAME_STALL_OPEN_TO_OTHER)
                 writer.DWord(PlayerData(FromIndex).UniqueID)
                 writer.Word(Stalls(Index).StallName.Length)
                 writer.UString(Stalls(Index).StallName)

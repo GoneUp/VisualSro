@@ -110,7 +110,7 @@ Namespace Functions
         Public Sub SendCaptcha(ByVal index_ As Integer)
 
             Dim packet As New PacketWriter
-            packet.Create(ServerOpcodes.Capatcha)
+            packet.Create(ServerOpcodes.GAME_CAPATCHA)
             packet.Byte(payload)
             Server.Send(packet.GetBytes, index_)
         End Sub

@@ -54,7 +54,7 @@ Namespace Functions
                 'If Distance < 10000 Then
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Movement)
+                writer.Create(ServerOpcodes.GAME_MOVEMENT)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Byte(1)
                 'destination
@@ -305,7 +305,7 @@ Namespace Functions
                         If PlayerData(Index_).Level < link.MinLevel And link.MinLevel > 0 Then
                             'Level too low
                             Dim writer As New PacketWriter
-                            writer.Create(ServerOpcodes.Teleport_Start)
+                            writer.Create(ServerOpcodes.GAME_TELEPORT_START)
                             writer.Byte(2)
                             writer.Byte(&H15)
                             writer.Byte(&H1C)

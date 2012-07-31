@@ -7,7 +7,7 @@ Namespace Functions
             Dim guild As cGuild = GameDB.GetGuild(PlayerData(Index_).GuildID)
 
             If update = False Then
-                writer.Create(ServerOpcodes.Guild_Info)
+                writer.Create(ServerOpcodes.GAME_GUILD_INFO)
                 writer.DWord(guild.GuildID)
                 writer.Word(guild.Name.Length)
                 writer.String(guild.Name)
@@ -62,7 +62,7 @@ Namespace Functions
 
         Public Sub SendGuildLogOn(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Guild_Logon)
+            writer.Create(ServerOpcodes.GAME_GUILD_LOGON)
             writer.Byte(6)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Word(2)
@@ -75,7 +75,7 @@ Namespace Functions
                 Dim member As cGuild.GuildMember_ = GetMember(PlayerData(Index_).GuildID, PlayerData(Index_).CharacterId)
 
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Guild_Link)
+                writer.Create(ServerOpcodes.GAME_GUILD_LINK)
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.DWord(PlayerData(Index_).GuildID)
                 writer.Word(guild.Name.Length)

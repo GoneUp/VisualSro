@@ -34,7 +34,7 @@ Namespace Functions
             Dim writer As New PacketWriter
             If success = True Then
                 weapon.Plus += 1
-                writer.Create(ServerOpcodes.Alchemy)
+                writer.Create(ServerOpcodes.GAME_ALCHEMY)
                 writer.Byte(1)
                 writer.Byte(2)
                 writer.Byte(weapon.Plus)
@@ -48,7 +48,7 @@ Namespace Functions
                 'clues
             Else
                 weapon.Plus = 0
-                writer.Create(ServerOpcodes.Alchemy)
+                writer.Create(ServerOpcodes.GAME_ALCHEMY)
                 writer.Byte(1)
                 writer.Byte(2)
                 'mode
@@ -75,7 +75,7 @@ Namespace Functions
             DeleteItemFromDB(elix_slot, Index_)
             Inventorys(Index_).UserItems(elix_slot) = ClearItem(Inventorys(Index_).UserItems(elix_slot))
 
-            writer.Create(ServerOpcodes.ItemMove)
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
             writer.Byte(&HF)
             writer.Byte(elix_slot)
@@ -101,7 +101,7 @@ Namespace Functions
             Dim writer As New PacketWriter
             If success = True Then
                 weapon.Plus += 1
-                writer.Create(ServerOpcodes.Alchemy)
+                writer.Create(ServerOpcodes.GAME_ALCHEMY)
                 writer.Byte(1)
                 writer.Byte(2)
                 writer.Byte(weapon.Plus)
@@ -115,7 +115,7 @@ Namespace Functions
                 'clues
             Else
                 weapon.Plus = 0
-                writer.Create(ServerOpcodes.Alchemy)
+                writer.Create(ServerOpcodes.GAME_ALCHEMY)
                 writer.Byte(1)
                 writer.Byte(2)
                 'mode
@@ -143,7 +143,7 @@ Namespace Functions
             DeleteItemFromDB(elix_slot, Index_)
             Inventorys(Index_).UserItems(elix_slot) = ClearItem(Inventorys(Index_).UserItems(elix_slot))
 
-            writer.Create(ServerOpcodes.ItemMove)
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
             writer.Byte(&HF)
             writer.Byte(elix_slot)
@@ -154,7 +154,7 @@ Namespace Functions
             DeleteItemFromDB(powder_slot, Index_)
             Inventorys(Index_).UserItems(powder_slot) = ClearItem(Inventorys(Index_).UserItems(powder_slot))
 
-            writer.Create(ServerOpcodes.ItemMove)
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
             writer.Byte(&HF)
             writer.Byte(powder_slot)

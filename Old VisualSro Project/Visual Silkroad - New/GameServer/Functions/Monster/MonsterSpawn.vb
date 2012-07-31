@@ -5,7 +5,7 @@ Namespace Functions
     Module MonsterSpawn
         Public Sub CreateMonsterSpawnPacket(ByVal mob As cMonster, ByVal obj As SilkroadObject, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
             If includePacketHeader Then
-                writer.Create(ServerOpcodes.SingleSpawn)
+                writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
             End If
 
             writer.DWord(mob.Pk2ID)
@@ -163,7 +163,7 @@ Namespace Functions
 
         Public Sub SendUniqueSpawn(ByVal PK2ID As UInteger)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.UniqueAnnonce)
+            writer.Create(ServerOpcodes.GAME_UNIQUE_ANNONCE)
             writer.Byte(5)
             'Spawn
             writer.Byte(&HC)
@@ -173,7 +173,7 @@ Namespace Functions
 
         Public Sub SendGlobalStatusInfo(ByVal mode1 As UShort, Optional ByVal mode2 As Byte = Nothing)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.UniqueAnnonce)
+            writer.Create(ServerOpcodes.GAME_UNIQUE_ANNONCE)
             writer.Word(&HC1D)
             writer.Byte(1)
             writer.Byte(1)
@@ -182,7 +182,7 @@ Namespace Functions
 
         Public Sub SendUniqueKill(ByVal PK2ID As UInteger, ByVal KillName As String)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.UniqueAnnonce)
+            writer.Create(ServerOpcodes.GAME_UNIQUE_ANNONCE)
             writer.Byte(6)
             'Kill
             writer.Byte(&HC)

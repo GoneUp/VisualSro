@@ -10,7 +10,7 @@ Namespace Functions
             If ClientString = "SR_Client" Then
                 Dim writer As New PacketWriter
                 Dim name As String = "GatewayServer"
-                writer.Create(ServerOpcodes.ServerInfo)
+                writer.Create(ServerOpcodes.LOGIN_SERVER_INFO)
                 writer.Word(name.Length)
                 writer.HexString(name)
                 writer.Byte(0)
@@ -44,13 +44,13 @@ Namespace Functions
         Public Sub SendPatchInfo(ByVal Index_ As Integer)
             'Note: Patch Info for Rsro
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&H2005)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(0) 'Data
             writer.Word(1)
             writer.Byte(1)
@@ -61,13 +61,13 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
 
             '====================================
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&H6005)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(0) 'Data
             writer.Word(3)
             writer.Word(2)
@@ -75,13 +75,13 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
 
             '====================================
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&HA100)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(0) 'Data
 
             If ClientList.SessionInfo(Index_).Version = Settings.Server_CurrectVersion Then
@@ -131,13 +131,13 @@ Namespace Functions
             End If
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
             writer.Word(&HA104)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.MassiveMessage)
+            writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(0) 'Data
             writer.Byte(LoginDb.News.Count) 'nummer of news
 
@@ -173,7 +173,7 @@ Namespace Functions
             Dim NameServer As String = "SRO_Russia_Official"
             Dim writer As New PacketWriter
 
-            writer.Create(ServerOpcodes.ServerList)
+            writer.Create(ServerOpcodes.LOGIN_SERVER_LIST)
             writer.Byte(1) 'Nameserver
             writer.Byte(57) 'Nameserver ID
             writer.Word(NameServer.Length)
@@ -207,7 +207,7 @@ Namespace Functions
             Dim serverID As Integer = packet.Word
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.LoginAuthInfo)
+            writer.Create(ServerOpcodes.LOGIN_AUTH)
             'writer.Byte(2) 'fail
             'writer.Byte(3) 'already connected
             'writer.Byte(4) 'C5
@@ -346,7 +346,7 @@ Namespace Functions
                 Dim gs_new As GameServer = Shard_Gameservers(ClientList.SessionInfo(index_).gameserverId)
                 Dim gs As LoginDb.Server_ = LoginDb.GetServer(ClientList.SessionInfo(index_).gameserverId)
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.LoginAuthInfo)
+                writer.Create(ServerOpcodes.LOGIN_AUTH)
                 writer.Byte(1)
                 writer.DWord(sessionId)
                 writer.Word(gs.IP.Length)

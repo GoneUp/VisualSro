@@ -78,7 +78,7 @@ Namespace Functions
 
                 If found = False Then
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Attack_Reply)
+                    writer.Create(ServerOpcodes.GAME_ATTACK_REPLY)
                     writer.Byte(2)
                     writer.Byte(0)
                     Server.Send(writer.GetBytes, Index_)
@@ -86,7 +86,7 @@ Namespace Functions
             Else
                 'Attack Abort
                 Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.Attack_Reply)
+                writer.Create(ServerOpcodes.GAME_ATTACK_REPLY)
                 writer.Byte(2)
                 writer.Byte(0)
                 Server.Send(writer.GetBytes, Index_)
@@ -169,13 +169,13 @@ Namespace Functions
             End Select
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Reply)
+            writer.Create(ServerOpcodes.GAME_ATTACK_REPLY)
             writer.Byte(1)
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
 
 
-            writer.Create(ServerOpcodes.Attack_Main)
+            writer.Create(ServerOpcodes.GAME_ATTACK_MAIN)
             writer.Byte(1)
             writer.Byte(2)
             writer.Byte(&H30)
@@ -287,12 +287,12 @@ Namespace Functions
             MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, True)
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Reply)
+            writer.Create(ServerOpcodes.GAME_ATTACK_REPLY)
             writer.Byte(1)
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.Attack_Main)
+            writer.Create(ServerOpcodes.GAME_ATTACK_MAIN)
             writer.Byte(1)
             writer.Byte(2)
             writer.Byte(&H30)
@@ -330,7 +330,7 @@ Namespace Functions
 
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Buff_Info)
+            writer.Create(ServerOpcodes.GAME_BUFF_INFO)
             writer.Byte(1)
 
             writer.DWord(PlayerData(Index_).SkillOverId)
@@ -468,14 +468,14 @@ Namespace Functions
 
         Public Sub Attack_SendNotEnoughMP(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Reply)
+            writer.Create(ServerOpcodes.GAME_ATTACK_REPLY)
             writer.Byte(3)
             writer.Byte(0)
             writer.Byte(4)
             writer.Byte(&H40)
             Server.Send(writer.GetBytes, Index_)
 
-            writer.Create(ServerOpcodes.Attack_Main)
+            writer.Create(ServerOpcodes.GAME_ATTACK_MAIN)
             writer.Byte(2)
             writer.Byte(4)
             writer.Byte(&H30)
@@ -484,7 +484,7 @@ Namespace Functions
 
         Public Sub Attack_SendAttackEnd(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Attack_Reply)
+            writer.Create(ServerOpcodes.GAME_ATTACK_REPLY)
             writer.Byte(2)
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)

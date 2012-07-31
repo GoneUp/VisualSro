@@ -7,7 +7,7 @@ Namespace Functions
             Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
 
             If includePacketHeader Then
-                writer.Create(ServerOpcodes.SingleSpawn)
+                writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
             End If
 
             writer.DWord(Item_.Item.Pk2Id)

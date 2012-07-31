@@ -13,7 +13,7 @@ Namespace Functions
             Dim chari As [cChar] = PlayerData(Index) 'Only for faster Code writing
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.SingleSpawn)
+            writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
             writer.DWord(chari.Pk2ID)
             writer.Byte(chari.Volume)
             writer.Byte(0)
@@ -194,7 +194,7 @@ Namespace Functions
 
         Public Function CreateDespawnPacket(ByVal UniqueID As Integer) As Byte()
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.SingleDespawn)
+            writer.Create(ServerOpcodes.GAME_SINGLE_DESPAWN)
             writer.DWord(UniqueID)
             Return writer.GetBytes
         End Function

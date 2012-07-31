@@ -23,7 +23,7 @@ Namespace Functions
         Public Sub OnCharList(ByVal Index_ As Integer)
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Character)
+            writer.Create(ServerOpcodes.GAME_CHARACTER)
 
             GameDB.FillCharList(ClientList.CharListing(Index_))
 
@@ -121,7 +121,7 @@ Namespace Functions
             Dim nick As String = packet.String(packet.Word)
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Character)
+            writer.Create(ServerOpcodes.GAME_CHARACTER)
             writer.Byte(4)
             'nick check
 
@@ -139,7 +139,7 @@ Namespace Functions
 
         Public Sub OnSendNickError(ByVal index_ As Integer, ByVal Errornum As UInt16)
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Character)
+            writer.Create(ServerOpcodes.GAME_CHARACTER)
             writer.Byte(4)
             writer.Byte(2)
             writer.Word(Errornum)
@@ -169,7 +169,7 @@ Namespace Functions
                                       dat1.ToString, ClientList.CharListing(Index_).Chars(i).CharacterId))
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Character)
+                    writer.Create(ServerOpcodes.GAME_CHARACTER)
                     writer.Byte(3)   'type = delte
                     writer.Byte(1) 'success
                     Server.Send(writer.GetBytes, Index_)
@@ -187,7 +187,7 @@ Namespace Functions
                                                      ClientList.CharListing(Index_).Chars(i).CharacterId))
 
                     Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.Character)
+                    writer.Create(ServerOpcodes.GAME_CHARACTER)
                     writer.Byte(5) 'type = restore
                     writer.Byte(1) 'success
                     Server.Send(writer.GetBytes, Index_)
@@ -230,7 +230,7 @@ Namespace Functions
 
             'Creation
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.Character)
+            writer.Create(ServerOpcodes.GAME_CHARACTER)
             writer.Byte(1)
             'create
 
@@ -555,7 +555,7 @@ Namespace Functions
             Dim SelectedNick As String = pack.String(pack.Word)
             Dim writer As New PacketWriter
 
-            writer.Create(ServerOpcodes.IngameReqRepley)
+            writer.Create(ServerOpcodes.GAME_INGAME_REQ_REPLY)
             writer.Byte(1)
             Server.Send(writer.GetBytes, Index_)
 
@@ -587,18 +587,18 @@ Namespace Functions
 
             'Packet's
             writer = New PacketWriter
-            writer.Create(ServerOpcodes.LoadingStart)
+            writer.Create(ServerOpcodes.GAME_LOADING_START)
             Server.Send(writer.GetBytes, Index_)
 
             OnCharacterInfo(Index_)
 
             writer = New PacketWriter
-            writer.Create(ServerOpcodes.LoadingEnd)
+            writer.Create(ServerOpcodes.GAME_LOADING_END)
             Server.Send(writer.GetBytes, Index_)
 
 
             writer = New PacketWriter
-            writer.Create(ServerOpcodes.CharacterID)
+            writer.Create(ServerOpcodes.GAME_CHARACTER_ID)
             writer.DWord(PlayerData(Index_).UniqueID)
             'charid
             writer.Word(Date.Now.Day)
@@ -617,7 +617,7 @@ Namespace Functions
             Dim writer As New PacketWriter
             Dim chari As [cChar] = PlayerData(Index_)
             writer = New PacketWriter
-            writer.Create(ServerOpcodes.CharacterInfo)
+            writer.Create(ServerOpcodes.GAME_CHARACTER_INFO)
             writer.DWord(3912288588)  '@@@@@@@@@@@@@@@@@
             writer.DWord(chari.Pk2ID)      ' Character Model
             writer.Byte(chari.Volume)    ' Volume & Height
@@ -791,18 +791,10 @@ Namespace Functions
         Public Sub OnJoinWorldRequest(ByVal Index_ As Integer)
             PlayerData(Index_).Ingame = True
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.JoinWorldReply)
+            writer.Create(ServerOpcodes.GAME_JOIN_WORLD_REPLY)
             writer.Byte(1)
             writer.Byte(&HB4)
             Server.Send(writer.GetBytes, Index_)
-
-            writer.Create(ServerOpcodes.JoinWorldUnknown)
-            writer.Word(0)
-            ' Server.Send(writer.GetBytes, Index_)
-
-            writer.Create(ServerOpcodes.JoinWorldUnknown2)
-            writer.Byte(0)
-            '    Server.Send(writer.GetBytes, Index_)
 
             'UpdateState(4, 2, Index_) 'Untouchable Status
             OnStatsPacket(Index_)

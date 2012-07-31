@@ -112,11 +112,9 @@
     <Compile Include="Framework\Database\GameDb.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
-    <Compile Include="Framework\Settings\cINI.vb" />
     <Compile Include="Framework\Silkroad\Formula.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\SilkroadData.vb" />
-    <Compile Include="Framework\Packets\Opcodes.vb" />
     <Compile Include="Framework\Packets\PacketLog.vb" />
     <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Server\Server.vb" />

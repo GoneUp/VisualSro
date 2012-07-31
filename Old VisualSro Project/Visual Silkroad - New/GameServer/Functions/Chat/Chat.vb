@@ -70,7 +70,7 @@ Namespace Functions
             Dim messagelength As UInt16 = Packet.Word
             Dim message As String = Packet.UString(messagelength)
 
-            For i = 0 To Server.OnlineClient - 1
+            For i = 0 To Server.OnlineClients - 1
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = receiver Then
                         receiverIndex = i

@@ -1,4 +1,4 @@
-﻿Public Class cServer
+﻿Public Class cServerbase
     Public ServerId As UInt32
 
     Public Online As Boolean = False

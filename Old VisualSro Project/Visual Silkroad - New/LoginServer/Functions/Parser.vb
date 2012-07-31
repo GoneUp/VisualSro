@@ -58,8 +58,11 @@ Namespace Functions
                 Case InternalServerOpcodes.GLOBAL_INFO
                     GlobalManager.OnGlobalInfo(packet)
 
+                Case InternalServerOpcodes.GATEWAY_SEND_USERAUTH
+                    GlobalManager.OnUserAuthReply(packet)
+
                 Case Else
-                    Log.WriteSystemLog("opCode: " & opcode) '& " Packet : " & packet.Byte)
+                    Log.WriteSystemLog("gmc opCode: " & opcode) '& " Packet : " & packet.Byte)
             End Select
         End Sub
 

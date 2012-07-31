@@ -20,7 +20,7 @@ Namespace Functions
             If ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.HANDSHAKE Then
                 ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.WHOAMI
             Else
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             End If
         End Sub
         Public Sub ClientInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -37,7 +37,7 @@ Namespace Functions
             If ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.WHOAMI Then
                 ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.PATCH_INFO
             Else
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             End If
         End Sub
 
@@ -92,23 +92,23 @@ Namespace Functions
                 writer.Byte(2)
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             ElseIf ClientList.SessionInfo(Index_).Version < Settings.Server_CurrectVersion Then
                 'Client too old 
                 writer.Byte(2)
                 writer.Byte(5)
                 Server.Send(writer.GetBytes, Index_)
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             ElseIf ClientList.SessionInfo(Index_).Locale <> Settings.Server_Local Then
                 'Wrong Local
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             ElseIf ClientList.SessionInfo(Index_).ClientName <> "SR_Client" Then
                 'Wrong Clientname
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             End If
 
 
@@ -127,7 +127,7 @@ Namespace Functions
             If ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.PATCH_INFO Then
                 ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.LAUNCHER
             Else
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             End If
 
             Dim writer As New PacketWriter
@@ -167,7 +167,7 @@ Namespace Functions
                 Timers.LoginInfoTimer(Index_).Interval = 1000
                 Timers.LoginInfoTimer(Index_).Start()
             ElseIf ClientList.SessionInfo(Index_).SRConnectionSetup <> _SessionInfo.SRConnectionStatus.LOGIN Then
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             End If
 
             Dim NameServer As String = "SRO_Russia_Official"
@@ -198,7 +198,7 @@ Namespace Functions
 
         Public Sub HandleLogin(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If ClientList.SessionInfo(Index_).SRConnectionSetup <> _SessionInfo.SRConnectionStatus.LOGIN Then
-                Server.Dissconnect(Index_)
+                Server.Disconnect(Index_)
             End If
 
             Dim loginMethod As Byte = packet.Byte()

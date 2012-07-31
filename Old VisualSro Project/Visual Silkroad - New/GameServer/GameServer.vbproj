@@ -110,6 +110,9 @@
     <Compile Include="Admin\AdminControl.vb" />
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Framework\Database\GameDb.vb" />
+    <Compile Include="Framework\GlobalManager\AgentService.vb" />
+    <Compile Include="Framework\GlobalManager\Auth.vb" />
+    <Compile Include="Framework\GlobalManager\ShardService.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Silkroad\Formula.vb" />

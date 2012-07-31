@@ -11,7 +11,7 @@ Namespace Functions
             writer.Byte(1)
             writer.DWord(PlayerData(Index_).UniqueID)
 
-            For i As Integer = 0 To Server.OnlineClient
+            For i As Integer = 0 To Server.OnlineClients
                 If PlayerData(i).UniqueID = Others_ID Then
                     Server.Send(writer.GetBytes, i)
                     PlayerData(Index_).InExchangeWith = i

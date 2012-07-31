@@ -24,8 +24,7 @@
                 GameServer.Log.WriteSystemLog("/clear")
 
             Case "/packets"
-
-                Program.Logpackets = True
+                Settings.Server_DebugMode = True
                 GameServer.Log.WriteSystemLog("Log Packets started!")
 
 
@@ -50,7 +49,7 @@
                 Functions.OnSetWeather(3, 75)
 
             Case "/count"
-                GameServer.Log.WriteSystemLog(String.Format("Count Player:{0}!", Server.OnlineClient))
+                GameServer.Log.WriteSystemLog(String.Format("Count Player:{0}!", Server.OnlineClients))
                 GameServer.Log.WriteSystemLog(String.Format("Count Mob:{0}!", Functions.MobList.Count))
 
             Case "/cleanup"
@@ -67,15 +66,22 @@
                     End If
                 Next
                 Server.Stop()
-                DataBase.ExecuteQuerys()
+                Database.ExecuteQuerys()
                 End
 
-            Case "/dcoff"
-                Settings.Server_PingDc = False
-                GameServer.Log.WriteSystemLog("Turned off PingCheck")
-            Case "/dcon"
-                Settings.Server_PingDc = True
-                GameServer.Log.WriteSystemLog("Turned on PingCheck")
+            Case "/debug"
+                If Settings.Server_DebugMode Then
+                    Settings.Server_DebugMode = False
+                    Log.WriteSystemLog("Turned off DebugMode")
+                    Functions.SendNotice("DEBUG Mode off!")
+
+                ElseIf Settings.Server_DebugMode = False Then
+                    Settings.Server_DebugMode = True
+                    Log.WriteSystemLog("Turned on DebugMode")
+                    Functions.SendNotice("DEBUG Mode on!")
+                End If
+
+
             Case "/killmobs"
                 GameServer.Log.WriteSystemLog("In Progress, Count: " & Functions.MobList.Count)
                 For Each key In Functions.MobList.Keys.ToList

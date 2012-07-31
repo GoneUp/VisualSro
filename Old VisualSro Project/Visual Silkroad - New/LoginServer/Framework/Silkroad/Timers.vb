@@ -19,7 +19,7 @@ Namespace Timers
             Next
 
             'Handlers
-            AddHandler GenralTimer.Elapsed, AddressOf QueryTimerElapsed
+            AddHandler GenralTimer.Elapsed, AddressOf GeneralTimer_Elapsed
 
 
             'Starting
@@ -28,7 +28,7 @@ Namespace Timers
         End Sub
 
 
-        Public Sub QueryTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Public Sub GeneralTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             GenralTimer.Stop()
 
             'For Database Execute Querys, GlobalManager Ping, GlobalManager Update

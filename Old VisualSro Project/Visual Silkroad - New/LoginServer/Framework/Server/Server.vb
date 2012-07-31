@@ -75,7 +75,7 @@ Namespace Framework
             End Try
         End Sub
 
-        Public Shared Sub Dissconnect(ByVal index As Integer)
+        Public Shared Sub Disconnect(ByVal index As Integer)
             Try
                 Dim socket As Socket = ClientList.GetSocket(index)
                 ClientList.Delete(index)
@@ -137,12 +137,12 @@ Namespace Framework
                     If socket.Connected Then
                         socket.Send(buff)
                     Else
-                        Dissconnect(index)
+                        Disconnect(index)
                     End If
                 End If
 
             Catch ex As Exception
-               RaiseEvent OnServerError(ex, index)
+                RaiseEvent OnServerError(ex, index)
             End Try
         End Sub
 

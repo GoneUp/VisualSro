@@ -1,20 +1,20 @@
 ﻿Imports SRFramework
 
-Public Class Parser
-    Public Shared Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
+Public Module Parser
+    Public Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
         Try
             Dim length As UInteger = packet.Word
             Dim opcode As UInteger = packet.Word
             Dim security As UInteger = packet.Word
 
-            ClientList.LastPingTime(Index_) = DateTime.Now
+            ClientList.SessionInfo(Index_).LastPingTime = DateTime.Now
 
             Select Case opcode
 
-                Case ClientOpcodes.Ping
+                Case ClientOpcodes.PING
 
                     '=============Login=============
-                Case ClientOpcodes.Handshake 'Client accepts
+                Case ClientOpcodes.HANDSHAKE 'Client accepts
 
                 Case ClientOpcodes.LOGIN_WHO_AM_I 'GateWay
                     Functions.GateWay(packet, Index_)
@@ -171,5 +171,34 @@ Public Class Parser
             Log.WriteSystemLog("Parsing Error:  " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & Index_)
         End Try
     End Sub
-End Class
+
+    Public Sub ParseGlobalManager(ByVal packet As PacketReader)
+        Dim length As UInteger = packet.Word
+        Dim opcode As UInteger = packet.Word
+        Dim security As UInteger = packet.Word
+
+        Select Case opcode
+            Case ServerOpcodes.HANDSHAKE   'Client accepts
+                GlobalManager.OnHandshake(packet)
+
+            Case ServerOpcodes.LOGIN_SERVER_INFO
+                GlobalManager.OnServerInfo(packet)
+
+            Case InternalServerOpcodes.SERVER_INIT
+                GlobalManager.OnServerInit(packet)
+
+            Case InternalServerOpcodes.SERVER_SHUTDOWN
+                GlobalManager.OnServerShutdown(packet)
+
+            Case InternalServerOpcodes.GLOBAL_INFO
+                GlobalManager.OnGlobalInfo(packet)
+
+            Case InternalServerOpcodes.GAMESERVER_CHECK_USERAUTH
+                GlobalManager.OnGameserverUserAuthReply(packet)
+
+            Case Else
+                Log.WriteSystemLog("gmc opCode: " & opcode) '& " Packet : " & packet.Byte)
+        End Select
+    End Sub
+End Module
 

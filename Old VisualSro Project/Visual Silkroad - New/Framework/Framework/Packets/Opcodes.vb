@@ -207,18 +207,18 @@
     End Enum
 
     Enum InternalClientOpcodes
-        Server_Init = &H1000
-        Server_Shutdown = &H1001
-        Server_Info = &H1002
-        Server_UpdateReply = &H1003
+        SERVER_INIT = &H1000
+        SERVER_SHUTDOWN = &H1001
+        SERVER_INFO = &H1002
+        SERVER_UPDATEREPLY = &H1003
 
         Admin_Auth = &H1004
         Admin_UpdateServer = &H1005
         Admin_GetInfo = &H1006
         Admin_UpdateInfo = &H1007
 
-        Gateway_SendUserAuth = &H1010
-        GameServer_CheckUserAuth = &H1011
+        GATEWAYSERVER_USERAUTH = &H1010
+        GAMESERVER_CHECK_USERAUTH = &H1011
     End Enum
 
     Enum InternalServerOpcodes As UShort

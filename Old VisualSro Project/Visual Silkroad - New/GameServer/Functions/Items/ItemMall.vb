@@ -3,7 +3,7 @@
 Namespace Functions
     Module ItemMall
         Public Sub OnSendSilks(ByVal Index_ As Integer)
-            Dim userIndex As Integer = GameDB.GetUser(PlayerData(Index_).AccountID)
+            Dim userIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_SILK)
             writer.DWord(GameDB.Users(userIndex).Silk)
@@ -23,7 +23,7 @@ Namespace Functions
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
-            Dim UserIndex As Integer = GameDB.GetUser(PlayerData(index_).AccountID)
+            Dim UserIndex As Integer = GameDB.GetUserIndex(PlayerData(index_).AccountID)
 
             If LongName = RefObject.Name_Package Then
                 If GameDB.Users(UserIndex).Silk - (RefObject.Price * amout) >= 0 And GetFreeItemSlot(index_) <> -1 Then

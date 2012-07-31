@@ -1,3 +1,3 @@
 ﻿Public Class GatewayServer
-    Inherits cServer
+    Inherits cServerbase
 End Class

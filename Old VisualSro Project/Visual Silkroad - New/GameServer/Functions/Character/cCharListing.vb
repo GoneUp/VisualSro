@@ -7,7 +7,7 @@
             Public FailedLogins As String
             Public Banned As Boolean
             Public LoggedIn As Boolean
-            Public Permission As Byte
+            Public Permission As Byte '0x00 = normal user, 0x01 = prefered access to the server (premium), 0x02 = gm, 0x03 = admin
 
             Public Silk As UInteger
             Public Silk_Bonus As UInteger

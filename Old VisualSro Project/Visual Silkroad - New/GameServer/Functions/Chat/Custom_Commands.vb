@@ -30,7 +30,7 @@ Namespace GameMod
                 Case "\\level"
                     If IsNumeric(tmp(1)) Then
                         PlayerData(Index_).Level = tmp(1)
-                        DataBase.SaveQuery(String.Format("UPDATE characters SET level='{0}' where id='{1}'",
+                        Database.SaveQuery(String.Format("UPDATE characters SET level='{0}' where id='{1}'",
                                                          PlayerData(Index_).Level, PlayerData(Index_).CharacterId))
                         OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
@@ -58,7 +58,7 @@ Namespace GameMod
                                 writer.Byte(GameDB.Masterys(i).Level)
                                 Server.Send(writer.GetBytes, Index_)
 
-                                DataBase.SaveQuery(
+                                Database.SaveQuery(
                                     String.Format(
                                         "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ",
                                         GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
@@ -82,11 +82,11 @@ Namespace GameMod
                     End If
                 Case "\\silk"
                     If IsNumeric(tmp(1)) Then
-                        Dim UserIndex As Integer = GameDB.GetUser(PlayerData(Index_).AccountID)
-                        Dim user = GameDB.Users(UserIndex)
+                        Dim userIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
+                        Dim user As cCharListing.UserArray = GameDB.GetUser(PlayerData(Index_).AccountID)
                         user.Silk += tmp(1)
                         GameDB.Users(UserIndex) = user
-                        DataBase.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
+                        Database.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
                                                          GameDB.Users(UserIndex).Silk, PlayerData(Index_).AccountID))
                         OnSendSilks(Index_)
                     End If
@@ -122,7 +122,7 @@ Namespace GameMod
 
                 Case "\\count_world"
                     SendPm(Index_, "===========COUNT============", "[SERVER]")
-                    SendPm(Index_, "Players: " & Server.OnlineClient, "[SERVER]")
+                    SendPm(Index_, "Players: " & Server.OnlineClients, "[SERVER]")
                     SendPm(Index_, "Mob: " & MobList.Count, "[SERVER]")
                     SendPm(Index_, "Npc: " & NpcList.Count, "[SERVER]")
                     SendPm(Index_, "Items: " & ItemList.Count, "[SERVER]")
@@ -141,11 +141,11 @@ Namespace GameMod
                 Case "\\name_world"
                     '\\name_world [Old_Name] [New_Name]
                     If tmp(1) <> "" And tmp(2) = "" Then
-                        For i = 0 To Server.OnlineClient - 1
+                        For i = 0 To Server.OnlineClients - 1
                             If PlayerData(i) IsNot Nothing Then
                                 If PlayerData(i).CharacterName = tmp(1) Then
                                     PlayerData(i).CharacterName = tmp(2)
-                                    DataBase.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
+                                    Database.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
                                                                      PlayerData(i).CharacterName,
                                                                      PlayerData(i).CharacterId))
                                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)

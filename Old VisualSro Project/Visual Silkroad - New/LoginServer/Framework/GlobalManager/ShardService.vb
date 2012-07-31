@@ -6,7 +6,7 @@ Namespace GlobalManager
 
         Public Sub OnSendServerInit()
             Dim writer As New PacketWriter
-            writer.Create(InternalClientOpcodes.Server_Init)
+            writer.Create(InternalClientOpcodes.SERVER_INIT)
             GlobalManagerCon.Send(writer.GetBytes)
         End Sub
 
@@ -24,7 +24,7 @@ Namespace GlobalManager
 
         Public Sub OnSendServerShutdown()
             Dim writer As New PacketWriter
-            writer.Create(InternalClientOpcodes.Server_Shutdown)
+            writer.Create(InternalClientOpcodes.SERVER_SHUTDOWN)
             GlobalManagerCon.Send(writer.GetBytes)
         End Sub
 
@@ -42,7 +42,7 @@ Namespace GlobalManager
 
         Public Sub OnSendMyInfo()
             Dim writer As New PacketWriter
-            writer.Create(InternalClientOpcodes.Server_Info)
+            writer.Create(InternalClientOpcodes.SERVER_INFO)
             writer.Word(Settings.Server_Id)
             writer.Word(Server.OnlineClient)
             writer.Word(Server.MaxClients)

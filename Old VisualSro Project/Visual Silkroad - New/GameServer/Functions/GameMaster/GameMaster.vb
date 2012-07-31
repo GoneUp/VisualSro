@@ -211,7 +211,7 @@ Namespace Functions
                 End If
             Next
 
-            For i As Integer = 0 To Server.OnlineClient
+            For i As Integer = 0 To Server.OnlineClients
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
                         Server.Disconnect(i)

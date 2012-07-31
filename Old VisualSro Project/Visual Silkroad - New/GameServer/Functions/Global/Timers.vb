@@ -13,7 +13,7 @@ Namespace Functions
         Public PickUpTimer As Timer() = New Timer(14999) {}
         Public UsingItemTimer As Timer() = New Timer(14999) {}
         Public SitUpTimer As Timer() = New Timer(14999) {}
-        Public DatabaseTimer As New Timer
+        Public GeneralTimer As New Timer
 
         Public Sub LoadTimers(ByVal timerCount As Integer)
             Log.WriteSystemLog("Loading Timers...")
@@ -42,7 +42,7 @@ Namespace Functions
                 AddHandler MonsterRespawn.Elapsed, AddressOf MonsterRespawn_Elapsed
                 AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
                 AddHandler PlayerAutoHeal.Elapsed, AddressOf PlayerAutoHeal_Elapsed
-                AddHandler DatabaseTimer.Elapsed, AddressOf DatabaseTimer_Elapsed
+                AddHandler GeneralTimer.Elapsed, AddressOf GeneralTimer_Elapsed
 
                 'Start Timers
                 WorldCheck.Interval = 5000
@@ -57,8 +57,8 @@ Namespace Functions
                 PlayerAutoHeal.Interval = 5000
                 PlayerAutoHeal.Start()
 
-                DatabaseTimer.Interval = 30000
-                DatabaseTimer.Start()
+                GeneralTimer.Interval = 2500
+                GeneralTimer.Start()
 
             Catch ex As Exception
 
@@ -126,14 +126,14 @@ Namespace Functions
                             PlayerData(Index).SetPosition = PlayerData(Index).PositionReturn
                             'Set new Pos
                             'Save to DB
-                            DataBase.SaveQuery(
+                            Database.SaveQuery(
                                 String.Format(
                                     "UPDATE positions SET recall_xsect='{0}', recall_ysect='{1}', recall_xpos='{2}', recall_zpos='{3}', recall_ypos='{4}' where OwnerCharID='{5}'",
                                     PlayerData(Index).PositionRecall.XSector, PlayerData(Index).PositionRecall.YSector,
                                     Math.Round(PlayerData(Index).PositionRecall.X),
                                     Math.Round(PlayerData(Index).PositionRecall.Z),
                                     Math.Round(PlayerData(Index).PositionRecall.Y), PlayerData(Index).CharacterId))
-                            DataBase.SaveQuery(
+                            Database.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                     PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
@@ -147,7 +147,7 @@ Namespace Functions
 
                         Case UseItemTypes.Reverse_Scroll_Recall
                             PlayerData(Index).SetPosition = PlayerData(Index).PositionRecall
-                            DataBase.SaveQuery(
+                            Database.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                     PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
@@ -160,7 +160,7 @@ Namespace Functions
 
                         Case UseItemTypes.Reverse_Scroll_Dead
                             PlayerData(Index).SetPosition = PlayerData(Index).PositionDead
-                            DataBase.SaveQuery(
+                            Database.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                     PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
@@ -174,7 +174,7 @@ Namespace Functions
                         Case UseItemTypes.Reverse_Scroll_Point
                             Dim point As ReversePoint_ = GetReversePoint(PlayerData(Index).UsedItemParameter)
                             PlayerData(Index).SetPosition = point.Position
-                            DataBase.SaveQuery(
+                            Database.SaveQuery(
                                 String.Format(
                                     "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
                                     PlayerData(Index).Position.XSector, PlayerData(Index).Position.YSector,
@@ -504,11 +504,26 @@ Namespace Functions
             End Try
         End Sub
 
-        Public Sub DatabaseTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            DatabaseTimer.Stop()
+        Public Sub GeneralTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            GeneralTimer.Stop()
+
+            'For Database Execute Querys, GlobalManager Ping, GlobalManager Update, check other Timers for a Crash
 
             Try
-                DataBase.ExecuteQuerys()
+                Database.ExecuteQuerys()
+
+                'GlobalManager..
+                If DateDiff(DateInterval.Second, GlobalManagerCon.LastPingTime, Date.Now) > 5 Then
+                    If GlobalManagerCon.ManagerSocket.Connected Then
+                        GlobalManagerCon.SendPing()
+                    End If
+                End If
+
+                If DateDiff(DateInterval.Second, GlobalManagerCon.LastInfoTime, Date.Now) > 10 And GlobalManagerCon.UpdateInfoAllowed Then
+                    If GlobalManagerCon.ManagerSocket.Connected Then
+                        GlobalManager.OnSendMyInfo()
+                    End If
+                End If
 
                 'Check other Timers for Crashed
                 If MonsterRespawn.Enabled = False Then
@@ -521,11 +536,11 @@ Namespace Functions
                     MonsterMovement.Start()
                 End If
             Catch ex As Exception
-                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB")
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB/GENRAL")
                 '
             End Try
 
-            DatabaseTimer.Start()
+            GeneralTimer.Start()
         End Sub
     End Module
 End Namespace

@@ -51,8 +51,7 @@
         Public Deleted As Boolean = False
         Public DeletionTime As DateTime
         Public HelperIcon As Byte = 0
-        Public ActionFlag As Byte = 0
-        '0x00 = standing, 0x02 = walking, 0x03 = running, 0x04 = sitting
+        Public ActionFlag As Byte = 0        '0x00 = standing, 0x02 = walking, 0x03 = running, 0x04 = sitting
         Public Busy As Boolean = False
         Public Alive As Boolean = True
         Public Skilling As Boolean = False
@@ -71,8 +70,7 @@
         Public SpawnedNPCs As New List(Of UInt32)
 
         Public Ingame As Boolean = False
-        Public Invisible As Boolean = False
-        'For Gms
+        Public Invisible As Boolean = False  'For Gms
         Public Invincible As Boolean = False
 
         Public InGuild As Boolean = False

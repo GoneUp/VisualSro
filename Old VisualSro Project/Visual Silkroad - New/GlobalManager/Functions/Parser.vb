@@ -26,15 +26,15 @@ Namespace Functions
                 '===SECURE===
                 Select Case opcode
                     Case ClientOpcodes.PING
-                    Case InternalClientOpcodes.Server_Init
+                    Case InternalClientOpcodes.SERVER_INIT
                         Shard.OnInitServer(packet, Index_)
-                    Case InternalClientOpcodes.Server_Shutdown
+                    Case InternalClientOpcodes.SERVER_SHUTDOWN
                         Shard.OnShutdownServer(packet, Index_)
-                    Case InternalClientOpcodes.Server_Info
+                    Case InternalClientOpcodes.SERVER_INFO
                         Shard.OnServerInfo(packet, Index_)
-                    Case InternalClientOpcodes.Gateway_SendUserAuth
+                    Case InternalClientOpcodes.GATEWAYSERVER_USERAUTH
                         Agent.OnSendUserAuth(packet, Index_)
-                    Case InternalClientOpcodes.GameServer_CheckUserAuth
+                    Case InternalClientOpcodes.GAMESERVER_CHECK_USERAUTH
                         Agent.OnCheckUserAuth(packet, Index_)
                 End Select
             End If

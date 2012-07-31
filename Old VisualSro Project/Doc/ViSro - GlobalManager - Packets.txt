@@ -10,9 +10,9 @@ Opcode: 5000
 [DWord] CalculatedKey
 
 How to calculate the Key:
-Base *= 1.1
+Base *= 4
 Base *= Date.Now.DayOfYear
-Base *= Date.Now.DayOfWeek
+Base *= Date.Now.Day
 
 S->C
 Opcode: 5000

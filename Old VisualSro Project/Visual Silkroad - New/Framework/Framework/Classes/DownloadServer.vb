@@ -1,3 +1,3 @@
 ﻿Public Class DownloadServer
-    Inherits cServer
+    Inherits cServerbase
 End Class

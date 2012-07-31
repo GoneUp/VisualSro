@@ -6,6 +6,7 @@ Imports GameServer.Functions
 Public Class Server
     Private Shared _Ip As IPAddress
     Private Shared _MaxClients As Integer
+    Private Shared _MaxNormalClients As Integer
     Private Shared _OnlineClients As Integer
     Private Shared _ServerPort As Integer
     Private Shared ServerSocket As Socket
@@ -53,14 +54,19 @@ Public Class Server
     Private Shared Sub ClientConnect(ByVal ar As IAsyncResult)
         Try
             Dim sock As Socket = ServerSocket.EndAccept(ar)
-            If OnlineClient + 1 <= MaxClients Then
+            If OnlineClients + 1 <= MaxClients Then
                 ClientList.Add(sock)
                 Dim index As Integer = ClientList.FindIndex(sock)
                 RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
                 RevTheard(index) = New Thread(AddressOf ReceiveData)
                 RevTheard(index).Start(index)
             Else
-                'More then 1500 Sockets
+                'Absolute maximum capaticy of the server, 
+                'normally shouldn't apperar since there is a buffer zone between MaxNormalClients and the real maxClients variable.
+                'Disconnect of users over MaxNormalClients is handeled in UserAuth Method
+                'Could be a potential security fail, because clients can overflood server if they dont call the UserAuth Method
+                'Solution: Add an Timeout (ca. 30 secounds) when the client doesen't call the UserAuth Method
+
                 sock.Disconnect(False)
                 Log.WriteSystemLog("Socket Stack Full!")
             End If
@@ -141,7 +147,7 @@ Public Class Server
                 End If
             End If
 
-            If Program.Logpackets = True Then
+            If Settings.Server_DebugMode = True Then
                 Log.LogPacket(buff, True)
             End If
 
@@ -154,7 +160,7 @@ Public Class Server
 
 
     Public Shared Sub SendToAllIngame(ByVal buff() As Byte)
-        For i As Integer = 0 To OnlineClient
+        For i As Integer = 0 To OnlineClients
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As [cChar] = PlayerData(i)
             'Check if Player is ingame
@@ -181,7 +187,7 @@ Public Class Server
     End Sub
 
     Public Shared Sub SendToAllInRange(ByVal buff() As Byte, ByVal Position As Position)
-        For i As Integer = 0 To OnlineClient
+        For i As Integer = 0 To OnlineClients
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As [cChar] = PlayerData(i)
             'Check if Player is ingame
@@ -200,7 +206,7 @@ Public Class Server
 
     Public Shared Sub SendToAllInRangeExpectMe(ByVal buff() As Byte, ByVal Index As Integer)
 
-        For i As Integer = 0 To OnlineClient
+        For i As Integer = 0 To OnlineClients
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As [cChar] = PlayerData(i)
             'Check if Player is ingame
@@ -303,7 +309,16 @@ Public Class Server
         End Set
     End Property
 
-    Public Shared Property OnlineClient() As Integer
+    Public Shared Property MaxNormalClients() As Integer
+        Get
+            Return _MaxNormalClients
+        End Get
+        Set(ByVal value As Integer)
+            _MaxNormalClients = value
+        End Set
+    End Property
+
+    Public Shared Property OnlineClients() As Integer
         Get
             Return _OnlineClients
         End Get
@@ -322,17 +337,11 @@ Public Class Server
     End Property
 
     Public Delegate Sub dConnection(ByVal ip As String, ByVal index As Integer)
-
     Public Delegate Sub dDisconnected(ByVal ip As String, ByVal index As Integer)
-
     Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
-
     Public Delegate Sub dReceive(ByVal buffer() As Byte, ByVal index As Integer)
-
     Public Delegate Sub dServerStarted(ByVal time As String)
-
     Public Delegate Sub dServerStopped(ByVal time As String)
-
 #End Region
 End Class
 

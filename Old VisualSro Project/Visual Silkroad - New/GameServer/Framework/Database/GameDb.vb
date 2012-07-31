@@ -322,41 +322,33 @@ Namespace GameDB
 
 #Region "Get Things from Array"
 
-        Public Function GetUser(ByVal name As String) As Integer
+        Public Function GetUserIndex(ByVal username As String) As Integer
             For i = 0 To Users.Length
-                If Users(i).Name = name Then
+                If Users(i).Name = username Then
                     Return i
                 End If
             Next
             Return -1
         End Function
 
-        Public Function GetUser(ByVal id As UInteger) As Integer
+        Public Function GetUserIndex(ByVal accountID As UInteger) As Integer
             For i = 0 To Users.Length
-                If Users(i).Id = id Then
+                If Users(i).Id = accountID Then
                     Return i
                 End If
             Next
             Return -1
         End Function
 
-        Public Function GetUserArray(ByVal id As UInteger) As cCharListing.UserArray
+        Public Function GetUser(ByVal accountID As UInteger) As cCharListing.UserArray
             For i = 0 To Users.Length
-                If Users(i).Id = id Then
+                If Users(i).Id = accountID Then
                     Return Users(i)
                 End If
             Next
             Return Nothing
         End Function
 
-        Public Function GetUser(ByVal id As Integer) As Integer
-            For i = 0 To Users.Length
-                If Users(i).Id = id Then
-                    Return i
-                End If
-            Next
-            Return -1
-        End Function
 
         Public Sub FillCharList(ByVal charArray As cCharListing)
 

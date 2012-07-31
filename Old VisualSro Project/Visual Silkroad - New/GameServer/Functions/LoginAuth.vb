@@ -21,27 +21,29 @@ Namespace Functions
                 Dim userName As String = packet.String(packet.Word)
                 Dim password As String = packet.String(packet.Word)
 
-                Dim userIndex As Integer = GameDB.GetUser(userName)
-                If GameDB.Users(userIndex).Name = userName And GameDB.Users(userIndex).Pw = password And GameDB.Users(userIndex).Permission Then
+                Dim userIndex As Integer = GameDB.GetUserIndex(userName)
+                If GameDB.Users(userIndex).Name = userName And GameDB.Users(userIndex).Pw = password And GameDB.Users(userIndex).Permission = 1 Then
                     ClientList.SessionInfo(Index_).Authorized = True
-                    ClientList.SessionInfo(Index_).UserName = userName
+                    ClientList.SessionInfo(Index_).Username = userName
                 End If
             End If
         End Sub
 
         Public Sub CheckLogin(ByVal Index_ As Integer, ByVal packet As PacketReader)
-            Dim key As UInteger = packet.DWord()
-            Dim name As String = packet.String(packet.Word)
+            ClientList.SessionInfo(Index_).LoginAuthRequired = False 'to prevent a dc
+
+            Dim sessionID As UInteger = packet.DWord()
+            Dim username As String = packet.String(packet.Word)
             Dim password As String = packet.String(packet.Word)
 
             'Checking
-            Dim userIndex As Integer = GameDB.GetUser(name)
-            Dim realKey As UInt32 = GetKey(Index_)
+            Dim userIndex As Integer = GameDB.GetUserIndex(username)
             Dim loggedIn As Boolean = False
 
+            'Logged in check
             For i = 0 To Server.MaxClients
-                If ClientList.CharListing(i) IsNot Nothing Then
-                    If ClientList.CharListing(i).LoginInformation.Id = GameDB.Users(userIndex).Id Then
+                If CharListing(i) IsNot Nothing Then
+                    If CharListing(i).LoginInformation.Id = GameDB.Users(userIndex).Id Then
                         loggedIn = True
                         Exit For
                     End If
@@ -57,30 +59,57 @@ Namespace Functions
                 End If
             Next
 
-
+            'Reply in case of fail, if it succeed on these basic checks it will be sent to the globalmanager
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_AUTH)
 
             If loggedIn = True Or GameDB.Users(userIndex).Banned = True Then
                 writer.Byte(2)
-                writer.Byte(2)
-                'Server Full aka User is already logged in
+                writer.Byte(2) 'User is already logged in (c4?)
                 Server.Send(writer.GetBytes, Index_)
                 Server.Disconnect(Index_)
-            ElseIf GameDB.Users(userIndex).Name = name And GameDB.Users(userIndex).Pw = password And key = realKey And ClientList.SessionInfo(Index_).Authorized Then
-                writer.Byte(1)
-                Server.Send(writer.GetBytes, Index_)
-                ClientList.CharListing(Index_) = New cCharListing
-                ClientList.CharListing(Index_).LoginInformation = New cCharListing.UserArray
-                ClientList.CharListing(Index_).LoginInformation = GameDB.Users(userIndex)
-                ClientList.CharListing(Index_).LoginInformation.LoggedIn = True
-            ElseIf GameDB.Users(userIndex).Name <> name Or GameDB.Users(userIndex).Pw <> password Or key <> realKey Then
+            ElseIf Server.OnlineClients + 1 > Server.MaxNormalClients And GameDB.Users(userIndex).Permission = 0 Then
+                'overload prevention --> user conencts back to login
                 writer.Byte(2)
-                writer.Byte(2)
+                writer.Byte(4)  'Server Full 
                 Server.Send(writer.GetBytes, Index_)
                 Server.Disconnect(Index_)
+            Else
+                'GlobalManager Rulez!!! 
+                ClientList.SessionInfo(Index_).Username = username
+
+                GlobalManager.OnGameserverSendUserAuth(sessionID, username, password, Index_)
             End If
         End Sub
+
+        Public Sub Check_GlobalManagerUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
+            Dim userIndex As Integer = GameDB.GetUserIndex(ClientList.SessionInfo(index_).Username)
+            Dim user As cCharListing.UserArray = GameDB.Users(userIndex)
+
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.GAME_AUTH)
+            If succeed = 1 Then
+                writer.Byte(1)
+                Server.Send(writer.GetBytes, index_)
+                CharListing(index_) = New cCharListing
+                CharListing(index_).LoginInformation = New cCharListing.UserArray
+                CharListing(index_).LoginInformation = user
+                CharListing(index_).LoginInformation.LoggedIn = True
+            Else
+                Select Case errortag
+                    Case 1
+                        'wrong SessionID
+                    Case 2
+                        'wrong ID/PW
+                End Select
+
+                writer.Byte(2)
+                writer.Byte(2)
+                Server.Send(writer.GetBytes, index_)
+                Server.Disconnect(index_)
+            End If
+        End Sub
+
 
         Private Function GetKey(ByVal Index_ As Integer) As UInt32
             Dim split1 As String() = ClientList.GetSocket(Index_).RemoteEndPoint.ToString.Split(":")

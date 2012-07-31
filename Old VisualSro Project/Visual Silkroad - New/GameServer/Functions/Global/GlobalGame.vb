@@ -1,5 +1,7 @@
 ﻿Namespace Functions
     Module GlobalGame
+        'CharList
+        Public CharListing(1) As cCharListing
         'Players
         Public PlayerData(1) As [cChar]
         'Items
@@ -15,8 +17,7 @@
         Public Stalls As New List(Of cStall)
 
         Public Sub GlobalInit(ByVal slots As UInt32)
-            ReDim PlayerData(slots)
-            ReDim Inventorys(slots)
+            ReDim PlayerData(slots), Inventorys(slots), CharListing(slots)
         End Sub
     End Module
 End Namespace

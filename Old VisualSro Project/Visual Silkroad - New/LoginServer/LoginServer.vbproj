@@ -111,15 +111,15 @@
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Framework\Database\LoginDb.vb" />
-    <Compile Include="Functions\GlobalManager\AgentService.vb" />
-    <Compile Include="Functions\GlobalManager\Auth.vb" />
+    <Compile Include="Framework\GlobalManager\AgentService.vb" />
+    <Compile Include="Framework\GlobalManager\Auth.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
-    <Compile Include="Functions\GlobalManager\ShardService.vb" />
+    <Compile Include="Framework\GlobalManager\ShardService.vb" />
     <Compile Include="Global\GlobalDef.vb" />
     <Compile Include="Functions\Login\Ban.vb" />
     <Compile Include="Functions\Login\Register.vb" />

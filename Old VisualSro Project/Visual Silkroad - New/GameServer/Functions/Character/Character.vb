@@ -25,38 +25,38 @@ Namespace Functions
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHARACTER)
 
-            GameDB.FillCharList(ClientList.CharListing(Index_))
+            GameDB.FillCharList(CharListing(Index_))
 
             writer.Byte(2)
             'Char List
             writer.Byte(1)
 
-            writer.Byte(ClientList.CharListing(Index_).NumberOfChars)
+            writer.Byte(CharListing(Index_).NumberOfChars)
 
-            If ClientList.CharListing(Index_).NumberOfChars = 0 Then
+            If CharListing(Index_).NumberOfChars = 0 Then
                 Server.Send(writer.GetBytes, Index_)
 
-            ElseIf ClientList.CharListing(Index_).NumberOfChars > 0 Then
-                For i = 0 To (ClientList.CharListing(Index_).NumberOfChars - 1)
-                    If ClientList.CharListing(Index_).Chars(i) Is Nothing Then
-                        Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & ClientList.CharListing(Index_).LoginInformation.Name)
+            ElseIf CharListing(Index_).NumberOfChars > 0 Then
+                For i = 0 To (CharListing(Index_).NumberOfChars - 1)
+                    If CharListing(Index_).Chars(i) Is Nothing Then
+                        Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & CharListing(Index_).LoginInformation.Name)
                         Server.Disconnect(Index_)
                     End If
 
-                    writer.DWord(ClientList.CharListing(Index_).Chars(i).Pk2Id)
-                    writer.Word(ClientList.CharListing(Index_).Chars(i).CharacterName.Length)
-                    writer.String(ClientList.CharListing(Index_).Chars(i).CharacterName)
-                    writer.Byte(ClientList.CharListing(Index_).Chars(i).Volume)
-                    writer.Byte(ClientList.CharListing(Index_).Chars(i).Level)
-                    writer.QWord(ClientList.CharListing(Index_).Chars(i).Experience)
-                    writer.Word(ClientList.CharListing(Index_).Chars(i).Strength)
-                    writer.Word(ClientList.CharListing(Index_).Chars(i).Intelligence)
-                    writer.Word(ClientList.CharListing(Index_).Chars(i).Attributes)
-                    writer.DWord(ClientList.CharListing(Index_).Chars(i).CHP)
-                    writer.DWord(ClientList.CharListing(Index_).Chars(i).CMP)
-                    If ClientList.CharListing(Index_).Chars(i).Deleted = True Then
+                    writer.DWord(CharListing(Index_).Chars(i).Pk2ID)
+                    writer.Word(CharListing(Index_).Chars(i).CharacterName.Length)
+                    writer.String(CharListing(Index_).Chars(i).CharacterName)
+                    writer.Byte(CharListing(Index_).Chars(i).Volume)
+                    writer.Byte(CharListing(Index_).Chars(i).Level)
+                    writer.QWord(CharListing(Index_).Chars(i).Experience)
+                    writer.Word(CharListing(Index_).Chars(i).Strength)
+                    writer.Word(CharListing(Index_).Chars(i).Intelligence)
+                    writer.Word(CharListing(Index_).Chars(i).Attributes)
+                    writer.DWord(CharListing(Index_).Chars(i).CHP)
+                    writer.DWord(CharListing(Index_).Chars(i).CMP)
+                    If CharListing(Index_).Chars(i).Deleted = True Then
                         Dim diff As Long = DateDiff(DateInterval.Minute, DateTime.Now,
-                                                    ClientList.CharListing(Index_).Chars(i).DeletionTime)
+                                                    CharListing(Index_).Chars(i).DeletionTime)
                         writer.Byte(1)
                         'to delete
                         writer.DWord(diff)
@@ -70,8 +70,8 @@ Namespace Functions
                     'In Academy
 
                     'Now Items
-                    Dim inventory As New cInventory(ClientList.CharListing(Index_).Chars(i).MaxSlots)
-                    inventory = GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
+                    Dim inventory As New cInventory(CharListing(Index_).Chars(i).MaxSlots)
+                    inventory = GameDB.FillInventory(CharListing(Index_).Chars(i))
 
                     Dim playerItemCount As Integer = 0
                     For b = 0 To 9
@@ -158,15 +158,15 @@ Namespace Functions
 
         Public Sub OnDeleteChar(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim nick As String = packet.String(packet.Word)
-            For i = 0 To ClientList.CharListing(Index_).NumberOfChars - 1
-                If ClientList.CharListing(Index_).Chars(i).CharacterName = nick Then
-                    ClientList.CharListing(Index_).Chars(i).Deleted = True
+            For i = 0 To CharListing(Index_).NumberOfChars - 1
+                If CharListing(Index_).Chars(i).CharacterName = nick Then
+                    CharListing(Index_).Chars(i).Deleted = True
                     Dim dat As DateTime = DateTime.Now
                     Dim dat1 = dat.AddDays(7)
-                    ClientList.CharListing(Index_).Chars(i).DeletionTime = dat1
+                    CharListing(Index_).Chars(i).DeletionTime = dat1
                     Database.SaveQuery(
                         String.Format("UPDATE characters SET deletion_mark='1', deletion_time='{0}' where id='{1}'",
-                                      dat1.ToString, ClientList.CharListing(Index_).Chars(i).CharacterId))
+                                      dat1.ToString, CharListing(Index_).Chars(i).CharacterId))
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_CHARACTER)
@@ -180,11 +180,11 @@ Namespace Functions
 
         Public Sub OnRestoreChar(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim nick As String = packet.String(packet.Word)
-            For i = 0 To ClientList.CharListing(Index_).NumberOfChars - 1
-                If ClientList.CharListing(Index_).Chars(i).CharacterName = nick Then
-                    ClientList.CharListing(Index_).Chars(i).Deleted = False
+            For i = 0 To CharListing(Index_).NumberOfChars - 1
+                If CharListing(Index_).Chars(i).CharacterName = nick Then
+                    CharListing(Index_).Chars(i).Deleted = False
                     Database.SaveQuery(String.Format("UPDATE characters SET deletion_mark='0' where id='{0}'",
-                                                     ClientList.CharListing(Index_).Chars(i).CharacterId))
+                                                     CharListing(Index_).Chars(i).CharacterId))
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_CHARACTER)
@@ -248,7 +248,7 @@ Namespace Functions
                 GameDB.Chars(newCharacterIndex) = New [cChar]
 
                 With GameDB.Chars(newCharacterIndex)
-                    .AccountID = ClientList.CharListing(Index_).LoginInformation.Id
+                    .AccountID = CharListing(Index_).LoginInformation.Id
                     .CharacterName = nick
                     .CharacterId = Id_Gen.GetNewCharId
                     .UniqueID = Id_Gen.GetUnqiueId
@@ -560,21 +560,21 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
 
             'Main
-            For i = 0 To ClientList.CharListing(Index_).Chars.Count - 1
-                If ClientList.CharListing(Index_).Chars(i).CharacterName = SelectedNick Then
-                    PlayerData(Index_) = ClientList.CharListing(Index_).Chars(i)
+            For i = 0 To CharListing(Index_).Chars.Count - 1
+                If CharListing(Index_).Chars(i).CharacterName = SelectedNick Then
+                    PlayerData(Index_) = CharListing(Index_).Chars(i)
                     PlayerData(Index_).UniqueID = Id_Gen.GetUnqiueId()
 
-                    Dim inventory As New cInventory(ClientList.CharListing(Index_).Chars(i).MaxSlots)
-                    Inventorys(Index_) = GameDB.FillInventory(ClientList.CharListing(Index_).Chars(i))
+                    Dim inventory As New cInventory(CharListing(Index_).Chars(i).MaxSlots)
+                    Inventorys(Index_) = GameDB.FillInventory(CharListing(Index_).Chars(i))
 
-                    ClientList.SessionInfo(Index_).CharName = SelectedNick
+                    ClientList.SessionInfo(Index_).Charname = SelectedNick
                     Exit For
                 End If
             Next
 
             'No Char....
-            If ClientList.SessionInfo(Index_).CharName = "" Then
+            If ClientList.SessionInfo(Index_).Charname = "" Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If
@@ -812,15 +812,15 @@ Namespace Functions
             Dim OldCharname As String = packet.String(packet.Word)
             Dim NewCharname As String = packet.String(packet.Word)
 
-            GameDB.FillCharList(ClientList.CharListing(Index_))
+            GameDB.FillCharList(CharListing(Index_))
 
-            For i = 0 To ClientList.CharListing(Index_).Chars.Count - 1
-                If ClientList.CharListing(Index_).Chars(i) Is Nothing Then
-                    Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & ClientList.CharListing(Index_).LoginInformation.Name)
+            For i = 0 To CharListing(Index_).Chars.Count - 1
+                If CharListing(Index_).Chars(i) Is Nothing Then
+                    Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & CharListing(Index_).LoginInformation.Name)
                     Server.Disconnect(Index_)
                 End If
 
-                With ClientList.CharListing(Index_).Chars(i)
+                With CharListing(Index_).Chars(i)
                     If .CharacterName = OldCharname Then
                         'Found the Char, Change is only possible when it contains a @
                         If .CharacterName.Contains("@") Then

@@ -69,7 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\Classes\cINI.vb" />
-    <Compile Include="Framework\Classes\cServer.vb" />
+    <Compile Include="Framework\Classes\cServerbase.vb" />
     <Compile Include="Framework\Classes\DownloadServer.vb" />
     <Compile Include="Framework\Classes\GameServer.vb" />
     <Compile Include="Framework\Classes\GatewayServer.vb" />

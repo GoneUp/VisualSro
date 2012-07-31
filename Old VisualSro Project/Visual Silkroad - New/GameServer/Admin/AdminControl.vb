@@ -36,7 +36,7 @@ Namespace Admin
         Public Sub SendServerInfo(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.SR_Admin)
-            writer.DWord(Server.OnlineClient)
+            writer.DWord(Server.OnlineClients)
             writer.DWord(MobList.Count)
             writer.DWord(NpcList.Count)
             writer.DWord(ItemList.Count)
@@ -49,7 +49,7 @@ Namespace Admin
         End Sub
 
         Public Sub ChangeServerInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Settings.Server_PingDc = packet.Byte
+            Settings.Server_DebugMode = packet.Byte
             Settings.Server_XPRate = packet.Word
             Settings.Server_SPRate = packet.Word
             Settings.Server_GoldRate = packet.Word
@@ -59,7 +59,7 @@ Namespace Admin
 
         Public Sub SendCharInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim iChar As New [cChar]
-            Dim UserIndex As Integer = GameDB.GetUser(ClientList.SessionInfo(Index_).UserName)
+            Dim UserIndex As Integer = GameDB.GetUserIndex(ClientList.SessionInfo(Index_).Username)
             Dim Account As New cCharListing With {.LoginInformation = GameDB.Users(UserIndex)}
 
             Dim CharList As Boolean
@@ -73,8 +73,8 @@ Namespace Admin
 
             If tag = 1 Then
                 For i = 0 To Server.MaxClients
-                    If ClientList.CharListing(i) IsNot Nothing Then
-                        If ClientList.CharListing(i).LoginInformation.Id = GameDB.Users(UserIndex).Id Then
+                    If CharListing(i) IsNot Nothing Then
+                        If CharListing(i).LoginInformation.Id = GameDB.Users(UserIndex).Id Then
                             CharList = True
                             CharListIndex = i
                             GameDB.FillCharList(Account)

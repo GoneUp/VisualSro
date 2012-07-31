@@ -2,11 +2,6 @@
 Imports SRFramework
 
 Friend Class Program
-    Public Shared Logpackets As Boolean = False
-
-    Public Shared TheardDB As New Thread(AddressOf GameDB.UpdateData)
-    Public Shared TheardTimer As New Thread(AddressOf Functions.LoadTimers)
-    Public Shared TheardServer As New Thread(AddressOf Server.Start)
 
     Shared Sub Main()
         AddHandler Server.OnClientConnect, AddressOf Server_OnClientConnect
@@ -15,8 +10,17 @@ Friend Class Program
         AddHandler Server.OnServerError, AddressOf Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Server_OnServerStarted
         AddHandler Server.OnServerStopped, AddressOf Server_OnServerStopped
+
         AddHandler Database.OnDatabaseError, AddressOf db_OnDatabaseError
         AddHandler Database.OnDatabaseConnected, AddressOf db_OnConnectedToDatabase
+        AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
+
+        AddHandler GlobalManagerCon.OnGlobalManagerInit, AddressOf Program.gmc_OnGlobalManagerInit
+        AddHandler GlobalManagerCon.OnGlobalManagerShutdown, AddressOf Program.gmc_OnGlobalManagerInit
+        AddHandler GlobalManagerCon.OnError, AddressOf Program.gmc_OnGlobalManagerError
+        AddHandler GlobalManagerCon.OnLog, AddressOf Program.gmc_OnGlobalManagerLog
+        AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Parser.ParseGlobalManager
+        AddHandler GlobalManagerCon.OnGameserverUserauthReply, AddressOf Functions.Check_GlobalManagerUserAuthReply
 
         Console.WindowHeight = 20
         Console.BufferHeight = 50
@@ -39,15 +43,15 @@ Friend Class Program
         ClientList.SetupClientList(Server.MaxClients)
         Functions.GlobalInit(Server.MaxClients)
         DumpDataFiles()
-        TheardDB.Start()
-        TheardTimer.Start(1500)
+        GameDB.UpdateData()
+        Functions.LoadTimers(Server.MaxClients)
         GameMod.Damage.OnServerStart(Server.MaxClients)
 
         Log.WriteSystemLog("Data Loaded. Starting Server.")
 
-        TheardServer.Start()
+        Server.Start()
         Log.WriteSystemLog("Inital Loading complete!")
-        Log.WriteSystemLog("Slotcount: " & Settings.Server_Slots)
+        Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots)
 
         Do While True
             Dim msg As String = Console.ReadLine()
@@ -58,10 +62,12 @@ Friend Class Program
 
     Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
         If Settings.Log_Detail Then
-            Log.WriteSystemLog("Client Connected : " & ip)
+            Log.WriteSystemLog(String.Format("Client[{0}/{1}] Connected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
         End If
 
-        Server.OnlineClient += 1
+        Server.OnlineClients += 1
+        ClientList.SessionInfo(index).LoginAuthRequired = True
+        ClientList.SessionInfo(index).LoginAuthTimeout = Date.Now.AddSeconds(25)
 
         Dim packet As New PacketWriter
         packet.Create(ServerOpcodes.HANDSHAKE)
@@ -86,7 +92,7 @@ Friend Class Program
             Position = Position + length + 6
 
             Dim packet As New PacketReader(newbuff)
-            If Logpackets = True Then
+            If Settings.Server_DebugMode = True Then
                 Log.LogPacket(newbuff, False)
             End If
 
@@ -109,12 +115,12 @@ Friend Class Program
 
     Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
         Try
-            Server.OnlineClient -= 1
+            Server.OnlineClients -= 1
             If Functions.PlayerData(index) IsNot Nothing Then
                 Functions.DespawnPlayer(index)
                 Functions.CleanUpPlayer(index)
             End If
-            ClientList.CharListing(index) = Nothing
+            Functions.CharListing(index) = Nothing
             Functions.PlayerData(index) = Nothing
 
             'Server.RevTheard(index).Abort()
@@ -128,9 +134,39 @@ Friend Class Program
         Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
     End Sub
 
+    Private Shared Sub db_OnDatabaseLog(ByVal message As String)
+        Log.WriteSystemLog("Database Log: " & message)
+    End Sub
+
     Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
         Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
     End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerInit()
+        Server.Start()
+        Log.WriteSystemLog("We are ready!")
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerShutdown()
+        For i = 0 To ClientList.SessionInfo.Count - 1
+            If ClientList.SessionInfo(i) IsNot Nothing Then
+                Server.Disconnect(i)
+            End If
+        Next
+        Server.Stop()
+        Database.ExecuteQuerys()
+
+        Log.WriteSystemLog("Server stopped, Data is save. Feel free to close!")
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerLog(ByVal message As String)
+        Log.WriteSystemLog("GMC Log: " & message)
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal command As String)
+        Log.WriteSystemLog("GMC error: " & ex.Message & " Command: " & command)
+    End Sub
+
 End Class
 
 

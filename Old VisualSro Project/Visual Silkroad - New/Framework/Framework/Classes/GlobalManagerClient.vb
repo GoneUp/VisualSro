@@ -16,12 +16,14 @@ Public Class GlobalManagerClient
     Public Event OnLog As dLog
     Public Event OnPacketReceived As dReceive
     Public Event OnGatewayUserauthReply As dGatewayUserauthReply
+    Public Event OnGameserverUserauthReply As dGameserverUserauthReply
 
     Public Delegate Sub dGlobalManagerInit()
     Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
     Public Delegate Sub dLog(ByVal message As String)
     Public Delegate Sub dReceive(ByVal packet As PacketReader)
     Public Delegate Sub dGatewayUserauthReply(ByVal sessionID As UInteger, ByVal index_ As Integer)
+    Public Delegate Sub dGameserverUserauthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
 #End Region
 
 #Region "Connect"
@@ -118,6 +120,9 @@ Public Class GlobalManagerClient
     End Sub
     Public Sub GatewayUserAuthReply(ByVal sessionID As UInteger, ByVal index_ As Integer)
         RaiseEvent OnGatewayUserauthReply(sessionID, index_)
+    End Sub
+    Public Sub GameserverUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
+        RaiseEvent OnGameserverUserauthReply(succeed, errortag, index_)
     End Sub
     Public Sub SendPing()
         Dim writer As New PacketWriter

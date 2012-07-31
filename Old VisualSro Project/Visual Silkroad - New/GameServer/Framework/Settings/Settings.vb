@@ -9,7 +9,8 @@ Namespace Settings
         'Genral 
         Public Server_Ip As String = "0.0.0.0"
         Public Server_Port As UShort = 15580
-        Public Server_Slots As UInteger = 100
+        Public Server_NormalSlots As UInteger = 100
+        Public Server_MaxClients As UInteger = 105
         Public Server_Id As UShort = 0
 
         Public Database_IP As String
@@ -26,17 +27,17 @@ Namespace Settings
         Public PlayerStartPosCh As New Position
         Public Player_StartPos_Eu As New Position
         Public Player_StartReturnPos As New Position
-        Public Player_StartLevel As Byte
-        Public Player_StartGold As ULong
-        Public Player_StartMasteryLevel As Byte
-        Public Player_StartSP As UInteger
-        Public Player_StartGM As Boolean
+        Public Player_StartLevel As Byte = 1
+        Public Player_StartGold As ULong = 0
+        Public Player_StartMasteryLevel As Byte = 0
+        Public Player_StartSP As UInteger = 0
+        Public Player_StartGM As Boolean = False
 
         Public Server_XPRate As Long = 1
         Public Server_SPRate As Long = 1
         Public Server_GoldRate As Long = 1
         Public Server_DropRate As Long = 1
-        Public Server_PingDc As Boolean = True
+        Public Server_DebugMode As Boolean = True
 
         Public Server_LevelCap As Byte = 100
         Public Server_MasteryCap As UInteger = 300
@@ -57,7 +58,8 @@ Namespace Settings
         Public Sub LoadSettings()
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
             Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
-            Server_Slots = File.Read("SERVER_INTERNAL", "Max_Slots", "1000")
+            Server_NormalSlots = File.Read("SERVER_INTERNAL", "Max_NormalSlots", "1000")
+            Server_MaxClients = File.Read("SERVER_INTERNAL", "Max_Clients", "1050")
             Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
 
             Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
@@ -123,7 +125,8 @@ Namespace Settings
 
             Server.Ip = Server_Ip
             Server.Port = Server_Port
-            Server.MaxClients = Server_Slots
+            Server.MaxNormalClients = Server_NormalSlots
+            Server.MaxClients = Server_MaxClients
         End Sub
     End Module
 End Namespace

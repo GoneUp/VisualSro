@@ -19,7 +19,7 @@ Friend Class Program
         AddHandler GlobalManagerCon.OnGlobalManagerShutdown, AddressOf Program.gmc_OnGlobalManagerInit
         AddHandler GlobalManagerCon.OnError, AddressOf Program.gmc_OnGlobalManagerError
         AddHandler GlobalManagerCon.OnLog, AddressOf Program.gmc_OnGlobalManagerLog
-        AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Parser.ParseGlobalManager
+        AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.Parser.ParseGlobalManager
         AddHandler GlobalManagerCon.OnGameserverUserauthReply, AddressOf Functions.Check_GlobalManagerUserAuthReply
 
         Console.WindowHeight = 20
@@ -66,8 +66,10 @@ Friend Class Program
         End If
 
         Server.OnlineClients += 1
-        ClientList.SessionInfo(index).LoginAuthRequired = True
-        ClientList.SessionInfo(index).LoginAuthTimeout = Date.Now.AddSeconds(25)
+
+        SessionInfo(index) = New cSessionInfo_GameServer
+        SessionInfo(index).LoginAuthRequired = True
+        SessionInfo(index).LoginAuthTimeout = Date.Now.AddSeconds(25)
 
         Dim packet As New PacketWriter
         packet.Create(ServerOpcodes.HANDSHAKE)
@@ -96,7 +98,7 @@ Friend Class Program
                 Log.LogPacket(newbuff, False)
             End If
 
-            Parser.Parse(packet, index_)
+            Functions.Parser.Parse(packet, index_)
         Loop
     End Sub
 
@@ -120,13 +122,12 @@ Friend Class Program
                 Functions.DespawnPlayer(index)
                 Functions.CleanUpPlayer(index)
             End If
+        Catch ex As Exception
+            Log.WriteSystemLog("Client disconnect error! " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
+        Finally
             Functions.CharListing(index) = Nothing
             Functions.PlayerData(index) = Nothing
-
-            'Server.RevTheard(index).Abort()
-            'Server.RevTheard(index) = Nothing
-        Catch ex As Exception
-            Functions.PlayerData(index) = Nothing
+            SessionInfo(index) = Nothing
         End Try
     End Sub
 
@@ -148,8 +149,8 @@ Friend Class Program
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerShutdown()
-        For i = 0 To ClientList.SessionInfo.Count - 1
-            If ClientList.SessionInfo(i) IsNot Nothing Then
+        For i = 0 To SessionInfo.Count - 1
+            If SessionInfo(i) IsNot Nothing Then
                 Server.Disconnect(i)
             End If
         Next

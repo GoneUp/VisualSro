@@ -2,18 +2,20 @@
 
 Namespace Functions
     Module Timers
-        Public PlayerAttackTimer As Timer() = New Timer(14999) {}
-        Public PlayerMoveTimer As Timer() = New Timer(14999) {}
-        Public PlayerBerserkTimer As Timer() = New Timer(14999) {}
+        Public PlayerAttackTimer As Timer() = New Timer(1) {}
+        Public PlayerMoveTimer As Timer() = New Timer(1) {}
+        Public PlayerBerserkTimer As Timer() = New Timer(1) {}
+        Public PlayerExitTimer As Timer() = New Timer(1) {}
         Public PlayerAutoHeal As New Timer
         Public WorldCheck As New Timer
         Public MonsterMovement As New Timer
         Public MonsterRespawn As New Timer
-        Public MonsterAttack As Timer() = New Timer(14999) {}
-        Public PickUpTimer As Timer() = New Timer(14999) {}
-        Public UsingItemTimer As Timer() = New Timer(14999) {}
-        Public SitUpTimer As Timer() = New Timer(14999) {}
+        Public MonsterAttack As Timer() = New Timer(1) {}
+        Public PickUpTimer As Timer() = New Timer(1) {}
+        Public UsingItemTimer As Timer() = New Timer(1) {}
+        Public SitUpTimer As Timer() = New Timer(1) {}
         Public GeneralTimer As New Timer
+        Public PingTimer As New Timer
 
         Public Sub LoadTimers(ByVal timerCount As Integer)
             Log.WriteSystemLog("Loading Timers...")
@@ -21,7 +23,7 @@ Namespace Functions
             Try
                 ReDim PlayerAttackTimer(timerCount), PlayerMoveTimer(timerCount), PickUpTimer(timerCount),
                     MonsterAttack(timerCount), PlayerBerserkTimer(timerCount), UsingItemTimer(timerCount),
-                    SitUpTimer(timerCount)
+                    SitUpTimer(timerCount), PlayerExitTimer(timerCount)
 
                 For i As Integer = 0 To timerCount - 1
                     PlayerAttackTimer(i) = New Timer()
@@ -30,6 +32,8 @@ Namespace Functions
                     AddHandler PlayerMoveTimer(i).Elapsed, AddressOf PlayerMoveTimer_Elapsed
                     PlayerBerserkTimer(i) = New Timer()
                     AddHandler PlayerBerserkTimer(i).Elapsed, AddressOf PlayerBerserkTimer_Elapsed
+                    PlayerExitTimer(i) = New Timer()
+                    'AddHandler PlayerExitTimer(i).Elapsed, AddressOf PlayerBerserkTimer_Elapsed
                     UsingItemTimer(i) = New Timer()
                     AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
                     SitUpTimer(i) = New Timer()
@@ -43,6 +47,7 @@ Namespace Functions
                 AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
                 AddHandler PlayerAutoHeal.Elapsed, AddressOf PlayerAutoHeal_Elapsed
                 AddHandler GeneralTimer.Elapsed, AddressOf GeneralTimer_Elapsed
+                AddHandler PingTimer.Elapsed, AddressOf PingTimer_Elapsed
 
                 'Start Timers
                 WorldCheck.Interval = 5000
@@ -60,10 +65,14 @@ Namespace Functions
                 GeneralTimer.Interval = 2500
                 GeneralTimer.Start()
 
-            Catch ex As Exception
+                PingTimer.Interval = 30000
+                PingTimer.Start()
 
+            Catch ex As Exception
+                Log.WriteSystemLog("Timers loading failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
+            Finally
+                Log.WriteSystemLog("Timers loaded!")
             End Try
-            Log.WriteSystemLog("Timers loaded!")
         End Sub
 
         Public Sub AttackTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
@@ -541,6 +550,37 @@ Namespace Functions
             End Try
 
             GeneralTimer.Start()
+        End Sub
+        Public Sub PingTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            PingTimer.Stop()
+
+            'Excluded from ClientList 
+
+            Try
+                Dim Count As Integer = 0
+
+                For i = 0 To Server.MaxClients
+                    Dim socket As Net.Sockets.Socket = ClientList.GetSocket(i)
+                    If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
+                        If Settings.Server_DebugMode AndAlso DateDiff(DateInterval.Second, ClientList.LastPingTime(i), DateTime.Now) > 30 Then
+                            Server.Disconnect(i)
+                        ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
+                            'LoginAuth is missing..
+                            Server.Disconnect(i)
+                        Else
+                            Count += 1
+                        End If
+                    End If
+                Next
+
+                Server.OnlineClients = Count
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")
+                '
+            End Try
+
+            PingTimer.Start()
         End Sub
     End Module
 End Namespace

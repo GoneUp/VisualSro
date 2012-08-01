@@ -14,23 +14,13 @@ Namespace Functions
                 writer.Byte(0)
                 Server.Send(writer.GetBytes, Index_)
 
-                ClientList.SessionInfo(Index_).ClientType = _SessionInfo.ConnectionType.SR_Client
-                ClientList.SessionInfo(Index_).Authorized = True
-            ElseIf "SR_Admin" Then
-                ClientList.SessionInfo(Index_).ClientType = _SessionInfo.ConnectionType.SR_Admin
-                Dim userName As String = packet.String(packet.Word)
-                Dim password As String = packet.String(packet.Word)
-
-                Dim userIndex As Integer = GameDB.GetUserIndex(userName)
-                If GameDB.Users(userIndex).Name = userName And GameDB.Users(userIndex).Pw = password And GameDB.Users(userIndex).Permission = 1 Then
-                    ClientList.SessionInfo(Index_).Authorized = True
-                    ClientList.SessionInfo(Index_).Username = userName
-                End If
+                SessionInfo(Index_).ClientName = clientString
+                SessionInfo(Index_).Authorized = True
             End If
         End Sub
 
         Public Sub CheckLogin(ByVal Index_ As Integer, ByVal packet As PacketReader)
-            ClientList.SessionInfo(Index_).LoginAuthRequired = False 'to prevent a dc
+            SessionInfo(Index_).LoginAuthRequired = False 'to prevent a dc
 
             Dim sessionID As UInteger = packet.DWord()
             Dim username As String = packet.String(packet.Word)
@@ -76,14 +66,14 @@ Namespace Functions
                 Server.Disconnect(Index_)
             Else
                 'GlobalManager Rulez!!! 
-                ClientList.SessionInfo(Index_).Username = username
+                SessionInfo(Index_).Username = username
 
                 GlobalManager.OnGameserverSendUserAuth(sessionID, username, password, Index_)
             End If
         End Sub
 
         Public Sub Check_GlobalManagerUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
-            Dim userIndex As Integer = GameDB.GetUserIndex(ClientList.SessionInfo(index_).Username)
+            Dim userIndex As Integer = GameDB.GetUserIndex(SessionInfo(index_).Username)
             Dim user As cCharListing.UserArray = GameDB.Users(userIndex)
 
             Dim writer As New PacketWriter

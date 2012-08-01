@@ -24,10 +24,10 @@ Namespace Auth
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.HANDSHAKE)
 
-            If CalculatedKey = Framework.ClientList.SessionInfo(Index_).BaseKey Then
+            If CalculatedKey = SessionInfo(Index_).BaseKey Then
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
-                ClientList.SessionInfo(Index_).HandshakeComplete = True
+                SessionInfo(Index_).HandshakeComplete = True
             Else
                 writer.Byte(2)
                 Server.Send(writer.GetBytes, Index_)
@@ -37,20 +37,20 @@ Namespace Auth
         End Sub
 
         Public Sub OnGateWay(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim tmp As _SessionInfo = ClientList.SessionInfo(Index_)
+            Dim tmp As cSessionInfo_GlobalManager = SessionInfo(Index_)
             tmp.ClientName = packet.String(packet.Word)
             tmp.ProtocolVersion = packet.DWord
             tmp.ServerId = packet.Word
 
             Select Case tmp.ClientName
                 Case "GatewayServer"
-                    tmp.Type = _SessionInfo._ServerTypes.GatewayServer
+                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.GatewayServer
                 Case "AgentServer"
-                    tmp.Type = _SessionInfo._ServerTypes.GameServer
+                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.GameServer
                 Case "DownloadServer"
-                    tmp.Type = _SessionInfo._ServerTypes.DownloadServer
+                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.DownloadServer
                 Case "AdminTool"
-                    tmp.Type = _SessionInfo._ServerTypes.AdminTool
+                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.AdminTool
             End Select
 
             Dim writer As New PacketWriter
@@ -60,9 +60,9 @@ Namespace Auth
             writer.HexString(name)
 
             If tmp.HandshakeComplete Then
-                If tmp.Type <> _SessionInfo._ServerTypes.Unknown Then
+                If tmp.Type <> cSessionInfo_GlobalManager._ServerTypes.Unknown Then
                     If tmp.ProtocolVersion = Settings.Server_ProtocolVersion Then
-                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, ClientList.GetIp(Index_).Split(":")(0)) Then
+                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, ClientList.GetIP(Index_).Split(":")(0)) Then
                             writer.Byte(1)
                             tmp.Authorized = True
                         Else

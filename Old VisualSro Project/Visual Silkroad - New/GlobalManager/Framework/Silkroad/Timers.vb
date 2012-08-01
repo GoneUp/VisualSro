@@ -1,16 +1,19 @@
 ﻿Imports System.Timers
+Imports GlobalManager.Framework
+
 Namespace Timers
     Module Timers
 
-
         Friend QueryTimer As New Timer
         Friend CleanUpTimer As New Timer
+        Public PingTimer As New Timer
 
         Friend Sub LoadTimers()
             'Handlers
 
             AddHandler QueryTimer.Elapsed, AddressOf QueryTimer_Elapsed
             AddHandler CleanUpTimer.Elapsed, AddressOf CleanUp_Elapsed
+            AddHandler PingTimer.Elapsed, AddressOf PingTimer_Elapsed
 
             'Starting
             QueryTimer.Interval = 2500
@@ -18,6 +21,9 @@ Namespace Timers
 
             CleanUpTimer.Interval = 2500
             CleanUpTimer.Start()
+
+            PingTimer.Interval = 30000
+            PingTimer.Start()
         End Sub
 
 
@@ -26,7 +32,7 @@ Namespace Timers
 
             Try
 
-                Framework.DataBase.ExecuteQuerys()
+                Database.ExecuteQuerys()
 
 
             Catch ex As Exception
@@ -59,5 +65,36 @@ Namespace Timers
             CleanUpTimer.Start()
         End Sub
 
+        Public Sub PingTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            PingTimer.Stop()
+
+            'Excluded from ClientList 
+
+            Try
+                Dim Count As Integer = 0
+
+                For i = 0 To Server.MaxClients
+                    Dim socket As Net.Sockets.Socket = ClientList.GetSocket(i)
+                    If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
+                        If DateDiff(DateInterval.Second, ClientList.LastPingTime(i), DateTime.Now) > 30 Then
+                            Server.Disconnect(i)
+
+                            'ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
+                            '    'Later for check for missing Handshake Packets, ClientInfo
+                            '    Server.Disconnect(i)
+                        Else
+                            Count += 1
+                        End If
+                    End If
+                Next
+
+                Server.OnlineClient = Count
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")
+            End Try
+
+            PingTimer.Start()
+        End Sub
     End Module
 End Namespace

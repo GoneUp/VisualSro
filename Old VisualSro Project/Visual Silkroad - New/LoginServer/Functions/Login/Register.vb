@@ -23,7 +23,7 @@ Namespace Functions
 
 
 
-            Framework.Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
+            Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
             Dim tmp As New LoginDb.UserArray
             tmp.AccountId = Id_Gen.GetNewAccountId

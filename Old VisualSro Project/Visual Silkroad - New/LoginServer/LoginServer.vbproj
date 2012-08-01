@@ -115,7 +115,6 @@
     <Compile Include="Framework\GlobalManager\Auth.vb" />
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
-    <Compile Include="Framework\Server\ClientList.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />

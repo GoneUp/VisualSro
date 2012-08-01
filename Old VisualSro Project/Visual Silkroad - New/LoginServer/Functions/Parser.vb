@@ -15,7 +15,7 @@ Namespace Functions
                 Case ClientOpcodes.PING
 
                 Case ClientOpcodes.HANDSHAKE_CONFIRM  'Client accepts
-                    ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.HANDSHAKE
+                    SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.HANDSHAKE
 
                 Case ClientOpcodes.LOGIN_WHO_AM_I  'GateWay
                     GateWay(packet, Index_)

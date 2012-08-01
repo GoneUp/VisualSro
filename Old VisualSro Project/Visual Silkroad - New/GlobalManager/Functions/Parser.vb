@@ -11,7 +11,7 @@ Namespace Functions
 
             ClientList.LastPingTime(Index_) = Date.Now
 
-            If ClientList.SessionInfo(Index_).Authorized = False Then
+            If SessionInfo(Index_).Authorized = False Then
                 '===Pre-Game===
                 Select Case opcode
                     Case ClientOpcodes.PING
@@ -22,7 +22,7 @@ Namespace Functions
                 End Select
 
 
-            ElseIf ClientList.SessionInfo(Index_).Authorized Then
+            ElseIf SessionInfo(Index_).Authorized Then
                 '===SECURE===
                 Select Case opcode
                     Case ClientOpcodes.PING

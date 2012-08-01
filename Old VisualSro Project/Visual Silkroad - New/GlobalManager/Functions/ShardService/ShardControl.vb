@@ -5,8 +5,8 @@ Namespace Shard
     Module ShardControl
 
         Public Sub OnSendServerOptions(ByVal Index_ As Integer)
-            Dim ServerId As UInt16 = ClientList.SessionInfo(Index_).ServerId
-            If ClientList.SessionInfo(Index_).Type = _SessionInfo._ServerTypes.GameServer Then
+            Dim ServerId As UInt16 = SessionInfo(Index_).ServerId
+            If SessionInfo(Index_).Type = cSessionInfo_GlobalManager._ServerTypes.GameServer Then
                 If Server_Game.ContainsKey(ServerId) Then
                     Dim writer As New PacketWriter
                     writer.Create(InternalServerOpcodes.SERVER_UPDATE)

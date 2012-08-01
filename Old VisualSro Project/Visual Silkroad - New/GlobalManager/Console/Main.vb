@@ -53,10 +53,12 @@ Class Program
         Log.WriteSystemLog("Client Connected : " & ip)
         Server.OnlineClient += 1
 
-        ClientList.SessionInfo(index).BaseKey = Auth.GenarateKey
+        SessionInfo(index) = New cSessionInfo_GlobalManager
+        SessionInfo(index).BaseKey = Auth.GenarateKey
+
         Dim writer As New PacketWriter
         writer.Create(ServerOpcodes.HANDSHAKE)
-        writer.Word(ClientList.SessionInfo(index).BaseKey)
+        writer.Word(SessionInfo(index).BaseKey)
         Server.Send(writer.GetBytes, index)
     End Sub
 
@@ -96,9 +98,9 @@ Class Program
     Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
         Log.WriteSystemLog("Client Disconnected : " & ip)
 
-        ClientList.Delete(index)
+        SessionInfo(index) = Nothing
+
         Server.OnlineClient -= 1
-        Server.RevTheard(index).Abort()
     End Sub
 
     Private Shared Sub db_OnDatabaseConnected()

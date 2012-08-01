@@ -69,16 +69,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\Classes\cINI.vb" />
-    <Compile Include="Framework\Classes\cServerbase.vb" />
-    <Compile Include="Framework\Classes\DownloadServer.vb" />
-    <Compile Include="Framework\Classes\GameServer.vb" />
-    <Compile Include="Framework\Classes\GatewayServer.vb" />
-    <Compile Include="Framework\Classes\GlobalManagerClient.vb" />
+    <Compile Include="Framework\Classes\GlobalManager Stuff\cServerbase.vb" />
+    <Compile Include="Framework\Classes\GlobalManager Stuff\DownloadServer.vb" />
+    <Compile Include="Framework\Classes\GlobalManager Stuff\GameServer.vb" />
+    <Compile Include="Framework\Classes\GlobalManager Stuff\GatewayServer.vb" />
+    <Compile Include="Framework\Classes\GlobalManager Stuff\GlobalManagerClient.vb" />
     <Compile Include="Framework\Database\cDatabase.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Packets\Opcodes.vb" />
     <Compile Include="Framework\Packets\PacketReader.vb" />
     <Compile Include="Framework\Packets\PacketWriter.vb" />
+    <Compile Include="Framework\Server\cClientList.vb" />
+    <Compile Include="Framework\Server\cSessionInfo_Base.vb" />
+    <Compile Include="Framework\Server\cSessionInfo_GameServer.vb" />
+    <Compile Include="Framework\Server\cSessionInfo_LoginServer.vb" />
+    <Compile Include="Framework\Server\cSessionInfo_GlobalManager.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -114,6 +119,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

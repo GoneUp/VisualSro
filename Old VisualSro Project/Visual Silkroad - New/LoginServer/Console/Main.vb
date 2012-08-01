@@ -133,8 +133,8 @@ Friend Class Program
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerShutdown()
-        For i = 0 To ClientList.SessionInfo.Count - 1
-            If ClientList.SessionInfo(i) IsNot Nothing Then
+        For i = 0 To SessionInfo.Count - 1
+            If SessionInfo(i) IsNot Nothing Then
                 Server.Disconnect(i)
             End If
         Next

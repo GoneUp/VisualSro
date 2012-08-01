@@ -568,13 +568,13 @@ Namespace Functions
                     Dim inventory As New cInventory(CharListing(Index_).Chars(i).MaxSlots)
                     Inventorys(Index_) = GameDB.FillInventory(CharListing(Index_).Chars(i))
 
-                    ClientList.SessionInfo(Index_).Charname = SelectedNick
+                    SessionInfo(Index_).Charname = SelectedNick
                     Exit For
                 End If
             Next
 
             'No Char....
-            If ClientList.SessionInfo(Index_).Charname = "" Then
+            If SessionInfo(Index_).Charname = "" Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If

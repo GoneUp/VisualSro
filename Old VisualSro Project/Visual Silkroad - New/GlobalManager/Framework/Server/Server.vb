@@ -51,20 +51,16 @@ Namespace Framework
                     RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
                     RevTheard(index) = New Threading.Thread(AddressOf ReceiveData)
                     RevTheard(index).Start(index)
-                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
                 Else
                     'More then 1500 Sockets
                     sock.Disconnect(False)
                     Log.WriteSystemLog("Socket Stack Full!")
-                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
                 End If
 
             Catch exception As Exception
                 RaiseEvent OnServerError(exception, -1)
-
-                If ServerSocket.Blocking = True Then
-                    ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
-                End If
+            Finally
+                ServerSocket.BeginAccept(New AsyncCallback(AddressOf Server.ClientConnect), Nothing)
             End Try
         End Sub
 
@@ -72,6 +68,8 @@ Namespace Framework
             Try
                 Dim socket As Socket = ClientList.GetSocket(index)
                 socket.Shutdown(SocketShutdown.Both)
+                ClientList.Delete(index)
+                Server.RevTheard(index).Abort()
 
                 RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
             Catch ex As Exception

@@ -37,7 +37,16 @@ Namespace Settings
         Public Server_SPRate As Long = 1
         Public Server_GoldRate As Long = 1
         Public Server_DropRate As Long = 1
-        Public Server_DebugMode As Boolean = True
+        Private _Server_DebugMode As Boolean = True
+        Public Property Server_DebugMode 'Only for setting the PingDc on ClientList
+            Get
+                Return _Server_DebugMode
+            End Get
+            Set(ByVal value)
+                _Server_DebugMode = value
+            End Set
+        End Property
+
 
         Public Server_LevelCap As Byte = 100
         Public Server_MasteryCap As UInteger = 300

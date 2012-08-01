@@ -32,13 +32,13 @@
 
 
             Case "/end"
-                For i = 0 To Framework.ClientList.SessionInfo.Count - 1
-                    If Framework.ClientList.SessionInfo(i) IsNot Nothing Then
+                For i = 0 To SessionInfo.Count - 1
+                    If SessionInfo(i) IsNot Nothing Then
                         Framework.Server.Disconnect(i)
                     End If
                 Next
                 ' GameServer.Server.stop()
-                Framework.DataBase.ExecuteQuerys()
+                DataBase.ExecuteQuerys()
                 End
 
         End Select

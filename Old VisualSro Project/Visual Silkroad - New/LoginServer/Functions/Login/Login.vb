@@ -17,25 +17,25 @@ Namespace Functions
                 Server.Send(writer.GetBytes, Index_)
             End If
 
-            If ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.HANDSHAKE Then
-                ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.WHOAMI
+            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.HANDSHAKE Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.WHOAMI
             Else
                 Server.Disconnect(Index_)
             End If
         End Sub
         Public Sub ClientInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            ClientList.SessionInfo(Index_).Locale = packet.Byte
-            ClientList.SessionInfo(Index_).ClientName = packet.String(packet.Word)
-            ClientList.SessionInfo(Index_).Version = packet.DWord
+            SessionInfo(Index_).Locale = packet.Byte
+            SessionInfo(Index_).ClientName = packet.String(packet.Word)
+            SessionInfo(Index_).Version = packet.DWord
 
             If Settings.Log_Connect Then
-                With ClientList.SessionInfo(Index_)
+                With SessionInfo(Index_)
                     Log.WriteGameLog(Index_, "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", .Locale, .ClientName, .Version))
                 End With
             End If
 
-            If ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.WHOAMI Then
-                ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.PATCH_INFO
+            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.WHOAMI Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO
             Else
                 Server.Disconnect(Index_)
             End If
@@ -84,27 +84,27 @@ Namespace Functions
             writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(0) 'Data
 
-            If ClientList.SessionInfo(Index_).Version = Settings.Server_CurrectVersion Then
+            If SessionInfo(Index_).Version = Settings.Server_CurrectVersion Then
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
-            ElseIf ClientList.SessionInfo(Index_).Version > Settings.Server_CurrectVersion Then
+            ElseIf SessionInfo(Index_).Version > Settings.Server_CurrectVersion Then
                 'Client too new 
                 writer.Byte(2)
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
                 Server.Disconnect(Index_)
-            ElseIf ClientList.SessionInfo(Index_).Version < Settings.Server_CurrectVersion Then
+            ElseIf SessionInfo(Index_).Version < Settings.Server_CurrectVersion Then
                 'Client too old 
                 writer.Byte(2)
                 writer.Byte(5)
                 Server.Send(writer.GetBytes, Index_)
                 Server.Disconnect(Index_)
-            ElseIf ClientList.SessionInfo(Index_).Locale <> Settings.Server_Local Then
+            ElseIf SessionInfo(Index_).Locale <> Settings.Server_Local Then
                 'Wrong Local
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
                 Server.Disconnect(Index_)
-            ElseIf ClientList.SessionInfo(Index_).ClientName <> "SR_Client" Then
+            ElseIf SessionInfo(Index_).ClientName <> "SR_Client" Then
                 'Wrong Clientname
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
@@ -124,8 +124,8 @@ Namespace Functions
         End Sub
 
         Public Sub SendLauncherInfo(ByVal Index_ As Integer)
-            If ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.PATCH_INFO Then
-                ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.LAUNCHER
+            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LAUNCHER
             Else
                 Server.Disconnect(Index_)
             End If
@@ -162,11 +162,11 @@ Namespace Functions
         End Sub
 
         Public Sub SendServerList(ByVal Index_ As Integer)
-            If ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.PATCH_INFO Then
-                ClientList.SessionInfo(Index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.LOGIN
+            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LOGIN
                 Timers.LoginInfoTimer(Index_).Interval = 1000
                 Timers.LoginInfoTimer(Index_).Start()
-            ElseIf ClientList.SessionInfo(Index_).SRConnectionSetup <> _SessionInfo.SRConnectionStatus.LOGIN Then
+            ElseIf SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                 Server.Disconnect(Index_)
             End If
 
@@ -197,7 +197,7 @@ Namespace Functions
         End Sub
 
         Public Sub HandleLogin(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            If ClientList.SessionInfo(Index_).SRConnectionSetup <> _SessionInfo.SRConnectionStatus.LOGIN Then
+            If SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                 Server.Disconnect(Index_)
             End If
 
@@ -277,7 +277,7 @@ Namespace Functions
                     user.FailedLogins += 1
                     LoginDb.Users(userIndex) = user
 
-                    Framework.Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
+                    Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
 
                     writer.Byte(2) 'login failed
                     writer.Byte(1) 'wrong pw
@@ -289,7 +289,7 @@ Namespace Functions
                         user.FailedLogins = 0
                         LoginDb.Users(userIndex) = user
 
-                        Framework.Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
+                        Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
                         BanUser(Date.Now.AddMinutes(10), userIndex) 'Ban for 10 mins
                     End If
 
@@ -315,8 +315,8 @@ Namespace Functions
                         Timers.LoginInfoTimer(Index_).Stop()
 
                         'GlobalManager Part:
-                        ClientList.SessionInfo(Index_).gameserverId = serverID
-                        ClientList.SessionInfo(Index_).userName = id
+                        SessionInfo(Index_).gameserverId = serverID
+                        SessionInfo(Index_).userName = id
                         GlobalManager.OnSendUserAuth(serverID, id, pw, Index_)
 
                         If Settings.Log_Login Then
@@ -336,15 +336,15 @@ Namespace Functions
 
         Public Sub LoginSendUserAuthSucceed(ByVal sessionId As UInteger, ByVal index_ As Integer)
             'ServerIndex + SessionID + Port + Index
-            Dim user As String = ClientList.SessionInfo(index_).userName
+            Dim user As String = SessionInfo(index_).userName
 
             If ClientList.GetSocket(index_) Is Nothing Then
                 Log.WriteSystemLog("Index_ from GlobalManager dosen't existis! user: " & user)
-            ElseIf Shard_Gameservers.ContainsKey(ClientList.SessionInfo(index_).gameserverId) = False Then
+            ElseIf Shard_Gameservers.ContainsKey(SessionInfo(index_).gameserverId) = False Then
                 Log.WriteSystemLog("GS from GlobalManager dosen't existis! user: " & user)
             Else
-                Dim gs_new As GameServer = Shard_Gameservers(ClientList.SessionInfo(index_).gameserverId)
-                Dim gs As LoginDb.Server_ = LoginDb.GetServer(ClientList.SessionInfo(index_).gameserverId)
+                Dim gs_new As GameServer = Shard_Gameservers(SessionInfo(index_).gameserverId)
+                Dim gs As LoginDb.Server_ = LoginDb.GetServer(SessionInfo(index_).gameserverId)
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.LOGIN_AUTH)
                 writer.Byte(1)

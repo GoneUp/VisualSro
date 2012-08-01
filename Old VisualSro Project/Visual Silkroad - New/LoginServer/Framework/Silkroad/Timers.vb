@@ -1,35 +1,45 @@
 ﻿Imports System.Timers
 Imports LoginServer.Framework
+Imports SRFramework
 
 Namespace Timers
     Module Timers
-
-
-        Public GenralTimer As New Timer
+        Public GeneralTimer As New Timer
+        Public PingTimer As New Timer
         Public LoginInfoTimer(10) As Timer
 
 
         Public Sub LoadTimers(ByVal timerCount As Integer)
-            'Initalize
-            ReDim LoginInfoTimer(timerCount)
+            Try
+                'Initalize
+                ReDim LoginInfoTimer(timerCount)
 
-            For i = 0 To timerCount - 1
-                LoginInfoTimer(i) = New Timer
-                AddHandler LoginInfoTimer(i).Elapsed, AddressOf LoginInfoTimerElapsed
-            Next
+                For i = 0 To timerCount - 1
+                    LoginInfoTimer(i) = New Timer
+                    AddHandler LoginInfoTimer(i).Elapsed, AddressOf LoginInfoTimerElapsed
+                Next
 
-            'Handlers
-            AddHandler GenralTimer.Elapsed, AddressOf GeneralTimer_Elapsed
+                'Handlers
+                AddHandler GeneralTimer.Elapsed, AddressOf GeneralTimer_Elapsed
+                AddHandler PingTimer.Elapsed, AddressOf PingTimer_Elapsed
 
+                'Starting
+                GeneralTimer.Interval = 2500
+                GeneralTimer.Start()
 
-            'Starting
-            GenralTimer.Interval = 2500
-            GenralTimer.Start()
+                PingTimer.Interval = 30000
+                PingTimer.Start()
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Timers loading failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
+            Finally
+                Log.WriteSystemLog("Timers loaded!")
+            End Try
         End Sub
 
 
         Public Sub GeneralTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            GenralTimer.Stop()
+            GeneralTimer.Stop()
 
             'For Database Execute Querys, GlobalManager Ping, GlobalManager Update
 
@@ -51,7 +61,7 @@ Namespace Timers
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: QT")
             End Try
 
-            GenralTimer.Start()
+            GeneralTimer.Start()
         End Sub
 
         Public Sub LoginInfoTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
@@ -66,15 +76,15 @@ Namespace Timers
                 Next
 
                 LoginInfoTimer(index_).Stop()
-                If index_ <> -1 And ClientList.SessionInfo(index_).SRConnectionSetup = _SessionInfo.SRConnectionStatus.LOGIN Then
+                If index_ <> -1 And SessionInfo(index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                     If LoginDb.LoginInfoMessages.Count > 0 Then
-                        If ClientList.SessionInfo(index_).LoginTextIndex > LoginDb.LoginInfoMessages.Count Then
-                            ClientList.SessionInfo(index_).LoginTextIndex = 0
+                        If SessionInfo(index_).LoginTextIndex > LoginDb.LoginInfoMessages.Count Then
+                            SessionInfo(index_).LoginTextIndex = 0
                         End If
 
-                        Dim tmpMsg As LoginDb.LoginInfoMessage_ = LoginDb.LoginInfoMessages(ClientList.SessionInfo(index_).LoginTextIndex)
+                        Dim tmpMsg As LoginDb.LoginInfoMessage_ = LoginDb.LoginInfoMessages(SessionInfo(index_).LoginTextIndex)
                         Functions.LoginWriteSpecialText(tmpMsg.Text, index_)
-                        ClientList.SessionInfo(index_).LoginTextIndex += 1
+                        SessionInfo(index_).LoginTextIndex += 1
 
                         LoginInfoTimer(index_).Interval = tmpMsg.Delay * 1000
                         LoginInfoTimer(index_).Start()
@@ -83,6 +93,39 @@ Namespace Timers
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index_)
             End Try
+        End Sub
+
+        Public Sub PingTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            PingTimer.Stop()
+
+            'Excluded from ClientList 
+
+            Try
+                Dim Count As Integer = 0
+
+                For i = 0 To Server.MaxClients
+                    Dim socket As Net.Sockets.Socket = ClientList.GetSocket(i)
+                    If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
+                        If DateDiff(DateInterval.Second, ClientList.LastPingTime(i), DateTime.Now) > 30 Then
+                            Server.Disconnect(i)
+
+                            'ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
+                            '    'Later for check for missing Handshake Packets, ClientInfo
+                            '    Server.Disconnect(i)
+                        Else
+                            Count += 1
+                        End If
+                    End If
+                Next
+
+                Server.OnlineClient = Count
+
+            Catch ex As Exception
+                Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")
+                '
+            End Try
+
+            PingTimer.Start()
         End Sub
     End Module
 End Namespace

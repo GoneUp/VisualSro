@@ -3,7 +3,7 @@
 Module GlobalDef
     Public Database As New cDatabase
 
-    Public ClientList As New cClientList
+    Public ClientList As cClientList
 
     Public SessionInfo(1) As cSessionInfo_GlobalManager
 

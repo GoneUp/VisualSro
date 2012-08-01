@@ -5,7 +5,7 @@ Module GlobalDef
 
     Public GlobalManagerCon As New SRFramework.GlobalManagerClient
 
-    Public ClientList As New cClientList
+    Public ClientList As cClientList
 
     Public Shard_Gateways As New Dictionary(Of UShort, GatewayServer) 'Key=ServerId
     Public Shard_Downloads As New Dictionary(Of UShort, DownloadServer)

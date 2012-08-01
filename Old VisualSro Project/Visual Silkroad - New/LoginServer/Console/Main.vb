@@ -42,9 +42,10 @@ Friend Class Program
         Database.Connect()
 
         Log.WriteSystemLog("Connected Database. Starting Server now.")
+        ClientList = New cClientList(Server.MaxClients)
         LoginDb.UpdateData()
-        ClientList.SetupClientList(Server.MaxClients)
         Timers.LoadTimers(Server.MaxClients)
+        GlobalDef.Initalize(Server.MaxClients)
 
         Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
         Log.WriteSystemLog("Latest Version: " & Settings.Server_CurrectVersion)
@@ -62,6 +63,8 @@ Friend Class Program
 
     Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
         Log.WriteSystemLog("Client Connected : " & ip)
+
+        SessionInfo(index) = New cSessionInfo_LoginServer
         Server.OnlineClient += 1
 
         Dim writer As New PacketWriter
@@ -111,6 +114,7 @@ Friend Class Program
             Timers.LoginInfoTimer(index).Stop()
         End If
 
+        SessionInfo(index) = Nothing
         Server.OnlineClient -= 1
         Server.RevTheard(index).Abort()
     End Sub

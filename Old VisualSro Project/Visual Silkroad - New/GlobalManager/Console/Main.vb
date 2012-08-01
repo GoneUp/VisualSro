@@ -34,8 +34,9 @@ Class Program
         DataBase.Connect()
 
         Log.WriteSystemLog("Connected Database. Starting Server now.")
+        ClientList = New cClientList(Server.MaxClients)
+        GlobalDef.Initalize(Server.MaxClients)
         GlobalDb.UpdateData()
-        ClientList.SetupClientList(Server.MaxClients)
         Timers.LoadTimers()
 
 

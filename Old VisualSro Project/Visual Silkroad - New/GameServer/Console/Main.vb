@@ -40,11 +40,12 @@ Friend Class Program
         Database.Connect()
         Log.WriteSystemLog("Connected Database. Loading Data now.")
 
-        ClientList.SetupClientList(Server.MaxClients)
-        Functions.GlobalInit(Server.MaxClients)
-        DumpDataFiles()
+        Clientlist = New cClientList(Server.MaxClients)
+        Functions.GlobalGame.GlobalInit(Server.MaxClients)
+        GlobalDef.Initalize(Server.MaxClients)
+        SilkroadData.DumpDataFiles()
         GameDB.UpdateData()
-        Functions.LoadTimers(Server.MaxClients)
+        Functions.Timers.LoadTimers(Server.MaxClients)
         GameMod.Damage.OnServerStart(Server.MaxClients)
 
         Log.WriteSystemLog("Data Loaded. Starting Server.")

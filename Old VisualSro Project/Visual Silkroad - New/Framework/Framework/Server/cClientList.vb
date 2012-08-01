@@ -7,6 +7,10 @@ Public Class cClientList
     Public WithEvents PingTimer As New Timer
     Public Server_DebugMode As Boolean = False
 
+    Public Sub New(ByVal MaxUser As Integer)
+        ReDim SocketList(MaxUser), LastPingTime(MaxUser)
+    End Sub
+
     Public Sub Add(ByVal sock As Socket)
         For i As Integer = 0 To SocketList.Length - 1
             If SocketList(i) Is Nothing Then
@@ -42,8 +46,4 @@ Public Class cClientList
     Public Function GetIP(ByVal index As Integer) As String
         Return GetSocket(index).RemoteEndPoint.ToString
     End Function
-
-    Public Sub SetupClientList(ByVal MaxUser As Integer)
-        ReDim SocketList(MaxUser), LastPingTime(MaxUser)
-    End Sub
 End Class

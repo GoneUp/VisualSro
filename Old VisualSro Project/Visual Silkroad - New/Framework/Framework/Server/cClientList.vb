@@ -11,6 +11,11 @@ Public Class cClientList
         ReDim SocketList(MaxUser), LastPingTime(MaxUser)
     End Sub
 
+    Public Sub Resize(ByVal MaxUser As Integer)
+        Array.Resize(SocketList, MaxUser)
+        Array.Resize(LastPingTime, MaxUser)
+    End Sub
+
     Public Sub Add(ByVal sock As Socket)
         For i As Integer = 0 To SocketList.Length - 1
             If SocketList(i) Is Nothing Then

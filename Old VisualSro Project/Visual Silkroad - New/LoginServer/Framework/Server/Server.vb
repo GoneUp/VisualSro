@@ -19,7 +19,6 @@ Namespace Framework
         Public Shared Event OnServerStarted As dServerStarted
         Public Shared Event OnServerStopped As dServerStopped
 
-#Region "Start/Stop"
         Public Shared Sub Start()
             Dim localEP As New IPEndPoint(IPAddress.Any, _ServerPort)
             ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
@@ -36,7 +35,6 @@ Namespace Framework
                 RaiseEvent OnServerStarted(time)
             End Try
         End Sub
-#End Region
 
         Public Shared Sub [Stop]()
 

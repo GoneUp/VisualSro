@@ -1,5 +1,4 @@
 ﻿Imports SRFramework
-Imports LoginServer.Framework
 
 Namespace GlobalManager
     Module ShardService
@@ -45,7 +44,12 @@ Namespace GlobalManager
             writer.Create(InternalClientOpcodes.SERVER_INFO)
             writer.Word(Settings.Server_Id)
             writer.Word(Server.OnlineClients)
+            writer.Word(Server.MaxNormalClients)
             writer.Word(Server.MaxClients)
+
+            writer.Word(Settings.Server_Ip.Length)
+            writer.String(Settings.Server_Ip)
+            writer.Word(Settings.Server_Port)
 
             GlobalManagerCon.Send(writer.GetBytes)
             GlobalManagerCon.LastInfoTime = Date.Now
@@ -54,7 +58,7 @@ Namespace GlobalManager
         Public Sub OnGlobalInfo(ByVal packet As PacketReader)
             Dim gateways As New List(Of GatewayServer)
             Dim downloads As New List(Of DownloadServer)
-            Dim gameservers As New List(Of GameServer)
+            Dim gameservers As New List(Of SRFramework.GameServer)
 
             Dim gateway_count As UShort = packet.Word
             For i = 0 To gateway_count - 1
@@ -62,8 +66,10 @@ Namespace GlobalManager
                 tmp.ServerId = packet.Word
                 tmp.IP = packet.String(packet.Word)
                 tmp.Port = packet.Word
-                tmp.ActualUser = packet.Word
-                tmp.MaxUser = packet.Word
+                tmp.OnlineClients = packet.Word
+                tmp.MaxNormalClients = packet.Word
+                tmp.MaxClients = packet.Word
+                tmp.Online = packet.Byte
                 gateways.Add(tmp)
             Next
 
@@ -73,21 +79,25 @@ Namespace GlobalManager
                 tmp.ServerId = packet.Word
                 tmp.IP = packet.String(packet.Word)
                 tmp.Port = packet.Word
-                tmp.ActualUser = packet.Word
-                tmp.MaxUser = packet.Word
+                tmp.OnlineClients = packet.Word
+                tmp.MaxNormalClients = packet.Word
+                tmp.MaxClients = packet.Word
+                tmp.Online = packet.Byte
                 downloads.Add(tmp)
             Next
 
             Dim gameservers_count As UShort = packet.Word
             For i = 0 To gameservers_count - 1
-                Dim tmp As New GameServer
+                Dim tmp As New SRFramework.GameServer
                 tmp.ServerId = packet.Word
-                tmp.ServerName = packet.String(packet.Word)
                 tmp.IP = packet.String(packet.Word)
                 tmp.Port = packet.Word
-                tmp.ActualUser = packet.Word
-                tmp.MaxUser = packet.Word
+                tmp.OnlineClients = packet.Word
+                tmp.MaxNormalClients = packet.Word
+                tmp.MaxClients = packet.Word
+                tmp.Online = packet.Byte
 
+                tmp.ServerName = packet.String(packet.Word)
                 tmp.MobCount = packet.DWord
                 tmp.NpcCount = packet.DWord
                 tmp.ItemCount = packet.DWord

@@ -1,6 +1,4 @@
 ﻿Imports SRFramework
-Imports LoginServer.Framework
-
 
 Namespace GlobalManager
     Module AgentService
@@ -17,12 +15,15 @@ Namespace GlobalManager
         End Sub
 
         Public Sub OnUserAuthReply(ByVal packet As PacketReader)
+            Dim UserIndex As Integer = packet.DWord
             Dim succeed As Byte = packet.Byte
 
             If succeed = 1 Then
-                Dim UserIndex As Integer = packet.DWord
                 Dim sessionID As UInteger = packet.DWord
-                GlobalManagerCon.GatewayUserAuthReply(sessionID, UserIndex)
+                GlobalManagerCon.GatewayUserAuthReply(succeed, 0, sessionID, UserIndex)
+            Else
+                Dim errortag As Byte = packet.Byte
+                GlobalManagerCon.GatewayUserAuthReply(succeed, errortag, 0, UserIndex)
             End If
         End Sub
     End Module

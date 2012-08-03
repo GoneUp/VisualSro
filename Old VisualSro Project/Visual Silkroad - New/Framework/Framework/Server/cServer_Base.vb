@@ -4,14 +4,15 @@ Imports System.Threading
 
 Public Class cServer_Base
     Private _Ip As IPAddress = IPAddress.None
-    Private _MaxClients As Integer = 1
-    Private _MaxNormalClients As Integer = 1
-    Private _OnlineClients As Integer = 0
-    Private _ServerPort As Integer = 0
+    Private _MaxClients As UShort = 1
+    Private _MaxNormalClients As UShort = 1
+    Private _OnlineClients As UShort = 0
+    Private _ServerPort As UShort = 0
     Private _Server_DebugMode As Boolean = False
     Private _ClientList As cClientList
+    Private _Online As Boolean = False
 
-    Private ServerSocket As Socket
+    Private _ServerSocket As Socket
     Public RevTheard(1) As Thread
 
 
@@ -45,39 +46,39 @@ Public Class cServer_Base
         End Set
     End Property
 
-    Public Property MaxClients() As Integer
+    Public Property MaxClients() As UShort
         Get
             Return _MaxClients
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As UShort)
             _MaxClients = value
             ClientList.Resize(value)
         End Set
     End Property
 
-    Public Property MaxNormalClients() As Integer
+    Public Property MaxNormalClients() As UShort
         Get
             Return _MaxNormalClients
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As UShort)
             _MaxNormalClients = value
         End Set
     End Property
 
-    Public Property OnlineClients() As Integer
+    Public Property OnlineClients() As UShort
         Get
             Return _OnlineClients
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As UShort)
             _OnlineClients = value
         End Set
     End Property
 
-    Public Property Port() As Integer
+    Public Property Port() As UShort
         Get
             Return _ServerPort
         End Get
-        Set(ByVal value As Integer)
+        Set(ByVal value As UShort)
             _ServerPort = value
         End Set
     End Property
@@ -99,6 +100,15 @@ Public Class cServer_Base
             _ClientList = value
         End Set
     End Property
+
+    Public Property Online As Boolean
+        Get
+            Return _Online
+        End Get
+        Set(ByVal value As Boolean)
+            _Online = value
+        End Set
+    End Property
 #End Region
 
 #Region "New"
@@ -110,11 +120,11 @@ Public Class cServer_Base
 #Region "Start/Stop"
     Public Sub Start()
         Dim localEP As New IPEndPoint(IPAddress.Any, _ServerPort)
-        ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+        _ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
         Try
-            ServerSocket.Bind(localEP)
-            ServerSocket.Listen(5)
-            ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
+            _ServerSocket.Bind(localEP)
+            _ServerSocket.Listen(5)
+            _ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
             ReDim RevTheard(MaxClients + 1)
         Catch exception As Exception
@@ -122,20 +132,22 @@ Public Class cServer_Base
         Finally
             Dim time As String = DateTime.Now.ToString()
             RaiseEvent OnServerStarted(time)
+            Online = True
         End Try
     End Sub
 
     Public Sub [Stop]()
 
         Try
-            ServerSocket.Shutdown(SocketShutdown.Both)
-            ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            _ServerSocket.Shutdown(SocketShutdown.Both)
+            _ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             ReDim RevTheard(MaxClients + 1)
         Catch exception As Exception
             RaiseEvent OnServerError(exception, -3)
         Finally
             Dim time As String = DateTime.Now.ToString()
             RaiseEvent OnServerStopped(time)
+            Online = False
         End Try
     End Sub
 #End Region
@@ -143,7 +155,7 @@ Public Class cServer_Base
 #Region "Connect/Disconnect"
     Private Sub ClientConnect(ByVal ar As IAsyncResult)
         Try
-            Dim sock As Socket = ServerSocket.EndAccept(ar)
+            Dim sock As Socket = _ServerSocket.EndAccept(ar)
             If OnlineClients + 1 <= MaxClients Then
                 ClientList.Add(sock)
                 Dim index As Integer = ClientList.FindIndex(sock)
@@ -161,7 +173,7 @@ Public Class cServer_Base
                 RaiseEvent OnServerLog("Socket Stack Full!")
             End If
 
-            ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
+            _ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
         Catch exception As Exception
             RaiseEvent OnServerError(exception, -1)
@@ -220,8 +232,6 @@ Public Class cServer_Base
                 End If
                 Exit Do
             Catch exception1 As ThreadAbortException
-                ClientList.Delete(Index_)
-                RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                 Exit Do
             Catch exception2 As Exception
                 RaiseEvent OnServerError(exception2, Index_)

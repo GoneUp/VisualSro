@@ -7,9 +7,19 @@
 
 
                 If FromServer = False Then
-                    WriteSystemLog("C --> S (" & (op) & ")" & BitConverter.ToString(buffer, 6, length))
+                    If length > 0 Then
+                        WriteSystemLog("C --> S (" & (op) & ")" & BitConverter.ToString(buffer, 6, length))
+                    Else
+                        WriteSystemLog("C --> S (" & (op) & ")")
+                    End If
+
                 ElseIf FromServer = True Then
-                    WriteSystemLog("S --> C (" & (op) & ")" & BitConverter.ToString(buffer, 6, length))
+                    If length > 0 Then
+                        WriteSystemLog("S --> C (" & (op) & ")" & BitConverter.ToString(buffer, 6, length))
+                    Else
+                        WriteSystemLog("S --> C (" & (op) & ")")
+                    End If
+
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog(ex.Message & " sdfsdfsadf " & ex.StackTrace)

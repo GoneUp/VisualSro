@@ -180,14 +180,28 @@ Namespace Functions
             writer.Byte(0) 'Out of nameservers
 
 
-            For i = 0 To LoginDb.Servers.Count - 1
-                writer.Byte(1) 'New Gameserver
-                writer.Word(LoginDb.Servers(i).ServerId)
-                writer.Word(LoginDb.Servers(i).Name.Length)
-                writer.String(LoginDb.Servers(i).Name)
-                writer.Word(LoginDb.Servers(i).AcUs)
-                writer.Word(LoginDb.Servers(i).MaxUs)
-                writer.Byte(LoginDb.Servers(i).State)
+            'For i = 0 To LoginDb.Servers.Count - 1
+            '    writer.Byte(1) 'New Gameserver
+            '    writer.Word(LoginDb.Servers(i).ServerId)
+            '    writer.Word(LoginDb.Servers(i).Name.Length)
+            '    writer.String(LoginDb.Servers(i).Name)
+            '    writer.Word(LoginDb.Servers(i).AcUs)
+            '    writer.Word(LoginDb.Servers(i).MaxUs)
+            '    writer.Byte(LoginDb.Servers(i).State)
+            'Next
+
+            Dim tmplist = Shard_Gameservers.Keys.ToList
+            For i = 0 To tmplist.Count - 1
+                Dim key As UShort = tmplist(i)
+                If Shard_Gameservers.ContainsKey(key) Then
+                    writer.Byte(1) 'New Gameserver
+                    writer.Word(Shard_Gameservers(key).ServerId)
+                    writer.Word(Shard_Gameservers(key).ServerName.Length)
+                    writer.String(Shard_Gameservers(key).ServerName)
+                    writer.Word(Shard_Gameservers(key).OnlineClients)
+                    writer.Word(Shard_Gameservers(key).MaxNormalClients)
+                    writer.Byte(Shard_Gameservers(key).Online)
+                End If
             Next
 
             writer.Byte(0)
@@ -295,22 +309,14 @@ Namespace Functions
 
 
                 ElseIf LoginDb.Users(userIndex).Name = id And LoginDb.Users(userIndex).Pw = pw Then
-                    Dim gs As LoginDb.Server_ = LoginDb.GetServer(serverID)
+                    Dim gs As SRFramework.GameServer = Shard_Gameservers(serverID)
 
-                    If (gs.AcUs + 1) >= gs.MaxUs Then
+                    If (gs.OnlineClients + 1) >= gs.MaxNormalClients And LoginDb.Users(userIndex).Permission = 0 Then
                         writer.Byte(4)
                         writer.Byte(2) 'Server traffic... 
                         Server.Send(writer.GetBytes, Index_)
 
                     Else
-                        'Sucess!
-                        writer.Byte(1)
-                        writer.DWord(GetKey(Index_))
-                        writer.Word(gs.IP.Length)
-                        writer.String(gs.IP)
-                        writer.Word(gs.Port)
-                        Server.Send(writer.GetBytes, Index_)
-
                         Timers.LoginInfoTimer(Index_).Stop()
 
                         'GlobalManager Part:
@@ -319,7 +325,7 @@ Namespace Functions
                         GlobalManager.OnSendUserAuth(serverID, id, pw, Index_)
 
                         If Settings.Log_Login Then
-                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.Name))
+                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.ServerName))
                         End If
                     End If
                 End If
@@ -333,25 +339,37 @@ Namespace Functions
             Return key
         End Function
 
-        Public Sub LoginSendUserAuthSucceed(ByVal sessionId As UInteger, ByVal index_ As Integer)
+        Public Sub LoginSendUserAuthSucceed(ByVal succeed As Byte, ByVal errortag As Byte, ByVal sessionID As UInteger, ByVal index_ As Integer)
             'ServerIndex + SessionID + Port + Index
             Dim user As String = SessionInfo(index_).userName
 
             If Server.ClientList.GetSocket(index_) Is Nothing Then
-                Log.WriteSystemLog("Index_ from GlobalManager dosen't existis! user: " & user)
+                GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! user: " & user)
             ElseIf Shard_Gameservers.ContainsKey(SessionInfo(index_).gameserverId) = False Then
-                Log.WriteSystemLog("GS from GlobalManager dosen't existis! user: " & user)
+                GlobalManagerCon.Log("GS from GlobalManager dosen't existis! user: " & user)
             Else
-                Dim gs_new As GameServer = Shard_Gameservers(SessionInfo(index_).gameserverId)
-                Dim gs As LoginDb.Server_ = LoginDb.GetServer(SessionInfo(index_).gameserverId)
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.LOGIN_AUTH)
-                writer.Byte(1)
-                writer.DWord(sessionId)
-                writer.Word(gs.IP.Length)
-                writer.String(gs.IP)
-                writer.Word(gs.Port)
-                Server.Send(writer.GetBytes, index_)
+                If succeed = 1 Then
+                    Dim gs As GameServer = Shard_Gameservers(SessionInfo(index_).gameserverId)
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.LOGIN_AUTH)
+                    writer.Byte(1)
+                    writer.DWord(sessionID)
+                    writer.Word(gs.IP.Length)
+                    writer.String(gs.IP)
+                    writer.Word(gs.Port)
+                    Server.Send(writer.GetBytes, index_)
+                Else
+                    Select Case errortag
+                        Case 1
+                            'GS not exitis
+                            GlobalManagerCon.Log("gmc err: GS from GlobalManager dosen't existis! user: " & user)
+                        Case 2
+                            'GS not online
+                            GlobalManagerCon.Log("gmc err: GS not online! user: " & user)
+                    End Select
+                End If
+
+
             End If
         End Sub
     End Module

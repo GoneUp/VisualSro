@@ -1,5 +1,4 @@
-﻿Imports GlobalManager.Framework
-Imports SRFramework
+﻿Imports SRFramework
 
 Namespace Shard
     Module ShardControl
@@ -10,6 +9,8 @@ Namespace Shard
                 If Server_Game.ContainsKey(ServerId) Then
                     Dim writer As New PacketWriter
                     writer.Create(InternalServerOpcodes.SERVER_UPDATE)
+                    writer.Word(Server_Game(ServerId).MaxNormalClients)
+                    writer.Word(Server_Game(ServerId).MaxClients)
                     writer.Word(Server_Game(ServerId).Server_XPRate)
                     writer.Word(Server_Game(ServerId).Server_SPRate)
                     writer.Word(Server_Game(ServerId).Server_GoldRate)

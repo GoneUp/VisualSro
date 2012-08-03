@@ -111,7 +111,7 @@ Namespace Functions
             For Each key In tmplist
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList(key)
-                    For i = 0 To Server.MaxClients
+                    For i = 0 To Server.MaxClients - 1
                         If PlayerData(i) IsNot Nothing Then
                             If CalculateDistance(Mob_.Position, PlayerData(i).Position) < 20 Then
                                 SendPm(i, "You are in Aggro Range", "Serv")

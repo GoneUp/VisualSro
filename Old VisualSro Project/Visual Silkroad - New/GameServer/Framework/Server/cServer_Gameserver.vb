@@ -20,7 +20,7 @@ Public Class cServer_Gameserver
     End Sub
 
     Public Sub SendToAllIngameExpectMe(ByVal buff() As Byte, ByVal index As Integer)
-        For i As Integer = 0 To MaxClients
+        For i As Integer = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As [cChar] = PlayerData(i)
             'Check if Player is ingame
@@ -72,7 +72,7 @@ Public Class cServer_Gameserver
     End Sub
 
     Public Sub SendIfPlayerIsSpawned(ByVal buff() As Byte, ByVal Index_ As Integer)
-        For i = 0 To MaxClients
+        For i = 0 To MaxClients - 1
             If PlayerData(i) IsNot Nothing Then
                 If PlayerData(i).SpawnedPlayers.Contains(Index_) Or Index_ = i Then
                     If PlayerData(i).Ingame = True Then
@@ -84,7 +84,7 @@ Public Class cServer_Gameserver
     End Sub
 
     Public Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobUniqueID As Integer)
-        For i = 0 To MaxClients
+        For i = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As [cChar] = PlayerData(i)
             'Check if Player is ingame
@@ -97,7 +97,7 @@ Public Class cServer_Gameserver
     End Sub
 
     Public Sub SendIfItemIsSpawned(ByVal buff() As Byte, ByVal ItemUniqueID As Integer)
-        For i = 0 To MaxClients
+        For i = 0 To MaxClients - 1
             If PlayerData(i) IsNot Nothing Then
                 If PlayerData(i).SpawnedItems.Contains(ItemUniqueID) Then
                     Send(buff, i)
@@ -108,7 +108,7 @@ Public Class cServer_Gameserver
 
 
     Public Sub SendToGuild(ByVal buff() As Byte, ByVal GuildID As UInteger)
-        For i = 0 To MaxClients
+        For i = 0 To MaxClients - 1
             If PlayerData(i) IsNot Nothing Then
                 If PlayerData(i).GuildID = GuildID Then
                     Send(buff, i)

@@ -96,7 +96,7 @@ Friend Class Program
             read = read + length + 6
 
             Dim packet As New PacketReader(newbuff)
-            If Settings.Server_DebugMode = True Then
+            If Settings.Server_DebugMode Then
                 Log.LogPacket(newbuff, False)
             End If
 
@@ -157,8 +157,8 @@ Friend Class Program
         Log.WriteSystemLog("GMC Log: " & message)
     End Sub
 
-    Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal command As String)
-        Log.WriteSystemLog("GMC error: " & ex.Message & " Command: " & command)
+    Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal index As String)
+        Log.WriteSystemLog("GMC error: " & ex.Message & " Index: " & index)
     End Sub
 End Class
 

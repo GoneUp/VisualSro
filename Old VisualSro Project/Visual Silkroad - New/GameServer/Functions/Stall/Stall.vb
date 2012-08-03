@@ -318,7 +318,7 @@ Namespace Functions
         Public Sub Stall_Open_Other(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ToUniqueID As UInt32 = packet.DWord
 
-            For i = 0 To Server.MaxClients
+            For i = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).UniqueID = ToUniqueID Then
                         Dim writer As New PacketWriter

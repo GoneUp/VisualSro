@@ -558,7 +558,7 @@ Namespace Functions
             Try
                 Dim Count As Integer = 0
 
-                For i = 0 To Server.MaxClients
+                For i = 0 To Server.MaxClients - 1
                     Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)
                     If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
                         If Settings.Server_DebugMode AndAlso DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then

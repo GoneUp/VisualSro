@@ -48,11 +48,10 @@ Friend Class Program
         Functions.Timers.LoadTimers(Server.MaxClients)
         GameMod.Damage.OnServerStart(Server.MaxClients)
 
-        Log.WriteSystemLog("Data Loaded. Starting Server.")
+        Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
+        Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots & "/" & Settings.Server_MaxClients)
 
-        Server.Start()
-        Log.WriteSystemLog("Inital Loading complete!")
-        Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots)
+        GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
 
         Do While True
             Dim msg As String = Console.ReadLine()
@@ -176,7 +175,6 @@ Friend Class Program
     Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal command As String)
         Log.WriteSystemLog("GMC error: " & ex.Message & " Command: " & command)
     End Sub
-
 End Class
 
 

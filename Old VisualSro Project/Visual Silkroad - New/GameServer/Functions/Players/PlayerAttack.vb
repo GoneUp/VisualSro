@@ -19,7 +19,7 @@ Namespace Functions
                             If MobList.ContainsKey(ObjectID) And MobList(ObjectID).Death = False Then
                                 PlayerAttackNormal(Index_, ObjectID)
                             End If
-                            For i = 0 To Server.MaxClients
+                            For i = 0 To Server.MaxClients - 1
                                 If PlayerData(i) IsNot Nothing Then
                                     If PlayerData(i).UniqueID = ObjectID Then
                                         PlayerAttackNormal(Index_, ObjectID)

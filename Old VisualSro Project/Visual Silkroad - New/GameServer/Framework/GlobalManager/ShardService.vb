@@ -44,7 +44,25 @@ Namespace GlobalManager
             writer.Create(InternalClientOpcodes.SERVER_INFO)
             writer.Word(Settings.Server_Id)
             writer.Word(Server.OnlineClients)
+            writer.Word(Server.MaxNormalClients)
             writer.Word(Server.MaxClients)
+
+            writer.Word(Settings.Server_Ip.Length)
+            writer.String(Settings.Server_Ip)
+            writer.Word(Settings.Server_Port)
+
+            writer.Word(Settings.Server_Name.Length)
+            writer.String(Settings.Server_Name)
+            writer.DWord(Functions.MobList.Count)
+            writer.DWord(Functions.NpcList.Count)
+            writer.DWord(Functions.ItemList.Count)
+
+            writer.Word(Settings.Server_XPRate)
+            writer.Word(Settings.Server_SPRate)
+            writer.Word(Settings.Server_GoldRate)
+            writer.Word(Settings.Server_DropRate)
+            writer.Word(Settings.Server_SpawnRate)
+            writer.Byte(Settings.Server_DebugMode)
 
             GlobalManagerCon.Send(writer.GetBytes)
             GlobalManagerCon.LastInfoTime = Date.Now
@@ -61,8 +79,10 @@ Namespace GlobalManager
                 tmp.ServerId = packet.Word
                 tmp.IP = packet.String(packet.Word)
                 tmp.Port = packet.Word
-                tmp.ActualUser = packet.Word
-                tmp.MaxUser = packet.Word
+                tmp.OnlineClients = packet.Word
+                tmp.MaxNormalClients = packet.Word
+                tmp.MaxClients = packet.Word
+                tmp.Online = packet.Byte
                 gateways.Add(tmp)
             Next
 
@@ -72,8 +92,10 @@ Namespace GlobalManager
                 tmp.ServerId = packet.Word
                 tmp.IP = packet.String(packet.Word)
                 tmp.Port = packet.Word
-                tmp.ActualUser = packet.Word
-                tmp.MaxUser = packet.Word
+                tmp.OnlineClients = packet.Word
+                tmp.MaxNormalClients = packet.Word
+                tmp.MaxClients = packet.Word
+                tmp.Online = packet.Byte
                 downloads.Add(tmp)
             Next
 
@@ -81,12 +103,14 @@ Namespace GlobalManager
             For i = 0 To gameservers_count - 1
                 Dim tmp As New SRFramework.GameServer
                 tmp.ServerId = packet.Word
-                tmp.ServerName = packet.String(packet.Word)
                 tmp.IP = packet.String(packet.Word)
                 tmp.Port = packet.Word
-                tmp.ActualUser = packet.Word
-                tmp.MaxUser = packet.Word
+                tmp.OnlineClients = packet.Word
+                tmp.MaxNormalClients = packet.Word
+                tmp.MaxClients = packet.Word
+                tmp.Online = packet.Byte
 
+                tmp.ServerName = packet.String(packet.Word)
                 tmp.MobCount = packet.DWord
                 tmp.NpcCount = packet.DWord
                 tmp.ItemCount = packet.DWord
@@ -107,6 +131,8 @@ Namespace GlobalManager
             Shard_Gateways.Clear()
             Shard_Downloads.Clear()
             Shard_Gameservers.Clear()
+
+
 
             For Each tmp In gateways
                 Shard_Gateways.Add(tmp.ServerId, tmp)

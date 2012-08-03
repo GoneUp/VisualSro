@@ -68,7 +68,7 @@ Namespace GameMod
                     End If
                 Case "\\kick"
 
-                    For i As Integer = 0 To Server.MaxClients
+                    For i As Integer = 0 To Server.MaxClients - 1
                         If PlayerData(i) IsNot Nothing Then
                             If PlayerData(i).CharacterName = tmp(1) Then
                                 Server.Disconnect(i)

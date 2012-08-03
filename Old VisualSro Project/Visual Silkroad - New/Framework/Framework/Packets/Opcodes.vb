@@ -89,7 +89,7 @@
         LOGIN_SERVER_LIST = &HA101
         LOGIN_AUTH = &HA102
 
-        GAME_AUTH = &HA102
+        GAME_AUTH = &HA103
         GAME_CHARACTER = &HB007
         GAME_INGAME_REQ_REPLY = &HB001
 

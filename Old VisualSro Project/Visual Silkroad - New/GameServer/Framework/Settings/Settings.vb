@@ -12,6 +12,7 @@ Namespace Settings
         Public Server_NormalSlots As UInteger = 100
         Public Server_MaxClients As UInteger = 105
         Public Server_Id As UShort = 0
+        Public Server_Name As String = "UNKNOWN"
 
         Public Database_IP As String
         Public Database_Port As UShort
@@ -71,6 +72,7 @@ Namespace Settings
             Server_NormalSlots = File.Read("SERVER_INTERNAL", "Max_NormalSlots", "1000")
             Server_MaxClients = File.Read("SERVER_INTERNAL", "Max_Clients", "1050")
             Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
+            Server_Name = File.Read("SERVER_INTERNAL", "Server_Name", "UNKNOWN")
 
             Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
             Database_Port = File.Read("DATABASE", "Port", "3306")

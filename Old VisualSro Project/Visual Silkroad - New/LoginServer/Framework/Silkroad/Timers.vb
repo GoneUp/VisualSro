@@ -75,7 +75,7 @@ Namespace Timers
                 Next
 
                 LoginInfoTimer(index_).Stop()
-                If index_ <> -1 And SessionInfo(index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
+                If index_ <> -1 AndAlso SessionInfo(index_) IsNot Nothing AndAlso SessionInfo(index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                     If LoginDb.LoginInfoMessages.Count > 0 Then
                         If SessionInfo(index_).LoginTextIndex > LoginDb.LoginInfoMessages.Count Then
                             SessionInfo(index_).LoginTextIndex = 0
@@ -102,7 +102,7 @@ Namespace Timers
             Try
                 Dim Count As Integer = 0
 
-                For i = 0 To Server.MaxClients
+                For i = 0 To Server.MaxClients - 1
                     Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)
                     If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
                         If DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then
@@ -117,7 +117,7 @@ Namespace Timers
                     End If
                 Next
 
-                Server.OnlineClients = Count
+                'Server.OnlineClients = Count
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")

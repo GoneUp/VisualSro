@@ -116,6 +116,11 @@ Namespace LoginDb
             Public Banned As Boolean
             Public BannTime As Date
             Public BannReason As String
+            Public Permission As Byte '0x00 = normal user, 0x01 = prefered access to the server (premium), 0x02 = gm, 0x03 = admin
+
+            Public Silk As UInteger
+            Public Silk_Bonus As UInteger
+            Public Silk_Points As UInteger
         End Structure
         Public Sub GetUserData()
 
@@ -131,6 +136,8 @@ Namespace LoginDb
                 tmpUser.Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
                 tmpUser.BannReason = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
                 tmpUser.BannTime = CDate(tmp.Tables(0).Rows(i).ItemArray(6))
+                tmpUser.Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
+                tmpUser.Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
 
                 Users.Add(tmpUser)
             Next

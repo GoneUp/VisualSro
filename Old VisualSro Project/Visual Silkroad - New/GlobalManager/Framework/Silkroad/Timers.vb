@@ -49,9 +49,10 @@ Namespace Timers
 
                 Dim tmplist = Agent.UserAuthCache.Keys.ToList
                 For i = 0 To tmplist.Count - 1
-                    If Agent.UserAuthCache.ContainsKey(tmplist(i)) Then
-                        If Date.Compare(Agent.UserAuthCache(i).ExpireTime, Date.Now) = 1 Then
-                            Agent.UserAuthCache.Remove(tmplist(i))
+                    Dim key As UInt32 = tmplist(i)
+                    If Agent.UserAuthCache.ContainsKey(key) Then
+                        If Date.Compare(Date.Now, Agent.UserAuthCache(key).ExpireTime) = 1 Then '(-1,1)
+                            Agent.UserAuthCache.Remove(key)
                         End If
                     End If
                 Next
@@ -72,7 +73,7 @@ Namespace Timers
             Try
                 Dim Count As Integer = 0
 
-                For i = 0 To Server.MaxClients
+                For i = 0 To Server.MaxClients - 1
                     Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)
                     If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
                         If DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then
@@ -87,7 +88,7 @@ Namespace Timers
                     End If
                 Next
 
-                Server.OnlineClients = Count
+                'Server.OnlineClients = Count
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")

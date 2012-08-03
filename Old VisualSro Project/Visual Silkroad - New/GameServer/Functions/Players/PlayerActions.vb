@@ -242,7 +242,7 @@ Namespace Functions
                 Exit Sub
             End If
 
-            For i = 0 To Server.MaxClients
+            For i = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).UniqueID = ObjectID Then
                         writer.Byte(1)

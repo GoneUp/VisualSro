@@ -31,7 +31,7 @@ Namespace Functions
             Dim loggedIn As Boolean = False
 
             'Logged in check
-            For i = 0 To Server.MaxClients
+            For i = 0 To Server.MaxClients - 1
                 If CharListing(i) IsNot Nothing Then
                     If CharListing(i).LoginInformation.Id = GameDB.Users(userIndex).Id Then
                         loggedIn = True
@@ -40,7 +40,7 @@ Namespace Functions
                 End If
             Next
 
-            For i = 0 To Server.MaxClients
+            For i = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).AccountID = GameDB.Users(userIndex).Id Then
                         loggedIn = True

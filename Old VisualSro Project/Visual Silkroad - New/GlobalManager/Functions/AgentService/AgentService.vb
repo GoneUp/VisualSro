@@ -1,5 +1,4 @@
-﻿Imports GlobalManager.Framework
-Imports SRFramework
+﻿Imports SRFramework
 
 Namespace Agent
     Module AgentService
@@ -12,18 +11,32 @@ Namespace Agent
             tmp.UserPw = packet.String(packet.Word)
             tmp.SessionId = Id_Gen.GetSessionId
             tmp.ExpireTime = Date.Now.AddSeconds(25)
-            UserAuthCache.Add(tmp.SessionId, tmp)
 
+            'Checks now 
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.GATEWAY_SEND_USERAUTH)
-            writer.Byte(1)
             writer.DWord(Index_)
-            writer.DWord(tmp.SessionId)
+
+            If Shard.Server_Game.ContainsKey(tmp.GameServerId) Then
+                If Shard.Server_Game(tmp.GameServerId).State = GameServer._ServerState.Online Then
+                    writer.Byte(1)
+                    writer.DWord(tmp.SessionId)
+                    UserAuthCache.Add(tmp.SessionId, tmp)
+                Else
+                    writer.Byte(2)
+                    writer.Byte(2)
+                End If
+            Else
+                writer.Byte(2)
+                writer.Byte(1)
+            End If
+
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
         Public Sub OnCheckUserAuth(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim tmp As New _UserAuth
+            tmp.UserIndex = packet.DWord
             tmp.SessionId = packet.DWord
             tmp.UserName = packet.String(packet.Word)
             tmp.UserPw = packet.String(packet.Word)
@@ -34,6 +47,7 @@ Namespace Agent
 
             If UserAuthCache.ContainsKey(tmp.SessionId) Then
                 If UserAuthCache(tmp.SessionId).UserName = tmp.UserName And UserAuthCache(tmp.SessionId).UserPw = tmp.UserPw Then
+                    writer.DWord(tmp.UserIndex)
                     writer.Byte(1)
                 Else
                     writer.Byte(2) 'Fail

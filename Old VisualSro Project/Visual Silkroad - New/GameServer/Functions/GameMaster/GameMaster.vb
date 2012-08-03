@@ -144,7 +144,7 @@ Namespace Functions
             Dim NameLength As Byte = packet.Word
             Dim Name As String = packet.String(NameLength)
 
-            For i As Integer = 0 To Server.MaxClients
+            For i As Integer = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
 
@@ -169,7 +169,7 @@ Namespace Functions
             Dim NameLength As UInt16 = packet.Word
             Dim Name As String = packet.String(NameLength)
 
-            For i As Integer = 0 To Server.MaxClients
+            For i As Integer = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
 
@@ -243,7 +243,7 @@ Namespace Functions
             Dim NameLength As UInt16 = packet.Word
             Dim Name As String = packet.String(NameLength)
 
-            For i As Integer = 0 To Server.MaxClients
+            For i As Integer = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
                     If PlayerData(i).CharacterName = Name Then
                         OnGoTown(i)

@@ -100,7 +100,7 @@ Namespace Functions
             NpcList.Add(tmp.UniqueID, tmp)
 
 
-            For refindex As Integer = 0 To Server.MaxClients
+            For refindex As Integer = 0 To Server.MaxClients - 1
                 Dim socket As Socket = Server.ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex)
                 'Check if Player is ingame

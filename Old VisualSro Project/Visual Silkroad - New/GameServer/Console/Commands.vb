@@ -6,22 +6,22 @@
         Select Case msg(0)
 
             Case "/info"
-                GameServer.Log.WriteSystemLog("This Emulator is from GoneUp.")
-                GameServer.Log.WriteSystemLog("Specical Thanks to:")
-                GameServer.Log.WriteSystemLog("Drew Benton")
-                GameServer.Log.WriteSystemLog("manneke for the great help")
-                GameServer.Log.WriteSystemLog("Windrius for the original Framework")
-                GameServer.Log.WriteSystemLog("SREmu Team")
-                GameServer.Log.WriteSystemLog("Dickernoob for CSREmu")
-                GameServer.Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
+                Log.WriteSystemLog("This Emulator is from GoneUp.")
+                Log.WriteSystemLog("Specical Thanks to:")
+                Log.WriteSystemLog("Drew Benton")
+                Log.WriteSystemLog("manneke for the great help")
+                Log.WriteSystemLog("Windrius for the original Framework")
+                Log.WriteSystemLog("SREmu Team")
+                Log.WriteSystemLog("Dickernoob for CSREmu")
+                Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
             Case "/help"
-                GameServer.Log.WriteSystemLog("Log: ")
-                GameServer.Log.WriteSystemLog("/info for the credits")
-                GameServer.Log.WriteSystemLog("/packets to enable packetlog")
-                GameServer.Log.WriteSystemLog("/notice [Message] - To write a global Message ")
-                GameServer.Log.WriteSystemLog("/clear")
+                Log.WriteSystemLog("Log: ")
+                Log.WriteSystemLog("/info for the credits")
+                Log.WriteSystemLog("/packets to enable packetlog")
+                Log.WriteSystemLog("/notice [Message] - To write a global Message ")
+                Log.WriteSystemLog("/clear")
 
             Case "/packets"
                 Settings.Server_DebugMode = True
@@ -49,13 +49,13 @@
                 Functions.OnSetWeather(3, 75)
 
             Case "/count"
-                GameServer.Log.WriteSystemLog(String.Format("Count Player:{0}!", Server.OnlineClients))
-                GameServer.Log.WriteSystemLog(String.Format("Count Mob:{0}!", Functions.MobList.Count))
+                Log.WriteSystemLog(String.Format("Count Player:{0}!", Server.OnlineClients))
+                Log.WriteSystemLog(String.Format("Count Mob:{0}!", Functions.MobList.Count))
 
             Case "/cleanup"
                 Dim mem As Long = Process.GetCurrentProcess.PrivateMemorySize64
                 GC.Collect()
-                GameServer.Log.WriteSystemLog(
+                Log.WriteSystemLog(
                     "Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64) / 1024 / 1024)
             Case "/end"
 
@@ -83,25 +83,32 @@
 
 
             Case "/killmobs"
-                GameServer.Log.WriteSystemLog("In Progress, Count: " & Functions.MobList.Count)
+                Log.WriteSystemLog("In Progress, Count: " & Functions.MobList.Count)
                 For Each key In Functions.MobList.Keys.ToList
                     If Functions.MobList.ContainsKey(key) Then
                         Functions.RemoveMob(key)
                     End If
                 Next
-                GameServer.Log.WriteSystemLog("Finished!")
+                Log.WriteSystemLog("Finished!")
 
             Case "/respawnoff"
                 Settings.Server_SpawnRate = 0
-                GameServer.Log.WriteSystemLog("Turned off Respawn")
+                Log.WriteSystemLog("Turned off Respawn")
             Case "/save"
                 Dim path = AppDomain.CurrentDomain.BaseDirectory & "npcpos_saved.txt"
                 Dim cloack As New Stopwatch
                 cloack.Start()
-                GameServer.Log.WriteSystemLog("Save start to: " & path)
+                Log.WriteSystemLog("Save start to: " & path)
                 Functions.SaveAutoSpawn(path)
                 cloack.Stop()
-                GameServer.Log.WriteSystemLog("Save Fin! S:" & cloack.Elapsed().TotalSeconds)
+                Log.WriteSystemLog("Save Fin! S:" & cloack.Elapsed().TotalSeconds)
+
+            Case "/online"
+                If Server.Online Then
+                    Log.WriteSystemLog("Sure ;)")
+                Else
+                    Log.WriteSystemLog("nope...")
+                End If
         End Select
     End Sub
 End Module

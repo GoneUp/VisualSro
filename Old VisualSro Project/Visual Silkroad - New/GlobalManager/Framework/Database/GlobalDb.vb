@@ -1,6 +1,4 @@
-﻿Imports GlobalManager.Framework
-
-Namespace GlobalDb
+﻿Namespace GlobalDb
     Module GlobalDb
 
         'Timer
@@ -43,7 +41,7 @@ Namespace GlobalDb
             Public Port As UInt16
         End Structure
         Public Sub GetServerData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From Servers")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Servers")
             Servers.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
@@ -67,7 +65,7 @@ Namespace GlobalDb
             Public Ip As String
         End Structure
         Public Sub GetCertData()
-            Dim tmp As DataSet = DataBase.GetDataSet("SELECT * From Certification")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Certification")
             Servers.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1

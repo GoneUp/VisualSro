@@ -8,11 +8,11 @@ Namespace Shard
 
             Select Case SessionInfo(Index_).Type
                 Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
-                    If Server_GateWay.ContainsKey(ServerId) = False AndAlso Server_GateWay(ServerId).Online Then
+                    If Server_Gateway.ContainsKey(ServerId) = False AndAlso Server_Gateway(ServerId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
                         'Init Serverr
-                        Server_GateWay(ServerId).Online = True
+                        Server_Gateway(ServerId).Online = True
                         Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                         SendServerInit(Index_)
                     End If
@@ -37,7 +37,7 @@ Namespace Shard
                     End If
             End Select
 
-            SendGlobalInfo(Index_)
+            SendGlobalInfo(Index_, True)
         End Sub
 
         Private Sub SendServerInit(ByVal index_ As Integer)
@@ -52,9 +52,9 @@ Namespace Shard
 
             Select Case SessionInfo(Index_).Type
                 Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
-                    If Server_GateWay.ContainsKey(ServerId) Then
-                        Server_GateWay(ServerId).Online = False
-                        Server_GateWay.Remove(ServerId)
+                    If Server_Gateway.ContainsKey(ServerId) Then
+                        Server_Gateway(ServerId).Online = False
+                        Server_Gateway.Remove(ServerId)
                         Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
                         SendShutdown(Index_)
                     End If
@@ -85,29 +85,56 @@ Namespace Shard
         End Sub
 
         Friend Sub OnServerInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim FirstAnnonce As Boolean = False
+
+            Dim serverID As UShort = packet.Word
+            Dim onlineClients As UShort = packet.Word
+            Dim maxNormalClients As UShort = packet.Word
+            Dim maxClients As UShort = packet.Word
+
+            Dim IP As String = packet.String(packet.Word)
+            Dim Port As UShort = packet.Word
+
             Select Case SessionInfo(Index_).Type
                 Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
-                    Dim tmp As New GatewayServer
-                    tmp.IP = Server.ClientList.GetIP(Index_).Split(":")(0)
-                    tmp.Port = Convert.ToUInt16(Server.ClientList.GetIP(Index_).Split(":")(1))
-                    tmp.ServerId = packet.Word
-                    tmp.ActualUser = packet.Word
-                    tmp.MaxUser = packet.Word
+                    Dim tmp As GatewayServer
+                    If Server_Gateway.ContainsKey(serverID) Then
+                        tmp = Server_Gateway(serverID)
+                    Else
+                        tmp = New GatewayServer
+                    End If
 
-                    If Server_GateWay.ContainsKey(tmp.ServerId) Then
-                        Server_GateWay(tmp.ServerId) = tmp
+                    tmp.IP = IP
+                    tmp.Port = Port
+                    tmp.ServerId = serverID
+                    tmp.OnlineClients = onlineClients
+                    tmp.MaxNormalClients = maxNormalClients
+                    tmp.MaxClients = maxClients
+
+                    If Server_Gateway.ContainsKey(tmp.ServerId) Then
+                        Server_Gateway(tmp.ServerId) = tmp
                     Else
                         tmp.Online = False
-                        Server_GateWay.Add(tmp.ServerId, tmp)
+                        Server_Gateway.Add(tmp.ServerId, tmp)
+                        FirstAnnonce = True
                     End If
 
                 Case cSessionInfo_GlobalManager._ServerTypes.GameServer
-                    Dim tmp As New GameServer
-                    tmp.ServerId = packet.Word
-                    tmp.ServerName = packet.String(packet.Word)
-                    tmp.ActualUser = packet.Word
-                    tmp.MaxUser = packet.Word
+                    Dim tmp As GameServer
+                    If Server_Game.ContainsKey(serverID) Then
+                        tmp = Server_Game(serverID)
+                    Else
+                        tmp = New GameServer
+                    End If
 
+                    tmp.IP = IP
+                    tmp.Port = Port
+                    tmp.ServerId = serverID
+                    tmp.OnlineClients = onlineClients
+                    tmp.MaxNormalClients = maxNormalClients
+                    tmp.MaxClients = maxClients
+
+                    tmp.ServerName = packet.String(packet.Word)
                     tmp.MobCount = packet.DWord
                     tmp.NpcCount = packet.DWord
                     tmp.ItemCount = packet.DWord
@@ -124,40 +151,51 @@ Namespace Shard
                     Else
                         tmp.State = GameServer._ServerState.Check
                         Server_Game.Add(tmp.ServerId, tmp)
+                        FirstAnnonce = True
                     End If
 
                 Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
-                    Dim tmp As New DownloadServer
-                    tmp.ServerId = packet.Word
-                    tmp.ActualUser = packet.Word
-                    tmp.MaxUser = packet.Word
+                    Dim tmp As DownloadServer
+                    If Server_Download.ContainsKey(serverID) Then
+                        tmp = Server_Download(serverID)
+                    Else
+                        tmp = New DownloadServer
+                    End If
+
+                    tmp.IP = IP
+                    tmp.Port = Port
+                    tmp.ServerId = serverID
+                    tmp.OnlineClients = onlineClients
+                    tmp.MaxNormalClients = maxNormalClients
+                    tmp.MaxClients = maxClients
 
                     If Server_Download.ContainsKey(tmp.ServerId) Then
                         Server_Download(tmp.ServerId) = tmp
                     Else
                         tmp.Online = False
                         Server_Download.Add(tmp.ServerId, tmp)
+                        FirstAnnonce = True
                     End If
             End Select
 
 
-
-
-            SendGlobalInfo(Index_)
+            SendGlobalInfo(Index_, FirstAnnonce)
         End Sub
 
-        Friend Sub SendGlobalInfo(ByVal Index_ As Integer)
+        Friend Sub SendGlobalInfo(ByVal Index_ As Integer, ByVal FirstAnnonce As Boolean)
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.GLOBAL_INFO)
-            writer.Word(Server_GateWay.Count)
-            Dim tmplist = Server_GateWay.Keys.ToList
+            writer.Word(Server_Gateway.Count)
+            Dim tmplist = Server_Gateway.Keys.ToList
             For i = 0 To tmplist.Count - 1
-                writer.Word(Server_GateWay(tmplist(i)).ServerId)
-                writer.Word(Server_GateWay(tmplist(i)).IP.Length)
-                writer.String(Server_GateWay(tmplist(i)).IP)
-                writer.Word(Server_GateWay(tmplist(i)).Port)
-                writer.Word(Server_GateWay(tmplist(i)).ActualUser)
-                writer.Word(Server_GateWay(tmplist(i)).MaxUser)
+                writer.Word(Server_Gateway(tmplist(i)).ServerId)
+                writer.Word(Server_Gateway(tmplist(i)).IP.Length)
+                writer.String(Server_Gateway(tmplist(i)).IP)
+                writer.Word(Server_Gateway(tmplist(i)).Port)
+                writer.Word(Server_Gateway(tmplist(i)).OnlineClients)
+                writer.Word(Server_Gateway(tmplist(i)).MaxNormalClients)
+                writer.Word(Server_Gateway(tmplist(i)).MaxClients)
+                writer.Byte(Convert.ToByte(Server_Gateway(tmplist(i)).Online))
             Next
 
             writer.Word(Server_Download.Count)
@@ -167,23 +205,26 @@ Namespace Shard
                 writer.Word(Server_Download(tmplist(i)).IP.Length)
                 writer.String(Server_Download(tmplist(i)).IP)
                 writer.Word(Server_Download(tmplist(i)).Port)
-                writer.Word(Server_Download(tmplist(i)).ActualUser)
-                writer.Word(Server_Download(tmplist(i)).MaxUser)
+                writer.Word(Server_Download(tmplist(i)).OnlineClients)
+                writer.Word(Server_Download(tmplist(i)).MaxNormalClients)
+                writer.Word(Server_Download(tmplist(i)).MaxClients)
+                writer.Byte(Convert.ToByte(Server_Download(tmplist(i)).Online))
             Next
 
             writer.Word(Server_Game.Count)
             tmplist = Server_Game.Keys.ToList
             For i = 0 To tmplist.Count - 1
                 writer.Word(Server_Game(tmplist(i)).ServerId)
-                writer.Word(Server_Game(tmplist(i)).ServerName.Length)
-                writer.String(Server_Game(tmplist(i)).ServerName)
-
                 writer.Word(Server_Game(tmplist(i)).IP.Length)
                 writer.String(Server_Game(tmplist(i)).IP)
                 writer.Word(Server_Game(tmplist(i)).Port)
-                writer.Word(Server_Game(tmplist(i)).ActualUser)
-                writer.Word(Server_Game(tmplist(i)).MaxUser)
+                writer.Word(Server_Game(tmplist(i)).OnlineClients)
+                writer.Word(Server_Game(tmplist(i)).MaxNormalClients)
+                writer.Word(Server_Game(tmplist(i)).MaxClients)
+                writer.Byte(Convert.ToByte(Server_Game(tmplist(i)).State))
 
+                writer.Word(Server_Game(tmplist(i)).ServerName.Length)
+                writer.String(Server_Game(tmplist(i)).ServerName)
                 writer.DWord(Server_Game(tmplist(i)).MobCount)
                 writer.DWord(Server_Game(tmplist(i)).NpcCount)
                 writer.DWord(Server_Game(tmplist(i)).ItemCount)
@@ -196,7 +237,12 @@ Namespace Shard
                 writer.Byte(Server_Game(tmplist(i)).Server_Debug)
             Next
 
-            Server.SendToAll(writer.GetBytes)
+            If FirstAnnonce Then
+                Server.SendToAll(writer.GetBytes)
+            Else
+                Server.Send(writer.GetBytes, Index_)
+            End If
+
         End Sub
 
     End Module

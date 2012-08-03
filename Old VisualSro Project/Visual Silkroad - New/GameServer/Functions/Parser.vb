@@ -8,7 +8,7 @@ Namespace Functions
                 Dim opcode As UInteger = packet.Word
                 Dim security As UInteger = packet.Word
 
-                ClientList.LastPingTime(Index_) = DateTime.Now
+                Server.ClientList.LastPingTime(Index_) = DateTime.Now
 
                 Select Case opcode
 

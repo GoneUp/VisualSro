@@ -10,6 +10,8 @@ Friend Class Program
         AddHandler Server.OnServerError, AddressOf Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Server_OnServerStarted
         AddHandler Server.OnServerStopped, AddressOf Server_OnServerStopped
+        AddHandler Server.OnServerLog, AddressOf Server_OnServerLog
+        AddHandler Server.OnServerPacketLog, AddressOf Server_OnPacketLog
 
         AddHandler Database.OnDatabaseError, AddressOf db_OnDatabaseError
         AddHandler Database.OnDatabaseConnected, AddressOf db_OnConnectedToDatabase
@@ -31,7 +33,6 @@ Friend Class Program
         Console.Clear()
         Console.Title = "GAMESERVER ALPHA"
 
-
         Log.WriteSystemLog("Loading Settings.")
         Settings.LoadSettings()
         Settings.SetToServer()
@@ -40,7 +41,6 @@ Friend Class Program
         Database.Connect()
         Log.WriteSystemLog("Connected Database. Loading Data now.")
 
-        Clientlist = New cClientList(Server.MaxClients)
         Functions.GlobalGame.GlobalInit(Server.MaxClients)
         GlobalDef.Initalize(Server.MaxClients)
         SilkroadData.DumpDataFiles()
@@ -70,12 +70,28 @@ Friend Class Program
 
         SessionInfo(index) = New cSessionInfo_GameServer
         SessionInfo(index).LoginAuthRequired = True
-        SessionInfo(index).LoginAuthTimeout = Date.Now.AddSeconds(25)
+        SessionInfo(index).LoginAuthTimeout = Date.Now.AddSeconds(40)
 
         Dim packet As New PacketWriter
         packet.Create(ServerOpcodes.HANDSHAKE)
         packet.Byte(1)
         Server.Send(packet.GetBytes, index)
+    End Sub
+
+    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
+        Try
+            Server.OnlineClients -= 1
+            If Functions.PlayerData(index) IsNot Nothing Then
+                Functions.DespawnPlayer(index)
+                Functions.CleanUpPlayer(index)
+            End If
+        Catch ex As Exception
+            Log.WriteSystemLog("Client disconnect error! " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
+        Finally
+            Functions.CharListing(index) = Nothing
+            Functions.PlayerData(index) = Nothing
+            SessionInfo(index) = Nothing
+        End Try
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
@@ -116,20 +132,12 @@ Friend Class Program
         Log.WriteSystemLog("Server Stopped: " & time)
     End Sub
 
-    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
-        Try
-            Server.OnlineClients -= 1
-            If Functions.PlayerData(index) IsNot Nothing Then
-                Functions.DespawnPlayer(index)
-                Functions.CleanUpPlayer(index)
-            End If
-        Catch ex As Exception
-            Log.WriteSystemLog("Client disconnect error! " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
-        Finally
-            Functions.CharListing(index) = Nothing
-            Functions.PlayerData(index) = Nothing
-            SessionInfo(index) = Nothing
-        End Try
+    Private Shared Sub Server_OnServerLog(ByVal message As String)
+        Log.WriteSystemLog("Server Log: " & message)
+    End Sub
+
+    Private Shared Sub Server_OnPacketLog(ByVal buff() As Byte, ByVal fromserver As Boolean, ByVal index As Integer)
+        Log.LogPacket(buff, fromserver)
     End Sub
 
     Private Shared Sub db_OnConnectedToDatabase()

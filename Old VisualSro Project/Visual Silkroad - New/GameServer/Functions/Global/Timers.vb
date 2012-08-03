@@ -546,7 +546,6 @@ Namespace Functions
                 End If
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: DB/GENRAL")
-                '
             End Try
 
             GeneralTimer.Start()
@@ -560,9 +559,9 @@ Namespace Functions
                 Dim Count As Integer = 0
 
                 For i = 0 To Server.MaxClients
-                    Dim socket As Net.Sockets.Socket = ClientList.GetSocket(i)
+                    Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)
                     If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
-                        If Settings.Server_DebugMode AndAlso DateDiff(DateInterval.Second, ClientList.LastPingTime(i), DateTime.Now) > 30 Then
+                        If Settings.Server_DebugMode AndAlso DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then
                             Server.Disconnect(i)
                         ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
                             'LoginAuth is missing..
@@ -577,7 +576,6 @@ Namespace Functions
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")
-                '
             End Try
 
             PingTimer.Start()

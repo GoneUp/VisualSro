@@ -58,7 +58,7 @@ Namespace Functions
             ItemList.Add(tmp_.UniqueID, tmp_)
 
             For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Socket = ClientList.GetSocket(refindex)
+                Dim socket As Socket = Server.ClientList.GetSocket(refindex)
                 Dim player As [cChar] = PlayerData(refindex)
                 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then

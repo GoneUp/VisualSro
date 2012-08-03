@@ -92,7 +92,6 @@
     <Compile Include="Framework\Log\GameLog.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Packets\PacketLog.vb" />
-    <Compile Include="Framework\Server\Server.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />

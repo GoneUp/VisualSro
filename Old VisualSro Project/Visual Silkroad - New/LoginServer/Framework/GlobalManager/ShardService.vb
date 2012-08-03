@@ -44,7 +44,7 @@ Namespace GlobalManager
             Dim writer As New PacketWriter
             writer.Create(InternalClientOpcodes.SERVER_INFO)
             writer.Word(Settings.Server_Id)
-            writer.Word(Server.OnlineClient)
+            writer.Word(Server.OnlineClients)
             writer.Word(Server.MaxClients)
 
             GlobalManagerCon.Send(writer.GetBytes)
@@ -109,14 +109,14 @@ Namespace GlobalManager
             Shard_Downloads.Clear()
             Shard_Gameservers.Clear()
 
-            For Each server In gateways
-                Shard_Gateways.Add(server.ServerId, server)
+            For Each tmp In gateways
+                Shard_Gateways.Add(tmp.ServerId, tmp)
             Next
-            For Each server In downloads
-                Shard_Downloads.Add(server.ServerId, server)
+            For Each tmp In downloads
+                Shard_Downloads.Add(tmp.ServerId, tmp)
             Next
-            For Each server In gameservers
-                Shard_Gameservers.Add(server.ServerId, server)
+            For Each tmp In gameservers
+                Shard_Gameservers.Add(tmp.ServerId, tmp)
             Next
         End Sub
     End Module

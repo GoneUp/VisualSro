@@ -36,7 +36,7 @@ Namespace Functions
             LoginDb.Users.Add(tmp)
 
             Dim tmp_2 As New Register_
-            tmp_2.IP = ClientList.GetIP(Index_)
+            tmp_2.IP = Server.ClientList.GetIP(Index_)
             tmp_2.Name = Name
             tmp_2.Password = Password
             tmp_2.Time = Date.Now

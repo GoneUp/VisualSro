@@ -36,7 +36,12 @@ Public Class GlobalManagerClient
         Catch ex As Exception
             RaiseEvent OnError(ex, -3)
         Finally
-            RaiseEvent OnLog("Connected to GlobalManager[" & ManagerSocket.RemoteEndPoint.ToString & "]")
+            If ManagerSocket IsNot Nothing AndAlso ManagerSocket.Connected Then
+                RaiseEvent OnLog("Connected to GlobalManager[" & ManagerSocket.RemoteEndPoint.ToString & "]")
+            Else
+                RaiseEvent OnLog("Connecting to GlobalManager failed! Maybe a wrong IP/Port?")
+                RaiseEvent OnLog("Maybe your Server cannot start without a globalmanager connection.")
+            End If
         End Try
     End Sub
 #End Region

@@ -5,7 +5,7 @@ Module GlobalDef
 
     Public GlobalManagerCon As New GlobalManagerClient
 
-    Public Clientlist As cClientList
+    Public Server As New cServer_Gameserver
 
     Public Shard_Gateways As New Dictionary(Of UShort, GatewayServer) 'Key=ServerId
     Public Shard_Downloads As New Dictionary(Of UShort, DownloadServer)

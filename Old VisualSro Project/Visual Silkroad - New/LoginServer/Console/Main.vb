@@ -1,10 +1,6 @@
 ﻿Imports SRFramework
-Imports LoginServer.Framework
 
 Friend Class Program
-
-    Public Shared Logpackets As Boolean = False
-
 
     Shared Sub Main()
         AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
@@ -12,6 +8,9 @@ Friend Class Program
         AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
         AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
+        AddHandler Server.OnServerStopped, AddressOf Program.Server_OnServerStopped
+        AddHandler Server.OnServerLog, AddressOf Program.Server_OnServerLog
+        AddHandler Server.OnServerPacketLog, AddressOf Program.Server_OnPacketLog
 
         AddHandler Database.OnDatabaseError, AddressOf Program.db_OnDatabaseError
         AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnConnectedToDatabase
@@ -42,15 +41,13 @@ Friend Class Program
         Database.Connect()
 
         Log.WriteSystemLog("Connected Database. Starting Server now.")
-        ClientList = New cClientList(Server.MaxClients)
         LoginDb.UpdateData()
         Timers.LoadTimers(Server.MaxClients)
         GlobalDef.Initalize(Server.MaxClients)
 
         Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
         Log.WriteSystemLog("Latest Version: " & Settings.Server_CurrectVersion)
-        Log.WriteSystemLog("Slotcount: " & Settings.Server_Slots)
-
+        Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots & "/" & Settings.Server_MaxClients)
 
         GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
 
@@ -65,12 +62,22 @@ Friend Class Program
         Log.WriteSystemLog("Client Connected : " & ip)
 
         SessionInfo(index) = New cSessionInfo_LoginServer
-        Server.OnlineClient += 1
+        Server.OnlineClients += 1
 
         Dim writer As New PacketWriter
         writer.Create(ServerOpcodes.HANDSHAKE)
         writer.Byte(1)
         Server.Send(writer.GetBytes, index)
+    End Sub
+
+    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
+        If Timers.LoginInfoTimer(index).Enabled Then
+            Timers.LoginInfoTimer(index).Stop()
+        End If
+
+        SessionInfo(index) = Nothing
+        Server.OnlineClients -= 1
+        Server.RevTheard(index).Abort()
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
@@ -89,8 +96,8 @@ Friend Class Program
             read = read + length + 6
 
             Dim packet As New PacketReader(newbuff)
-            If Logpackets = True Then
-                'Log.LogPacket(newbuff, False)
+            If Settings.Server_DebugMode = True Then
+                Log.LogPacket(newbuff, False)
             End If
 
             Functions.Parser.Parse(packet, index_)
@@ -109,14 +116,12 @@ Friend Class Program
         Log.WriteSystemLog("Server Stopped: " & time)
     End Sub
 
-    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
-        If Timers.LoginInfoTimer(index).Enabled Then
-            Timers.LoginInfoTimer(index).Stop()
-        End If
+    Private Shared Sub Server_OnServerLog(ByVal message As String)
+        Log.WriteSystemLog("Server Log: " & message)
+    End Sub
 
-        SessionInfo(index) = Nothing
-        Server.OnlineClient -= 1
-        Server.RevTheard(index).Abort()
+    Private Shared Sub Server_OnPacketLog(ByVal buff() As Byte, ByVal fromserver As Boolean, ByVal index As Integer)
+        Log.LogPacket(buff, fromserver)
     End Sub
 
     Private Shared Sub db_OnConnectedToDatabase()

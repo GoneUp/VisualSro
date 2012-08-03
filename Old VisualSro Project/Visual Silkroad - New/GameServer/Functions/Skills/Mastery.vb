@@ -20,10 +20,9 @@ Namespace Functions
                     End If
                 End If
             Next
-            If PlayerData(index_).Pk2ID >= 1907 And PlayerData(index_).Pk2ID <= 1932 Then
-                'Chinese Char
-                If masterycount < Settings.Server_MasteryCap Then
-                    'Free mastery
+            If PlayerData(index_).Pk2ID >= 1907 And PlayerData(index_).Pk2ID <= 1932 Then  'Chinese Char
+                If masterycount < Settings.Server_MasteryCap Then 'Free mastery
+
 
                     For i = 0 To GameDB.Masterys.Length - 1
                         If _

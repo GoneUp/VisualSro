@@ -102,7 +102,7 @@ Namespace Functions
 
 
         Private Function GetKey(ByVal Index_ As Integer) As UInt32
-            Dim split1 As String() = ClientList.GetSocket(Index_).RemoteEndPoint.ToString.Split(":")
+            Dim split1 As String() = Server.ClientList.GetSocket(Index_).RemoteEndPoint.ToString.Split(":")
             Dim split2 As String() = split1(0).Split(".")
             Dim key As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
             Return key

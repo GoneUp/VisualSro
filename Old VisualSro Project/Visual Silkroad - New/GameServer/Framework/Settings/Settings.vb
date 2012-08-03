@@ -44,6 +44,7 @@ Namespace Settings
             End Get
             Set(ByVal value)
                 _Server_DebugMode = value
+                Server.Server_DebugMode = value
             End Set
         End Property
 

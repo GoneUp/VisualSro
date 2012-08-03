@@ -1,5 +1,4 @@
 ﻿Imports SRFramework
-Imports LoginServer.Framework
 
 Namespace Functions
     Module Login
@@ -235,7 +234,7 @@ Namespace Functions
                 'User exestiert nicht == We register a User
 
                 If Settings.Auto_Register = True Then
-                    If CheckIfUserCanRegister(ClientList.GetIP(Index_)) = True Then
+                    If CheckIfUserCanRegister(Server.ClientList.GetIP(Index_)) = True Then
                         If RegisterUser(id, pw, Index_) Then
                             LoginWriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", id, pw), Index_)
                         End If
@@ -328,7 +327,7 @@ Namespace Functions
         End Sub
 
         Private Function GetKey(ByVal Index_ As Integer) As UInt32
-            Dim split1 As String() = ClientList.GetSocket(Index_).RemoteEndPoint.ToString.Split(":")
+            Dim split1 As String() = Server.ClientList.GetSocket(Index_).RemoteEndPoint.ToString.Split(":")
             Dim split2 As String() = split1(0).Split(".")
             Dim key As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
             Return key
@@ -338,7 +337,7 @@ Namespace Functions
             'ServerIndex + SessionID + Port + Index
             Dim user As String = SessionInfo(index_).userName
 
-            If ClientList.GetSocket(index_) Is Nothing Then
+            If Server.ClientList.GetSocket(index_) Is Nothing Then
                 Log.WriteSystemLog("Index_ from GlobalManager dosen't existis! user: " & user)
             ElseIf Shard_Gameservers.ContainsKey(SessionInfo(index_).gameserverId) = False Then
                 Log.WriteSystemLog("GS from GlobalManager dosen't existis! user: " & user)

@@ -1,5 +1,4 @@
-﻿Imports GlobalManager.Framework
-Imports SRFramework
+﻿Imports SRFramework
 
 Namespace Auth
     Module Auth
@@ -32,7 +31,7 @@ Namespace Auth
                 writer.Byte(2)
                 Server.Send(writer.GetBytes, Index_)
                 Server.Disconnect(Index_)
-                Log.WriteSystemLog("Auth failed: " & ClientList.GetIp(Index_))
+                Log.WriteSystemLog("Auth failed: " & Server.ClientList.GetIP(Index_))
             End If
         End Sub
 
@@ -62,7 +61,7 @@ Namespace Auth
             If tmp.HandshakeComplete Then
                 If tmp.Type <> cSessionInfo_GlobalManager._ServerTypes.Unknown Then
                     If tmp.ProtocolVersion = Settings.Server_ProtocolVersion Then
-                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, ClientList.GetIP(Index_).Split(":")(0)) Then
+                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, Server.ClientList.GetIP(Index_).Split(":")(0)) Then
                             writer.Byte(1)
                             tmp.Authorized = True
                         Else

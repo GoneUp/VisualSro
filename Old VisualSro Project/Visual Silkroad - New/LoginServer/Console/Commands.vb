@@ -1,6 +1,4 @@
-﻿Imports LoginServer.Framework
-
-Module Commands
+﻿Module Commands
 
     Public Sub CheckCommand(ByVal msg As String)
 
@@ -20,17 +18,22 @@ Module Commands
             Case "/help"
                 Log.WriteSystemLog("Commands: ")
                 Log.WriteSystemLog("/info for the credits")
-                Log.WriteSystemLog("/packets to enable packetLoginServer.Log")
+                Log.WriteSystemLog("/debug to enable packetLoginServer.Log")
                 Log.WriteSystemLog("/clear")
                 Log.WriteSystemLog("/count")
                 Log.WriteSystemLog("/end")
-            Case "/packets"
 
-                Program.Logpackets = True
-                Log.WriteSystemLog("LoginServer.Log Packets started!")
+            Case "/debug"
+                If Settings.Server_DebugMode Then
+                    Settings.Server_DebugMode = False
+                    Log.WriteSystemLog("Turned off DebugMode")
+                ElseIf Settings.Server_DebugMode = False Then
+                    Settings.Server_DebugMode = True
+                    Log.WriteSystemLog("Turned on DebugMode")
+                End If
 
             Case "/count"
-                Log.WriteSystemLog("Sockets online: " & Server.OnlineClient)
+                Log.WriteSystemLog("Sockets online: " & Server.OnlineClients)
 
             Case "/clear"
                 Console.Clear()

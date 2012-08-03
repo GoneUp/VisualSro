@@ -1,5 +1,4 @@
-﻿Imports LoginServer.Framework
-
+﻿
 Namespace Settings
     Module Settings
         'Loading File
@@ -17,8 +16,20 @@ Namespace Settings
 
         Public Server_Ip As String = "0.0.0.0"
         Public Server_Port As UShort = 15780
-        Public Server_Slots As UInteger = 100
+        Public Server_NormalSlots As UInteger = 100
+        Public Server_MaxClients As UInteger = 105
         Public Server_Id As UShort = 0
+        Private _Server_DebugMode As Boolean = True
+        Public Property Server_DebugMode 'Only for setting the PingDc on ClientList
+            Get
+                Return _Server_DebugMode
+            End Get
+            Set(ByVal value)
+                _Server_DebugMode = value
+                Server.Server_DebugMode = value
+            End Set
+        End Property
+
 
         Public Auto_Register As Boolean = False
         Public Max_FailedLogins As Integer = 5
@@ -34,7 +45,8 @@ Namespace Settings
         Public Sub LoadSettings()
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
             Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
-            Server_Slots = File.Read("SERVER_INTERNAL", "Max_Slots", "1000")
+            Server_NormalSlots = File.Read("SERVER_INTERNAL", "Max_NormalSlots", "1000")
+            Server_MaxClients = File.Read("SERVER_INTERNAL", "Max_Clients", "1050")
             Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
 
             Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
@@ -66,7 +78,8 @@ Namespace Settings
 
             Server.ip = Server_Ip
             Server.Port = Server_Port
-            Server.MaxClients = Server_Slots
+            Server.MaxNormalClients = Server_NormalSlots
+            Server.MaxClients = Server_MaxClients
         End Sub
 
     End Module

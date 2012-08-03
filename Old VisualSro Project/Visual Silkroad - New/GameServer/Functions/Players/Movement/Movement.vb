@@ -152,7 +152,7 @@ Namespace Functions
 
                 '=============Players============
                 For refindex As Integer = 0 To Server.MaxClients
-                    Dim othersock As Socket = ClientList.GetSocket(refindex)
+                    Dim othersock As Socket = Server.ClientList.GetSocket(refindex)
                     If _
                         (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso
                         (othersock.Connected) AndAlso Index_ <> refindex Then

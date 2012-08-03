@@ -1,6 +1,4 @@
-﻿Imports Microsoft.VisualBasic
-Imports System
-Imports GlobalManager.Framework
+﻿Imports System
 Imports SRFramework
 
 Class Program
@@ -12,9 +10,13 @@ Class Program
         AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
         AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
         AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
+        AddHandler Server.OnServerStopped, AddressOf Program.Server_OnServerStopped
+        AddHandler Server.OnServerLog, AddressOf Program.Server_OnServerLog
+        AddHandler Server.OnServerPacketLog, AddressOf Program.Server_OnPacketLog
+
         AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
         AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnDatabaseConnected
-
+        AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
 
         Console.WindowHeight = 10
         Console.BufferHeight = 300
@@ -34,11 +36,9 @@ Class Program
         DataBase.Connect()
 
         Log.WriteSystemLog("Connected Database. Starting Server now.")
-        ClientList = New cClientList(Server.MaxClients)
         GlobalDef.Initalize(Server.MaxClients)
         GlobalDb.UpdateData()
         Timers.LoadTimers()
-
 
         Server.Start()
         Log.WriteSystemLog("Inital Loading complete!")
@@ -52,7 +52,7 @@ Class Program
 
     Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
         Log.WriteSystemLog("Client Connected : " & ip)
-        Server.OnlineClient += 1
+        Server.OnlineClients += 1
 
         SessionInfo(index) = New cSessionInfo_GlobalManager
         SessionInfo(index).BaseKey = Auth.GenarateKey
@@ -61,6 +61,14 @@ Class Program
         writer.Create(ServerOpcodes.HANDSHAKE)
         writer.Word(SessionInfo(index).BaseKey)
         Server.Send(writer.GetBytes, index)
+    End Sub
+
+    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
+        Log.WriteSystemLog("Client Disconnected : " & ip)
+
+        SessionInfo(index) = Nothing
+
+        Server.OnlineClients -= 1
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
@@ -80,12 +88,10 @@ Class Program
             read = read + length + 6
 
             Dim packet As New PacketReader(newbuff)
+
             'Log.LogPacket(newbuff, False)
             Functions.Parse(packet, index_)
         Loop
-
-
-
     End Sub
 
     Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
@@ -96,16 +102,24 @@ Class Program
         Log.WriteSystemLog("Server Started: " & time)
     End Sub
 
-    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
-        Log.WriteSystemLog("Client Disconnected : " & ip)
+    Private Shared Sub Server_OnServerStopped(ByVal time As String)
+        Log.WriteSystemLog("Server Stopped: " & time)
+    End Sub
 
-        SessionInfo(index) = Nothing
+    Private Shared Sub Server_OnServerLog(ByVal message As String)
+        Log.WriteSystemLog("Server Log: " & message)
+    End Sub
 
-        Server.OnlineClient -= 1
+    Private Shared Sub Server_OnPacketLog(ByVal buff() As Byte, ByVal fromserver As Boolean, ByVal index As Integer)
+        Log.LogPacket(buff, fromserver)
     End Sub
 
     Private Shared Sub db_OnDatabaseConnected()
         Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
+    End Sub
+
+    Private Shared Sub db_OnDatabaseLog(ByVal message As String)
+        Log.WriteSystemLog("Database Log: " & message)
     End Sub
 
     Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)

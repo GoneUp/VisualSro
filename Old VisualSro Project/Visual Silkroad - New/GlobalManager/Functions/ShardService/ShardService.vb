@@ -1,5 +1,4 @@
-﻿Imports GlobalManager.Framework
-Imports SRFramework
+﻿Imports SRFramework
 
 Namespace Shard
     Module ShardService
@@ -14,7 +13,7 @@ Namespace Shard
                     Else
                         'Init Serverr
                         Server_GateWay(ServerId).Online = True
-                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                         SendServerInit(Index_)
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.GameServer
@@ -23,7 +22,7 @@ Namespace Shard
                     Else
                         'Init Server
                         Server_Game(ServerId).State = GameServer._ServerState.Online
-                        Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                         SendServerInit(Index_)
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
@@ -33,7 +32,7 @@ Namespace Shard
                     Else
                         'Init Server
                         Server_Download(ServerId).Online = True
-                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] fully initialized!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                         SendServerInit(Index_)
                     End If
             End Select
@@ -56,14 +55,14 @@ Namespace Shard
                     If Server_GateWay.ContainsKey(ServerId) Then
                         Server_GateWay(ServerId).Online = False
                         Server_GateWay.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
                         SendShutdown(Index_)
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.GameServer
                     If Server_Game.ContainsKey(ServerId) Then
                         Server_Game(ServerId).State = GameServer._ServerState.Check
                         Server_Game.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
                         SendShutdown(Index_)
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
@@ -71,7 +70,7 @@ Namespace Shard
                     If Server_Download.ContainsKey(ServerId) Then
                         Server_Download(ServerId).Online = False
                         Server_Download.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", ClientList.GetIP(Index_)))
+                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
                         SendShutdown(Index_)
                     End If
             End Select
@@ -89,8 +88,8 @@ Namespace Shard
             Select Case SessionInfo(Index_).Type
                 Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
                     Dim tmp As New GatewayServer
-                    tmp.IP = ClientList.GetIP(Index_).Split(":")(0)
-                    tmp.Port = Convert.ToUInt16(ClientList.GetIP(Index_).Split(":")(1))
+                    tmp.IP = Server.ClientList.GetIP(Index_).Split(":")(0)
+                    tmp.Port = Convert.ToUInt16(Server.ClientList.GetIP(Index_).Split(":")(1))
                     tmp.ServerId = packet.Word
                     tmp.ActualUser = packet.Word
                     tmp.MaxUser = packet.Word

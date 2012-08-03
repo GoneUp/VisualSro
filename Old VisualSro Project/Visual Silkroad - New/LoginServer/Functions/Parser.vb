@@ -1,5 +1,4 @@
 ﻿Imports SRFramework
-Imports LoginServer.Framework
 
 Namespace Functions
 
@@ -9,7 +8,7 @@ Namespace Functions
             Dim opcode As UInteger = packet.Word
             Dim security As UInteger = packet.Word
 
-            ClientList.LastPingTime(Index_) = Date.Now
+            Server.ClientList.LastPingTime(Index_) = Date.Now
 
             Select Case opcode
                 Case ClientOpcodes.PING

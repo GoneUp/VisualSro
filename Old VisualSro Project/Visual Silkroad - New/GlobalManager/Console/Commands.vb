@@ -23,9 +23,18 @@
 
             Case "/packets"
 
-                GlobalManager.Settings.Log_Packets = True
-                GlobalManager.Log.WriteSystemLog("GlobalManager.Log Packets started!")
+                GlobalManager.Settings.Server_DebugMode = True
+                GlobalManager.Log.WriteSystemLog("PacketLog started!")
 
+            Case "/debug"
+                If Settings.Server_DebugMode Then
+                    Settings.Server_DebugMode = False
+                    Log.WriteSystemLog("Turned off DebugMode")
+
+                ElseIf Settings.Server_DebugMode = False Then
+                    Settings.Server_DebugMode = True
+                    Log.WriteSystemLog("Turned on DebugMode")
+                End If
 
             Case "/clear"
                 Console.Clear()
@@ -34,7 +43,7 @@
             Case "/end"
                 For i = 0 To SessionInfo.Count - 1
                     If SessionInfo(i) IsNot Nothing Then
-                        Framework.Server.Disconnect(i)
+                        Server.Disconnect(i)
                     End If
                 Next
                 ' GameServer.Server.stop()

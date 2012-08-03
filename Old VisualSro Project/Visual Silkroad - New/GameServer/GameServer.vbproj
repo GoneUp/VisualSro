@@ -120,7 +120,6 @@
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\SilkroadData.vb" />
     <Compile Include="Framework\Packets\PacketLog.vb" />
-    <Compile Include="Framework\Server\Server.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\cGameObject.vb" />

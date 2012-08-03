@@ -1,5 +1,4 @@
-﻿Imports GlobalManager.Framework
-Imports SRFramework
+﻿Imports SRFramework
 
 Namespace Functions
     Module Parser
@@ -9,7 +8,7 @@ Namespace Functions
             Dim opcode As UInteger = packet.Word
             Dim security As UInteger = packet.Word
 
-            ClientList.LastPingTime(Index_) = Date.Now
+            Server.ClientList.LastPingTime(Index_) = Date.Now
 
             If SessionInfo(Index_).Authorized = False Then
                 '===Pre-Game===

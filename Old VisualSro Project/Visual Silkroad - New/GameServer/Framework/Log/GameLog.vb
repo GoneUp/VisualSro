@@ -2,7 +2,7 @@
     Module GameLog
         Public Sub WriteGameLog(ByVal Index_ As Integer, ByVal Action As String, ByVal Action2 As String,
                                 ByVal Message As String)
-            Dim IP As String = ClientList.GetSocket(Index_).RemoteEndPoint.ToString
+            Dim IP As String = Server.ClientList.GetSocket(Index_).RemoteEndPoint.ToString
             Dim time As String = String.Format("{0}-{1}-{2} {3}:{4}:{5}", Date.Now.Year, Date.Now.Month, Date.Now.Day,
                                                Date.Now.Hour, Date.Now.Minute, Date.Now.Second)
             Database.SaveQuery(

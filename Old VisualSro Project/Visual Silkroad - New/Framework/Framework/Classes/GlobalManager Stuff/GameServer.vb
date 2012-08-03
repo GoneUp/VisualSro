@@ -1,5 +1,5 @@
 ﻿Public Class GameServer
-    Inherits cServerbase
+    Inherits cGM_Server_Base
 
     Public ServerName As String
     Public State As _ServerState = _ServerState.Check

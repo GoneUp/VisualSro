@@ -2,7 +2,7 @@
 Imports System.Net.Sockets
 Imports System.Threading
 
-Public Class Server_Base
+Public Class cServer_Base
     Private _Ip As IPAddress = IPAddress.None
     Private _MaxClients As Integer = 1
     Private _MaxNormalClients As Integer = 1
@@ -253,6 +253,24 @@ Public Class Server_Base
                 RaiseEvent OnServerError(ex, index)
             End If
         End Try
+    End Sub
+
+    Public Sub SendToAll(ByVal buff() As Byte)
+        For i As Integer = 0 To MaxClients - 1
+            Dim socket As Socket = ClientList.GetSocket(i)
+            If (socket IsNot Nothing) AndAlso (socket.Connected) Then
+                Send(buff, i)
+            End If
+        Next i
+    End Sub
+
+    Public Sub SendToAll(ByVal buff() As Byte, ByVal expect_index As Integer)
+        For i As Integer = 0 To MaxClients
+            Dim socket As Socket = ClientList.GetSocket(i)
+            If (socket IsNot Nothing) AndAlso (socket.Connected) AndAlso (i <> expect_index) Then
+                Send(buff, i)
+            End If
+        Next i
     End Sub
 #End Region
 End Class

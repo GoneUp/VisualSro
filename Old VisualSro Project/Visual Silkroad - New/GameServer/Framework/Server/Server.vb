@@ -158,10 +158,9 @@ Public Class Server
         End Try
     End Sub
 
-
     Public Shared Sub SendToAllIngame(ByVal buff() As Byte)
         For i As Integer = 0 To OnlineClients
-            Dim socket As Socket = ClientList.GetSocket(i)
+            Dim socket As Socket = Clientlist.GetSocket(i)
             Dim player As [cChar] = PlayerData(i)
             'Check if Player is ingame
             If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then

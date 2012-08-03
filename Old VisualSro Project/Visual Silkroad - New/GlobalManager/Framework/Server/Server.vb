@@ -145,7 +145,7 @@ Namespace Framework
         Public Shared Sub SendToAll(ByVal buff() As Byte, ByVal expect_index As Integer)
             For i As Integer = 0 To MaxClients
                 Dim socket As Socket = ClientList.GetSocket(i)
-                If ((socket IsNot Nothing) AndAlso socket.Connected) AndAlso (i <> expect_index) Then
+                If (socket IsNot Nothing) AndAlso (socket.Connected) AndAlso (i <> expect_index) Then
                     Send(buff, i)
                 End If
             Next i

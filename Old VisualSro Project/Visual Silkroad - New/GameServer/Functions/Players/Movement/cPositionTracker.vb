@@ -85,7 +85,6 @@ Namespace Functions
 
             Catch ex As Exception
                 Log.WriteSystemLog("Pos Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: POSCALC")
-                '
             End Try
         End Function
 
@@ -233,8 +232,7 @@ Namespace Functions
         Public Enum enumMoveState As Byte
             Standing = 0
             Walking = 1
-            Spinning = 0
-            'Move Angle
+            Spinning = 0 'Move Angle
         End Enum
 
         Public Enum enumSpeedMode As Byte

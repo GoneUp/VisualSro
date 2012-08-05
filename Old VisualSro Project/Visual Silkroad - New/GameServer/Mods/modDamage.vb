@@ -48,7 +48,7 @@ Namespace GameMod.Damage
             End Try
         End Sub
 
-        Public Sub OnPlayerLogon(ByVal Index_)
+        Public Sub OnPlayerLogon(ByVal Index_ As Integer)
             Try
                 Dim tmpSet_ As DataSet =
                         Database.GetDataSet(String.Format("SELECT * FROM coustum WHERE ownerid='{0}' AND name='damage'",
@@ -76,7 +76,7 @@ Namespace GameMod.Damage
             End Try
         End Sub
 
-        Public Sub OnPlayerLogoff(ByVal Index_)
+        Public Sub OnPlayerLogoff(ByVal Index_ As Integer)
             Database.SaveQuery(String.Format("UPDATE coustum SET settings='{0}' WHERE ownerid='{1}' AND name='damage'",
                                              GenerateSettings(Index_), PlayerData(Index_).CharacterId))
             Settings(Index_) = New Settings_

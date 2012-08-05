@@ -124,7 +124,7 @@ Namespace Functions
 
             For refindex As Integer = 0 To Server.MaxClients
                 Dim socket As Socket = Server.ClientList.GetSocket(refindex)
-                Dim player As [cChar] = PlayerData(refindex)
+                Dim player As cCharacter = PlayerData(refindex)
                 'Check if Player is ingame
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then

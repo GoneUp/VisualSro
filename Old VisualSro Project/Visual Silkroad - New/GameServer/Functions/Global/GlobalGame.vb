@@ -3,7 +3,7 @@
         'CharList
         Public CharListing(1) As cCharListing
         'Players
-        Public PlayerData(1) As [cChar]
+        Public PlayerData(1) As cCharacter
         'Items
         Public Inventorys(1) As cInventory
         Public ItemList As New Dictionary(Of UInteger, cItemDrop)

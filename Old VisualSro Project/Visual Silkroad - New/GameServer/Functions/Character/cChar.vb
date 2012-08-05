@@ -1,5 +1,5 @@
 ﻿Namespace Functions
-    Public Class [cChar]
+    Public Class cCharacter
         Inherits cGameObject
 
         Public AccountID As UInteger = 0

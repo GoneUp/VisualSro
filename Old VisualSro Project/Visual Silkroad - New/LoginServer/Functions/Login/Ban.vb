@@ -1,7 +1,4 @@
-﻿Imports LoginServer.Framework
-
-
-Namespace Functions
+﻿Namespace Functions
     Module Ban
 
         Public Sub CheckBannTime(ByVal UserIndex As Integer)

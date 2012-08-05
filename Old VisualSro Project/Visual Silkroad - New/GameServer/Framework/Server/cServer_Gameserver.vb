@@ -9,7 +9,7 @@ Public Class cServer_Gameserver
     Public Sub SendToAllIngame(ByVal buff() As Byte)
         For i As Integer = 0 To OnlineClients
             Dim socket As Socket = ClientList.GetSocket(i)
-            Dim player As [cChar] = PlayerData(i)
+            Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
             If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                 If player.Ingame = True Then
@@ -22,7 +22,7 @@ Public Class cServer_Gameserver
     Public Sub SendToAllIngameExpectMe(ByVal buff() As Byte, ByVal index As Integer)
         For i As Integer = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
-            Dim player As [cChar] = PlayerData(i)
+            Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
             If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> index) _
                 Then
@@ -36,7 +36,7 @@ Public Class cServer_Gameserver
     Public Sub SendToAllInRange(ByVal buff() As Byte, ByVal Position As Position)
         For i As Integer = 0 To OnlineClients
             Dim socket As Socket = ClientList.GetSocket(i)
-            Dim player As [cChar] = PlayerData(i)
+            Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
             If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                 Dim distance As Long = CalculateDistance(Position, player.Position)
@@ -55,7 +55,7 @@ Public Class cServer_Gameserver
 
         For i As Integer = 0 To OnlineClients
             Dim socket As Socket = ClientList.GetSocket(i)
-            Dim player As [cChar] = PlayerData(i)
+            Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
             If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) _
                 Then
@@ -86,7 +86,7 @@ Public Class cServer_Gameserver
     Public Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobUniqueID As Integer)
         For i = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
-            Dim player As [cChar] = PlayerData(i)
+            Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
             If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                 If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) Then

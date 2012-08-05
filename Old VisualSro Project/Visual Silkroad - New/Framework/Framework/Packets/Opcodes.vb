@@ -4,7 +4,7 @@
 
     'C --> S
 
-    Public Enum ClientOpcodes As UInteger
+    Public Enum ClientOpcodes As UShort
         HANDSHAKE = &H5000
         HANDSHAKE_CONFIRM = &H9000
         PING = &H2002
@@ -81,7 +81,7 @@
 
 
     'S --> C 
-    Public Enum ServerOpcodes
+    Public Enum ServerOpcodes As UShort
         HANDSHAKE = &H5000
         LOGIN_SERVER_INFO = &H2001 'Gateway
         LOGIN_MASSIVE_MESSAGE = &H600D 'Patch Info
@@ -206,7 +206,7 @@
         SR_Admin = &HBD01
     End Enum
 
-    Enum InternalClientOpcodes
+    Enum InternalClientOpcodes As UShort
         SERVER_INIT = &H1000
         SERVER_SHUTDOWN = &H1001
         SERVER_INFO = &H1002

@@ -3,7 +3,7 @@
 Namespace Functions
     Module Login
 
-        Public Sub GateWay(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub Gateway(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ClientString As String = packet.String(packet.Word)
 
             If ClientString = "SR_Client" Then

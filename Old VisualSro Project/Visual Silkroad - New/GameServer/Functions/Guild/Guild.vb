@@ -23,7 +23,7 @@ Namespace Functions
 
                 writer.Byte(guild.Member.Count)
                 For i = 0 To guild.Member.Count - 1
-                    Dim char_ As [cChar] = GameDB.GetCharWithCharID(guild.Member(i).CharacterID)
+                    Dim char_ As cCharacter = GameDB.GetCharWithCharID(guild.Member(i).CharacterID)
 
                     writer.DWord(char_.CharacterId)
                     writer.Word(char_.CharacterName.Length)

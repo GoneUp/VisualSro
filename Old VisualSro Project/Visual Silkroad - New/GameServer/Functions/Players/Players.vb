@@ -10,7 +10,7 @@ Namespace Functions
         ''' <remarks></remarks>
         Public Function CreateSpawnPacket(ByVal Index As Integer) As Byte()
 
-            Dim chari As [cChar] = PlayerData(Index) 'Only for faster Code writing
+            Dim chari As cCharacter = PlayerData(Index) 'Only for faster Code writing
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)

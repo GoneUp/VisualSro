@@ -3,6 +3,11 @@
 Namespace Functions
     Module Character
         Public Sub HandleCharPacket(ByVal Index_ As Integer, ByVal pack As PacketReader)
+            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.AUTH Or SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST
+            Else
+                Server.Disconnect(Index_)
+            End If
 
             Dim tag As Byte = pack.Byte
 
@@ -245,7 +250,7 @@ Namespace Functions
 
                 Dim newCharacterIndex As Integer = GameDB.Chars.Count - 1
 
-                GameDB.Chars(newCharacterIndex) = New [cChar]
+                GameDB.Chars(newCharacterIndex) = New cCharacter
 
                 With GameDB.Chars(newCharacterIndex)
                     .AccountID = CharListing(Index_).LoginInformation.Id
@@ -552,6 +557,12 @@ Namespace Functions
         End Sub
 
         Public Sub CharLoading(ByVal Index_ As Integer, ByVal pack As PacketReader)
+            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.GOING_INGAME
+            Else
+                Server.Disconnect(Index_)
+            End If
+
             Dim SelectedNick As String = pack.String(pack.Word)
             Dim writer As New PacketWriter
 
@@ -596,17 +607,12 @@ Namespace Functions
             writer.Create(ServerOpcodes.GAME_LOADING_END)
             Server.Send(writer.GetBytes, Index_)
 
-
             writer = New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHARACTER_ID)
-            writer.DWord(PlayerData(Index_).UniqueID)
-            'charid
-            writer.Word(Date.Now.Day)
-            'moon pos
-            writer.Byte(Date.Now.Hour)
-            'hours
-            writer.Byte(Date.Now.Minute)
-            'minute
+            writer.DWord(PlayerData(Index_).UniqueID) 'charid
+            writer.Word(Date.Now.Day) 'moon pos
+            writer.Byte(Date.Now.Hour) 'hours
+            writer.Byte(Date.Now.Minute) 'minute
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
@@ -615,7 +621,7 @@ Namespace Functions
             PlayerData(Index_).AddItemsToStats(Index_)
 
             Dim writer As New PacketWriter
-            Dim chari As [cChar] = PlayerData(Index_)
+            Dim chari As cCharacter = PlayerData(Index_)
             writer = New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHARACTER_INFO)
             writer.DWord(3912288588)  '@@@@@@@@@@@@@@@@@
@@ -789,7 +795,14 @@ Namespace Functions
         End Sub
 
         Public Sub OnJoinWorldRequest(ByVal Index_ As Integer)
+            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.GOING_INGAME Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.INGAME
+            Else
+                Server.Disconnect(Index_)
+            End If
+
             PlayerData(Index_).Ingame = True
+
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_JOIN_WORLD_REPLY)
             writer.Byte(1)
@@ -835,12 +848,9 @@ Namespace Functions
                     End If
                 End With
             Next
-
         End Sub
 
-
-
-        Public Sub Player_CheckDeath(ByVal Index_ As Integer, ByVal SetPosToTown As Boolean)
+        Private Sub Player_CheckDeath(ByVal Index_ As Integer, ByVal SetPosToTown As Boolean)
             If PlayerData(Index_).CHP = 0 Then
                 PlayerData(Index_).Alive = True
                 PlayerData(Index_).CHP = PlayerData(Index_).HP / 2

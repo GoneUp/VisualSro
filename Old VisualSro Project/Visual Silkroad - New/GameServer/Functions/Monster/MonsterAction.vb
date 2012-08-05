@@ -26,7 +26,7 @@ Namespace Functions
             End If
         End Sub
 
-        Public Function MobGetPlayerWithMostDamage(ByVal UniqueID As Integer)
+        Public Function MobGetPlayerWithMostDamage(ByVal UniqueID As Integer) As Integer
             Dim MostIndex As Integer = -1
             Dim MostDamage As UInteger
             Dim Mob_ As cMonster = MobList(UniqueID)
@@ -41,7 +41,7 @@ Namespace Functions
         End Function
 
 
-        Public Function MobGetPlayerWithMostDamage(ByVal UniqueID As Integer, ByVal Attacking As Boolean)
+        Public Function MobGetPlayerWithMostDamage(ByVal UniqueID As Integer, ByVal Attacking As Boolean) As Integer
             Dim MostIndex As Integer = -1
             Dim MostDamage As Long = -1
             Dim Mob_ As cMonster = MobList(UniqueID)

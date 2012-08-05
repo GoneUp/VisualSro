@@ -1,5 +1,4 @@
 ﻿Imports SRFramework
-Imports LoginServer.Framework
 
 Namespace GlobalManager
     Module Auth

@@ -39,11 +39,11 @@ Namespace Settings
         Public Server_GoldRate As Long = 1
         Public Server_DropRate As Long = 1
         Private _Server_DebugMode As Boolean = True
-        Public Property Server_DebugMode 'Only for setting the PingDc on ClientList
+        Public Property Server_DebugMode As Boolean  'Only for setting the PingDc on ClientList
             Get
                 Return _Server_DebugMode
             End Get
-            Set(ByVal value)
+            Set(ByVal value As Boolean)
                 _Server_DebugMode = value
                 Server.Server_DebugMode = value
             End Set

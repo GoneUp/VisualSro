@@ -17,7 +17,7 @@ Namespace Functions
                     SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.HANDSHAKE
 
                 Case ClientOpcodes.LOGIN_WHO_AM_I  'GateWay
-                    GateWay(packet, Index_)
+                    Gateway(packet, Index_)
 
                 Case ClientOpcodes.LOGIN_PATCH_REQ  'Client sends Patch Info
                     ClientInfo(packet, Index_)

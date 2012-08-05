@@ -83,7 +83,7 @@ Namespace GameMod
                 Case "\\silk"
                     If IsNumeric(tmp(1)) Then
                         Dim userIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
-                        Dim user As cCharListing.UserArray = GameDB.GetUser(PlayerData(Index_).AccountID)
+                        Dim user As cUser = GameDB.GetUser(PlayerData(Index_).AccountID)
                         user.Silk += tmp(1)
                         GameDB.Users(UserIndex) = user
                         Database.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",

@@ -617,7 +617,7 @@ Namespace Functions
             End If
         End Function
 
-        Private Function CheckLevel(ByVal tmpItem As cItem, ByVal Index_ As Integer)
+        Private Function CheckLevel(ByVal tmpItem As cItem, ByVal Index_ As Integer) As Boolean
             If tmpItem.LV_REQ > PlayerData(Index_).Level Then
                 Return False
             Else

@@ -8,7 +8,7 @@
 
         Public Function CalculateDamage(ByVal BasicAP As Double, ByVal SkillAP As Double, ByVal AttackPowerInc As Double,
                                         ByVal EnemyAccAbsorbation As Double, ByVal EnemyDef As Double,
-                                        ByVal Balance As Double, ByVal DamageInc As Double, ByVal SkillAPRate As Double)
+                                        ByVal Balance As Double, ByVal DamageInc As Double, ByVal SkillAPRate As Double) As Long
             'A = Basic Attack Power
             'B = Skill Attack Power
             'C = Attack Power Increasing rate
@@ -25,9 +25,9 @@
                 SkillAPRate
         End Function
 
-        Public Function GetRandomPosition(ByVal BasePosition As Position, ByVal Range As Integer)
+        Public Function GetRandomPosition(ByVal BasePosition As Position, ByVal Range As Integer) As Position
             If BasePosition Is Nothing Then
-                Exit Function
+                Return Nothing
             End If
 
             Dim tmp_pos As Position = BasePosition
@@ -78,7 +78,7 @@
 
 #Region "Angle"
 
-        Public Function GetAngle(ByVal Pos_From As Position, ByVal Pos_To As Position)
+        Public Function GetAngle(ByVal Pos_From As Position, ByVal Pos_To As Position) As UShort
             Dim Grad As Single
             Dim AK As Double = Pos_From.ToGameX - Pos_To.ToGameX
             'distance_x
@@ -145,7 +145,7 @@
             Return Convert.ToInt32(3 + ((stat - 20) \ 3))
         End Function
 
-        Public Function GetWeaponMasteryLevel(ByVal Index_) As Byte
+        Public Function GetWeaponMasteryLevel(ByVal Index_ As Integer) As Byte
             Dim _item As cInvItem = Inventorys(Index_).UserItems(6)
             Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
             '8-11

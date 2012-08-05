@@ -1,6 +1,4 @@
-﻿Imports LoginServer.Framework
-
-Namespace LoginDb
+﻿Namespace LoginDb
     Module LoginDb
 
         'Timer

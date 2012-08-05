@@ -187,7 +187,7 @@ Namespace Functions
             Return FinalDamage
         End Function
 
-        Private Function Monster_GetNextSkill(ByVal SkillID As UInteger, ByVal ObjectID As UInteger)
+        Private Function Monster_GetNextSkill(ByVal SkillID As UInteger, ByVal ObjectID As UInteger) As UInt32
             Dim Ref_ As SilkroadObject = GetObject(ObjectID)
 
 

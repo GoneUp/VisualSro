@@ -7,10 +7,10 @@ Namespace GameDB
         Public WithEvents GameDbUpdate As New Timer
 
         'User
-        Public Users() As cCharListing.UserArray
+        Public Users() As cUser
 
         'Chars
-        Public Chars() As [cChar]
+        Public Chars() As cCharacter
         Public Hotkeys As New List(Of cHotKey)
 
         'Itemcount
@@ -25,7 +25,7 @@ Namespace GameDB
         'Guilds
         Public Guilds As New List(Of cGuild)
 
-        Private First As Boolean = False
+        Private FirstRun As Boolean = True
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
             GameDbUpdate.Stop()
@@ -33,19 +33,18 @@ Namespace GameDB
             '20 secs
 
             Try
-                If First = False Then
+                If FirstRun Then
                     Log.WriteSystemLog("Loading Playerdata from DB now.")
 
                     GetUserData()
                     GetCharData()
-                    'Only Update for the First Time! 
                     GetItemData()
                     GetMasteryData()
                     GetSkillData()
                     GetPositionData()
                     GetHotkeyData()
                     GetGuildData()
-                    First = True
+                    FirstRun = False
                 Else
                     GetUserData()
                 End If
@@ -65,11 +64,16 @@ Namespace GameDB
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
             Dim UserCount = tmp.Tables(0).Rows.Count
 
+            If UserCount = 0 Then
+                ReDim Users(0)
+                Exit Sub
+            End If
+
             ReDim Users(UserCount - 1)
-            '-1 machen
 
             For i = 0 To UserCount - 1
-                Users(i).Id = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                Users(i) = New cUser
+                Users(i).Id = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
                 Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
                 Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
@@ -81,147 +85,146 @@ Namespace GameDB
 
         Public Sub GetCharData()
 
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From characters")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From chars")
             Dim CharCount = tmp.Tables(0).Rows.Count
 
-            If CharCount >= 1 Then
-                ReDim Chars(CharCount - 1)
-
-                For i = 0 To Chars.Length - 1
-                    Chars(i) = New [cChar]
-                    Chars(i).PosTracker = New cPositionTracker(New Position, 0, 0, 0)
-
-                    Chars(i).CharacterId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                    Chars(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
-                    Chars(i).CharacterName = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                    Chars(i).Pk2ID = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
-                    Chars(i).Volume = CUInt(tmp.Tables(0).Rows(i).ItemArray(4))
-                    Chars(i).Level = CUInt(tmp.Tables(0).Rows(i).ItemArray(5))
-                    Chars(i).Experience = CULng(tmp.Tables(0).Rows(i).ItemArray(6))
-                    Chars(i).Strength = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
-                    Chars(i).Intelligence = CUInt(tmp.Tables(0).Rows(i).ItemArray(8))
-                    Chars(i).Attributes = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
-                    Chars(i).HP = CUInt(tmp.Tables(0).Rows(i).ItemArray(10))
-                    Chars(i).MP = CUInt(tmp.Tables(0).Rows(i).ItemArray(11))
-                    Chars(i).Deleted = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
-                    Chars(i).DeletionTime = (tmp.Tables(0).Rows(i).ItemArray(13))
-                    Chars(i).Gold = CULng(tmp.Tables(0).Rows(i).ItemArray(14))
-                    Chars(i).SkillPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(15))
-                    Chars(i).GM = CBool(tmp.Tables(0).Rows(i).ItemArray(16))
-                    Chars(i).Position.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
-                    Chars(i).Position.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
-                    Chars(i).Position.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(19))
-                    Chars(i).Position.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(20))
-                    Chars(i).Position.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(21))
-                    Chars(i).CHP = CUInt(tmp.Tables(0).Rows(i).ItemArray(22))
-                    Chars(i).CMP = CUInt(tmp.Tables(0).Rows(i).ItemArray(23))
-                    Chars(i).MinPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(24))
-                    Chars(i).MaxPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(25))
-                    Chars(i).MinMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(26))
-                    Chars(i).MaxMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(27))
-                    Chars(i).PhyDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(28))
-                    Chars(i).MagDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(29))
-                    Chars(i).Hit = CUInt(tmp.Tables(0).Rows(i).ItemArray(30))
-                    Chars(i).Parry = CUInt(tmp.Tables(0).Rows(i).ItemArray(31))
-                    Chars(i).WalkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
-                    Chars(i).RunSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(33))
-                    Chars(i).BerserkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(34))
-                    Chars(i).BerserkBar = CByte(tmp.Tables(0).Rows(i).ItemArray(35))
-                    Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
-                    Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
-                    Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))
-                    Chars(i).PotHp = CByte(tmp.Tables(0).Rows(i).ItemArray(39))
-                    Chars(i).PotMp = CByte(tmp.Tables(0).Rows(i).ItemArray(40))
-                    Chars(i).PotAbormal = CByte(tmp.Tables(0).Rows(i).ItemArray(41))
-                    Chars(i).PotDelay = CByte(tmp.Tables(0).Rows(i).ItemArray(42))
-
-                    If Chars(i).CHP = 0 Then
-                        Chars(i).Alive = False
-                    End If
-                Next
-
-            Else
+            If CharCount = 0 Then
                 ReDim Chars(0)
+                Exit Sub
             End If
+
+            ReDim Chars(CharCount - 1)
+
+            For i = 0 To Chars.Length - 1
+                Chars(i) = New cCharacter
+                Chars(i).PosTracker = New cPositionTracker(New Position, 0, 0, 0)
+
+                Chars(i).CharacterId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                Chars(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                Chars(i).CharacterName = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
+                Chars(i).Pk2ID = CUInt(tmp.Tables(0).Rows(i).ItemArray(3))
+                Chars(i).Volume = CUInt(tmp.Tables(0).Rows(i).ItemArray(4))
+                Chars(i).Level = CUInt(tmp.Tables(0).Rows(i).ItemArray(5))
+                Chars(i).Experience = CULng(tmp.Tables(0).Rows(i).ItemArray(6))
+                Chars(i).Strength = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
+                Chars(i).Intelligence = CUInt(tmp.Tables(0).Rows(i).ItemArray(8))
+                Chars(i).Attributes = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
+                Chars(i).HP = CUInt(tmp.Tables(0).Rows(i).ItemArray(10))
+                Chars(i).MP = CUInt(tmp.Tables(0).Rows(i).ItemArray(11))
+                Chars(i).Deleted = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
+                Chars(i).DeletionTime = (tmp.Tables(0).Rows(i).ItemArray(13))
+                Chars(i).Gold = CULng(tmp.Tables(0).Rows(i).ItemArray(14))
+                Chars(i).SkillPoints = CUInt(tmp.Tables(0).Rows(i).ItemArray(15))
+                Chars(i).GM = CBool(tmp.Tables(0).Rows(i).ItemArray(16))
+                Chars(i).Position.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
+                Chars(i).Position.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
+                Chars(i).Position.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(19))
+                Chars(i).Position.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(20))
+                Chars(i).Position.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(21))
+                Chars(i).CHP = CUInt(tmp.Tables(0).Rows(i).ItemArray(22))
+                Chars(i).CMP = CUInt(tmp.Tables(0).Rows(i).ItemArray(23))
+                Chars(i).MinPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(24))
+                Chars(i).MaxPhy = CUInt(tmp.Tables(0).Rows(i).ItemArray(25))
+                Chars(i).MinMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(26))
+                Chars(i).MaxMag = CUInt(tmp.Tables(0).Rows(i).ItemArray(27))
+                Chars(i).PhyDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(28))
+                Chars(i).MagDef = CUInt(tmp.Tables(0).Rows(i).ItemArray(29))
+                Chars(i).Hit = CUInt(tmp.Tables(0).Rows(i).ItemArray(30))
+                Chars(i).Parry = CUInt(tmp.Tables(0).Rows(i).ItemArray(31))
+                Chars(i).WalkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(32))
+                Chars(i).RunSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(33))
+                Chars(i).BerserkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(34))
+                Chars(i).BerserkBar = CByte(tmp.Tables(0).Rows(i).ItemArray(35))
+                Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
+                Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
+                Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))
+                Chars(i).PotHp = CByte(tmp.Tables(0).Rows(i).ItemArray(39))
+                Chars(i).PotMp = CByte(tmp.Tables(0).Rows(i).ItemArray(40))
+                Chars(i).PotAbormal = CByte(tmp.Tables(0).Rows(i).ItemArray(41))
+                Chars(i).PotDelay = CByte(tmp.Tables(0).Rows(i).ItemArray(42))
+
+                If Chars(i).CHP = 0 Then
+                    Chars(i).Alive = False
+                End If
+            Next
         End Sub
 
         Public Sub GetItemData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
             Dim ItemCount = tmp.Tables(0).Rows.Count
 
-            If ItemCount >= 1 Then
-                ReDim AllItems(ItemCount - 1)
-
-                For i = 0 To (ItemCount - 1)
-                    AllItems(i) = New cInvItem
-                    AllItems(i).DatabaseID = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                    AllItems(i).Pk2Id = CInt(tmp.Tables(0).Rows(i).ItemArray(1))
-                    AllItems(i).OwnerCharID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                    AllItems(i).Plus = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
-                    AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
-                    AllItems(i).Amount = CUShort(tmp.Tables(0).Rows(i).ItemArray(5))
-                    AllItems(i).Durability = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
-                    AllItems(i).PerDurability = CByte(tmp.Tables(0).Rows(i).ItemArray(8))
-                    AllItems(i).PerPhyRef = CByte(tmp.Tables(0).Rows(i).ItemArray(9))
-                    AllItems(i).PerMagRef = CByte(tmp.Tables(0).Rows(i).ItemArray(10))
-                    AllItems(i).PerPhyAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(11))
-                    AllItems(i).PerMagAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
-                    AllItems(i).PerPhyDef = CByte(tmp.Tables(0).Rows(i).ItemArray(13))
-                    AllItems(i).PerMagDef = CByte(tmp.Tables(0).Rows(i).ItemArray(14))
-                    AllItems(i).PerBlock = CByte(tmp.Tables(0).Rows(i).ItemArray(15))
-                    AllItems(i).PerCritical = CByte(tmp.Tables(0).Rows(i).ItemArray(16))
-                    AllItems(i).PerAttackRate = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
-                    AllItems(i).PerParryRate = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
-                    AllItems(i).PerPhyAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(19))
-                    AllItems(i).PerMagAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(20))
-
-                    AllItems(i).ItemType = GetItemTypeFromDb((CStr(tmp.Tables(0).Rows(i).ItemArray(7))))
-                Next
-            Else
+            If ItemCount = 0 Then
                 ReDim AllItems(0)
+                Exit Sub
             End If
+
+            ReDim AllItems(ItemCount - 1)
+
+            For i = 0 To (ItemCount - 1)
+                AllItems(i) = New cInvItem
+                AllItems(i).DatabaseID = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                AllItems(i).Pk2Id = CInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                AllItems(i).OwnerCharID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                AllItems(i).Plus = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
+                AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
+                AllItems(i).Amount = CUShort(tmp.Tables(0).Rows(i).ItemArray(5))
+                AllItems(i).Durability = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
+                AllItems(i).PerDurability = CByte(tmp.Tables(0).Rows(i).ItemArray(8))
+                AllItems(i).PerPhyRef = CByte(tmp.Tables(0).Rows(i).ItemArray(9))
+                AllItems(i).PerMagRef = CByte(tmp.Tables(0).Rows(i).ItemArray(10))
+                AllItems(i).PerPhyAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(11))
+                AllItems(i).PerMagAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
+                AllItems(i).PerPhyDef = CByte(tmp.Tables(0).Rows(i).ItemArray(13))
+                AllItems(i).PerMagDef = CByte(tmp.Tables(0).Rows(i).ItemArray(14))
+                AllItems(i).PerBlock = CByte(tmp.Tables(0).Rows(i).ItemArray(15))
+                AllItems(i).PerCritical = CByte(tmp.Tables(0).Rows(i).ItemArray(16))
+                AllItems(i).PerAttackRate = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
+                AllItems(i).PerParryRate = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
+                AllItems(i).PerPhyAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(19))
+                AllItems(i).PerMagAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(20))
+
+                AllItems(i).ItemType = GetItemTypeFromDb((CStr(tmp.Tables(0).Rows(i).ItemArray(7))))
+            Next
         End Sub
 
         Public Sub GetMasteryData()
 
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From masteries")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_mastery")
             Dim MasteryCount = tmp.Tables(0).Rows.Count
 
-            If MasteryCount >= 1 Then
-
-                ReDim Masterys(MasteryCount - 1)
-
-                For i = 0 To MasteryCount - 1
-                    Masterys(i) = New cMastery
-                    Masterys(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
-                    Masterys(i).MasteryID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                    Masterys(i).Level = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
-                Next
-            Else
+            If MasteryCount = 0 Then
                 ReDim Masterys(0)
             End If
+
+            ReDim Masterys(MasteryCount - 1)
+
+            For i = 0 To MasteryCount - 1
+                Masterys(i) = New cMastery
+                Masterys(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                Masterys(i).MasteryID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+                Masterys(i).Level = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
+            Next
         End Sub
 
         Public Sub GetSkillData()
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From skills")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_skill")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
-            If Count >= 1 Then
-                ReDim Skills(Count - 1)
-
-                For i = 0 To Count - 1
-                    Skills(i) = New cSkill
-                    Skills(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
-                    Skills(i).SkillID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                Next
-
-            Else
+            If Count = 0 Then
                 ReDim Skills(0)
             End If
+
+            ReDim Skills(Count - 1)
+
+            For i = 0 To Count - 1
+                Skills(i) = New cSkill
+                Skills(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
+                Skills(i).SkillID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+            Next
         End Sub
 
         Public Sub GetPositionData()
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From positions")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_pos")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -266,7 +269,7 @@ Namespace GameDB
         End Sub
 
         Public Sub GetGuildData()
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From guild_main")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From guild")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
             For i = 0 To Count - 1
@@ -321,7 +324,6 @@ Namespace GameDB
 #End Region
 
 #Region "Get Things from Array"
-
         Public Function GetUserIndex(ByVal username As String) As Integer
             For i = 0 To Users.Length
                 If Users(i).Name = username Then
@@ -340,7 +342,7 @@ Namespace GameDB
             Return -1
         End Function
 
-        Public Function GetUser(ByVal accountID As UInteger) As cCharListing.UserArray
+        Public Function GetUser(ByVal accountID As UInteger) As cUser
             For i = 0 To Users.Length
                 If Users(i).Id = accountID Then
                     Return Users(i)
@@ -365,7 +367,7 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Function FillInventory(ByVal [char] As [cChar]) As cInventory
+        Public Function FillInventory(ByVal [char] As cCharacter) As cInventory
             Dim inventory As New cInventory([char].MaxSlots)
             For i = 0 To (AllItems.Length - 1)
                 If i < AllItems.Length And AllItems(i) IsNot Nothing Then
@@ -411,7 +413,7 @@ Namespace GameDB
             Return Nothing
         End Function
 
-        Public Function GetCharWithCharID(ByVal CharacterID As UInteger) As [cChar]
+        Public Function GetCharWithCharID(ByVal CharacterID As UInteger) As cCharacter
             For i = 0 To Chars.Length - 1
                 If Chars(i).CharacterId = CharacterID Then
                     Return Chars(i)

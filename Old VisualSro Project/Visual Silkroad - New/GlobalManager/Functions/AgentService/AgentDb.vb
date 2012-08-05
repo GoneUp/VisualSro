@@ -1,6 +1,4 @@
-﻿Imports GlobalManager.Framework
-
-Namespace Agent
+﻿Namespace Agent
     Module AgentDb
         Public UserAuthCache As New Dictionary(Of UInt32, _UserAuth)
 

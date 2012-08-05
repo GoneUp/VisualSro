@@ -677,7 +677,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Function GetReversePoint(ByVal id As UInteger)
+    Public Function GetReversePoint(ByVal id As UInteger) As ReversePoint_
         For i = 0 To RefReversePoints.Count - 1
             If RefReversePoints(i).TeleportID = id Then
                 Return RefReversePoints(i)
@@ -1051,7 +1051,7 @@ Module SilkroadData
         obj.Shop.Tab(5).TabName = "STORE_KT_ACCESSORY_TAB3"
     End Sub
 
-    Public Function GetNpc(ByVal StoreName As String)
+    Public Function GetNpc(ByVal StoreName As String) As Integer
         Dim tmplist As Array = RefObjects.Keys.ToArray
         For Each key In tmplist
             If RefObjects.ContainsKey(key) Then
@@ -1065,7 +1065,7 @@ Module SilkroadData
         Return -1
     End Function
 
-    Public Function GetNpc2(ByVal TabName As String)
+    Public Function GetNpc2(ByVal TabName As String) As Integer
         Dim tmplist As Array = RefObjects.Keys.ToArray
         For Each key In tmplist
             If RefObjects.ContainsKey(key) Then

@@ -68,7 +68,9 @@ Class Program
 
         SessionInfo(index) = Nothing
 
-        Server.OnlineClients -= 1
+        If Server.OnlineClients > 0 Then
+            Server.OnlineClients -= 1
+        End If
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)

@@ -381,10 +381,7 @@ Namespace Functions
                         PlayerData(Index_).InExchange = False
 
                     End If
-
-
                 End If
-
             End If
         End Sub
 
@@ -400,7 +397,7 @@ Namespace Functions
             PlayerData(index_).InExchange = False
         End Sub
 
-        Public Function GetFreeSlotExchage(ByVal Index_ As Integer)
+        Public Function GetFreeSlotExchage(ByVal Index_ As Integer) As SByte
             For r = 13 To Inventorys(Index_).UserItems.Length - 1
                 If Inventorys(Index_).UserItems(r).Pk2Id = 0 And Inventorys(Index_).UserItems(r).Locked = False Then
                     Return r

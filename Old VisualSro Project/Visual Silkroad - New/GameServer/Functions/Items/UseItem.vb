@@ -345,7 +345,7 @@ Namespace Functions
         ''' <param name="ToAdd"></param>
         ''' <returns>New Item amout</returns>
         ''' <remarks></remarks>
-        Public Function UpdateAmout(ByVal Index_ As Integer, ByVal Slot As Byte, ByVal ToAdd As Integer) As UShort
+        Public Sub UpdateAmout(ByVal Index_ As Integer, ByVal Slot As Byte, ByVal ToAdd As Integer)
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
             If _item.Amount + ToAdd = 0 Then
                 'Despawn Item
@@ -362,7 +362,7 @@ Namespace Functions
                 Inventorys(Index_).UserItems(Slot) = _item
                 UpdateItem(_item)
             End If
-        End Function
+        End Sub
 
         ''' <summary>
         ''' Checks that the Equip Slots are empty
@@ -370,7 +370,7 @@ Namespace Functions
         ''' <param name="Index_"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function EquipSlotsEmpty(ByVal Index_ As Integer)
+        Private Function EquipSlotsEmpty(ByVal Index_ As Integer) As Boolean
             For i = 0 To 13
                 If Inventorys(Index_).UserItems(i).Pk2Id <> 0 Then
                     Return False

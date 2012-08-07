@@ -58,11 +58,7 @@ Namespace GameMod
                                 writer.Byte(GameDB.Masterys(i).Level)
                                 Server.Send(writer.GetBytes, Index_)
 
-                                Database.SaveQuery(
-                                    String.Format(
-                                        "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ",
-                                        GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
-                                        GameDB.Masterys(i).MasteryID))
+                                GameDB.SaveMastery(PlayerData(Index_).CharacterId, GameDB.Masterys(i).MasteryID, GameDB.Masterys(i).Level)
                             End If
                         Next
                     End If
@@ -86,8 +82,7 @@ Namespace GameMod
                         Dim user As cUser = GameDB.GetUser(PlayerData(Index_).AccountID)
                         user.Silk += tmp(1)
                         GameDB.Users(UserIndex) = user
-                        Database.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
-                                                         GameDB.Users(UserIndex).Silk, PlayerData(Index_).AccountID))
+                        
                         OnSendSilks(Index_)
                     End If
 
@@ -132,9 +127,7 @@ Namespace GameMod
                 Case "\\name_me"
                     If tmp(1) <> "" Then
                         PlayerData(Index_).CharacterName = tmp(1)
-                        Database.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
-                                                         PlayerData(Index_).CharacterName,
-                                                         PlayerData(Index_).CharacterId))
+                        GameDB.SaveNameUpdate(PlayerData(Index_).CharacterId, tmp(1))
                         OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
 
@@ -145,9 +138,7 @@ Namespace GameMod
                             If PlayerData(i) IsNot Nothing Then
                                 If PlayerData(i).CharacterName = tmp(1) Then
                                     PlayerData(i).CharacterName = tmp(2)
-                                    Database.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'",
-                                                                     PlayerData(i).CharacterName,
-                                                                     PlayerData(i).CharacterId))
+                                    GameDB.SaveNameUpdate(PlayerData(i).CharacterId, tmp(2))
                                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                                     Exit For
                                 End If

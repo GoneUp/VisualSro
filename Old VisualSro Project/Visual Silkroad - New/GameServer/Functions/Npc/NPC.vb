@@ -235,13 +235,7 @@ Namespace Functions
                         writer.Byte(1)
                         Server.Send(writer.GetBytes, Index_)
 
-
-                        Database.SaveQuery(
-                            String.Format(
-                                "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                                PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
-                                Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
-                                Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+                        GameDB.SavePosition(Index_)
                         OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
 

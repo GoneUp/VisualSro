@@ -3,30 +3,31 @@
 Namespace Functions
     Module PlayerActions
         Public Sub OnLogout(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim countdown As Byte = 5
+
             Dim tag As Byte = packet.Byte
             Select Case tag
                 Case 1 'Normal Exit
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
                     writer.Byte(1) 'succeed
-                    writer.Byte(5) '5 secounds
+                    writer.Byte(countdown) '5 secounds
                     writer.Byte(1) 'mode
                     Server.Send(writer.GetBytes, Index_)
 
-                    writer = New PacketWriter
-                    writer.Create(ServerOpcodes.GAME_EXIT_FINAL)
-                    Server.Send(writer.GetBytes, Index_)
+                    Timers.PlayerExitTimer(Index_).Interval = countdown * 1000
+
                 Case 2 'Restart
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
                     writer.Byte(1) 'succeed
-                    writer.Byte(5) '5 secounds
+                    writer.Byte(countdown) '5 secounds
                     writer.Byte(2) 'mode
                     Server.Send(writer.GetBytes, Index_)
-            End Select
 
-            GameMod.Damage.OnPlayerLogoff(Index_)
-            Server.Disconnect(Index_)
+                    GameMod.Damage.OnPlayerLogoff(Index_)
+                    Server.Disconnect(Index_)
+            End Select
         End Sub
 
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -327,12 +328,7 @@ Namespace Functions
             UpdateHP(Index_)
             'GetXP(GetLevelDataByLevel(PlayerData(Index_).Level).Experience * 0.01, 0, Index_, PlayerData(Index_).UniqueId) 'Reduce Experience by 1 %
 
-            Database.SaveQuery(
-                String.Format(
-                    "UPDATE positions SET dead_xsect='{0}', dead_ysect='{1}', dead_xpos='{2}', dead_zpos='{3}', dead_ypos='{4}' where OwnerCharID='{5}'",
-                    PlayerData(Index_).PositionRecall.XSector, PlayerData(Index_).PositionRecall.YSector,
-                    Math.Round(PlayerData(Index_).PositionRecall.X), Math.Round(PlayerData(Index_).PositionRecall.Z),
-                    Math.Round(PlayerData(Index_).PositionRecall.Y), PlayerData(Index_).CharacterId))
+            GameDB.SaveDeathPosition(Index_)
         End Sub
 
         Public Sub Player_Die1(ByVal Index_ As Integer)
@@ -364,7 +360,7 @@ Namespace Functions
             Select Case tag
                 Case 1 'To Town  
                     PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn 'Set new Pos
-                    SavePlayerPositionToDB(Index_)
+                    GameDB.SavePosition(Index_)
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
 
                 Case 2 'At present Point
@@ -385,7 +381,7 @@ Namespace Functions
             PlayerData(Index_).PositionReturn = GetTeleportPoint(ref.Pk2ID).ToPos
 
             Database.SaveQuery(String.Format(
-                            "UPDATE positions SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'",
+                            "UPDATE char_pos SET return_xsect='{0}', return_ysect='{1}', return_xpos='{2}', return_zpos='{3}', return_ypos='{4}' where OwnerCharID='{5}'",
                             PlayerData(Index_).PositionReturn.XSector, PlayerData(Index_).PositionReturn.YSector,
                             Math.Round(PlayerData(Index_).PositionReturn.X),
                             Math.Round(PlayerData(Index_).PositionReturn.Z),

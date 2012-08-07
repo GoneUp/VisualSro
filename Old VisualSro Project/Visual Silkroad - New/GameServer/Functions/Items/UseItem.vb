@@ -247,8 +247,7 @@ Namespace Functions
                         End If
                     Next
 
-                    If NewModel >= 1907 And NewModel <= 1932 = False And NewModel >= 14717 And NewModel <= 14743 = False _
-                        Then
+                    If IsCharChinese(NewModel) = Fail And IsCharEurope(NewModel) = False Then
                         'Wrong Model Code! 
                         Fail = True
                     End If
@@ -272,13 +271,10 @@ Namespace Functions
 
                     ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
-
                     PlayerData(Index_).Pk2ID = NewModel
                     PlayerData(Index_).Volume = NewVolume
 
-                    Database.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'",
-                                                     PlayerData(Index_).Pk2ID, PlayerData(Index_).Volume,
-                                                     PlayerData(Index_).CharacterId))
+                    GameDB.SaveCharType_Volume(Index_)
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                 End If
             End If

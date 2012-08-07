@@ -39,7 +39,9 @@ Namespace Functions
                 If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.INGAME Then
                     'Prevents User to send Ingame packet for ex. when they are on charlist
                     Select Case opcode
-                        '============Ingame===========
+                        Case ClientOpcodes.PING
+
+                            '============Ingame===========
                         Case ClientOpcodes.GAME_CLIENT_STATUS
                             Functions.OnClientStatusUpdate(packet, Index_)
 

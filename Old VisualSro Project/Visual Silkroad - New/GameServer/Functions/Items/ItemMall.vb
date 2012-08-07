@@ -50,8 +50,7 @@ Namespace Functions
                         ItemSlots.Add(slot)
 
                         GameDB.Users(UserIndex).Silk -= RefObject.Price
-                        Database.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'",
-                                                         GameDB.Users(UserIndex).Silk, PlayerData(index_).AccountID))
+                        GameDB.SaveSilk(index_, GameDB.Users(UserIndex).Silk, GameDB.Users(UserIndex).Silk_Bonus, GameDB.Users(UserIndex).Silk_Points)
                         OnSendSilks(index_)
                     Next
 

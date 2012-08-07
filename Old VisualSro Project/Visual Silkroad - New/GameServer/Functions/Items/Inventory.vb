@@ -825,7 +825,8 @@ Namespace Functions
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
                     writer.Byte(_item.Plus)
-                    writer.QWord(_item.GetWhiteStats)
+                    'writer.QWord(_item.GetWhiteStats)
+                    writer.QWord(98)
                     writer.DWord(_item.Durability)
 
                     writer.Byte(_item.Blues.Count)

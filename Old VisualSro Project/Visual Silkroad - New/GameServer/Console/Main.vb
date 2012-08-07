@@ -82,7 +82,7 @@ Friend Class Program
             Server.OnlineClients -= 1
             If Functions.PlayerData(index) IsNot Nothing Then
                 Functions.DespawnPlayer(index)
-                Functions.CleanUpPlayer(index)
+                Functions.CleanUpPlayerComplete(index)
             End If
         Catch ex As Exception
             Log.WriteSystemLog("Client disconnect error! " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)

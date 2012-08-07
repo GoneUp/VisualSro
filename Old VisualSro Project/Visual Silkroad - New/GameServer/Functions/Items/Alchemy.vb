@@ -106,31 +106,18 @@ Namespace Functions
                 writer.Byte(2)
                 writer.Byte(weapon.Plus)
                 writer.Byte(weapon.Slot)
-                writer.DWord(weapon.Pk2Id)
-                writer.Byte(weapon.Plus)
-                writer.QWord(0)
-                'modifier
-                writer.DWord(weapon.Durability)
-                writer.Byte(0)
-                'clues
+                AddItemDataToPacket(weapon, writer)
+
             Else
                 weapon.Plus = 0
                 writer.Create(ServerOpcodes.GAME_ALCHEMY)
                 writer.Byte(1)
-                writer.Byte(2)
-                'mode
-                writer.Byte(weapon.Plus)
-                'chnged to 0
-                writer.Byte(weapon.Slot)
-                'slot
+                writer.Byte(2)   'mode
+
+                writer.Byte(weapon.Plus)  'chnged to 0
+                writer.Byte(weapon.Slot) 'slot
                 writer.Byte(0)
-                writer.DWord(weapon.Pk2Id)
-                writer.Byte(weapon.Plus)
-                writer.QWord(0)
-                'modifier
-                writer.DWord(weapon.Durability)
-                writer.Byte(0)
-                'blues
+                AddItemDataToPacket(weapon, writer)
             End If
 
             Server.Send(writer.GetBytes, Index_)

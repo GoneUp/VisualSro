@@ -23,14 +23,7 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
 
             'Save all Data to DB
-            Database.SaveQuery(
-                String.Format(
-                    "UPDATE characters SET min_phyatk='{0}', max_phyatk='{1}', min_magatk='{2}', max_magatk='{3}', phydef='{4}', magdef='{5}', hit='{6}', parry='{7}', hp='{8}', mp='{9}', strength='{10}', intelligence='{11}', attribute='{12}' where id='{13}'",
-                    PlayerData(Index_).MinPhy, PlayerData(Index_).MaxPhy, PlayerData(Index_).MinMag,
-                    PlayerData(Index_).MinMag, PlayerData(Index_).PhyDef, PlayerData(Index_).MagDef,
-                    PlayerData(Index_).Hit, PlayerData(Index_).Parry, PlayerData(Index_).HP, PlayerData(Index_).MP,
-                    PlayerData(Index_).Strength, PlayerData(Index_).Intelligence, PlayerData(Index_).Attributes,
-                    PlayerData(Index_).CharacterId))
+            GameDB.SaveAllStats(Index_)
         End Sub
 
         Public Sub UpdateHP(ByVal Index_ As Integer)
@@ -43,9 +36,7 @@ Namespace Functions
             writer.DWord(PlayerData(Index_).CHP)
             Server.Send(writer.GetBytes, Index_)
 
-            Database.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
-                                             PlayerData(Index_).CHP, PlayerData(Index_).HP,
-                                             PlayerData(Index_).CharacterId))
+            GameDB.SaveHP(Index_)
         End Sub
 
         Public Sub UpdateMP(ByVal Index_ As Integer)
@@ -58,9 +49,7 @@ Namespace Functions
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            Database.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'",
-                                             PlayerData(Index_).CMP, PlayerData(Index_).MP,
-                                             PlayerData(Index_).CharacterId))
+            GameDB.SaveMP(Index_)
         End Sub
 
         Public Sub UpdateHP_MP(ByVal Index_ As Integer)
@@ -74,10 +63,7 @@ Namespace Functions
             writer.DWord(PlayerData(Index_).CMP)
             Server.Send(writer.GetBytes, Index_)
 
-            Database.SaveQuery(
-                String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'",
-                              PlayerData(Index_).CHP, PlayerData(Index_).HP, PlayerData(Index_).CMP,
-                              PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
+            GameDB.SaveHP_MP(Index_)
         End Sub
 
         Public Sub UpdateGold(ByVal Index_ As Integer)
@@ -88,8 +74,7 @@ Namespace Functions
             writer.Byte(0)
             Server.Send(writer.GetBytes, Index_)
 
-            Database.SaveQuery(String.Format("UPDATE characters SET gold='{0}' where id='{1}'", PlayerData(Index_).Gold,
-                                             PlayerData(Index_).CharacterId))
+            GameDB.SaveGold(Index_)
         End Sub
 
         Public Sub UpdateSP(ByVal index_ As Integer)
@@ -100,8 +85,7 @@ Namespace Functions
             writer.Byte(0)
             Server.Send(writer.GetBytes, index_)
 
-            Database.SaveQuery(String.Format("UPDATE characters SET sp='{0}' where id='{1}'",
-                                             PlayerData(index_).SkillPoints, PlayerData(index_).CharacterId))
+            GameDB.SaveSp(index_)
         End Sub
 
         Public Sub UpdateBerserk(ByVal index_ As Integer)
@@ -112,8 +96,7 @@ Namespace Functions
             writer.DWord(0)
             Server.Send(writer.GetBytes, index_)
 
-            Database.SaveQuery(String.Format("UPDATE characters SET berserk='{0}' where id='{1}'",
-                                             PlayerData(index_).BerserkBar, PlayerData(index_).CharacterId))
+            GameDB.SaveBerserk(index_)
         End Sub
 
         Public Sub UpdateSpeeds(ByVal index_ As Integer)
@@ -255,15 +238,6 @@ Namespace Functions
             writer.Create(ServerOpcodes.GAME_LEVELUP_ANIMATION)
             writer.DWord(PlayerData(Index_).UniqueID)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
-        End Sub
-
-        Public Sub SavePlayerPositionToDB(ByVal Index_ As Integer)
-            Database.SaveQuery(
-                String.Format(
-                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                    PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
-                    Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
-                    Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
         End Sub
     End Module
 End Namespace

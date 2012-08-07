@@ -36,11 +36,7 @@ Namespace Functions
                                 PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                 UpdateSP(index_)
 
-                                Database.SaveQuery(
-                                    String.Format(
-                                        "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}' ",
-                                        GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
-                                        GameDB.Masterys(i).MasteryID))
+                                GameDB.SaveMastery(PlayerData(index_).CharacterId, GameDB.Masterys(i).MasteryID, GameDB.Masterys(i).Level)
 
                                 writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                 writer.Byte(1)
@@ -87,11 +83,7 @@ Namespace Functions
                                     PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
                                     UpdateSP(index_)
 
-                                    Database.SaveQuery(
-                                        String.Format(
-                                            "UPDATE masteries SET level='{0}' where owner='{1}' and mastery='{2}'",
-                                            GameDB.Masterys(i).Level, GameDB.Masterys(i).OwnerID,
-                                            GameDB.Masterys(i).MasteryID))
+                                    GameDB.SaveMastery(PlayerData(index_).CharacterId, GameDB.Masterys(i).MasteryID, GameDB.Masterys(i).Level)
 
                                     writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                     writer.Byte(1)
@@ -166,7 +158,7 @@ Namespace Functions
             Array.Resize(GameDB.Skills, NewIndex)
             GameDB.Skills(NewIndex - 1) = toadd
 
-            Database.SaveQuery(String.Format("INSERT INTO skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
+            Database.SaveQuery(String.Format("INSERT INTO char_skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
                                              toadd.SkillID))
         End Sub
 

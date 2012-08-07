@@ -323,7 +323,7 @@ Namespace Functions
                         Math.Round(GameDB.Chars(newCharacterIndex).Position.Z),
                         Math.Round(GameDB.Chars(newCharacterIndex).Position.Y),
                         GameDB.Chars(newCharacterIndex).CharacterId))
-                Database.SaveQuery(String.Format("INSERT INTO positions (OwnerCharID) VALUE ('{0}')",
+                Database.SaveQuery(String.Format("INSERT INTO char_pos (OwnerCharID) VALUE ('{0}')",
                                                  GameDB.Chars(newCharacterIndex).CharacterId))
                 Database.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')",
                                                  GameDB.Chars(newCharacterIndex).CharacterId))
@@ -546,7 +546,7 @@ Namespace Functions
             Array.Resize(GameDB.Masterys, GameDB.Masterys.Length + 1)
             GameDB.Masterys(GameDB.Masterys.Length - 1) = toadd
 
-            Database.SaveQuery(String.Format("INSERT INTO masteries(owner, mastery, level) VALUE ('{0}','{1}','{2}')",
+            Database.SaveQuery(String.Format("INSERT INTO char_mastery(owner, mastery, level) VALUE ('{0}','{1}','{2}')",
                                              toadd.OwnerID, toadd.MasteryID, toadd.Level))
         End Sub
 
@@ -591,7 +591,7 @@ Namespace Functions
             End If
 
             'Prepare
-            CleanUpPlayer(Index_)
+            CleanUpPlayerComplete(Index_)
             Player_CheckDeath(Index_, True)
             GameMod.Damage.OnPlayerLogon(Index_)
 
@@ -842,7 +842,7 @@ Namespace Functions
                                 'Free ;)
                                 .CharacterName = NewCharname
 
-                                Database.SaveQuery(String.Format("UPDATE characters SET name='{0} where id='{1}'", .CharacterName, .CharacterId))
+                                GameDB.SaveNameUpdate(.CharacterId, .CharacterName)
                             End If
                         End If
                     End If
@@ -854,21 +854,12 @@ Namespace Functions
             If PlayerData(Index_).CHP = 0 Then
                 PlayerData(Index_).Alive = True
                 PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
-                Database.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}' where id='{2}'",
-                                                 PlayerData(Index_).CHP, PlayerData(Index_).HP,
-                                                 PlayerData(Index_).CharacterId))
+                GameDB.SaveHP(Index_)
+            End If
 
-
-                If SetPosToTown Then
-                    PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn
-                    Database.SaveQuery(
-                        String.Format(
-                            "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                            PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
-                            Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
-                            Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
-                End If
-
+            If SetPosToTown Then
+                PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn
+                GameDB.SavePosition(Index_)
             End If
         End Sub
 

@@ -112,6 +112,7 @@
     <Compile Include="Admin\AdminControl.vb" />
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Framework\Database\GameDb.vb" />
+    <Compile Include="Framework\Database\GameSave.vb" />
     <Compile Include="Framework\GlobalManager\AgentService.vb" />
     <Compile Include="Framework\GlobalManager\Auth.vb" />
     <Compile Include="Framework\GlobalManager\ShardControl.vb" />
@@ -248,6 +249,7 @@
       <Project>{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}</Project>
       <Name>SRFramework</Name>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

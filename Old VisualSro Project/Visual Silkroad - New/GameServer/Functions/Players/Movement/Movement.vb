@@ -151,7 +151,7 @@ Namespace Functions
                 Dim spawnCollector As New GroupSpawn
 
                 '=============Players============
-                For refindex As Integer = 0 To Server.MaxClients
+                For refindex As Integer = 0 To Server.MaxClients - 1
                     Dim othersock As Socket = Server.ClientList.GetSocket(refindex)
                     If _
                         (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso
@@ -237,7 +237,7 @@ Namespace Functions
 
         Public Sub ObjectDeSpawnCheck(ByVal Index_ As Integer)
             Try
-                For Other_Index = 0 To Server.MaxClients
+                For Other_Index = 0 To Server.MaxClients - 1
                     If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) _
                         Then
                         If _

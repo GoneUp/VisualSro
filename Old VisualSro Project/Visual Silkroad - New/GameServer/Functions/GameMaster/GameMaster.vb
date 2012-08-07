@@ -117,13 +117,7 @@ Namespace Functions
             PlayerData(index_).SetPosition = to_pos
             PlayerData(index_).TeleportType = TeleportType_.GM
 
-
-            Database.SaveQuery(
-                String.Format(
-                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                    PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector,
-                    Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z),
-                    Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).CharacterId))
+            GameDB.SavePosition(index_)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_TELEPORT_ANNONCE)
@@ -149,13 +143,7 @@ Namespace Functions
                     If PlayerData(i).CharacterName = Name Then
 
                         PlayerData(index_).SetPosition = PlayerData(i).Position
-
-                        Database.SaveQuery(
-                            String.Format(
-                                "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                                PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector,
-                                Math.Round(PlayerData(index_).Position.X), Math.Round(PlayerData(index_).Position.Z),
-                                Math.Round(PlayerData(index_).Position.Y), PlayerData(index_).CharacterId))
+                        GameDB.SavePosition(index_)
 
                         OnTeleportUser(index_, PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector)
 
@@ -174,13 +162,7 @@ Namespace Functions
                     If PlayerData(i).CharacterName = Name Then
 
                         PlayerData(i).SetPosition = PlayerData(index_).Position
-
-                        Database.SaveQuery(
-                            String.Format(
-                                "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                                PlayerData(i).Position.XSector, PlayerData(i).Position.YSector,
-                                Math.Round(PlayerData(i).Position.X), Math.Round(PlayerData(i).Position.Z),
-                                Math.Round(PlayerData(i).Position.Y), PlayerData(i).CharacterId))
+                        GameDB.SavePosition(index_)
 
                         OnTeleportUser(i, PlayerData(i).Position.XSector, PlayerData(i).Position.YSector)
                         Exit For
@@ -225,16 +207,9 @@ Namespace Functions
         End Sub
 
         Public Sub OnGoTown(ByVal Index_ As Integer)
-
             'Teleport the GM to Town
-            PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn
-            'Set new Pos
-            Database.SaveQuery(
-                String.Format(
-                    "UPDATE characters SET xsect='{0}', ysect='{1}', xpos='{2}', zpos='{3}', ypos='{4}' where id='{5}'",
-                    PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector,
-                    Math.Round(PlayerData(Index_).Position.X), Math.Round(PlayerData(Index_).Position.Z),
-                    Math.Round(PlayerData(Index_).Position.Y), PlayerData(Index_).CharacterId))
+            PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn   'Set new Pos
+            GameDB.SavePosition(Index_)
             OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
         End Sub
 

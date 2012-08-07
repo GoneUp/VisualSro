@@ -209,9 +209,7 @@ Namespace Functions
         Public Sub Stall_Buy(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim slot As Byte = packet.Byte
 
-            If _
-                PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And
-                PlayerData(Index_).StallOwner = False Then
+            If PlayerData(Index_).InStall = True And PlayerData(Index_).StallID <> 0 And PlayerData(Index_).StallOwner = False Then
                 Dim Stall_index As Integer = GetStallIndex(PlayerData(Index_).StallID)
 
                 If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then

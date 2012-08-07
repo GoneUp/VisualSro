@@ -85,7 +85,7 @@ Namespace GameDB
 
         Public Sub GetCharData()
 
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From chars")
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From characters")
             Dim CharCount = tmp.Tables(0).Rows.Count
 
             If CharCount = 0 Then

@@ -67,7 +67,7 @@
                 Next
                 Server.Stop()
                 Database.ExecuteQuerys()
-                End
+
 
             Case "/debug"
                 If Settings.Server_DebugMode Then
@@ -109,6 +109,32 @@
                 Else
                     Log.WriteSystemLog("nope...")
                 End If
+
+            Case "/reinit"
+                GameServer.Log.WriteSystemLog("Ending Server....")
+                For i = 0 To Functions.PlayerData.Count - 1
+                    If Functions.PlayerData(i) IsNot Nothing Then
+                        Server.Disconnect(i)
+                    End If
+                Next
+                Server.Stop()
+                If Server.Online Then
+                    Server.Stop()
+                End If
+                Database.ExecuteQuerys()
+                GlobalManagerCon.Disconnect()
+
+                Log.WriteSystemLog("Cleanup Server...")
+
+                Functions.GlobalGame.GlobalInit(Server.MaxClients)
+                GlobalDef.Initalize(Server.MaxClients)
+                SilkroadData.DumpDataFiles()
+                GameDB.UpdateData()
+                Functions.Timers.LoadTimers(Server.MaxClients)
+                GameMod.Damage.OnServerStart(Server.MaxClients)
+
+                Log.WriteSystemLog("Reconnect GlobalManager...")
+                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
         End Select
     End Sub
 End Module

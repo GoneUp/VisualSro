@@ -43,6 +43,7 @@ Friend Class Program
 
         Functions.GlobalGame.GlobalInit(Server.MaxClients)
         GlobalDef.Initalize(Server.MaxClients)
+
         SilkroadData.DumpDataFiles()
         GameDB.UpdateData()
         Functions.Timers.LoadTimers(Server.MaxClients)

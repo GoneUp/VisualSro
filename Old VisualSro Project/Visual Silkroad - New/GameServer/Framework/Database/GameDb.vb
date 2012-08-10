@@ -25,7 +25,7 @@ Namespace GameDB
         'Guilds
         Public Guilds As New List(Of cGuild)
 
-        Private FirstRun As Boolean = True
+        Public FirstRun As Boolean = True
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
             GameDbUpdate.Stop()

@@ -30,7 +30,7 @@ Namespace Functions
                     Dim ItemSlots As New List(Of Byte)
 
                     For i = 1 To amout
-                        Dim _Refitem As cItem = GetItemByName(RefObject.Name_Normal)
+                        Dim _Refitem As cRefItem = GetItemByName(RefObject.Name_Normal)
                         Dim slot As Byte = GetFreeItemSlot(index_)
                         Dim item As cInvItem = Inventorys(index_).UserItems(slot)
                         item.Pk2Id = _Refitem.Pk2Id

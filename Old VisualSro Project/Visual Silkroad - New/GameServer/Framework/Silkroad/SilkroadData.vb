@@ -2,7 +2,7 @@
 Imports System.IO
 
 Module SilkroadData
-    Public RefItems As New Dictionary(Of UInteger, cItem)
+    Public RefItems As New Dictionary(Of UInteger, cRefItem)
     Public RefGoldData As New List(Of cGoldData)
     Public RefLevelData As New List(Of LevelData)
 
@@ -82,6 +82,7 @@ Module SilkroadData
     End Sub
 
     Public Sub DumpItemFiles()
+        RefItems.Clear()
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\itemdata.txt")
         For i As Integer = 0 To paths.Length - 1
             DumpItemFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
@@ -99,7 +100,7 @@ Module SilkroadData
 
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
-            Dim tmp As New cItem
+            Dim tmp As New cRefItem
             tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
             tmp.ITEM_TYPE_NAME = tmpString(2)
             tmp.ITEM_MALL = Convert.ToByte(tmpString(7))
@@ -190,14 +191,14 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Function GetItemByID(ByVal id As UInteger) As cItem
+    Public Function GetItemByID(ByVal id As UInteger) As cRefItem
         If RefItems.ContainsKey(id) Then
             Return RefItems(id)
         End If
         Throw New Exception("Item couldn't be found!")
     End Function
 
-    Public Function GetItemByName(ByVal Name As String) As cItem
+    Public Function GetItemByName(ByVal Name As String) As cRefItem
         For Each key In RefItems.Keys.ToList
             If RefItems.ContainsKey(key) Then
                 If RefItems(key).ITEM_TYPE_NAME = Name Then
@@ -216,6 +217,7 @@ Module SilkroadData
 
 
     Public Sub DumpGoldData(ByVal path As String)
+        RefGoldData.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
@@ -246,6 +248,7 @@ Module SilkroadData
 
 
     Public Sub DumpLevelData(ByVal path As String)
+        RefLevelData.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
@@ -352,6 +355,9 @@ Module SilkroadData
     End Structure
 
     Public Sub DumpSkillFiles()
+        RefSkills.Clear()
+        RefTmpSkills.Clear()
+
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\skilldata.txt")
         For i As Integer = 0 To paths.Length - 1
             DumpTmpSkillFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
@@ -579,6 +585,8 @@ Module SilkroadData
     End Class
 
     Public Sub DumpObjectFiles()
+        RefObjects.Clear()
+
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\characterdata.txt")
         For i As Integer = 0 To paths.Length - 1
             DumpObjectFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
@@ -663,6 +671,8 @@ Module SilkroadData
     End Class
 
     Public Sub DumpReversePoints(ByVal path As String)
+        RefReversePoints.Clear()
+
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -694,6 +704,8 @@ Module SilkroadData
     End Structure
 
     Public Sub DumpItemMall(ByVal FileAmoutPath As String, ByVal FilePricePath As String)
+        RefMallItems.Clear()
+
         Dim lines As String() = File.ReadAllLines(FileAmoutPath)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -759,6 +771,8 @@ Module SilkroadData
     End Class
 
     Public Sub DumpTeleportData(ByVal Path_Data As String, ByVal Path_Link As String)
+        RefTeleportPoints.Clear()
+
         Dim lines As String() = File.ReadAllLines(Path_Data)
         Try
             For i As Integer = 0 To lines.Length - 1
@@ -849,6 +863,8 @@ Module SilkroadData
     End Enum
 
     Public Sub DumpSpecialSectorFile(ByVal path As String)
+        RefSpecialZones.Clear()
+
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False Then
@@ -887,6 +903,8 @@ Module SilkroadData
     End Function
 
     Public Sub DumpUniqueFile(ByVal path As String)
+        RefUniques.Clear()
+
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
@@ -926,6 +944,8 @@ Module SilkroadData
     End Sub
 
     Public Sub DumpAbuseListFile(ByVal path As String)
+        RefAbuseList.Clear()
+
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
@@ -1092,6 +1112,9 @@ Module SilkroadData
 
 
     Public Sub DumpCaveTeleporterFile(ByVal path As String)
+        RefCaveTeleporter.Clear()
+
+
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then

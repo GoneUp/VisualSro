@@ -52,7 +52,7 @@ Namespace Functions
             If Inventorys(Index_).UserItems(Old_Slot).Pk2Id <> 0 Then
                 Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).UserItems(Old_Slot))
                 Dim DestItem As cInvItem = FillItem(Inventorys(Index_).UserItems(New_Slot))
-                Dim _SourceRef As cItem = GetItemByID(SourceItem.Pk2Id)
+                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.Pk2Id)
 
 
                 If SourceItem.Slot <= 12 And DestItem.Slot >= 13 Then
@@ -64,7 +64,7 @@ Namespace Functions
                         Inventorys(Index_).UserItems(Old_Slot) = ClearItem(DestItem)
                         Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
                     ElseIf DestItem.Pk2Id <> 0 Then
-                        Dim _DestRef As cItem = GetItemByID(DestItem.Pk2Id)
+                        Dim _DestRef As cRefItem = GetItemByID(DestItem.Pk2Id)
                         If _DestRef.CLASS_A = 1 And CheckItemGender(_DestRef, Index_) And CheckLevel(_DestRef, Index_) _
                             Then 'Only Equipment
                             Inventorys(Index_).UserItems(New_Slot) = SourceItem
@@ -101,7 +101,7 @@ Namespace Functions
                             Exit Sub
                         End If
                     ElseIf DestItem.Pk2Id <> 0 Then
-                        Dim _DestRef As cItem = GetItemByID(DestItem.Pk2Id)
+                        Dim _DestRef As cRefItem = GetItemByID(DestItem.Pk2Id)
                         If _
                             _SourceRef.CLASS_A = 1 And CheckItemGender(_SourceRef, Index_) And
                             CheckLevel(_SourceRef, Index_) Then
@@ -241,7 +241,7 @@ Namespace Functions
 
 
             Dim slot As Byte = packet.Byte
-            Dim ref_item As cItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
+            Dim ref_item As cRefItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
             Dim item_uniqueid As UInteger = DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
 
             DeleteItemFromDB(slot, index_)
@@ -328,7 +328,7 @@ Namespace Functions
                 Else
                     Dim slot As Byte = GetFreeItemSlot(Index_)
                     If slot <> -1 Then
-                        Dim ref As cItem = GetItemByID(_item.Item.Pk2Id)
+                        Dim ref As cRefItem = GetItemByID(_item.Item.Pk2Id)
                         Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
 
                         temp_item.Pk2Id = _item.Item.Pk2Id
@@ -507,7 +507,7 @@ Namespace Functions
 
             If Inventorys(Index_).UserItems(Old_Slot).Pk2Id <> 0 Then
                 Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).UserItems(Old_Slot))
-                Dim _SourceRef As cItem = GetItemByID(SourceItem.Pk2Id)
+                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.Pk2Id)
                 New_Slot = GetInternalAvatarSlot(_SourceRef)
                 Dim DestItem As cInvItem = FillItem(Inventorys(Index_).AvatarItems(New_Slot))
 
@@ -556,7 +556,7 @@ Namespace Functions
 
             If Inventorys(Index_).AvatarItems(Old_Slot).Pk2Id <> 0 Then
                 Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).AvatarItems(Old_Slot))
-                Dim _SourceRef As cItem = GetItemByID(SourceItem.Pk2Id)
+                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.Pk2Id)
                 Dim DestItem As cInvItem = FillItem(Inventorys(Index_).UserItems(New_Slot))
 
                 If DestItem.Pk2Id = 0 Then
@@ -596,7 +596,7 @@ Namespace Functions
 
 #Region "Helper Functions"
 
-        Private Function CheckItemGender(ByVal tmpItem As cItem, ByVal Index_ As Integer) As Boolean
+        Private Function CheckItemGender(ByVal tmpItem As cRefItem, ByVal Index_ As Integer) As Boolean
             Dim Gender As Integer = 0
 
             If _
@@ -617,7 +617,7 @@ Namespace Functions
             End If
         End Function
 
-        Private Function CheckLevel(ByVal tmpItem As cItem, ByVal Index_ As Integer) As Boolean
+        Private Function CheckLevel(ByVal tmpItem As cRefItem, ByVal Index_ As Integer) As Boolean
             If tmpItem.LV_REQ > PlayerData(Index_).Level Then
                 Return False
             Else
@@ -625,7 +625,7 @@ Namespace Functions
             End If
         End Function
 
-        Private Function GetInternalAvatarSlot(ByVal _Refitem As cItem) As Byte
+        Private Function GetInternalAvatarSlot(ByVal _Refitem As cRefItem) As Byte
             If _Refitem.CLASS_A = 1 Then
                 Select Case _Refitem.CLASS_B
                     Case 13
@@ -652,7 +652,7 @@ Namespace Functions
             Return 255
         End Function
 
-        Friend Function GetExternalAvatarSlot(ByVal _Refitem As cItem) As Byte
+        Friend Function GetExternalAvatarSlot(ByVal _Refitem As cRefItem) As Byte
             If _Refitem.CLASS_A = 1 Then
                 Select Case _Refitem.CLASS_B
                     Case 13
@@ -814,7 +814,7 @@ Namespace Functions
         End Function
 
         Public Sub AddItemDataToPacket(ByVal _item As cInvItem, ByVal writer As PacketWriter)
-            Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+            Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
             writer.DWord(0)
             'Unknown since TH Legend
 
@@ -825,8 +825,7 @@ Namespace Functions
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
                     writer.Byte(_item.Plus)
-                    'writer.QWord(_item.GetWhiteStats)
-                    writer.QWord(98)
+                    writer.QWord(_item.GetWhiteStats)
                     writer.DWord(_item.Durability)
 
                     writer.Byte(_item.Blues.Count)

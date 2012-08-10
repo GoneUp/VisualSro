@@ -218,7 +218,7 @@ Namespace Functions
                 Log.WriteSystemLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
             End If
 
-            Dim _refitems(4) As cItem
+            Dim _refitems(4) As cRefItem
             _refitems(1) = GetItemByID(_items(1))
             _refitems(2) = GetItemByID(_items(2))
             _refitems(3) = GetItemByID(_items(3))
@@ -666,7 +666,7 @@ Namespace Functions
 
             For Each avatar As cInvItem In Inventorys(Index_).AvatarItems
                 If avatar.Pk2Id <> 0 Then
-                    Dim refitem As cItem = GetItemByID(avatar.Pk2Id)
+                    Dim refitem As cRefItem = GetItemByID(avatar.Pk2Id)
                     writer.Byte(GetExternalAvatarSlot(refitem))
                     AddItemDataToPacket(avatar, writer)
                 End If

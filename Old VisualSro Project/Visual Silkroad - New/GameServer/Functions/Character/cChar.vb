@@ -182,7 +182,7 @@
                 Dim _item As cInvItem = Inventorys(Index_).UserItems(i)
                 If _item.Pk2Id <> 0 Then
 
-                    Dim _refitem As cItem = GetItemByID(_item.Pk2Id)
+                    Dim _refitem As cRefItem = GetItemByID(_item.Pk2Id)
 
                     If _refitem.CLASS_A = 1 Then
 
@@ -367,7 +367,7 @@
                 If Buffs.ContainsKey(key) Then
                     Select Case Buffs(key).Type
                         Case BuffType_.ItemBuff
-                            Dim Ref As cItem = GetItemByID(Buffs(key).ItemID)
+                            Dim Ref As cRefItem = GetItemByID(Buffs(key).ItemID)
 
 
                         Case BuffType_.SkillBuff

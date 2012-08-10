@@ -4,7 +4,7 @@ Imports SRFramework
 Namespace Functions
     Module ItemSpawn
         Public Sub CreateItemSpawnPacket(ByVal Item_ As cItemDrop, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
-            Dim refitem As cItem = GetItemByID(Item_.Item.Pk2Id)
+            Dim refitem As cRefItem = GetItemByID(Item_.Item.Pk2Id)
 
             If includePacketHeader Then
                 writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)

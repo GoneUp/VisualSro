@@ -62,7 +62,7 @@ Namespace Functions
                 temp_item.OwnerCharID = PlayerData(index_).CharacterId
 
 
-                Dim refitem As cItem = GetItemByID(pk2id)
+                Dim refitem As cRefItem = GetItemByID(pk2id)
                 If refitem.CLASS_A = 1 Then
                     'Equip
                     temp_item.Plus = plus

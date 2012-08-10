@@ -28,7 +28,7 @@ Namespace Functions
 
             PackageName = RefObj.Shop.Tab(shopline).Items(itemline).PackageName
             Dim Package As MallPackage_ = GetItemMallItem(PackageName)
-            Dim BuyItem As cItem = GetItemByName(Package.Name_Normal)
+            Dim BuyItem As cRefItem = GetItemByName(Package.Name_Normal)
 
             Select Case BuyItem.CLASS_A
                 Case 1
@@ -108,7 +108,7 @@ Namespace Functions
             Dim Gold As ULong = 0
 
             If Inventorys(index_).UserItems(slot).Pk2Id <> 0 Then
-                Dim Item As cItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
+                Dim Item As cRefItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
 
                 Select Case Item.CLASS_A
                     Case 1

@@ -107,7 +107,7 @@ Namespace Functions
             End If
 
             Dim numberAttack = 1, NumberVictims = 1, attackType, afterstate As UInteger
-            Dim refWeapon As New cItem
+            Dim refWeapon As New cRefItem
             Dim attObject As SilkroadObject = GetObject(MobList(MobUniqueId).Pk2ID)
             Dim mob As cMonster = MobList(MobUniqueId)
 
@@ -315,7 +315,7 @@ Namespace Functions
         Public Sub PlayerAttackEndSkill(ByVal Index_ As Integer)
             Dim RefSkill As Skill = GetSkill(PlayerData(Index_).UsingSkillId)
             Dim AttObject As New SilkroadObject
-            Dim RefWeapon As New cItem
+            Dim RefWeapon As New cRefItem
             Dim Mob_ As cMonster = MobList(PlayerData(Index_).AttackedId)
             Dim afterstate, NumberVictims As Integer
             NumberVictims = 1

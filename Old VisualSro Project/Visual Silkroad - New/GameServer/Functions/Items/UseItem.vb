@@ -50,7 +50,7 @@ Namespace Functions
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
 
             If _item.Pk2Id <> 0 And PlayerData(Index_).Alive Then
-                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 1 Then
                     If PlayerData(Index_).CHP + refitem.USE_TIME_HP >= PlayerData(Index_).HP Then
@@ -80,7 +80,7 @@ Namespace Functions
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
 
             If _item.Pk2Id <> 0 Then
-                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 2 Then
                     If PlayerData(Index_).CMP + refitem.USE_TIME_MP >= PlayerData(Index_).MP Then
@@ -124,7 +124,7 @@ Namespace Functions
             End If
 
             If _item.Pk2Id <> 0 Then
-                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 3 Then 'Check for right Item
                     UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
@@ -173,7 +173,7 @@ Namespace Functions
             End If
 
             If _item.Pk2Id <> 0 Then
-                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 1 Then
                     UpdateAmout(Index_, Slot, -1)
@@ -207,7 +207,7 @@ Namespace Functions
 
 
             If _item.Pk2Id <> 0 Then
-                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
                     UpdateAmout(Index_, Slot, -1)
@@ -236,7 +236,7 @@ Namespace Functions
 
 
             If _item.Pk2Id <> 0 Then
-                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 13 And refitem.CLASS_C = 9 Then
 
                     '================Checks
@@ -285,7 +285,7 @@ Namespace Functions
             Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
 
             If _item.Pk2Id <> 0 Then
-                Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 8 Then
                     UpdateAmout(Index_, Slot, -1)
 

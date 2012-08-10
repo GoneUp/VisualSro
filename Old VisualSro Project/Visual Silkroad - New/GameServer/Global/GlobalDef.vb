@@ -15,6 +15,10 @@ Module GlobalDef
 
     Public Sub Initalize(ByVal maxClients As Integer)
         ReDim SessionInfo(maxClients)
+
+        Shard_Gateways.Clear()
+        Shard_Downloads.Clear()
+        Shard_Gameservers.Clear()
     End Sub
 End Module
 

@@ -29,6 +29,8 @@ Public Class GlobalManagerClient
 #Region "Connect"
     Public Sub Connect(ByVal Ip As String, ByVal port As UShort)
         Try
+            UpdateInfoAllowed = False
+
             ManagerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             ManagerSocket.Connect(New IPEndPoint(IPAddress.Parse(Ip), port))
             ReceiveThread.Start()
@@ -41,6 +43,23 @@ Public Class GlobalManagerClient
             Else
                 RaiseEvent OnLog("Connecting to GlobalManager failed! Maybe a wrong IP/Port?")
                 RaiseEvent OnLog("Maybe your Server cannot start without a globalmanager connection.")
+            End If
+        End Try
+    End Sub
+
+    Public Sub Disconnect()
+        Try
+            If ManagerSocket IsNot Nothing Then
+                ManagerSocket.Disconnect(True)
+                ManagerSocket.Shutdown(SocketShutdown.Both)
+                ManagerSocket = Nothing
+            End If
+
+        Catch ex As Exception
+            RaiseEvent OnError(ex, -3)
+        Finally
+            If ManagerSocket Is Nothing Then
+                RaiseEvent OnLog("Connection to GlobalManager closed!")
             End If
         End Try
     End Sub

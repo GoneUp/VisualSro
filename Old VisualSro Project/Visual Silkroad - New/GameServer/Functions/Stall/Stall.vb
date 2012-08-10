@@ -398,7 +398,7 @@ Namespace Functions
             For i = 0 To Stalls(Stall_Index).Items.Count - 1
                 If Stalls(Stall_Index).Items(i).Slot <> 0 Then
                     Dim item As cInvItem = Inventorys(Index_).UserItems(Stalls(Stall_Index).Items(i).Slot)
-                    Dim refitem As cItem = GetItemByID(item.Pk2Id)
+                    Dim refitem As cRefItem = GetItemByID(item.Pk2Id)
                     writer.Byte(i)
                     'slot
                     AddItemDataToPacket(item, writer)
@@ -431,7 +431,7 @@ Namespace Functions
                 If Stalls(Stall_Index).Items(i).Slot <> 0 Then
                     Dim Slot As Byte = Stalls(Stall_Index).Items(i).Slot
                     Dim item As cInvItem = Inventorys(Stalls(Stall_Index).OwnerIndex).UserItems(Slot)
-                    Dim refitem As cItem = GetItemByID(item.Pk2Id)
+                    Dim refitem As cRefItem = GetItemByID(item.Pk2Id)
                     writer.Byte(i)
                     'slot
                     AddItemDataToPacket(item, writer)

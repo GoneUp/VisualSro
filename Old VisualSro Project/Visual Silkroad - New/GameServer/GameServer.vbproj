@@ -133,6 +133,11 @@
     <Compile Include="Functions\Guild\cGuild.vb" />
     <Compile Include="Functions\Guild\Guild.vb" />
     <Compile Include="Functions\Items\Alchemy.vb" />
+    <Compile Include="Functions\Items\Classes\cInventoryItem.vb" />
+    <Compile Include="Functions\Items\Classes\cItemDrop.vb" />
+    <Compile Include="Functions\Items\Classes\cItem.vb" />
+    <Compile Include="Functions\Items\Classes\cRefItem.vb" />
+    <Compile Include="Functions\Items\Classes\cWhitestats.vb" />
     <Compile Include="Functions\Items\ItemMall.vb" />
     <Compile Include="Functions\Items\ItemSpawn.vb" />
     <Compile Include="Functions\Items\ItemShop.vb" />
@@ -154,7 +159,7 @@
     <Compile Include="Functions\Exchange\cExchange.vb" />
     <Compile Include="Functions\Exchange\Exchange.vb" />
     <Compile Include="Functions\GameMaster\GameMaster.vb" />
-    <Compile Include="Functions\Items\cItem.vb" />
+    <Compile Include="Functions\Items\Classes\cInventory.vb" />
     <Compile Include="Functions\Items\Inventory.vb" />
     <Compile Include="Functions\Items\UseItem.vb" />
     <Compile Include="Functions\Monster\cMonster.vb" />

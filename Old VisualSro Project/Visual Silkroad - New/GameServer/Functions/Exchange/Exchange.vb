@@ -89,7 +89,7 @@ Namespace Functions
                     If ExchangeData(ExchangeId).Items1(i) <> -1 Then
 
                         Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items1(i))
-                        Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                        Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
 
                         If own_decider = 0 Then
                             writer.Byte(_item.Slot)
@@ -129,7 +129,7 @@ Namespace Functions
                     If ExchangeData(ExchangeId).Items2(i) <> -1 Then
 
                         Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items2(i))
-                        Dim refitem As cItem = GetItemByID(_item.Pk2Id)
+                        Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
 
                         If own_decider = 0 Then
                             writer.Byte(_item.Slot)

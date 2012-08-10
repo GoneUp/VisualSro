@@ -18,6 +18,12 @@
 
         Public Sub GlobalInit(ByVal slots As UInt32)
             ReDim PlayerData(slots), Inventorys(slots), CharListing(slots)
+
+            ItemList.Clear()
+            MobList.Clear()
+            NpcList.Clear()
+            ExchangeData.Clear()
+            Stalls.Clear()
         End Sub
     End Module
 End Namespace

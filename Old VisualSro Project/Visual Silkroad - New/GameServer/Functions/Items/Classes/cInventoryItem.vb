@@ -1,6 +1,6 @@
 ﻿Namespace Functions
     Public Class cInventoryItem
-        Private m_OwnerID As UInt32
+        Private m_OwnerID As UInt32 = 0
         Property OwnerID As UInt32
             Get
                 Return m_OwnerID
@@ -10,7 +10,7 @@
             End Set
         End Property
 
-        Private m_Slot As Byte
+        Private m_Slot As Byte = 0
         Property Slot As Byte
             Get
                 Return m_Slot
@@ -20,7 +20,7 @@
             End Set
         End Property
 
-        Private m_ItemID As UInt64
+        Private m_ItemID As UInt64 = 0
         Property ItemID As UInt64
             Get
                 Return m_ItemID
@@ -30,7 +30,7 @@
             End Set
         End Property
 
-        Private m_Locked As Boolean
+        Private m_Locked As Boolean = False
         Public Property Locked As Boolean
             Get
                 Return m_Locked

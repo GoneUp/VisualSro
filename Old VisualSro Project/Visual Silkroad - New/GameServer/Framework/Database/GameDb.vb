@@ -15,6 +15,14 @@ Namespace GameDB
 
         'Itemcount
         Public AllItems() As cInvItem
+        Public Items As New Dictionary(Of UInt64, cItem)
+
+        Public InventoryItems As New List(Of cInventoryItem)
+        Public AvatarInventoryItems As New List(Of cInventoryItem)
+        Public COSInventoryItems As New List(Of cInventoryItem)
+
+        Public StorageItems As New List(Of cInventoryItem)
+        Public GuildStorageItems As New List(Of cInventoryItem)
 
         'Masterys
         Public Masterys() As cMastery
@@ -59,6 +67,7 @@ Namespace GameDB
 
 #Region "Get from DB"
 
+#Region "Accounts"
         Public Sub GetUserData()
 
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
@@ -82,7 +91,9 @@ Namespace GameDB
                 Users(i).Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
             Next
         End Sub
+#End Region
 
+#Region "Character"
         Public Sub GetCharData()
 
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From characters")
@@ -148,7 +159,10 @@ Namespace GameDB
                 End If
             Next
         End Sub
+#End Region
 
+
+#Region "Item Stuff"
         Public Sub GetItemData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
             Dim ItemCount = tmp.Tables(0).Rows.Count
@@ -187,8 +201,133 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Sub GetMasteryData()
+        Public Sub GetItemData_New()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
+            Dim ItemCount = tmp.Tables(0).Rows.Count
 
+            For i = 0 To (ItemCount - 1)
+                Dim tmpItem As New cItem
+                tmpItem.ID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpItem.ObjectID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmpItem.Plus = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(2))
+                tmpItem.Variance = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(3))
+                tmpItem.Data = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(4))
+                tmpItem.CreatorName = Convert.ToString(tmp.Tables(0).Rows(i).ItemArray(5))
+
+                Dim blue1 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(6))
+                Dim blue1_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(7))
+                Dim blue2 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(8))
+                Dim blue2_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(9))
+                Dim blue3 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(10))
+                Dim blue3_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(11))
+                Dim blue4 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(12))
+                Dim blue4_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(13))
+                Dim blue5 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(14))
+                Dim blue5_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(15))
+                Dim blue6 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(16))
+                Dim blue6_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(17))
+                Dim blue7 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(18))
+                Dim blue7_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(19))
+                Dim blue8 As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(20))
+                Dim blue8_amout As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(21))
+
+                If blue1 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue1, .Amout = blue1_amout})
+                End If
+                If blue2 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue2, .Amout = blue2_amout})
+                End If
+                If blue3 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue3, .Amout = blue3_amout})
+                End If
+                If blue4 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue4, .Amout = blue4_amout})
+                End If
+                If blue5 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue5, .Amout = blue5_amout})
+                End If
+                If blue6 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue6, .Amout = blue6_amout})
+                End If
+                If blue7 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue7, .Amout = blue7_amout})
+                End If
+                If blue8 <> 0 Then
+                    tmpItem.Blues.Add(New cBluestat With {.Type = blue8, .Amout = blue8_amout})
+                End If
+
+                Items.Add(tmpItem.ID, tmpItem)
+            Next
+        End Sub
+
+        Public Sub GetInventoryData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory")
+            Dim ItemCount = tmp.Tables(0).Rows.Count
+
+            For i = 0 To (ItemCount - 1)
+                Dim tmpItem As New cInventoryItem
+                tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmpItem.ItemID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(2))
+                InventoryItems.Add(tmpItem)
+            Next
+        End Sub
+
+        Public Sub GetAvatarInventoryData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory_avatar")
+            Dim ItemCount = tmp.Tables(0).Rows.Count
+
+            For i = 0 To (ItemCount - 1)
+                Dim tmpItem As New cInventoryItem
+                tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmpItem.ItemID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(2))
+                AvatarInventoryItems.Add(tmpItem)
+            Next
+        End Sub
+
+        Public Sub GetCOSInventoryData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory_cos")
+            Dim ItemCount = tmp.Tables(0).Rows.Count
+
+            For i = 0 To (ItemCount - 1)
+                Dim tmpItem As New cInventoryItem
+                tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmpItem.ItemID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(2))
+                COSInventoryItems.Add(tmpItem)
+            Next
+        End Sub
+
+        Public Sub GetStorageData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From storage")
+            Dim ItemCount = tmp.Tables(0).Rows.Count
+
+            For i = 0 To (ItemCount - 1)
+                Dim tmpItem As New cInventoryItem
+                tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmpItem.ItemID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(2))
+                StorageItems.Add(tmpItem)
+            Next
+        End Sub
+
+        Public Sub GetGuildStorageData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From storage_guild")
+            Dim ItemCount = tmp.Tables(0).Rows.Count
+
+            For i = 0 To (ItemCount - 1)
+                Dim tmpItem As New cInventoryItem
+                tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
+                tmpItem.ItemID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(2))
+                GuildStorageItems.Add(tmpItem)
+            Next
+        End Sub
+#End Region
+
+#Region "Skills"
+        Public Sub GetMasteryData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_mastery")
             Dim MasteryCount = tmp.Tables(0).Rows.Count
 
@@ -222,7 +361,9 @@ Namespace GameDB
                 Skills(i).SkillID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
             Next
         End Sub
+#End Region
 
+#Region "Character MISC"
         Public Sub GetPositionData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_pos")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
@@ -267,7 +408,9 @@ Namespace GameDB
                 Hotkeys.Add(tmp_)
             Next
         End Sub
+#End Region
 
+#Region "Guild"
         Public Sub GetGuildData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From guild")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
@@ -320,6 +463,7 @@ Namespace GameDB
 
             Next
         End Sub
+#End Region
 
 #End Region
 

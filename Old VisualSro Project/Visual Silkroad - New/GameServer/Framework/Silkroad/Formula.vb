@@ -193,6 +193,7 @@
                         Return GetMasteryByID(518, Index_).Level
                 End Select
             End If
+            Return 0
         End Function
 
 

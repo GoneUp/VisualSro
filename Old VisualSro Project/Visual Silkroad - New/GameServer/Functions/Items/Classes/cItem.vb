@@ -52,7 +52,25 @@
             End Set
         End Property
 
-        Public Blues As List(Of cBluestat)
+        Private m_CreatorName As String
+        Property CreatorName As String
+            Get
+                Return m_CreatorName
+            End Get
+            Set(ByVal value As String)
+                m_CreatorName = value
+            End Set
+        End Property
+
+        Private m_Blues As List(Of cBluestat)
+        Property Blues As List(Of cBluestat)
+            Get
+                Return m_Blues
+            End Get
+            Set(ByVal value As List(Of cBluestat))
+                m_Blues = value
+            End Set
+        End Property
     End Class
 
     Public Class cBluestat

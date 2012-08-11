@@ -39,5 +39,13 @@
                 m_Locked = value
             End Set
         End Property
+
+        Public Enum Type
+            Inventory
+            AvatarInventory
+            COSInventory
+            Storage
+            GuildStorage
+        End Enum
     End Class
 End Namespace

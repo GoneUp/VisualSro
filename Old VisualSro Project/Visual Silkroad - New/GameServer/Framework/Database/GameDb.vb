@@ -204,6 +204,7 @@ Namespace GameDB
         Public Sub GetItemData_New()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
             Dim ItemCount = tmp.Tables(0).Rows.Count
+            Dim InitalID As UInt64 = 2
 
             For i = 0 To (ItemCount - 1)
                 Dim tmpItem As New cItem
@@ -257,7 +258,13 @@ Namespace GameDB
                 End If
 
                 Items.Add(tmpItem.ID, tmpItem)
+
+                If tmpItem.ID > InitalID Then
+                    InitalID = tmpItem.ID
+                End If
             Next
+
+            Id_Gen.SetItemInitalValue(InitalID)
         End Sub
 
         Public Sub GetInventoryData()

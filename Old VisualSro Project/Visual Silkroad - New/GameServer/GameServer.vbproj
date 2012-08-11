@@ -139,6 +139,7 @@
     <Compile Include="Functions\Items\Classes\cRefItem.vb" />
     <Compile Include="Functions\Items\Classes\cWhitestats.vb" />
     <Compile Include="Functions\Items\ItemMall.vb" />
+    <Compile Include="Functions\Items\ItemManager.vb" />
     <Compile Include="Functions\Items\ItemSpawn.vb" />
     <Compile Include="Functions\Items\ItemShop.vb" />
     <Compile Include="Functions\LoginAuth.vb" />
@@ -194,6 +195,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="TestFriends.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

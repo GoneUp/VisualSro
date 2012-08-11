@@ -62,7 +62,7 @@
             End Set
         End Property
 
-        Private m_Blues As List(Of cBluestat)
+        Private m_Blues As New List(Of cBluestat)
         Property Blues As List(Of cBluestat)
             Get
                 Return m_Blues

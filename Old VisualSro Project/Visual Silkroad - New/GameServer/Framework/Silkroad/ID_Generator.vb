@@ -84,7 +84,7 @@
         Private StallIdCounter As UInteger = 10
 
         Public Function GetStallId() As UInteger
-            Dim toreturn As UInteger = ExchangeIdCounter
+            Dim toreturn As UInteger = StallIdCounter
             If StallIdCounter < UInteger.MaxValue Then
                 StallIdCounter += 1
             ElseIf StallIdCounter = UInteger.MaxValue Then
@@ -95,11 +95,11 @@
             Return toreturn
         End Function
 
-        '======================Stall ID's
+        '======================Party ID's
         Private PartyIdCounter As UInteger = 10
 
         Public Function GetPartyId() As UInteger
-            Dim toreturn As UInteger = ExchangeIdCounter
+            Dim toreturn As UInteger = PartyIdCounter
             If PartyIdCounter < UInteger.MaxValue Then
                 PartyIdCounter += 1
             ElseIf PartyIdCounter = UInteger.MaxValue Then
@@ -109,5 +109,25 @@
 
             Return toreturn
         End Function
+
+        '======================Item ID's
+        Private ItemIdCounter As UInt64 = 2
+
+        Public Function GetItemId() As UInt64
+            Dim toreturn As UInteger = ItemIdCounter
+            If ItemIdCounter < UInt64.MaxValue Then
+                ItemIdCounter += 1
+            ElseIf ItemIdCounter = UInt64.MaxValue Then
+                ItemIdCounter = 0
+                Log.WriteSystemLog("Reached ItemID Max!!! FATAL")
+                Server.Stop()
+            End If
+
+            Return toreturn
+        End Function
+
+        Public Sub SetItemInitalValue(ByVal ID As UInt64)
+            ItemIdCounter = ID + 1
+        End Sub
     End Module
 End Namespace

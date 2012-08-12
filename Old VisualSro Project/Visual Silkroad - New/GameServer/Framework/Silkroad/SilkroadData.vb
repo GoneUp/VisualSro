@@ -701,6 +701,7 @@ Module SilkroadData
         Public Name_Package As String
         Public Amout As UInt16
         Public Price As UInteger
+        Public Variance As ULong
     End Structure
 
     Public Sub DumpItemMall(ByVal FileAmoutPath As String, ByVal FilePricePath As String)
@@ -713,6 +714,7 @@ Module SilkroadData
             tmp.Name_Package = tmpString(2)
             tmp.Name_Normal = tmpString(3)
             tmp.Amout = tmpString(6)
+            tmp.Variance = tmpString(8)
 
             Dim ItemPriceFile As String() = File.ReadAllLines(FilePricePath)
             For d As Integer = 0 To ItemPriceFile.Length - 1

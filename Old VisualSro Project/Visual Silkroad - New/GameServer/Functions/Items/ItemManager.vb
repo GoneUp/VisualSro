@@ -1,6 +1,6 @@
 ﻿Namespace Functions.ItemManager
     Module ItemManager
-        Public Sub AddItem(ByVal item As cItem)
+        Public Function AddItem(ByVal item As cItem) As UInt64
             Dim ID As UInt64 = Id_Gen.GetItemId
             item.ID = ID
             GameDB.Items.Add(ID, item)
@@ -8,7 +8,9 @@
             Database.SaveQuery(String.Format("INSERT INTO items(ID, ObjectID, Plus, Variance, Data, CreatorName) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')", _
                                               item.ID, item.ObjectID, item.Plus, item.Variance, item.Data, item.CreatorName))
             UpdateBlues(item)
-        End Sub
+
+            Return ID
+        End Function
 
         Public Sub AddInvItem(ByVal item As cInventoryItem, ByVal type As cInventoryItem.Type)
             If GameDB.Items.ContainsKey(item.ItemID) Then
@@ -96,6 +98,51 @@
                     For i = 0 To GameDB.GuildStorageItems.Count - 1
                         If GameDB.GuildStorageItems(i).OwnerID = item.OwnerID And GameDB.GuildStorageItems(i).Slot = item.Slot Then
                             GameDB.GuildStorageItems(i) = item
+                            Exit Sub
+                        End If
+                    Next
+
+            End Select
+        End Sub
+
+        Public Sub UpdateInvItem(ByVal ownerID As UInt32, ByVal slot As Byte, ByVal itemID As UInt64, ByVal type As cInventoryItem.Type)
+            Select Case type
+                Case cInventoryItem.Type.Inventory
+                    For i = 0 To GameDB.InventoryItems.Count - 1
+                        If GameDB.InventoryItems(i).OwnerID = ownerID And GameDB.InventoryItems(i).Slot = slot Then
+                            GameDB.InventoryItems(i).ItemID = itemID
+                            Exit Sub
+                        End If
+                    Next
+
+                Case cInventoryItem.Type.AvatarInventory
+                    For i = 0 To GameDB.AvatarInventoryItems.Count - 1
+                        If GameDB.AvatarInventoryItems(i).OwnerID = ownerID And GameDB.AvatarInventoryItems(i).Slot = slot Then
+                            GameDB.AvatarInventoryItems(i).ItemID = itemID
+                            Exit Sub
+                        End If
+                    Next
+
+                Case cInventoryItem.Type.COSInventory
+                    For i = 0 To GameDB.COSInventoryItems.Count - 1
+                        If GameDB.COSInventoryItems(i).OwnerID = ownerID And GameDB.COSInventoryItems(i).Slot = slot Then
+                            GameDB.COSInventoryItems(i).ItemID = itemID
+                            Exit Sub
+                        End If
+                    Next
+
+                Case cInventoryItem.Type.Storage
+                    For i = 0 To GameDB.StorageItems.Count - 1
+                        If GameDB.StorageItems(i).OwnerID = ownerID And GameDB.StorageItems(i).Slot = slot Then
+                            GameDB.StorageItems(i).ItemID = itemID
+                            Exit Sub
+                        End If
+                    Next
+
+                Case cInventoryItem.Type.GuildStorage
+                    For i = 0 To GameDB.GuildStorageItems.Count - 1
+                        If GameDB.GuildStorageItems(i).OwnerID = ownerID And GameDB.GuildStorageItems(i).Slot = slot Then
+                            GameDB.GuildStorageItems(i).ItemID = itemID
                             Exit Sub
                         End If
                     Next

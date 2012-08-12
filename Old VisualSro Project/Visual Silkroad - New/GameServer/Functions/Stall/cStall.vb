@@ -14,6 +14,7 @@
 
         Structure cStallItem
             Public Slot As Byte
+            Public Data As UShort
             Public Gold As Long
         End Structure
 

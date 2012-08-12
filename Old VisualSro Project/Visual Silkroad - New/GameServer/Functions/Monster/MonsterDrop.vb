@@ -9,10 +9,12 @@
 
             Dim RefMonster As SilkroadObject = GetObject(MobList(MobUniqueId).Pk2ID)
             Dim RefLevel As cGoldData = GetGoldData(RefMonster.Level)
-            Dim tmp_item As New cInvItem
-            tmp_item.OwnerCharID = MobUniqueId
+            Dim invItem As New cInventoryItem
+            invItem.OwnerID = MobUniqueId
+
 
             'GOLD
+            Dim item As cItem
             Dim Difference As Long = RefLevel.MaxGold - RefLevel.MinGold
             Dim Gold As Long = (RefLevel.MinGold + (Rand.NextDouble() * Difference)) * Settings.Server_GoldRate *
                                GetMobExpMultiplier(MobList(MobUniqueId).Mob_Type)
@@ -20,9 +22,10 @@
                 Gold = UInt32.MaxValue
             End If
 
-            tmp_item.Pk2Id = 1
-            tmp_item.Amount = Gold
-            DropItem(tmp_item, GetRandomPosition(MobList(MobUniqueId).Position, 3))
+            item.ObjectID = 1
+            item.Data = Gold
+
+            DropItem(invItem, item, GetRandomPosition(MobList(MobUniqueId).Position, 3))
         End Sub
     End Module
 End Namespace

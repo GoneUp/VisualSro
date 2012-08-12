@@ -111,9 +111,9 @@ Namespace Functions
             Dim attObject As SilkroadObject = GetObject(MobList(MobUniqueId).Pk2ID)
             Dim mob As cMonster = MobList(MobUniqueId)
 
-            If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
+            If Inventorys(Index_).UserItems(6).ItemID <> 0 Then
                 'Weapon
-                refWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+                refWeapon = GetItemByID(GameDB.Items(Inventorys(Index_).UserItems(6).ItemID).ObjectID)
             Else
                 'No Weapon
                 refWeapon.ATTACK_DISTANCE = 6
@@ -320,9 +320,9 @@ Namespace Functions
             Dim afterstate, NumberVictims As Integer
             NumberVictims = 1
 
-            If Inventorys(Index_).UserItems(6).Pk2Id <> 0 Then
+            If Inventorys(Index_).UserItems(6).ItemID <> 0 Then
                 'Weapon
-                RefWeapon = GetItemByID(Inventorys(Index_).UserItems(6).Pk2Id)
+                RefWeapon = GetItemByID(GameDB.Items(Inventorys(Index_).UserItems(6).ItemID).ObjectID)
             Else
                 'No Weapon
                 Exit Sub

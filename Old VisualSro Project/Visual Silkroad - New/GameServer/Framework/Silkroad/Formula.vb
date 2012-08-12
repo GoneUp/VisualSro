@@ -146,8 +146,8 @@
         End Function
 
         Public Function GetWeaponMasteryLevel(ByVal Index_ As Integer) As Byte
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(6)
-            Dim _refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            Dim _item As cItem = GameDB.Items(Inventorys(Index_).UserItems(6).ItemID)
+            Dim _refitem As cRefItem = GetItemByID(_item.ObjectID)
             '8-11
             If _refitem.CLASS_A = 1 And _refitem.CLASS_B = 6 Then
                 Select Case _refitem.CLASS_C

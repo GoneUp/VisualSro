@@ -47,10 +47,11 @@ Namespace Functions
         End Sub
 
         Public Sub OnUseHPPot(ByVal Slot As Byte, ByVal Index_ As Integer)
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
 
-            If _item.Pk2Id <> 0 And PlayerData(Index_).Alive Then
-                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            If invItem.ItemID <> 0 And PlayerData(Index_).Alive Then
+                Dim item As cItem = GameDB.Items(invItem.ItemID)
+                Dim refitem As cRefItem = GetItemByID(item.ObjectID)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 1 Then
                     If PlayerData(Index_).CHP + refitem.USE_TIME_HP >= PlayerData(Index_).HP Then
@@ -66,7 +67,7 @@ Namespace Functions
                     writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
-                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Word(item.Data)
                     writer.Byte(&HEC)
                     writer.Byte(&H8)
                     Server.Send(writer.GetBytes, Index_)
@@ -77,10 +78,11 @@ Namespace Functions
         End Sub
 
         Public Sub OnUseMPPot(ByVal Slot As Byte, ByVal Index_ As Integer)
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
 
-            If _item.Pk2Id <> 0 Then
-                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            If invItem.ItemID <> 0 And PlayerData(Index_).Alive Then
+                Dim item As cItem = GameDB.Items(invItem.ItemID)
+                Dim refitem As cRefItem = GetItemByID(item.ObjectID)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 2 Then
                     If PlayerData(Index_).CMP + refitem.USE_TIME_MP >= PlayerData(Index_).MP Then
@@ -96,7 +98,7 @@ Namespace Functions
                     writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
-                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Word(item.Data)
                     writer.Byte(&HEC)
                     writer.Byte(&H10)
                     Server.Send(writer.GetBytes, Index_)
@@ -107,24 +109,24 @@ Namespace Functions
         End Sub
 
         Public Sub OnUseReverseScroll(ByVal Slot As Byte, ByVal Index_ As Integer, ByVal packet As PacketReader)
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim tag As Byte = packet.Byte '2 = recall, 3= dead point, 7 = special point
+
             Dim writer As New PacketWriter
-            Dim tag As Byte = packet.Byte
-            '2 = recall 3= dead point
-            Dim id As UInteger = 0
 
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
                 writer.Create(ServerOpcodes.GAME_ITEM_USE)
-                writer.Byte(2)
-                'error
-                writer.Byte(&H5D)
-                'already teleporting
+                writer.Byte(2) 'error
+                writer.Byte(&H5D)    'already teleporting
                 Server.Send(writer.GetBytes, Index_)
                 Exit Sub
             End If
 
-            If _item.Pk2Id <> 0 Then
-                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
+
+            If invItem.ItemID <> 0 And PlayerData(Index_).Alive Then
+                Dim item As cItem = GameDB.Items(invItem.ItemID)
+                Dim refitem As cRefItem = GetItemByID(item.ObjectID)
+
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 3 Then 'Check for right Item
                     UpdateAmout(Index_, Slot, -1)
                     UpdateState(&HB, 1, Index_)
@@ -132,7 +134,7 @@ Namespace Functions
                     writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
-                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Word(item.Data)
                     writer.Byte(&HED)
                     writer.Byte(&H19)
                     Server.Send(writer.GetBytes, Index_)
@@ -148,9 +150,8 @@ Namespace Functions
                         Case 3
                             PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Dead
                         Case 7
-                            id = packet.DWord
                             PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Point
-                            PlayerData(Index_).UsedItemParameter = id
+                            PlayerData(Index_).UsedItemParameter = packet.DWord
                     End Select
 
                     PlayerData(Index_).Busy = True
@@ -159,7 +160,7 @@ Namespace Functions
         End Sub
 
         Public Sub OnUseReturnScroll(ByVal Slot As Byte, ByVal Index_ As Integer)
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
             Dim writer As New PacketWriter
 
             If PlayerData(Index_).UsedItem <> UseItemTypes.None Then
@@ -172,8 +173,9 @@ Namespace Functions
                 Exit Sub
             End If
 
-            If _item.Pk2Id <> 0 Then
-                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            If invItem.ItemID <> 0 And PlayerData(Index_).Alive Then
+                Dim item As cItem = GameDB.Items(invItem.ItemID)
+                Dim refitem As cRefItem = GetItemByID(item.ObjectID)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 1 Then
                     UpdateAmout(Index_, Slot, -1)
@@ -182,7 +184,7 @@ Namespace Functions
                     writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
-                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Word(item.Data)
                     writer.Byte(&HEC)
                     writer.Byte(&H9)
                     Server.Send(writer.GetBytes, Index_)
@@ -202,12 +204,13 @@ Namespace Functions
             Dim bmessage As Byte() = packet.ByteArray(messagelength * 2)
             Dim message As String = Encoding.Unicode.GetString(bmessage)
 
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
             Dim writer As New PacketWriter
 
 
-            If _item.Pk2Id <> 0 Then
-                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            If invItem.ItemID <> 0 Then
+                Dim item As cItem = GameDB.Items(invItem.ItemID)
+                Dim refitem As cRefItem = GetItemByID(item.ObjectID)
 
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 3 And refitem.CLASS_C = 5 Then
                     UpdateAmout(Index_, Slot, -1)
@@ -215,7 +218,7 @@ Namespace Functions
                     writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
-                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Word(item.Data)
                     writer.Byte(&HED)
                     writer.Byte(&H29)
                     Server.Send(writer.GetBytes, Index_)
@@ -223,6 +226,8 @@ Namespace Functions
                     ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)
 
                     OnGlobalChat(message, Index_)
+                Else
+                    Server.Disconnect(Index_)
                 End If
             End If
         End Sub
@@ -231,18 +236,20 @@ Namespace Functions
             Dim NewModel As UInteger = packet.DWord
             Dim NewVolume As Byte = packet.Byte
 
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
             Dim writer As New PacketWriter
 
 
-            If _item.Pk2Id <> 0 Then
-                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            If invItem.ItemID <> 0 Then
+                Dim item As cItem = GameDB.Items(invItem.ItemID)
+                Dim refitem As cRefItem = GetItemByID(item.ObjectID)
+
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 13 And refitem.CLASS_C = 9 Then
 
                     '================Checks
                     Dim Fail As Boolean = False
                     For I = 0 To 12
-                        If Inventorys(Index_).UserItems(I).Pk2Id <> 0 Then
+                        If Inventorys(Index_).UserItems(I).ItemID <> 0 Then
                             Fail = True
                         End If
                     Next
@@ -264,7 +271,7 @@ Namespace Functions
                     writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
-                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Word(item.Data)
                     writer.Byte(&HED)
                     writer.Byte(&H29)
                     Server.Send(writer.GetBytes, Index_)
@@ -282,10 +289,12 @@ Namespace Functions
 
 
         Public Sub OnUseBerserkScroll(ByVal Slot As Byte, ByVal Index_ As Integer)
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
 
-            If _item.Pk2Id <> 0 Then
-                Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+            If invItem.ItemID <> 0 Then
+                Dim item As cItem = GameDB.Items(invItem.ItemID)
+                Dim refitem As cRefItem = GetItemByID(item.ObjectID)
+
                 If refitem.CLASS_A = 3 And refitem.CLASS_B = 1 And refitem.CLASS_C = 8 Then
                     UpdateAmout(Index_, Slot, -1)
 
@@ -296,7 +305,7 @@ Namespace Functions
                     writer.Create(ServerOpcodes.GAME_ITEM_USE)
                     writer.Byte(1)
                     writer.Byte(Slot)
-                    writer.Word(Inventorys(Index_).UserItems(Slot).Amount)
+                    writer.Word(item.Data)
                     writer.Byte(&HEC)
                     writer.Byte(&H10)
                     Server.Send(writer.GetBytes, Index_)
@@ -342,21 +351,14 @@ Namespace Functions
         ''' <returns>New Item amout</returns>
         ''' <remarks></remarks>
         Public Sub UpdateAmout(ByVal Index_ As Integer, ByVal Slot As Byte, ByVal ToAdd As Integer)
-            Dim _item As cInvItem = Inventorys(Index_).UserItems(Slot)
-            If _item.Amount + ToAdd = 0 Then
-                'Despawn Item
-
-                _item.Pk2Id = 0
-                _item.Durability = 0
-                _item.Plus = 0
-                _item.Amount = 0
-
-                Inventorys(Index_).UserItems(Slot) = _item
-                DeleteItemFromDB(Slot, Index_)
-            ElseIf Inventorys(Index_).UserItems(Slot).Amount + ToAdd > 0 Then
-                _item.Amount += ToAdd
-                Inventorys(Index_).UserItems(Slot) = _item
-                UpdateItem(_item)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Slot)
+            Dim item As cItem = GameDB.Items(invItem.ItemID)
+            If item.Data + ToAdd <= 0 Then
+                Inventorys(Index_).UserItems(Slot).ItemID = 0
+                ItemManager.RemoveItem(item.ID)
+            ElseIf item.Data + ToAdd > 0 Then
+                item.Data += ToAdd
+                ItemManager.UpdateItem(item)
             End If
         End Sub
 
@@ -368,7 +370,7 @@ Namespace Functions
         ''' <remarks></remarks>
         Private Function EquipSlotsEmpty(ByVal Index_ As Integer) As Boolean
             For i = 0 To 13
-                If Inventorys(Index_).UserItems(i).Pk2Id <> 0 Then
+                If Inventorys(Index_).UserItems(i).ItemID <> 0 Then
                     Return False
                 End If
             Next

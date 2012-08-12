@@ -151,62 +151,63 @@ Namespace GameMod
                     Dim plus As Byte = tmp(2)
                     'Or Count
 
-                    For i = 13 To PlayerData(Index_).MaxSlots - 1
-                        If Inventorys(Index_).UserItems(i).Pk2Id = 0 Then
-                            Dim temp_item As cInvItem = Inventorys(Index_).UserItems(i)
-                            temp_item.Pk2Id = pk2id
-                            temp_item.OwnerCharID = PlayerData(Index_).CharacterId
+                    Dim slot As Byte = GetFreeItemSlot(Index_)
+                    If slot <> -1 AndAlso Inventorys(Index_).UserItems(slot).ItemID = 0 Then
+                        Dim temp_item As New cItem
+                        temp_item.ObjectID = pk2id
 
+                        Dim refitem As cRefItem = GetItemByID(pk2id)
+                        If refitem.CLASS_A = 1 Then
+                            'Equip
+                            temp_item.Plus = plus
+                            temp_item.Data = refitem.MAX_DURA
 
-                            Dim refitem As cRefItem = GetItemByID(pk2id)
-                            If refitem.CLASS_A = 1 Then
-                                'Equip
-                                temp_item.Plus = plus
-                                temp_item.Durability = refitem.MAX_DURA
-                                temp_item.Blues = New List(Of cInvItem.sBlue)
+                            Dim whitestats As New cWhitestats
+                            whitestats.PerDurability = tmp(3)
+                            whitestats.PerPhyRef = tmp(4)
+                            whitestats.PerMagRef = tmp(5)
+                            whitestats.PerAttackRate = tmp(6)
+                            whitestats.PerPhyAtk = tmp(7)
+                            whitestats.PerMagAtk = tmp(8)
+                            whitestats.PerCritical = tmp(9)
 
-                                temp_item.PerDurability = tmp(3)
-                                temp_item.PerPhyRef = tmp(4)
-                                temp_item.PerMagRef = tmp(5)
-                                temp_item.PerAttackRate = tmp(6)
-                                temp_item.PerPhyAtk = tmp(7)
-                                temp_item.PerMagAtk = tmp(8)
-                                temp_item.PerCritical = tmp(9)
-                            ElseIf refitem.CLASS_A = 2 Then
-                                'Pet
+                            temp_item.Variance = whitestats.GetWhiteStats(whitestats.GetItemType(refitem.CLASS_B))
+                        ElseIf refitem.CLASS_A = 2 Then
+                            'Pet
 
-                            ElseIf refitem.CLASS_A = 3 Then
-                                'Etc
-                                temp_item.Amount = plus
-                            End If
-
-                            Inventorys(Index_).UserItems(i) = temp_item
-                            UpdateItem(Inventorys(Index_).UserItems(i))
-                            'SAVE IT
-
-                            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
-                            writer.Byte(1)
-                            writer.Byte(6)
-                            'type = new item
-                            writer.Byte(Inventorys(Index_).UserItems(i).Slot)
-
-                            AddItemDataToPacket(Inventorys(Index_).UserItems(i), writer)
-
-                            Server.Send(writer.GetBytes, Index_)
-
-                            Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]",
-                                        temp_item.Slot, temp_item.Pk2Id, temp_item.Durability, temp_item.Amount,
-                                        temp_item.Plus)
-
-                            If Settings.Log_GM Then
-                                Log.WriteGameLog(Index_, "GM", "Item_Create",
-                                                 String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}",
-                                                               temp_item.Slot, temp_item.Pk2Id, temp_item.Durability,
-                                                               temp_item.Amount, temp_item.Plus))
-                                Exit For
-                            End If
+                        ElseIf refitem.CLASS_A = 3 Then
+                            'Etc
+                            temp_item.Data = plus
                         End If
-                    Next
+
+                        temp_item.ID = ItemManager.AddItem(temp_item)
+
+                        Dim invItem As New cInventoryItem
+                        invItem.OwnerID = PlayerData(Index_).CharacterId
+                        invItem.Slot = slot
+                        invItem.ItemID = temp_item.ID
+                        ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
+
+                        writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
+                        writer.Byte(1)
+                        writer.Byte(6)  'type = new item
+                        writer.Byte(slot)
+
+                        AddItemDataToPacket(temp_item, writer)
+
+                        Server.Send(writer.GetBytes, Index_)
+
+                        Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]",
+                                    slot, temp_item.ObjectID, temp_item.Data, temp_item.Data,
+                                    temp_item.Plus)
+
+                        If Settings.Log_GM Then
+                            Log.WriteGameLog(Index_, "GM", "Item_Create",
+                                             String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}",
+                                                           slot, temp_item.ObjectID, temp_item.Data,
+                                                           temp_item.Data, temp_item.Plus))
+                        End If
+                    End If
 
 
                 Case "\\moba"
@@ -234,10 +235,9 @@ Namespace GameMod
                 Case "\\dropgold"
                     '\\dropgold [gold_amout] [drop_amout] [range]
                     If IsNumeric(tmp(1)) And IsNumeric(tmp(2)) And IsNumeric(tmp(3)) Then
-                        Dim tmpitem As New cInvItem
-                        tmpitem.OwnerCharID = PlayerData(Index_).UniqueID
-                        tmpitem.Amount = tmp(1)
-                        tmpitem.Pk2Id = 1
+                        Dim tmpitem As New cItem
+                        tmpitem.Data = tmp(1)
+                        tmpitem.ObjectID = 1
 
                         Dim random As New Random
                         'Drop that shiat
@@ -249,7 +249,7 @@ Namespace GameMod
                             tmpPos.YSector = GetYSecFromGameY(tmpY)
                             tmpPos.X = GetXOffset(tmpX)
                             tmpPos.Y = GetYOffset(tmpY)
-                            DropItem(tmpitem, tmpPos)
+                            DropItem(New cInventoryItem, tmpitem, tmpPos)
                         Next
 
                     End If

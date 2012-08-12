@@ -118,10 +118,10 @@ Namespace Functions
                     Exit Sub
                 End If
 
-                If Inventorys(Index_).UserItems(FromSlot).Pk2Id <> 0 And Stalls(index).Items(ToSlot).Slot = 0 Then
+                If Inventorys(Index_).UserItems(FromSlot).ItemID <> 0 And Stalls(index).Items(ToSlot).Slot = 0 Then
                     Stalls(index).Items(ToSlot).Slot = FromSlot
                     Stalls(index).Items(ToSlot).Gold = Gold
-
+                    Stalls(index).Items(ToSlot).Data = Amout
 
                     Stall_SendItemsOwn(index, Index_, 2)
                     Server.SendToStallSession(Stall_SendItemsOther(index, index), PlayerData(Index_).StallID, False)
@@ -139,6 +139,7 @@ Namespace Functions
                 If Stalls(index).Items(Slot).Slot <> 0 Then
                     Stalls(index).Items(Slot).Slot = 0
                     Stalls(index).Items(Slot).Gold = 0
+                    Stalls(index).Items(Slot).Data = 0
 
                     Stall_SendItemsOwn(index, Index_, 3)
                     Server.SendToStallSession(Stall_SendItemsOther(index, index), PlayerData(Index_).StallID, False)
@@ -213,49 +214,25 @@ Namespace Functions
                 Dim Stall_index As Integer = GetStallIndex(PlayerData(Index_).StallID)
 
                 If slot >= 0 And slot <= 9 And Stalls(Stall_index).Items(slot).Slot <> 0 Then
-                    If _
-                        CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 And
-                        GetFreeItemSlot(Index_) <> -1 Then
+                    If CULng(PlayerData(Index_).Gold) - Stalls(Stall_index).Items(slot).Gold >= 0 And GetFreeItemSlot(Index_) <> -1 Then
                         PlayerData(Index_).Gold -= Stalls(Stall_index).Items(slot).Gold
                         UpdateGold(Index_)
 
                         PlayerData(Stalls(Stall_index).OwnerIndex).Gold += Stalls(Stall_index).Items(slot).Gold
                         UpdateGold(Stalls(Stall_index).OwnerIndex)
 
-                        Dim From_item As cInvItem =
-                                Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(
-                                    Stalls(Stall_index).Items(slot).Slot)
+                        Dim From_item As cInventoryItem = Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot)
                         Dim To_Slot As Byte = GetFreeItemSlot(Index_)
-                        Dim To_item As cInvItem = Inventorys(Index_).UserItems(To_Slot)
+                        Dim To_item As cInventoryItem = Inventorys(Index_).UserItems(To_Slot)
 
-                        'Overwrite
-                        To_item.Pk2Id = From_item.Pk2Id
-                        To_item.Durability = From_item.Durability
-                        To_item.Plus = From_item.Plus
-                        To_item.Amount = From_item.Amount
-                        To_item.Blues = From_item.Blues
-                        To_item.PerDurability = From_item.PerDurability
-                        To_item.PerPhyRef = From_item.PerPhyRef
-                        To_item.PerMagRef = From_item.PerMagRef
-                        To_item.PerPhyAtk = From_item.PerPhyAtk
-                        To_item.PerMagAtk = From_item.PerMagAtk
-                        To_item.PerPhyDef = From_item.PerPhyDef
-                        To_item.PerMagDef = From_item.PerMagDef
-                        To_item.PerBlock = From_item.PerBlock
-                        To_item.PerCritical = From_item.PerCritical
-                        To_item.PerAttackRate = From_item.PerAttackRate
-                        To_item.PerParryRate = From_item.PerParryRate
-                        To_item.PerPhyAbs = From_item.PerPhyAbs
-                        To_item.PerMagAbs = From_item.PerMagAbs
 
                         'Add to new...
-                        Inventorys(Index_).UserItems(To_item.Slot) = To_item
-                        UpdateItem(To_item)
+                        Inventorys(Index_).UserItems(To_item.Slot).ItemID = From_item.ItemID
+                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(To_item.Slot), cInventoryItem.Type.Inventory)
 
                         'Remove...
-                        DeleteItemFromDB(Stalls(Stall_index).Items(slot).Slot, Stalls(Stall_index).OwnerIndex)
-                        Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot) =
-                            ClearItem(From_item)
+                        Inventorys(Stalls(Stall_index).OwnerIndex).UserItems(Stalls(Stall_index).Items(slot).Slot).ItemID = 0
+                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(To_item.Slot), cInventoryItem.Type.Inventory)
 
                         Stalls(Stall_index).Items(slot).Gold = 0
                         Stalls(Stall_index).Items(slot).Slot = 0
@@ -397,16 +374,17 @@ Namespace Functions
 
             For i = 0 To Stalls(Stall_Index).Items.Count - 1
                 If Stalls(Stall_Index).Items(i).Slot <> 0 Then
-                    Dim item As cInvItem = Inventorys(Index_).UserItems(Stalls(Stall_Index).Items(i).Slot)
-                    Dim refitem As cRefItem = GetItemByID(item.Pk2Id)
-                    writer.Byte(i)
-                    'slot
+                    Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(Stalls(Stall_Index).Items(i).Slot)
+                    Dim item As cItem = GameDB.Items(invItem.ItemID)
+                    Dim refitem As cRefItem = GetItemByID(item.ObjectID)
+
+                    writer.Byte(i) 'slot
                     AddItemDataToPacket(item, writer)
                     writer.Byte(Stalls(Stall_Index).Items(i).Slot)
                     If refitem.CLASS_A = 1 Then
                         writer.Word(1)
                     Else
-                        writer.Word(item.Amount)
+                        writer.Word(item.Data)
                     End If
                     writer.QWord(Stalls(Stall_Index).Items(i).Gold)
                 End If
@@ -430,16 +408,17 @@ Namespace Functions
             For i = 0 To Stalls(Stall_Index).Items.Count - 1
                 If Stalls(Stall_Index).Items(i).Slot <> 0 Then
                     Dim Slot As Byte = Stalls(Stall_Index).Items(i).Slot
-                    Dim item As cInvItem = Inventorys(Stalls(Stall_Index).OwnerIndex).UserItems(Slot)
-                    Dim refitem As cRefItem = GetItemByID(item.Pk2Id)
-                    writer.Byte(i)
-                    'slot
+                    Dim invItem As cInventoryItem = Inventorys(Stalls(Stall_Index).OwnerIndex).UserItems(Stalls(Stall_Index).Items(i).Slot)
+                    Dim item As cItem = GameDB.Items(invItem.ItemID)
+                    Dim refitem As cRefItem = GetItemByID(item.ObjectID)
+
+                    writer.Byte(i) 'slot
                     AddItemDataToPacket(item, writer)
                     writer.Byte(Stalls(Stall_Index).Items(i).Slot)
                     If refitem.CLASS_A = 1 Then
                         writer.Word(1)
                     Else
-                        writer.Word(item.Amount)
+                        writer.Word(item.Data)
                     End If
                     writer.QWord(Stalls(Stall_Index).Items(i).Gold)
                 End If

@@ -8,9 +8,9 @@ Namespace Functions
         ''' <param name="Index"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function CreateSpawnPacket(ByVal Index As Integer) As Byte()
+        Public Function CreateSpawnPacket(ByVal Index_ As Integer) As Byte()
 
-            Dim chari As cCharacter = PlayerData(Index) 'Only for faster Code writing
+            Dim chari As cCharacter = PlayerData(Index_) 'Only for faster Code writing
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
@@ -21,45 +21,48 @@ Namespace Functions
             writer.Byte(chari.HelperIcon)
 
             'items
-            Dim inventory As New cInventory(chari.MaxSlots)
-            inventory = GameDB.FillInventory(chari)
 
             Dim PlayerItemCount As Integer = 0
-            For b = 0 To 9
-                If inventory.UserItems(b).Pk2Id <> 0 And inventory.UserItems(b).Pk2Id <> 62 Then
-                    PlayerItemCount += 1
+            For slot = 0 To 9
+                If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
+                    Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(slot).ItemID)
+                    If item.ObjectID <> 62 Then
+                        PlayerItemCount += 1
+                    End If
                 End If
             Next
 
-            writer.Byte(chari.MaxSlots)
+            writer.Byte(chari.MaxInvSlots)
             writer.Byte(PlayerItemCount)
 
-            For b = 0 To 9
-                If inventory.UserItems(b).Pk2Id <> 0 Then
-                    If inventory.UserItems(b).Pk2Id <> 62 Then 'Dont send arrows
-                        writer.DWord(inventory.UserItems(b).Pk2Id)
-                        writer.Byte(inventory.UserItems(b).Plus)
+            For slot = 0 To 9
+                If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
+                    Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(slot).ItemID)
+                    If item.ObjectID <> 62 Then 'Dont send arrows
+                        writer.DWord(item.ObjectID)
+                        writer.Byte(item.Plus)
                     End If
 
                 End If
             Next
 
-            writer.Byte(5)
-            'Avatar Slots
+            writer.Byte(chari.MaxAvatarSlots) 'Avatar Slots
+
 
             Dim AvatarItemCount As Integer = 0
-            For b = 0 To 4
-                If inventory.AvatarItems(b).Pk2Id <> 0 Then
+            For slot = 0 To chari.MaxAvatarSlots - 1
+                If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
                     AvatarItemCount += 1
                 End If
             Next
 
             writer.Byte(AvatarItemCount)
 
-            For b = 0 To 4
-                If inventory.AvatarItems(b).Pk2Id <> 0 Then
-                    writer.DWord(inventory.AvatarItems(b).Pk2Id)
-                    writer.Byte(inventory.AvatarItems(b).Plus)
+            For slot = 0 To chari.MaxAvatarSlots - 1
+                If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
+                    Dim item As cItem = GameDB.Items(Inventorys(Index_).AvatarItems(slot).ItemID)
+                    writer.DWord(item.ObjectID)
+                    writer.Byte(item.Plus)
                 End If
             Next
 
@@ -161,8 +164,8 @@ Namespace Functions
             If chari.InStall = True Then
                 Dim Stall_Index As Integer = GetStallIndex(chari.StallID)
 
-                writer.Word(Stalls(Index).StallName.Length)
-                writer.UString(Stalls(Index).StallName)
+                writer.Word(Stalls(Index_).StallName.Length)
+                writer.UString(Stalls(Index_).StallName)
                 writer.DWord(0) 'Stall Dekoration ID
             End If
 

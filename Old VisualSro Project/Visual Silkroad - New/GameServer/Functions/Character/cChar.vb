@@ -46,7 +46,8 @@
         'Flags
         Public GM As Boolean = False
         Public PVP As Byte = 0
-        Public MaxSlots As Byte = 0
+        Public MaxInvSlots As Byte = 0
+        Public MaxAvatarSlots As Byte = 5
         Public Angle As UInt16 = 0
         Public Deleted As Boolean = False
         Public DeletionTime As DateTime
@@ -104,6 +105,7 @@
         Public Buffs As New Dictionary(Of UInteger, cBuff) 'Key = SkillOverId
 
         Public TeleportType As TeleportType_
+        Public BuybackList As New List(Of cItem)
 
         Public ReadOnly Property Position() As Position
             Get
@@ -179,26 +181,29 @@
 
         Sub AddItemsToStats(ByVal Index_ As Integer)
             For i = 0 To 12
-                Dim _item As cInvItem = Inventorys(Index_).UserItems(i)
-                If _item.Pk2Id <> 0 Then
+                Dim _invItem As cInventoryItem = Inventorys(Index_).UserItems(i)
+                If _invItem.ItemID <> 0 Then
+                    Dim _item As cItem = GameDB.Items(_invItem.ItemID)
 
-                    Dim _refitem As cRefItem = GetItemByID(_item.Pk2Id)
+
+                    Dim _refitem As cRefItem = GetItemByID(_item.ObjectID)
 
                     If _refitem.CLASS_A = 1 Then
 
-                        Select Case _item.Slot
+                        Select Case _invItem.Slot
 
                             Case 0, 1, 2, 3, 4, 5 'Equipment
+                                Dim _whitestats As cWhitestats = New cWhitestats(cWhitestats.Type.Equipment, _item.Variance)
                                 Dim tmpDifference As Single
 
                                 'PhyDef
                                 'Formel:PerItem PhyDef = STR * (PhyRef / 100) + ItemPhyDef
                                 tmpDifference = (_refitem.MAX_PHYS_REINFORCE / 10) - (_refitem.MIN_PHYS_REINFORCE / 10)
                                 Dim PhyRef As Single = (_refitem.MIN_PHYS_REINFORCE / 10) +
-                                                       (_item.PerPhyRef * (tmpDifference / 100))
+                                                       (_whitestats.PerPhyRef * (tmpDifference / 100))
 
                                 tmpDifference = _refitem.MAX_PHYSDEF - _refitem.MIN_PHYSDEF
-                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_item.PerPhyDef * (tmpDifference / 100)) +
+                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_whitestats.PerPhyDef * (tmpDifference / 100)) +
                                                            (_item.Plus * _refitem.PHYSDEF_INC)
                                 PhyDef += Math.Round(Strength * (PhyRef / 100) + ItemPhyDef, 0, MidpointRounding.ToEven)
 
@@ -206,16 +211,16 @@
                                 'Formel:PerItem PhyDef = STR * (MagRef / 100) + ItemMagDef
                                 tmpDifference = (_refitem.MAX_MAG_REINFORCE / 19) - (_refitem.MIN_MAG_REINFORCE / 10)
                                 Dim MagRef As Single = (_refitem.MIN_MAG_REINFORCE / 10) +
-                                                       (_item.PerMagRef * (tmpDifference / 100))
+                                                       (_whitestats.PerMagRef * (tmpDifference / 100))
 
                                 tmpDifference = _refitem.MAX_MAGDEF - _refitem.MIN_MAGDEF
-                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_item.PerMagDef * (tmpDifference / 100)) +
+                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_whitestats.PerMagDef * (tmpDifference / 100)) +
                                                            (_item.Plus * _refitem.MAGDEF_INC)
                                 MagDef += Math.Round(Intelligence * (MagRef / 100) + ItemMagDef, 0, MidpointRounding.ToEven)
 
                                 'Parry Rate
                                 tmpDifference = _refitem.MAX_PARRY - _refitem.MIN_PARRY
-                                Parry += Math.Round(_refitem.MIN_PARRY + (_item.PerParryRate * (tmpDifference / 100)))
+                                Parry += Math.Round(_refitem.MIN_PARRY + (_whitestats.PerParryRate * (tmpDifference / 100)))
                             Case 6 'Weapon
                                 '################################################################################
                                 '=============Unsure OLD
@@ -225,7 +230,9 @@
                                 'MinMag += _refitem.MIN_LMAGATK + ((Me.Intelligence * _refitem.MIN_LMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
                                 'MaxMag += _refitem.MAX_LMAGATK + ((Me.Intelligence * _refitem.MAX_LMAG_REINFORCE) / 100) * (1 + GameServer.Functions.GetWeaponMasteryLevel(Index_) / 100)
                                 '################################################################################
+                                Dim _whitestats As cWhitestats = New cWhitestats(cWhitestats.Type.Weapon, _item.Variance)
                                 Dim tmpDifference As Single
+
 
                                 'PhyATK
                                 'Formel:PhyAtk = STR * (PhyRef / 100) + PhyDmg
@@ -234,23 +241,23 @@
                                 tmpDifference = (_refitem.MAX_FROM_PHYS_REINFORCE / 10) -
                                                 (_refitem.MIN_FROM_PHYS_REINFORCE / 10)
                                 Dim PhyRefMin As Single = (_refitem.MIN_FROM_PHYS_REINFORCE / 10) +
-                                                          (_item.PerPhyRef * (tmpDifference / 100))
+                                                          (_whitestats.PerPhyRef * (tmpDifference / 100))
 
                                 'PhyRefMax
                                 tmpDifference = (_refitem.MAX_TO_PHYS_REINFORCE / 10) -
                                                 (_refitem.MIN_TO_PHYS_REINFORCE / 10)
                                 Dim PhyRefMax As Single = (_refitem.MIN_TO_PHYS_REINFORCE / 10) +
-                                                          (_item.PerPhyRef * (tmpDifference / 100))
+                                                          (_whitestats.PerPhyRef * (tmpDifference / 100))
 
                                 'MinPhyDmg
                                 tmpDifference = _refitem.MAX_FROM_PHYATK - _refitem.MIN_FROM_PHYATK
                                 Dim MinPhyDmg As Single = _refitem.MIN_FROM_PHYATK +
-                                                          (_item.PerPhyAtk * (tmpDifference / 100)) +
+                                                          (_whitestats.PerPhyAtk * (tmpDifference / 100)) +
                                                           (_item.Plus * _refitem.PHYSDEF_INC)
 
                                 'MaxPhyDmg
                                 tmpDifference = _refitem.MAX_TO_PHYATK - _refitem.MIN_TO_PHYATK
-                                Dim MaxPhyDmg As Single = _refitem.MIN_TO_PHYATK + (_item.PerPhyAtk * (tmpDifference / 100)) +
+                                Dim MaxPhyDmg As Single = _refitem.MIN_TO_PHYATK + (_whitestats.PerPhyAtk * (tmpDifference / 100)) +
                                                           (_item.Plus * _refitem.PHYSDEF_INC)
 
                                 MinPhy = Math.Round(Strength * (PhyRefMin / 100) + MinPhyDmg, 0, MidpointRounding.ToEven)
@@ -263,22 +270,22 @@
                                 tmpDifference = (_refitem.MAX_FROM_MAG_REINFORCE / 10) -
                                                 (_refitem.MIN_FROM_MAG_REINFORCE / 10)
                                 Dim MagRefMin As Single = (_refitem.MIN_FROM_MAG_REINFORCE / 10) +
-                                                          (_item.PerMagRef * (tmpDifference / 100))
+                                                          (_whitestats.PerMagRef * (tmpDifference / 100))
 
                                 'MagRefMax
                                 tmpDifference = (_refitem.MAX_TO_MAG_REINFORCE / 10) - (_refitem.MIN_TO_MAG_REINFORCE / 10)
                                 Dim MagRefMax As Single = (_refitem.MIN_TO_MAG_REINFORCE / 10) +
-                                                          (_item.PerMagRef * (tmpDifference / 100))
+                                                          (_whitestats.PerMagRef * (tmpDifference / 100))
 
                                 'MinMagDmg
                                 tmpDifference = _refitem.MAX_FROM_MAGATK - _refitem.MIN_FROM_MAGATK
                                 Dim MinMagDmg As Single = _refitem.MIN_FROM_MAGATK +
-                                                          (_item.PerMagAtk * (tmpDifference / 100)) +
+                                                          (_whitestats.PerMagAtk * (tmpDifference / 100)) +
                                                           (_item.Plus * _refitem.MAGATK_INC)
 
                                 'MaxMagDmg
                                 tmpDifference = _refitem.MAX_TO_MAGATK - _refitem.MIN_TO_MAGATK
-                                Dim MaxMagDmg As Single = _refitem.MIN_TO_MAGATK + (_item.PerMagAtk * (tmpDifference / 100)) +
+                                Dim MaxMagDmg As Single = _refitem.MIN_TO_MAGATK + (_whitestats.PerMagAtk * (tmpDifference / 100)) +
                                                           (_item.Plus * _refitem.MAGATK_INC)
 
                                 MinMag = Math.Round(Intelligence * (MagRefMin / 100) + MinMagDmg, 0, MidpointRounding.ToEven)
@@ -286,19 +293,20 @@
 
                                 'Parry Rate
                                 tmpDifference = _refitem.MAX_ATTACK_RATING - _refitem.MIN_ATTACK_RATING
-                                Hit += Math.Round(_refitem.MIN_ATTACK_RATING + (_item.PerAttackRate * (tmpDifference / 100)))
+                                Hit += Math.Round(_refitem.MIN_ATTACK_RATING + (_whitestats.PerAttackRate * (tmpDifference / 100)))
                             Case 7 'Shield
 
+                                Dim _whitestats As cWhitestats = New cWhitestats(cWhitestats.Type.Shield, _item.Variance)
                                 Dim tmpDifference As Single
 
                                 'PhyDef
                                 'Formel:PerItem PhyDef = STR * (PhyRef / 100) + ItemPhyDef
                                 tmpDifference = (_refitem.MAX_PHYS_REINFORCE / 10) - (_refitem.MIN_PHYS_REINFORCE / 10)
                                 Dim PhyRef As Single = (_refitem.MIN_PHYS_REINFORCE / 10) +
-                                                       (_item.PerPhyRef * (tmpDifference / 100))
+                                                       (_whitestats.PerPhyRef * (tmpDifference / 100))
 
                                 tmpDifference = _refitem.MAX_PHYSDEF - _refitem.MIN_PHYSDEF
-                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_item.PerPhyDef * (tmpDifference / 100)) +
+                                Dim ItemPhyDef As Single = _refitem.MIN_PHYSDEF + (_whitestats.PerPhyDef * (tmpDifference / 100)) +
                                                            (_item.Plus * _refitem.PHYSDEF_INC)
                                 PhyDef += Math.Round(Strength * (PhyRef / 100) + ItemPhyDef, 0, MidpointRounding.ToEven)
 
@@ -306,28 +314,30 @@
                                 'Formel:PerItem PhyDef = STR * (MagRef / 100) + ItemMagDef
                                 tmpDifference = (_refitem.MAX_MAG_REINFORCE / 10) - (_refitem.MIN_MAG_REINFORCE / 10)
                                 Dim MagRef As Single = (_refitem.MIN_MAG_REINFORCE / 10) +
-                                                       (_item.PerMagRef * (tmpDifference / 100))
+                                                       (_whitestats.PerMagRef * (tmpDifference / 100))
 
                                 tmpDifference = _refitem.MAX_MAGDEF - _refitem.MIN_MAGDEF
-                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_item.PerMagDef * (tmpDifference / 100)) +
+                                Dim ItemMagDef As Single = _refitem.MIN_MAGDEF + (_whitestats.PerMagDef * (tmpDifference / 100)) +
                                                            (_item.Plus * _refitem.MAGDEF_INC)
                                 MagDef += Math.Round(Intelligence * (MagRef / 100) + ItemMagDef, 0, MidpointRounding.ToEven)
 
                             Case 8 'Jobsuit/PVP Cape
 
                             Case 9, 10, 11, 12 'Accessory
+
+                                Dim _whitestats As cWhitestats = New cWhitestats(cWhitestats.Type.Shield, _item.Variance)
                                 Dim tmpDifference As Single
 
                                 tmpDifference = _refitem.MAX_PHYS_ABSORB - _refitem.MIN_PHYS_ABSORB
                                 Dim tmpPhyAbs As Single = _refitem.MIN_PHYS_ABSORB +
-                                                          (_item.PerPhyAbs * (tmpDifference / 100)) +
+                                                          (_whitestats.PerPhyAbs * (tmpDifference / 100)) +
                                                           (_item.Plus * _refitem.PHYS_ABSORB_INC)
                                 PhyAbs += tmpPhyAbs
                                 'Math.Round(tmpPhyAbs, 0, MidpointRounding.ToEven)
 
                                 tmpDifference = _refitem.MAX_MAG_ABSORB - _refitem.MIN_MAG_ABSORB
                                 Dim tmpMagAbs As Single = _refitem.MIN_MAG_ABSORB +
-                                                          (_item.PerMagAbs * (tmpDifference / 100)) +
+                                                          (_whitestats.PerMagAbs * (tmpDifference / 100)) +
                                                           (_item.Plus * _refitem.MAG_ABSORB_INC)
                                 MagAbs += tmpMagAbs
                                 'Math.Round(tmpMagAbs, 0, MidpointRounding.ToEven)

@@ -14,7 +14,6 @@ Namespace GameDB
         Public Hotkeys As New List(Of cHotKey)
 
         'Itemcount
-        Public AllItems() As cInvItem
         Public Items As New Dictionary(Of UInt64, cItem)
 
         Public InventoryItems As New List(Of cInventoryItem)
@@ -46,12 +45,22 @@ Namespace GameDB
 
                     GetUserData()
                     GetCharData()
+
                     GetItemData()
+                    GetInventoryData()
+                    GetAvatarInventoryData()
+                    GetCOSInventoryData()
+                    GetStorageData()
+                    GetGuildStorageData()
+
                     GetMasteryData()
                     GetSkillData()
+
                     GetPositionData()
                     GetHotkeyData()
+
                     GetGuildData()
+
                     FirstRun = False
                 Else
                     GetUserData()
@@ -147,7 +156,7 @@ Namespace GameDB
                 Chars(i).BerserkSpeed = CUInt(tmp.Tables(0).Rows(i).ItemArray(34))
                 Chars(i).BerserkBar = CByte(tmp.Tables(0).Rows(i).ItemArray(35))
                 Chars(i).PVP = CByte(tmp.Tables(0).Rows(i).ItemArray(36))
-                Chars(i).MaxSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
+                Chars(i).MaxInvSlots = CByte(tmp.Tables(0).Rows(i).ItemArray(37))
                 Chars(i).HelperIcon = CByte(tmp.Tables(0).Rows(i).ItemArray(38))
                 Chars(i).PotHp = CByte(tmp.Tables(0).Rows(i).ItemArray(39))
                 Chars(i).PotMp = CByte(tmp.Tables(0).Rows(i).ItemArray(40))
@@ -164,44 +173,6 @@ Namespace GameDB
 
 #Region "Item Stuff"
         Public Sub GetItemData()
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
-            Dim ItemCount = tmp.Tables(0).Rows.Count
-
-            If ItemCount = 0 Then
-                ReDim AllItems(0)
-                Exit Sub
-            End If
-
-            ReDim AllItems(ItemCount - 1)
-
-            For i = 0 To (ItemCount - 1)
-                AllItems(i) = New cInvItem
-                AllItems(i).DatabaseID = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                AllItems(i).Pk2Id = CInt(tmp.Tables(0).Rows(i).ItemArray(1))
-                AllItems(i).OwnerCharID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
-                AllItems(i).Plus = CByte(tmp.Tables(0).Rows(i).ItemArray(3))
-                AllItems(i).Slot = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
-                AllItems(i).Amount = CUShort(tmp.Tables(0).Rows(i).ItemArray(5))
-                AllItems(i).Durability = CUInt(tmp.Tables(0).Rows(i).ItemArray(6))
-                AllItems(i).PerDurability = CByte(tmp.Tables(0).Rows(i).ItemArray(8))
-                AllItems(i).PerPhyRef = CByte(tmp.Tables(0).Rows(i).ItemArray(9))
-                AllItems(i).PerMagRef = CByte(tmp.Tables(0).Rows(i).ItemArray(10))
-                AllItems(i).PerPhyAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(11))
-                AllItems(i).PerMagAtk = CByte(tmp.Tables(0).Rows(i).ItemArray(12))
-                AllItems(i).PerPhyDef = CByte(tmp.Tables(0).Rows(i).ItemArray(13))
-                AllItems(i).PerMagDef = CByte(tmp.Tables(0).Rows(i).ItemArray(14))
-                AllItems(i).PerBlock = CByte(tmp.Tables(0).Rows(i).ItemArray(15))
-                AllItems(i).PerCritical = CByte(tmp.Tables(0).Rows(i).ItemArray(16))
-                AllItems(i).PerAttackRate = CByte(tmp.Tables(0).Rows(i).ItemArray(17))
-                AllItems(i).PerParryRate = CByte(tmp.Tables(0).Rows(i).ItemArray(18))
-                AllItems(i).PerPhyAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(19))
-                AllItems(i).PerMagAbs = CByte(tmp.Tables(0).Rows(i).ItemArray(20))
-
-                AllItems(i).ItemType = GetItemTypeFromDb((CStr(tmp.Tables(0).Rows(i).ItemArray(7))))
-            Next
-        End Sub
-
-        Public Sub GetItemData_New()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
             Dim ItemCount = tmp.Tables(0).Rows.Count
             Dim InitalID As UInt64 = 2
@@ -518,24 +489,6 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Function FillInventory(ByVal [char] As cCharacter) As cInventory
-            Dim inventory As New cInventory([char].MaxSlots)
-            For i = 0 To (AllItems.Length - 1)
-                If i < AllItems.Length And AllItems(i) IsNot Nothing Then
-                    If AllItems(i).OwnerCharID = [char].CharacterId Then
-                        If AllItems(i).ItemType = cInvItem.sUserItemType.Inventory Then
-                            If AllItems(i).Slot < [char].MaxSlots Then
-                                inventory.UserItems(AllItems(i).Slot) = AllItems(i)
-                            End If
-                        ElseIf AllItems(i).ItemType = cInvItem.sUserItemType.Avatar Then
-                            inventory.AvatarItems(AllItems(i).Slot) = AllItems(i)
-                        End If
-                    End If
-                End If
-            Next
-            Return inventory
-        End Function
-
         Public Function CheckNick(ByVal nick As String) As Boolean
             Dim free As Boolean = True
             For i = 0 To Chars.Length - 1
@@ -572,15 +525,6 @@ Namespace GameDB
             Next
             Return Nothing
         End Function
-
-        Private Function GetItemTypeFromDb(ByVal itemstring As String) As cInvItem.sUserItemType
-            If itemstring.StartsWith("item") Then
-                Return cInvItem.sUserItemType.Inventory
-            ElseIf itemstring.StartsWith("avatar") Then
-                Return cInvItem.sUserItemType.Avatar
-            End If
-        End Function
-
 #End Region
     End Module
 End Namespace

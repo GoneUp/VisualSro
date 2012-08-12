@@ -129,6 +129,22 @@
             End Select
         End Sub
 
+        Public Function GetItemType(ByVal ClassB As Byte) As Type
+            Select Case ClassB
+                Case 1, 2, 3, 9, 10, 11 'Equipment
+                    Return Type.Equipment
+                Case 4
+                    Return Type.Shield
+                Case 6
+                    Return Type.Weapon
+                Case 5, 12
+                    Return Type.Accesory
+            End Select
+            Return Nothing
+        End Function
+
+
+
 
         Enum Type
             Weapon

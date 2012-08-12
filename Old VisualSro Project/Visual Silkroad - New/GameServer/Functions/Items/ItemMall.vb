@@ -12,46 +12,51 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub OnBuyItemFromMall(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Public Sub OnBuyItemFromMall(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim type1 As Byte = packet.Byte
             Dim type2 As Byte = packet.Byte
             Dim type3 As Byte = packet.Byte
             Dim type4 As Byte = packet.Byte
             Dim type5 As Byte = packet.Byte
             Dim LongName As String = packet.String(packet.Word)
-            Dim RefObject As MallPackage_ = GetItemMallItem(LongName)
+            Dim mallPackage As MallPackage_ = GetItemMallItem(LongName)
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
-            Dim UserIndex As Integer = GameDB.GetUserIndex(PlayerData(index_).AccountID)
+            Dim UserIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
 
-            If LongName = RefObject.Name_Package Then
-                If GameDB.Users(UserIndex).Silk - (RefObject.Price * amout) >= 0 And GetFreeItemSlot(index_) <> -1 Then
+            If LongName = mallPackage.Name_Package Then
+                If GameDB.Users(UserIndex).Silk - (mallPackage.Price * amout) >= 0 And GetFreeItemSlot(Index_) <> -1 Then
                     Dim ItemSlots As New List(Of Byte)
 
                     For i = 1 To amout
-                        Dim _Refitem As cRefItem = GetItemByName(RefObject.Name_Normal)
-                        Dim slot As Byte = GetFreeItemSlot(index_)
-                        Dim item As cInvItem = Inventorys(index_).UserItems(slot)
-                        item.Pk2Id = _Refitem.Pk2Id
+                        Dim _Refitem As cRefItem = GetItemByName(mallPackage.Name_Normal)
+                        Dim slot As Byte = GetFreeItemSlot(Index_)
+                        Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
+                        Dim item As New cItem
+
+                        item.ObjectID = _Refitem.Pk2Id
+                        item.CreatorName = PlayerData(Index_).CharacterName & "#MALL"
 
                         Select Case _Refitem.CLASS_A
                             Case 1
-                                item.Durability = 30
-                                item.Amount = 0
+                                item.Data = _Refitem.MAX_DURA
+                                item.Variance = mallPackage.Variance
                             Case 2
-                                item.Durability = 30
-                                item.Amount = 10
+                                item.Data = 1
                             Case 3
-                                item.Durability = 30
-                                item.Amount = RefObject.Amout
+                                item.Data = mallPackage.Amout
                         End Select
-                        UpdateItem(item)
+
+                        Dim ID As UInt64 = ItemManager.AddItem(item)
+                        invItem.ItemID = ID
+                        ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
+
                         ItemSlots.Add(slot)
 
-                        GameDB.Users(UserIndex).Silk -= RefObject.Price
-                        GameDB.SaveSilk(index_, GameDB.Users(UserIndex).Silk, GameDB.Users(UserIndex).Silk_Bonus, GameDB.Users(UserIndex).Silk_Points)
-                        OnSendSilks(index_)
+                        GameDB.Users(UserIndex).Silk -= mallPackage.Price * amout
+                        GameDB.SaveSilk(Index_, GameDB.Users(UserIndex).Silk, GameDB.Users(UserIndex).Silk_Bonus, GameDB.Users(UserIndex).Silk_Points)
+                        OnSendSilks(Index_)
                     Next
 
                     writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
@@ -67,17 +72,19 @@ Namespace Functions
                         writer.Byte(slot)
                     Next
                     writer.Word(amout)
-                    Server.Send(writer.GetBytes, index_)
+                    Server.Send(writer.GetBytes, Index_)
 
-                    Log.WriteGameLog(index_, "Item_Mall", "Buy",
-                                     String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, RefObject.Price))
+                    Log.WriteGameLog(Index_, "Item_Mall", "Buy",
+                                     String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, mallPackage.Price))
                 Else
                     writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                     writer.Byte(2)
                     writer.Byte(24)
                     writer.Byte(1)
-                    Server.Send(writer.GetBytes, index_)
+                    Server.Send(writer.GetBytes, Index_)
                 End If
+            Else
+                Server.Disconnect(Index_)
             End If
         End Sub
     End Module

@@ -33,6 +33,8 @@ Namespace Settings
         Public Player_StartMasteryLevel As Byte = 0
         Public Player_StartSP As UInteger = 0
         Public Player_StartGM As Boolean = False
+        Public Player_StartItemsPlusMin As Byte = 0
+        Public Player_StartItemsPlusMax As Byte = 0
 
         Public Server_XPRate As Long = 1
         Public Server_SPRate As Long = 1
@@ -99,6 +101,8 @@ Namespace Settings
             Player_StartMasteryLevel = File.Read("PLAYER_START", "Mastery_Level", "0")
             Player_StartSP = File.Read("PLAYER_START", "Sp", "0")
             Player_StartGM = CBool(File.Read("PLAYER_START", "Gm", "0"))
+            Player_StartItemsPlusMin = File.Read("PLAYER_START", "ItemPlusMin", "0")
+            Player_StartItemsPlusMax = File.Read("PLAYER_START", "ItemPlusMax", "0")
 
             PlayerStartPosCh.XSector = File.Read("PLAYER_START_POS", "Ch_Xsec", "168")
             PlayerStartPosCh.YSector = File.Read("PLAYER_START_POS", "Ch_Ysec", "98")

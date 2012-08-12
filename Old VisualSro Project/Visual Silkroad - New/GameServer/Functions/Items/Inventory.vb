@@ -49,29 +49,31 @@ Namespace Functions
             End If
 
 
-            If Inventorys(Index_).UserItems(Old_Slot).Pk2Id <> 0 Then
-                Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).UserItems(Old_Slot))
-                Dim DestItem As cInvItem = FillItem(Inventorys(Index_).UserItems(New_Slot))
-                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.Pk2Id)
+            If Inventorys(Index_).UserItems(Old_Slot).ItemID <> 0 Then
+                Dim SourceInvItem As cInventoryItem = Inventorys(Index_).UserItems(Old_Slot)
+                Dim SourceItem As cItem = GameDB.Items(SourceInvItem.ItemID)
+                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.ObjectID)
+
+                Dim DestInvItem As cInventoryItem = Inventorys(Index_).UserItems(New_Slot)
 
 
-                If SourceItem.Slot <= 12 And DestItem.Slot >= 13 Then
+
+                If SourceInvItem.Slot <= 12 And DestInvItem.Slot >= 13 Then
                     'Uneuqip
-                    If DestItem.Pk2Id = 0 Then
-                        Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                        Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
+                    If DestInvItem.ItemID = 0 Then
+                        'Empty Slot
+                        Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                        Inventorys(Index_).UserItems(Old_Slot).ItemID = 0
 
-                        Inventorys(Index_).UserItems(Old_Slot) = ClearItem(DestItem)
-                        Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
-                    ElseIf DestItem.Pk2Id <> 0 Then
-                        Dim _DestRef As cRefItem = GetItemByID(DestItem.Pk2Id)
-                        If _DestRef.CLASS_A = 1 And CheckItemGender(_DestRef, Index_) And CheckLevel(_DestRef, Index_) _
-                            Then 'Only Equipment
-                            Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                            Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
+                    ElseIf DestInvItem.ItemID <> 0 Then
+                        'Slot is not empty, switch 
+                        Dim DestItem As cItem = GameDB.Items(DestInvItem.ItemID)
+                        Dim _DestRef As cRefItem = GetItemByID(DestItem.ObjectID)
 
-                            Inventorys(Index_).UserItems(Old_Slot) = DestItem
-                            Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
+                        If _DestRef.CLASS_A = 1 And CheckItemGender(_DestRef, Index_) And CheckLevel(_DestRef, Index_) Then 'Only Equipment
+
+                            Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                            Inventorys(Index_).UserItems(Old_Slot).ItemID = 0
 
                         ElseIf CheckItemGender(_DestRef, Index_) = False Then
                             OnItemMoveError(Index_, &H16, &H18)
@@ -82,17 +84,14 @@ Namespace Functions
                         End If
                     End If
 
-                ElseIf DestItem.Slot <= 12 And SourceItem.Slot >= 13 Then
+                ElseIf DestInvItem.Slot <= 12 And SourceInvItem.Slot >= 13 Then
                     'Equip a Item
-                    If DestItem.Pk2Id = 0 Then
-                        If _
-                            _SourceRef.CLASS_A = 1 And CheckItemGender(_SourceRef, Index_) And
-                            CheckLevel(_SourceRef, Index_) Then
-                            Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                            Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
+                    If DestInvItem.ItemID = 0 Then
+                        'Empty Slot
+                        If _SourceRef.CLASS_A = 1 And CheckItemGender(_SourceRef, Index_) And CheckLevel(_SourceRef, Index_) Then
+                            Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                            Inventorys(Index_).UserItems(Old_Slot).ItemID = 0
 
-                            Inventorys(Index_).UserItems(Old_Slot) = ClearItem(DestItem)
-                            Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
                         ElseIf CheckItemGender(_SourceRef, Index_) = False Then
                             OnItemMoveError(Index_, &H16, &H18)
                             Exit Sub
@@ -100,16 +99,15 @@ Namespace Functions
                             OnItemMoveError(Index_, &H6C, &H18)
                             Exit Sub
                         End If
-                    ElseIf DestItem.Pk2Id <> 0 Then
-                        Dim _DestRef As cRefItem = GetItemByID(DestItem.Pk2Id)
-                        If _
-                            _SourceRef.CLASS_A = 1 And CheckItemGender(_SourceRef, Index_) And
-                            CheckLevel(_SourceRef, Index_) Then
-                            Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                            Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
 
-                            Inventorys(Index_).UserItems(Old_Slot) = DestItem
-                            Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
+                    ElseIf DestInvItem.ItemID <> 0 Then
+                        'Slot not empty, switch
+                        Dim DestItem As cItem = GameDB.Items(DestInvItem.ItemID)
+                        Dim _DestRef As cRefItem = GetItemByID(DestItem.ObjectID)
+
+                        If _SourceRef.CLASS_A = 1 And CheckItemGender(_SourceRef, Index_) And CheckLevel(_SourceRef, Index_) Then
+                            Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                            Inventorys(Index_).UserItems(Old_Slot).ItemID = 0
 
                         ElseIf CheckItemGender(_SourceRef, Index_) = False Then
                             OnItemMoveError(Index_, &H16, &H18)
@@ -121,100 +119,76 @@ Namespace Functions
                     End If
 
 
-                ElseIf DestItem.Slot >= 12 And SourceItem.Slot >= 13 Then
+                ElseIf DestInvItem.Slot >= 13 And SourceInvItem.Slot >= 13 Then
                     'Normal Move in Inventory
-                    If DestItem.Pk2Id = 0 Then
-                        If amout = SourceItem.Amount Or _SourceRef.CLASS_A = 1 Or _SourceRef.CLASS_A = 2 Then
+                    If DestInvItem.ItemID = 0 Then
+                        'Empty
+                        If amout = SourceItem.Data Or _SourceRef.CLASS_A = 1 Or _SourceRef.CLASS_A = 2 Then
                             'Complete Move
-                            Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                            Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
+                            Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                            Inventorys(Index_).UserItems(Old_Slot).ItemID = 0
 
-                            Inventorys(Index_).UserItems(Old_Slot) = ClearItem(DestItem)
-                            Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
-                        ElseIf amout < SourceItem.Amount Then
+                        ElseIf amout < SourceItem.Data Then
                             'Disturb
-                            Inventorys(Index_).UserItems(New_Slot).Pk2Id = SourceItem.Pk2Id
-                            Inventorys(Index_).UserItems(New_Slot).Durability = SourceItem.Durability
-                            Inventorys(Index_).UserItems(New_Slot).Plus = SourceItem.Plus
-                            Inventorys(Index_).UserItems(New_Slot).Amount = amout
+                            Dim newItem As New cItem
+                            newItem.ObjectID = SourceItem.ObjectID
+                            newItem.CreatorName = PlayerData(Index_).CharacterName & "#MOVD"
+                            newItem.Data = amout
+                            Inventorys(Index_).UserItems(New_Slot).ItemID = ItemManager.AddItem(newItem)
 
-                            Inventorys(Index_).UserItems(Old_Slot).Amount -= amout
-                            'Reduce it
+
+                            SourceItem.Data -= amout 'Reduce it
+                            ItemManager.UpdateItem(SourceItem)
                         End If
-                    ElseIf DestItem.Pk2Id <> 0 Then
+
+                    ElseIf DestInvItem.ItemID <> 0 Then
+                        Dim DestItem As cItem = GameDB.Items(DestInvItem.ItemID)
+
                         If _SourceRef.CLASS_A = 3 Then
                             'ETC --> Stacking
-                            If DestItem.Pk2Id = SourceItem.Pk2Id And DestItem.Amount + amout <= _SourceRef.MAX_STACK _
-                                Then
-                                DestItem.Amount += amout
-                                Inventorys(Index_).UserItems(New_Slot) = DestItem
+                            If DestItem.ObjectID = SourceItem.ObjectID And DestItem.Data + amout <= _SourceRef.MAX_STACK Then
+                                DestItem.Data += amout
+                                ItemManager.UpdateItem(DestItem)
 
-                                If SourceItem.Amount - amout > 0 Then
-                                    SourceItem.Amount -= amout
-                                    'Reduce it
-                                    Inventorys(Index_).UserItems(Old_Slot) = SourceItem
-                                    Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
-                                Else
-                                    'Remove it
-                                    Inventorys(Index_).UserItems(Old_Slot) = ClearItem(SourceItem)
-                                    Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
-                                End If
+                                UpdateAmout(Index_, SourceInvItem.Slot, amout * -1)
 
-                            ElseIf DestItem.Pk2Id = SourceItem.Pk2Id And DestItem.Amount + amout >= _SourceRef.MAX_STACK _
-                                Then
+                            ElseIf DestItem.ObjectID = SourceItem.ObjectID And DestItem.Data + amout > _SourceRef.MAX_STACK Then
                                 'Only stack a part of the item
-                                Dim tostack As UInteger = _SourceRef.MAX_STACK - DestItem.Amount
-                                DestItem.Amount += tostack
-                                Inventorys(Index_).UserItems(New_Slot) = DestItem
+                                Dim tostack As UInteger = _SourceRef.MAX_STACK - DestItem.Data
+                                DestItem.Data += tostack
+                                ItemManager.UpdateItem(DestItem)
 
-
-                                If SourceItem.Amount - tostack > 0 Then
-                                    SourceItem.Amount -= tostack
-                                    'Reduce it
-                                    Inventorys(Index_).UserItems(Old_Slot) = SourceItem
-                                    Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
-                                Else
-                                    'Remove it
-                                    Inventorys(Index_).UserItems(Old_Slot) = ClearItem(SourceItem)
-                                    Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
-                                End If
-                            Else
-                                Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                                Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
-
-                                Inventorys(Index_).UserItems(Old_Slot) = DestItem
-                                Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
+                                UpdateAmout(Index_, SourceInvItem.Slot, tostack * -1)
                             End If
                         Else
-                            'Eqquip Move
-                            Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                            Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
-
-                            Inventorys(Index_).UserItems(Old_Slot) = DestItem
-                            Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
+                            Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                            Inventorys(Index_).UserItems(Old_Slot).ItemID = DestInvItem.ItemID
                         End If
                     End If
+                Else
+                    'Equip Move
+                    Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                    Inventorys(Index_).UserItems(Old_Slot).ItemID = DestInvItem.ItemID
+
                 End If
 
-                UpdateItem(Inventorys(Index_).UserItems(Old_Slot))
-                UpdateItem(Inventorys(Index_).UserItems(New_Slot))
+
+                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Old_Slot), cInventoryItem.Type.Inventory)
+                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(New_Slot), cInventoryItem.Type.Inventory)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
-                writer.Byte(1)
-                'success
-                writer.Byte(0)
-                'type
+                writer.Byte(1) 'success
+                writer.Byte(0) 'type
                 writer.Byte(Old_Slot)
                 writer.Byte(New_Slot)
                 writer.Word(amout)
-                writer.Byte(0)
-                'end
+                writer.Byte(0)  'end
                 Server.Send(writer.GetBytes, Index_)
 
                 If Old_Slot <= 12 Then
                     'Unequip
-                    Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, Old_Slot, New_Slot), Index_)
+                    Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, Old_Slot, New_Slot, False), Index_)
                     PlayerData(Index_).SetCharGroundStats()
                     PlayerData(Index_).AddItemsToStats(Index_)
                     OnStatsPacket(Index_)
@@ -241,12 +215,13 @@ Namespace Functions
 
 
             Dim slot As Byte = packet.Byte
-            Dim ref_item As cRefItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
-            Dim item_uniqueid As UInteger = DropItem(Inventorys(index_).UserItems(slot), PlayerData(index_).Position)
+            Dim invItem As cInventoryItem = Inventorys(index_).UserItems(slot)
+            Dim item As cItem = GameDB.Items(invItem.ItemID)
+            Dim ref_item As cRefItem = GetItemByID(item.ObjectID)
+            Dim item_uniqueid As UInteger = DropItem(invItem, item, PlayerData(index_).Position)
 
-            DeleteItemFromDB(slot, index_)
-            Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))
-
+            invItem.ItemID = 0
+            ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ITEM_DELETE)
@@ -270,12 +245,14 @@ Namespace Functions
             Dim amout As UInt64 = packet.QWord
 
             If CLng(PlayerData(index_).Gold) - amout >= 0 Then
-                Dim item As New cInvItem
-                item.Amount = amout
-                item.Pk2Id = 1
-                item.OwnerCharID = PlayerData(index_).UniqueID
+                Dim invItem As New cInventoryItem
+                invItem.OwnerID = PlayerData(index_).UniqueID
+                Dim item As New cItem
+                item.Data = amout
+                item.ObjectID = 1
 
-                DropItem(item, PlayerData(index_).Position)
+
+                DropItem(invItem, item, PlayerData(index_).Position)
 
                 PlayerData(index_).Gold -= amout
                 UpdateGold(index_)
@@ -320,34 +297,24 @@ Namespace Functions
 
                 RemoveItem(UniqueId)
 
-                If _item.Item.Pk2Id = 1 Or _item.Item.Pk2Id = 2 Or _item.Item.Pk2Id = 3 Then
-                    If _item.Item.Amount > 0 Then
-                        PlayerData(Index_).Gold += _item.Item.Amount
+                If _item.Item.ObjectID = 1 Or _item.Item.ObjectID = 2 Or _item.Item.ObjectID = 3 Then
+                    If _item.Item.Data > 0 Then
+                        PlayerData(Index_).Gold += _item.Item.Data
                         UpdateGold(Index_)
                     End If
                 Else
                     Dim slot As Byte = GetFreeItemSlot(Index_)
                     If slot <> -1 Then
-                        Dim ref As cRefItem = GetItemByID(_item.Item.Pk2Id)
-                        Dim temp_item As cInvItem = Inventorys(Index_).UserItems(slot)
-
-                        temp_item.Pk2Id = _item.Item.Pk2Id
-                        temp_item.OwnerCharID = PlayerData(Index_).CharacterId
-                        temp_item.Durability = _item.Item.Durability
-                        temp_item.Plus = _item.Item.Plus
-                        temp_item.Amount = _item.Item.Amount
-                        temp_item.Blues = New List(Of cInvItem.sBlue)
-
-                        UpdateItem(Inventorys(Index_).UserItems(slot))
-                        'SAVE IT
+                        Dim ref As cRefItem = GetItemByID(_item.Item.ObjectID)
+                        Inventorys(Index_).UserItems(slot).ItemID = _item.Item.ID
+                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
 
                         writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)
-                        writer.Byte(6)
-                        'type = new item
+                        writer.Byte(6) 'type = new item
                         writer.Byte(Inventorys(Index_).UserItems(slot).Slot)
 
-                        AddItemDataToPacket(Inventorys(Index_).UserItems(slot), writer)
+                        AddItemDataToPacket(_item.Item, writer)
 
                         Server.Send(writer.GetBytes, Index_)
                     End If
@@ -361,11 +328,10 @@ Namespace Functions
 
         Public Sub OnExchangeAddItem(ByVal packet As PacketReader, ByVal index_ As Integer)
             Dim slot As Byte = packet.Byte
+            Dim invItem As cInventoryItem = Inventorys(index_).UserItems(slot)
             Dim ExListInd As Integer = PlayerData(index_).ExchangeID
 
-            If _
-                ExListInd = -1 Or Inventorys(index_).UserItems(slot).Pk2Id = 0 Or PlayerData(index_).InExchange = False Or
-                Inventorys(index_).UserItems(slot).Locked = True Then 'Security...
+            If ExListInd = -1 Or invItem.ItemID = 0 Or PlayerData(index_).InExchange = False Or invItem.Locked = True Then 'Security...
                 Exit Sub
             End If
 
@@ -494,7 +460,6 @@ Namespace Functions
 
 
 #Region "Avatar"
-
         Public Sub OnAvatarEquip(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim Old_Slot As Byte = packet.Byte
             Dim New_Slot As Byte = packet.Byte
@@ -505,40 +470,35 @@ Namespace Functions
             End If
 
 
-            If Inventorys(Index_).UserItems(Old_Slot).Pk2Id <> 0 Then
-                Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).UserItems(Old_Slot))
-                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.Pk2Id)
+            If Inventorys(Index_).UserItems(Old_Slot).ItemID <> 0 Then
+                Dim SourceInvItem As cInventoryItem = Inventorys(Index_).UserItems(Old_Slot)
+                Dim SourceItem As cItem = GameDB.Items(SourceInvItem.ItemID)
+
+                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.ObjectID)
                 New_Slot = GetInternalAvatarSlot(_SourceRef)
-                Dim DestItem As cInvItem = FillItem(Inventorys(Index_).AvatarItems(New_Slot))
+                Dim DestItem As cInventoryItem = Inventorys(Index_).AvatarItems(New_Slot)
 
-                If DestItem.Pk2Id = 0 Then
-                    Inventorys(Index_).AvatarItems(New_Slot) = SourceItem
-                    Inventorys(Index_).AvatarItems(New_Slot).Slot = New_Slot
-                    Inventorys(Index_).AvatarItems(New_Slot).ItemType = cInvItem.sUserItemType.Avatar
+                If DestItem.ItemID = 0 Then
+                    Inventorys(Index_).AvatarItems(New_Slot).ItemID = SourceInvItem.ItemID
 
-                    Inventorys(Index_).UserItems(Old_Slot) = ClearItem(DestItem)
-                    Inventorys(Index_).UserItems(Old_Slot).Slot = Old_Slot
-                    Inventorys(Index_).UserItems(Old_Slot).ItemType = cInvItem.sUserItemType.Inventory
-                ElseIf DestItem.Pk2Id <> 0 Then
+                    Inventorys(Index_).UserItems(Old_Slot).ItemID = 0
+                ElseIf DestItem.ItemID <> 0 Then
 
                 End If
             End If
 
-            UpdateItem(Inventorys(Index_).UserItems(Old_Slot))
-            UpdateItem(Inventorys(Index_).AvatarItems(New_Slot))
+            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Old_Slot), cInventoryItem.Type.Inventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(New_Slot), cInventoryItem.Type.AvatarInventory)
 
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
-            writer.Byte(1)
-            'success
-            writer.Byte(36)
-            'type
+            writer.Byte(1) 'success
+            writer.Byte(36) 'type
             writer.Byte(Old_Slot)
             writer.Byte(New_Slot)
             writer.Word(0)
-            writer.Byte(0)
-            'end
+            writer.Byte(0) 'end
             Server.Send(writer.GetBytes, Index_)
 
             Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot, True), Index_)
@@ -554,42 +514,37 @@ Namespace Functions
             End If
 
 
-            If Inventorys(Index_).AvatarItems(Old_Slot).Pk2Id <> 0 Then
-                Dim SourceItem As cInvItem = FillItem(Inventorys(Index_).AvatarItems(Old_Slot))
-                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.Pk2Id)
-                Dim DestItem As cInvItem = FillItem(Inventorys(Index_).UserItems(New_Slot))
+           If Inventorys(Index_).UserItems(Old_Slot).ItemID <> 0 Then
+                Dim SourceInvItem As cInventoryItem = Inventorys(Index_).AvatarItems(Old_Slot)
+                Dim SourceItem As cItem = GameDB.Items(SourceInvItem.ItemID)
+                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.ObjectID)
 
-                If DestItem.Pk2Id = 0 Then
-                    Inventorys(Index_).UserItems(New_Slot) = SourceItem
-                    Inventorys(Index_).UserItems(New_Slot).Slot = New_Slot
-                    Inventorys(Index_).UserItems(New_Slot).ItemType = cInvItem.sUserItemType.Inventory
+                Dim DestItem As cInventoryItem = Inventorys(Index_).UserItems(New_Slot)
 
-                    Inventorys(Index_).AvatarItems(Old_Slot) = ClearItem(DestItem)
-                    Inventorys(Index_).AvatarItems(Old_Slot).Slot = Old_Slot
-                    Inventorys(Index_).AvatarItems(Old_Slot).ItemType = cInvItem.sUserItemType.Avatar
-                ElseIf DestItem.Pk2Id <> 0 Then
+                If DestItem.ItemID = 0 Then
+                    Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+
+                    Inventorys(Index_).AvatarItems(Old_Slot).ItemID = 0
+                ElseIf DestItem.ItemID <> 0 Then
 
                 End If
             End If
 
-            UpdateItem(Inventorys(Index_).AvatarItems(Old_Slot))
-            UpdateItem(Inventorys(Index_).UserItems(New_Slot))
+            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(Old_Slot), cInventoryItem.Type.AvatarInventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(New_Slot), cInventoryItem.Type.Inventory)
 
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
-            writer.Byte(1)
-            'success
-            writer.Byte(35)
-            'type
+            writer.Byte(1) 'success
+            writer.Byte(35) 'type
             writer.Byte(Old_Slot)
             writer.Byte(New_Slot)
             writer.Word(0)
-            writer.Byte(0)
-            'end
+            writer.Byte(0) 'end
             Server.Send(writer.GetBytes, Index_)
 
-            Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, Old_Slot, New_Slot), Index_)
+            Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, Old_Slot, New_Slot, True), Index_)
         End Sub
 
 #End Region
@@ -675,163 +630,67 @@ Namespace Functions
             Return 255
         End Function
 
-        Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte,
-                                           ByVal Avatar As Boolean) As Byte()
+        Private Function CreateEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte, ByVal Avatar As Boolean) As Byte()
+            Dim item As New cItem
+
+            If Avatar Then
+                item = GameDB.Items(Inventorys(Index_).AvatarItems(New_Slot).ItemID)
+            Else
+                item = GameDB.Items(Inventorys(Index_).UserItems(New_Slot).ItemID)
+            End If
+
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_EQUIP_ITEM)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(New_Slot)
-            If Avatar = False Then
-                writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
-                writer.Byte(Inventorys(Index_).UserItems(New_Slot).Plus)
-            Else
-                writer.DWord(Inventorys(Index_).AvatarItems(New_Slot).Pk2Id)
-                writer.Byte(Inventorys(Index_).AvatarItems(New_Slot).Plus)
-            End If
-
+            writer.DWord(item.ObjectID)
+            writer.Byte(item.Plus)
             Return writer.GetBytes
         End Function
 
-        Private Function CreateUnEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte) _
-            As Byte()
+        Private Function CreateUnEquippacket(ByVal Index_ As Integer, ByVal Old_Slot As Byte, ByVal New_Slot As Byte, ByVal Avatar As Boolean) As Byte()
+            Dim item As New cItem
+
+            If Avatar Then
+                item = GameDB.Items(Inventorys(Index_).AvatarItems(New_Slot).ItemID)
+            Else
+                item = GameDB.Items(Inventorys(Index_).UserItems(New_Slot).ItemID)
+            End If
+
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_UNEQUIP_ITEM)
             writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(Old_Slot)
-            writer.DWord(Inventorys(Index_).UserItems(New_Slot).Pk2Id)
+            writer.DWord(item.ObjectID)
             Return writer.GetBytes
-        End Function
-
-        Public Sub AddItemToDB(ByVal item As cInvItem)
-            Array.Resize(GameDB.AllItems, GameDB.AllItems.Count + 1)
-            GameDB.AllItems(GameDB.AllItems.Count - 1) = item
-
-            Database.SaveQuery(
-                String.Format(
-                    "INSERT INTO items(itemtype, owner, plusvalue, slot, quantity, durability, itemnumber) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')",
-                    item.Pk2Id, item.OwnerCharID, item.Plus, item.Slot, item.Amount, item.Durability,
-                    GetItemTypeDbString(item)))
-        End Sub
-
-        Public Sub UpdateItem(ByVal item As cInvItem)
-            For i = 0 To GameDB.AllItems.Count - 1
-                If GameDB.AllItems(i) IsNot Nothing Then
-                    If _
-                        GameDB.AllItems(i).OwnerCharID = item.OwnerCharID And GameDB.AllItems(i).Slot = item.Slot And
-                        GameDB.AllItems(i).ItemType = item.ItemType Then
-                        GameDB.AllItems(i) = item
-                        Database.SaveQuery(
-                            String.Format(
-                                "UPDATE items SET itemtype='{0}', plusvalue='{1}', durability='{2}', quantity='{3}' WHERE owner='{4}' AND itemnumber='{5}'",
-                                item.Pk2Id, item.Plus, item.Durability, item.Amount, item.OwnerCharID,
-                                GetItemTypeDbString(item)))
-                        Exit For
-                    End If
-                End If
-            Next
-        End Sub
-
-        Public Sub DeleteItemFromDB(ByVal slot As Byte, ByVal Index_ As Integer)
-            Database.SaveQuery(
-                String.Format(
-                    "UPDATE items SET itemtype='0', plusvalue='0', durability='0', quantity='0' WHERE owner='{0}' AND itemnumber='item{1}'",
-                    PlayerData(Index_).CharacterId, slot))
-        End Sub
-
-        Private Function GetItemTypeDbString(ByVal item As cInvItem) As String
-            Select Case item.ItemType
-                Case cInvItem.sUserItemType.Inventory
-                    Return "item" & item.Slot
-                Case cInvItem.sUserItemType.Avatar
-                    Return "avatar" & item.Slot
-                Case cInvItem.sUserItemType.Storage_User
-                    Return "storage" & item.Slot
-            End Select
-            Return "WTF"
         End Function
 
         Public Function GetFreeItemSlot(ByVal Index_ As Integer) As Integer
             For i = 13 To Inventorys(Index_).UserItems.Length - 1
-                If Inventorys(Index_).UserItems(i).Pk2Id = 0 Then
+                If Inventorys(Index_).UserItems(i).ItemID = 0 Then
                     Return i
                 End If
             Next
             Return -1
         End Function
 
-        Function FillItem(ByVal From_item As cInvItem) As cInvItem
-            Dim tmp_ As New cInvItem
-            tmp_.DatabaseID = From_item.DatabaseID
-            tmp_.Pk2Id = From_item.Pk2Id
-            tmp_.OwnerCharID = From_item.OwnerCharID
-            tmp_.Plus = From_item.Plus
-            tmp_.Slot = From_item.Slot
-            tmp_.Amount = From_item.Amount
-            tmp_.Durability = From_item.Durability
-            tmp_.Blues = From_item.Blues
-            tmp_.ItemType = From_item.ItemType
-
-            'WhiteStats
-            tmp_.PerDurability = From_item.PerDurability
-            tmp_.PerPhyRef = From_item.PerPhyRef
-            tmp_.PerMagRef = From_item.PerMagRef
-            tmp_.PerPhyAtk = From_item.PerPhyAtk
-            tmp_.PerMagAtk = From_item.PerMagAtk
-            tmp_.PerPhyDef = From_item.PerPhyDef
-            tmp_.PerMagDef = From_item.PerMagDef
-            tmp_.PerBlock = From_item.PerBlock
-            tmp_.PerCritical = From_item.PerCritical
-            tmp_.PerAttackRate = From_item.PerAttackRate
-            tmp_.PerParryRate = From_item.PerParryRate
-            tmp_.PerPhyAbs = From_item.PerPhyAbs
-            tmp_.PerMagAbs = From_item.PerMagAbs
-
-            Return tmp_
-        End Function
-
-        Public Function ClearItem(ByVal OldItem As cInvItem) As cInvItem
-            OldItem.Pk2Id = 0
-            OldItem.Amount = 0
-            OldItem.Plus = 0
-            OldItem.Durability = 30
-            OldItem.PerDurability = 0
-            OldItem.PerPhyRef = 0
-            OldItem.PerMagRef = 0
-            OldItem.PerPhyAtk = 0
-            OldItem.PerMagAtk = 0
-            OldItem.PerPhyDef = 0
-            OldItem.PerMagDef = 0
-            OldItem.PerBlock = 0
-            OldItem.PerCritical = 0
-            OldItem.PerAttackRate = 0
-            OldItem.PerParryRate = 0
-            OldItem.PerPhyAbs = 0
-            OldItem.PerMagAbs = 0
-
-            OldItem.Blues = Nothing
-
-            Return OldItem
-        End Function
-
-        Public Sub AddItemDataToPacket(ByVal _item As cInvItem, ByVal writer As PacketWriter)
-            Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+        Public Sub AddItemDataToPacket(ByVal _item As cItem, ByVal writer As PacketWriter)
+            Dim refitem As cRefItem = GetItemByID(_item.ObjectID)
             writer.DWord(0)
             'Unknown since TH Legend
 
-            writer.DWord(_item.Pk2Id)
-            Debug.Print(
-                refitem.ITEM_TYPE_NAME & " Type1: " & refitem.CLASS_A & " Type2: " & refitem.CLASS_B & " Type3: " &
-                refitem.CLASS_C)
+            writer.DWord(_item.ObjectID)
+            Debug.Print(refitem.ITEM_TYPE_NAME & " Type1: " & refitem.CLASS_A & " Type2: " & refitem.CLASS_B & " Type3: " & refitem.CLASS_C)
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
                     writer.Byte(_item.Plus)
-                    writer.QWord(_item.GetWhiteStats)
-                    writer.DWord(_item.Durability)
+                    writer.QWord(_item.Variance)
+                    writer.DWord(_item.Data)
 
                     writer.Byte(_item.Blues.Count)
                     For i = 0 To _item.Blues.Count - 1
-                        writer.DWord(_item.Blues(i).Typ)
-                        writer.DWord(_item.Blues(i).Amount)
+                        writer.DWord(_item.Blues(i).Type)
+                        writer.DWord(_item.Blues(i).Amout)
                     Next
 
                     writer.Word(1)
@@ -869,7 +728,7 @@ Namespace Functions
                                     writer.Word(0)
                             End Select
                         Case Else
-                            writer.Word(_item.Amount)
+                            writer.Word(_item.Data)
                     End Select
 
             End Select

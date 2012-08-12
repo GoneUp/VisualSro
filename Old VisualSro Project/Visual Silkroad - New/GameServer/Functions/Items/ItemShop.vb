@@ -2,8 +2,8 @@
 
 Namespace Functions
     Module ItemShop
-        Public Sub OnBuyItem(ByVal packet As PacketReader, ByVal index_ As Integer)
-            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
+        Public Sub OnBuyItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            If PlayerData(Index_).InExchange Or PlayerData(Index_).InStall Then
                 Exit Sub
             End If
 
@@ -21,10 +21,8 @@ Namespace Functions
             If NpcList.ContainsKey(UniqueID) Then
                 RefObj = GetObject(NpcList(UniqueID).Pk2ID)
             Else
-                Server.Disconnect(index_)
+                Server.Disconnect(Index_)
             End If
-
-
 
             PackageName = RefObj.Shop.Tab(shopline).Items(itemline).PackageName
             Dim Package As MallPackage_ = GetItemMallItem(PackageName)
@@ -39,42 +37,60 @@ Namespace Functions
                     Price = BuyItem.SHOP_PRICE * amout
             End Select
 
-            If CSng(PlayerData(index_).Gold) - Price < 0 Then
+            If CSng(PlayerData(Index_).Gold) - Price < 0 Then
                 'No Gold
 
             Else
                 Dim ItemSlots As New List(Of Byte)
 
-                For i = 1 To amout
-                    Dim Slot As Byte = GetFreeItemSlot(index_)
+                If BuyItem.CLASS_A = 1 Then
+                    For i = 1 To amout
+                        Dim Slot As Byte = GetFreeItemSlot(Index_)
 
-                    If Slot <> -1 Then
-                        Dim temp_item As cInvItem = Inventorys(index_).UserItems(Slot)
-                        temp_item.Pk2Id = BuyItem.Pk2Id
-                        temp_item.OwnerCharID = PlayerData(index_).CharacterId
+                        If Slot <> -1 Then
+                            Dim temp_item As New cItem
+                            temp_item.ObjectID = BuyItem.Pk2Id
+                            temp_item.CreatorName = PlayerData(Index_).CharacterName & "#SHOP"
 
-                        If BuyItem.CLASS_A = 1 Then
+
                             'Equip
                             temp_item.Plus = 0
-                            temp_item.Durability = BuyItem.MAX_DURA
-                            temp_item.Blues = New List(Of cInvItem.sBlue)
+                            temp_item.Data = BuyItem.MAX_DURA
 
-                        ElseIf BuyItem.CLASS_A = 2 Then
-                            'Pet
-                        ElseIf BuyItem.CLASS_A = 3 Then
-                            'Etc
-                            temp_item.Amount = amout
+
+                            Dim invItem As New cInventoryItem
+                            invItem.OwnerID = PlayerData(Index_).CharacterId
+                            invItem.Slot = Slot
+                            invItem.ItemID = ItemManager.AddItem(temp_item)
+
+                            'SAVE IT
+                            ItemSlots.Add(Slot)
                         End If
+                    Next
 
-                        Inventorys(index_).UserItems(Slot) = temp_item
-                        UpdateItem(Inventorys(index_).UserItems(Slot))
+                Else
+                    Dim Slot As Byte = GetFreeItemSlot(Index_)
+
+                    If Slot <> -1 Then
+                        Dim temp_item As New cItem
+                        temp_item.ObjectID = BuyItem.Pk2Id
+                        temp_item.CreatorName = PlayerData(Index_).CharacterName & "#SHOP"
+
+                        'Equip
+                        temp_item.Data = amout
+
+                        Dim invItem As New cInventoryItem
+                        invItem.OwnerID = PlayerData(Index_).CharacterId
+                        invItem.Slot = Slot
+                        invItem.ItemID = ItemManager.AddItem(temp_item)
+
                         'SAVE IT
                         ItemSlots.Add(Slot)
                     End If
-                Next
+                End If
 
-                PlayerData(index_).Gold -= Price
-                UpdateGold(index_)
+                PlayerData(Index_).Gold -= Price
+                UpdateGold(Index_)
 
 
                 Dim writer As New PacketWriter
@@ -91,53 +107,58 @@ Namespace Functions
                 For i = 1 To amout
                     writer.DWord(0)
                 Next
-                Server.Send(writer.GetBytes, index_)
+                Server.Send(writer.GetBytes, Index_)
             End If
         End Sub
 
 
-        Public Sub OnSellItem(ByVal packet As PacketReader, ByVal index_ As Integer)
-            If PlayerData(index_).InExchange Or PlayerData(index_).InStall Then
+        Public Sub OnSellItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            If PlayerData(Index_).InExchange Or PlayerData(Index_).InStall Then
                 Exit Sub
             End If
-
 
             Dim slot As Byte = packet.Byte
             Dim amout As UShort = packet.Word
             Dim UniqueID As UInt32 = packet.DWord
             Dim Gold As ULong = 0
 
-            If Inventorys(index_).UserItems(slot).Pk2Id <> 0 Then
-                Dim Item As cRefItem = GetItemByID(Inventorys(index_).UserItems(slot).Pk2Id)
-
-                Select Case Item.CLASS_A
-                    Case 1
-                        Gold = Item.SELL_PRICE
-                    Case 2
-                        Gold = Item.SELL_PRICE
-                    Case 3
-                        Gold = Item.SELL_PRICE * Inventorys(index_).UserItems(slot).Amount
-                End Select
-
-                Inventorys(index_).UserItems(slot) = ClearItem(Inventorys(index_).UserItems(slot))
-                UpdateItem(Inventorys(index_).UserItems(slot))
-
-                PlayerData(index_).Gold += Gold
-                UpdateGold(index_)
-
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
-                writer.Byte(1)
-                writer.Byte(9)
-                writer.Byte(slot)
-                writer.Word(amout)
-                writer.DWord(UniqueID)
-                writer.Byte(1) 'buyback slot
-                Server.Send(writer.GetBytes, index_)
+            If Inventorys(Index_).UserItems(slot).ItemID = 0 Then
+                Server.Disconnect(Index_)
             End If
+
+            Dim InvItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
+            Dim Item As cItem = GameDB.Items(InvItem.ItemID)
+            Dim RefItem As cRefItem = GetItemByID(Item.ObjectID)
+
+
+            Select Case RefItem.CLASS_A
+                Case 1
+                    Gold = RefItem.SELL_PRICE
+                Case 2
+                    Gold = RefItem.SELL_PRICE
+                Case 3
+                    Gold = RefItem.SELL_PRICE * Item.Data
+            End Select
+
+            PlayerData(Index_).BuybackList.Insert(0, Item)
+
+            UpdateAmout(Index_, InvItem.Slot, amout * -1)
+
+            PlayerData(Index_).Gold += Gold
+            UpdateGold(Index_)
+
+            Dim writer As New PacketWriter
+            writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
+            writer.Byte(1)
+            writer.Byte(9)
+            writer.Byte(slot)
+            writer.Word(amout)
+            writer.DWord(UniqueID)
+            writer.Byte(1) 'buyback slot
+            Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub BuyBack(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Public Sub BuyBack(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim UnqiueID As UInt32 = packet.DWord
             Dim BuyBackSlot As Byte = packet.Byte
         End Sub

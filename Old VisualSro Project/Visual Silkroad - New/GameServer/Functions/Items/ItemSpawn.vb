@@ -4,20 +4,20 @@ Imports SRFramework
 Namespace Functions
     Module ItemSpawn
         Public Sub CreateItemSpawnPacket(ByVal Item_ As cItemDrop, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
-            Dim refitem As cRefItem = GetItemByID(Item_.Item.Pk2Id)
+            Dim refitem As cRefItem = GetItemByID(Item_.Item.ObjectID)
 
             If includePacketHeader Then
                 writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
             End If
 
-            writer.DWord(Item_.Item.Pk2Id)
+            writer.DWord(Item_.Item.ObjectID)
             Select Case refitem.CLASS_A
                 Case 1 'Equipment
                     writer.Byte(Item_.Item.Plus)
                 Case 3 'Etc
                     If refitem.CLASS_B = 5 And refitem.CLASS_C = 0 Then
                         'Gold...
-                        writer.DWord(Item_.Item.Amount)
+                        writer.DWord(Item_.Item.Data)
                     End If
             End Select
             writer.DWord(Item_.UniqueID)
@@ -36,22 +36,22 @@ Namespace Functions
             writer.DWord(Item_.DroppedBy)
         End Sub
 
-        Public Function DropItem(ByVal Item As cInvItem, ByVal Position As Position) As UInteger
+        Public Function DropItem(ByVal InvItem As cInventoryItem, ByVal Item As cItem, ByVal Position As Position) As UInteger
             Dim tmp_ As New cItemDrop
             tmp_.UniqueID = Id_Gen.GetUnqiueId
-            tmp_.DroppedBy = Item.OwnerCharID
+            tmp_.DroppedBy = InvItem.OwnerID
             tmp_.Position = Position
-            tmp_.Item = FillItem(Item)
+            tmp_.Item = Item
             tmp_.DespawnTime = Date.Now.AddMinutes(3)
 
-            If tmp_.Item.Pk2Id = 1 Then
+            If tmp_.Item.ObjectID = 1 Then
                 'Gold...
-                If tmp_.Item.Amount <= 1000 Then
-                    tmp_.Item.Pk2Id = 1
-                ElseIf tmp_.Item.Amount > 1000 And tmp_.Item.Amount <= 10000 Then
-                    tmp_.Item.Pk2Id = 2
-                ElseIf tmp_.Item.Amount > 10000 Then
-                    tmp_.Item.Pk2Id = 3
+                If tmp_.Item.Data <= 1000 Then
+                    tmp_.Item.ObjectID = 1
+                ElseIf tmp_.Item.Data > 1000 And tmp_.Item.Data <= 10000 Then
+                    tmp_.Item.ObjectID = 2
+                ElseIf tmp_.Item.Data > 10000 Then
+                    tmp_.Item.ObjectID = 3
                 End If
             End If
 

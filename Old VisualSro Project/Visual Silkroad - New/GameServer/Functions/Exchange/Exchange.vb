@@ -88,17 +88,17 @@ Namespace Functions
                 For i = 0 To 11 'Send Item Data
                     If ExchangeData(ExchangeId).Items1(i) <> -1 Then
 
-                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items1(i))
-                        Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+                        Dim invItem As cInventoryItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items1(i))
+                        Dim item As cItem = GameDB.Items(invItem.ItemID)
+                        Dim refitem As cRefItem = GetItemByID(item.ObjectID)
 
                         If own_decider = 0 Then
-                            writer.Byte(_item.Slot)
-                            'Fromslot
+                            writer.Byte(invItem.Slot) 'Fromslot
                         End If
-                        writer.Byte(i)
-                        'To Slot
+                        writer.Byte(i) 'To Slot
 
-                        AddItemDataToPacket(_item, writer)
+
+                        AddItemDataToPacket(item, writer)
                     End If
                 Next
 
@@ -127,18 +127,16 @@ Namespace Functions
 
                 For i = 0 To 11 'Send Item Data
                     If ExchangeData(ExchangeId).Items2(i) <> -1 Then
-
-                        Dim _item As cInvItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items2(i))
-                        Dim refitem As cRefItem = GetItemByID(_item.Pk2Id)
+                        Dim invItem As cInventoryItem = temp_inv.UserItems(ExchangeData(ExchangeId).Items2(i))
+                        Dim item As cItem = GameDB.Items(invItem.ItemID)
+                        Dim refitem As cRefItem = GetItemByID(item.ObjectID)
 
                         If own_decider = 0 Then
-                            writer.Byte(_item.Slot)
-                            'Fromslot
+                            writer.Byte(invItem.Slot)'Fromslot
                         End If
-                        writer.Byte(i)
-                        'To Slot
+                        writer.Byte(i)   'To Slot
 
-                        AddItemDataToPacket(_item, writer)
+                        AddItemDataToPacket(item, writer)
                     End If
                 Next
                 If own_decider = 0 Then
@@ -237,37 +235,18 @@ Namespace Functions
             'Player 1 items --> Player 2
             For i = 0 To 11
                 If tmp_ex.Items1(i) <> -1 Then
-                    Dim From_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
+                    Dim From_item As cInventoryItem = Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i))
                     Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player2Index)
-                    Dim To_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(To_Slot)
+                    Dim To_item As cInventoryItem = Inventorys(tmp_ex.Player2Index).UserItems(To_Slot)
 
-                    'Overwrite
-                    To_item.Pk2Id = From_item.Pk2Id
-                    To_item.Durability = From_item.Durability
-                    To_item.Plus = From_item.Plus
-                    To_item.Amount = From_item.Amount
-                    To_item.Blues = From_item.Blues
-                    To_item.PerDurability = From_item.PerDurability
-                    To_item.PerPhyRef = From_item.PerPhyRef
-                    To_item.PerMagRef = From_item.PerMagRef
-                    To_item.PerPhyAtk = From_item.PerPhyAtk
-                    To_item.PerMagAtk = From_item.PerMagAtk
-                    To_item.PerPhyDef = From_item.PerPhyDef
-                    To_item.PerMagDef = From_item.PerMagDef
-                    To_item.PerBlock = From_item.PerBlock
-                    To_item.PerCritical = From_item.PerCritical
-                    To_item.PerAttackRate = From_item.PerAttackRate
-                    To_item.PerParryRate = From_item.PerParryRate
-                    To_item.PerPhyAbs = From_item.PerPhyAbs
-                    To_item.PerMagAbs = From_item.PerMagAbs
 
                     'Add to new...
-                    Inventorys(tmp_ex.Player2Index).UserItems(To_item.Slot) = To_item
-                    UpdateItem(To_item)
+                    Inventorys(tmp_ex.Player2Index).UserItems(To_Slot).ItemID = From_item.ItemID
+                    ItemManager.UpdateInvItem(Inventorys(tmp_ex.Player2Index).UserItems(To_Slot), cInventoryItem.Type.Inventory)
 
                     'Remove...
-                    DeleteItemFromDB(tmp_ex.Items1(i), tmp_ex.Player1Index)
-                    Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i)) = ClearItem(From_item)
+                    Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i)).ItemID = 0
+                    ItemManager.UpdateInvItem(Inventorys(tmp_ex.Player1Index).UserItems(tmp_ex.Items1(i)), cInventoryItem.Type.Inventory)
                 End If
             Next
             PlayerData(tmp_ex.Player1Index).Gold += tmp_ex.Player2Gold
@@ -278,37 +257,17 @@ Namespace Functions
             'Player 2 Items --> Player 1 
             For i = 0 To 11
                 If tmp_ex.Items2(i) <> -1 Then
-
-                    Dim From_item As cInvItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
+                    Dim From_item As cInventoryItem = Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i))
                     Dim To_Slot As Byte = GetFreeSlotExchage(tmp_ex.Player1Index)
-                    Dim To_item As cInvItem = Inventorys(tmp_ex.Player1Index).UserItems(To_Slot)
+                    Dim To_item As cInventoryItem = Inventorys(tmp_ex.Player1Index).UserItems(To_Slot)
 
-                    'Add to new...
-                    To_item.Pk2Id = From_item.Pk2Id
-                    To_item.Durability = From_item.Durability
-                    To_item.Plus = From_item.Plus
-                    To_item.Amount = From_item.Amount
-                    To_item.Blues = From_item.Blues
-                    To_item.PerDurability = From_item.PerDurability
-                    To_item.PerPhyRef = From_item.PerPhyRef
-                    To_item.PerMagRef = From_item.PerMagRef
-                    To_item.PerPhyAtk = From_item.PerPhyAtk
-                    To_item.PerMagAtk = From_item.PerMagAtk
-                    To_item.PerPhyDef = From_item.PerPhyDef
-                    To_item.PerMagDef = From_item.PerMagDef
-                    To_item.PerBlock = From_item.PerBlock
-                    To_item.PerCritical = From_item.PerCritical
-                    To_item.PerAttackRate = From_item.PerAttackRate
-                    To_item.PerParryRate = From_item.PerParryRate
-                    To_item.PerPhyAbs = From_item.PerPhyAbs
-                    To_item.PerMagAbs = From_item.PerMagAbs
-
-                    Inventorys(tmp_ex.Player1Index).UserItems(To_item.Slot) = To_item
-                    UpdateItem(To_item)
+                    'Add to Player 1's invenotry
+                    Inventorys(tmp_ex.Player1Index).UserItems(To_item.Slot).ItemID = From_item.ItemID
+                    ItemManager.UpdateInvItem(Inventorys(tmp_ex.Player1Index).UserItems(To_item.Slot), cInventoryItem.Type.Inventory)
 
                     'Remove...
-                    DeleteItemFromDB(tmp_ex.Items2(i), tmp_ex.Player2Index)
-                    Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i)) = ClearItem(From_item)
+                    Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i)).ItemID = 0
+                    ItemManager.UpdateInvItem(Inventorys(tmp_ex.Player2Index).UserItems(tmp_ex.Items2(i)), cInventoryItem.Type.Inventory)
 
                 End If
             Next
@@ -399,7 +358,7 @@ Namespace Functions
 
         Public Function GetFreeSlotExchage(ByVal Index_ As Integer) As SByte
             For r = 13 To Inventorys(Index_).UserItems.Length - 1
-                If Inventorys(Index_).UserItems(r).Pk2Id = 0 And Inventorys(Index_).UserItems(r).Locked = False Then
+                If Inventorys(Index_).UserItems(r).ItemID = 0 And Inventorys(Index_).UserItems(r).Locked = False Then
                     Return r
                 End If
             Next

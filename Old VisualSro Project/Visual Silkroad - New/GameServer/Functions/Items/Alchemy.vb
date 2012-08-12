@@ -21,13 +21,23 @@ Namespace Functions
         Public Sub OnAlchemyPlusNormal(ByVal Packet As PacketReader, ByVal Index_ As Integer)
 
             Dim weapon_slot As Byte = Packet.Byte
-            Dim elix_slot As Byte = Packet.Byte
-            Dim weapon As cInvItem = Inventorys(Index_).UserItems(weapon_slot)
-            Dim elix As cInvItem = Inventorys(Index_).UserItems(elix_slot)
+            Dim elex_slot As Byte = Packet.Byte
+            Dim weapon_inv As cInventoryItem = Inventorys(Index_).UserItems(weapon_slot)
+            Dim elex_inv As cInventoryItem = Inventorys(Index_).UserItems(elex_slot)
 
-            If weapon Is Nothing Or elix Is Nothing Then
-                SendNotice("Weapon Slot Error.", Index_)
+            If weapon_inv.ItemID = 0 Or GameDB.Items.ContainsKey(weapon_inv.ItemID) = False Or elex_inv.ItemID = 0 Or GameDB.Items.ContainsKey(elex_inv.ItemID) = False Then
+                Server.Disconnect(Index_)
             End If
+
+            Dim weapon As cItem = GameDB.Items(weapon_inv.ItemID)
+            Dim elex As cItem = GameDB.Items(elex_inv.ItemID)
+            Dim ref_weapon As cRefItem = GetItemByID(weapon.ObjectID)
+            Dim ref_elex As cRefItem = GetItemByID(elex.ObjectID)
+
+            If ref_weapon.CLASS_A <> 1 Or ref_elex.CLASS_A <> 3 Or ref_elex.CLASS_B <> 3 <> ref_elex.CLASS_C <> 10 Then
+                Server.Disconnect(Index_)
+            End If
+
             Dim success As Boolean = CheckForSuccess(weapon.Plus, 0)
 
 
@@ -38,63 +48,69 @@ Namespace Functions
                 writer.Byte(1)
                 writer.Byte(2)
                 writer.Byte(weapon.Plus)
-                writer.Byte(weapon.Slot)
-                writer.DWord(weapon.Pk2Id)
-                writer.Byte(weapon.Plus)
-                writer.QWord(0)
-                'modifier
-                writer.DWord(weapon.Durability)
-                writer.Byte(0)
-                'clues
+                writer.Byte(weapon_inv.Slot)
+
+                AddItemDataToPacket(weapon, writer)
             Else
                 weapon.Plus = 0
                 writer.Create(ServerOpcodes.GAME_ALCHEMY)
                 writer.Byte(1)
-                writer.Byte(2)
-                'mode
-                writer.Byte(weapon.Plus)
-                'chnged to 0
-                writer.Byte(weapon.Slot)
-                'slot
+                writer.Byte(2) 'mode
+                writer.Byte(weapon.Plus) 'changed to 0
+                writer.Byte(weapon_inv.Slot) 'slot
                 writer.Byte(0)
-                writer.DWord(weapon.Pk2Id)
-                writer.Byte(weapon.Plus)
-                writer.QWord(0)
-                'modifier
-                writer.DWord(weapon.Durability)
-                writer.Byte(0)
-                'blues
+
+                AddItemDataToPacket(weapon, writer)
             End If
 
             Server.Send(writer.GetBytes, Index_)
 
-            Inventorys(Index_).UserItems(weapon_slot) = weapon
-            UpdateItem(weapon)
+            ItemManager.UpdateItem(weapon)
 
             'Delete Items
-            DeleteItemFromDB(elix_slot, Index_)
-            Inventorys(Index_).UserItems(elix_slot) = ClearItem(Inventorys(Index_).UserItems(elix_slot))
+            elex.Data -= 1
+            If elex.Data > 0 Then
+                ItemManager.UpdateItem(elex)
+            ElseIf elex.Data = 0 Then
+                ItemManager.RemoveItem(elex.ID)
+                Inventorys(Index_).UserItems(elex_slot).ItemID = 0
+            End If
+
 
             writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
-            writer.Byte(&HF)
-            writer.Byte(elix_slot)
+            writer.Byte(15) 'remove
+            writer.Byte(elex_slot)
             writer.Byte(4)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
         Public Sub OnAlchemyPlusLucky(ByVal Packet As PacketReader, ByVal Index_ As Integer)
-
             Dim weapon_slot As Byte = Packet.Byte
-            Dim elix_slot As Byte = Packet.Byte
+            Dim elex_slot As Byte = Packet.Byte
             Dim powder_slot As Byte = Packet.Byte
-            Dim weapon As cInvItem = Inventorys(Index_).UserItems(weapon_slot)
-            Dim elix As cInvItem = Inventorys(Index_).UserItems(elix_slot)
-            Dim powder As cInvItem = Inventorys(Index_).UserItems(powder_slot)
 
-            If weapon Is Nothing Or elix Is Nothing Or powder Is Nothing Then
-                SendNotice("Weapon Slot Error.", Index_)
+            Dim weapon_inv As cInventoryItem = Inventorys(Index_).UserItems(weapon_slot)
+            Dim elex_inv As cInventoryItem = Inventorys(Index_).UserItems(elex_slot)
+            Dim powder_inv As cInventoryItem = Inventorys(Index_).UserItems(powder_slot)
+
+            If weapon_inv.ItemID = 0 Or GameDB.Items.ContainsKey(weapon_inv.ItemID) = False Or elex_inv.ItemID = 0 Or GameDB.Items.ContainsKey(elex_inv.ItemID) = False Then
+                Server.Disconnect(Index_)
             End If
+
+            Dim weapon As cItem = GameDB.Items(weapon_inv.ItemID)
+            Dim elex As cItem = GameDB.Items(elex_inv.ItemID)
+            Dim powder As cItem = GameDB.Items(elex_inv.ItemID)
+
+            Dim ref_weapon As cRefItem = GetItemByID(weapon.ObjectID)
+            Dim ref_elex As cRefItem = GetItemByID(elex.ObjectID)
+            Dim ref_powder As cRefItem = GetItemByID(powder.ObjectID)
+
+            If ref_weapon.CLASS_A <> 1 Or ref_elex.CLASS_A <> 3 Or ref_elex.CLASS_B <> 3 <> ref_elex.CLASS_C <> 10 Or ref_powder.CLASS_A <> 3 Or ref_powder.CLASS_B <> 3 <> ref_powder.CLASS_C <> 10 Then
+                Server.Disconnect(Index_)
+            End If
+
+
             Dim success As Boolean = CheckForSuccess(weapon.Plus, 1)
 
 
@@ -105,7 +121,8 @@ Namespace Functions
                 writer.Byte(1)
                 writer.Byte(2)
                 writer.Byte(weapon.Plus)
-                writer.Byte(weapon.Slot)
+                writer.Byte(weapon_inv.Slot)
+
                 AddItemDataToPacket(weapon, writer)
 
             Else
@@ -115,35 +132,44 @@ Namespace Functions
                 writer.Byte(2)   'mode
 
                 writer.Byte(weapon.Plus)  'chnged to 0
-                writer.Byte(weapon.Slot) 'slot
+                writer.Byte(weapon_inv.Slot) 'slot
                 writer.Byte(0)
                 AddItemDataToPacket(weapon, writer)
             End If
 
             Server.Send(writer.GetBytes, Index_)
 
-            Inventorys(Index_).UserItems(weapon_slot) = weapon
-            UpdateItem(weapon)
+            ItemManager.UpdateItem(weapon)
 
             'Delete Items
             'Elex
-            DeleteItemFromDB(elix_slot, Index_)
-            Inventorys(Index_).UserItems(elix_slot) = ClearItem(Inventorys(Index_).UserItems(elix_slot))
+            elex.Data -= 1
+            If elex.Data > 0 Then
+                ItemManager.UpdateItem(elex)
+            ElseIf elex.Data = 0 Then
+                ItemManager.RemoveItem(elex.ID)
+                Inventorys(Index_).UserItems(elex_slot).ItemID = 0
+            End If
 
             writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
-            writer.Byte(&HF)
-            writer.Byte(elix_slot)
+            writer.Byte(15)
+            writer.Byte(elex_slot)
             writer.Byte(4)
             Server.Send(writer.GetBytes, Index_)
 
             'Lucky Powder
-            DeleteItemFromDB(powder_slot, Index_)
-            Inventorys(Index_).UserItems(powder_slot) = ClearItem(Inventorys(Index_).UserItems(powder_slot))
+            powder.Data -= 1
+            If powder.Data > 0 Then
+                ItemManager.UpdateItem(powder)
+            ElseIf powder.Data = 0 Then
+                ItemManager.RemoveItem(powder.ID)
+                Inventorys(Index_).UserItems(powder_slot).ItemID = 0
+            End If
 
             writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1)
-            writer.Byte(&HF)
+            writer.Byte(15)
             writer.Byte(powder_slot)
             writer.Byte(4)
             Server.Send(writer.GetBytes, Index_)

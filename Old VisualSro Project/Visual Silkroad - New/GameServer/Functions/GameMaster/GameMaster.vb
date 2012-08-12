@@ -50,54 +50,54 @@ Namespace Functions
             End If
         End Sub
 
-        Public Sub OnGmCreateItem(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Public Sub OnGmCreateItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim pk2id As UInteger = packet.DWord
             Dim plus As Byte = packet.Byte
             'Or Count
-            Dim slot As Byte = GetFreeItemSlot(index_)
+            Dim slot As Byte = GetFreeItemSlot(Index_)
 
             If slot <> -1 Then
-                Dim temp_item As cInvItem = Inventorys(index_).UserItems(slot)
-                temp_item.Pk2Id = pk2id
-                temp_item.OwnerCharID = PlayerData(index_).CharacterId
-
+                Dim temp_item As New cItem
+                temp_item.ObjectID = pk2id
+                temp_item.CreatorName = PlayerData(Index_).CharacterName & "#GM"
 
                 Dim refitem As cRefItem = GetItemByID(pk2id)
                 If refitem.CLASS_A = 1 Then
                     'Equip
                     temp_item.Plus = plus
-                    temp_item.Durability = refitem.MAX_DURA
-                    temp_item.Blues = New List(Of cInvItem.sBlue)
+                    temp_item.Data = refitem.MAX_DURA
                 ElseIf refitem.CLASS_A = 2 Then
                     'Pet
 
                 ElseIf refitem.CLASS_A = 3 Then
                     'Etc
-                    temp_item.Amount = plus
+                    temp_item.Data = plus
                 End If
 
-                Inventorys(index_).UserItems(slot) = temp_item
-                UpdateItem(Inventorys(index_).UserItems(slot))
-                'SAVE IT
+
+                Dim invItem As New cInventoryItem
+                invItem.OwnerID = PlayerData(Index_).CharacterId
+                invItem.Slot = slot
+                invItem.ItemID = ItemManager.AddItem(temp_item)
+
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                 writer.Byte(1)
-                writer.Byte(6)
-                'type = new item
+                writer.Byte(6) 'type = new item
                 writer.Byte(slot)
 
-                AddItemDataToPacket(Inventorys(index_).UserItems(slot), writer)
+                AddItemDataToPacket(temp_item, writer)
 
-                Server.Send(writer.GetBytes, index_)
+                Server.Send(writer.GetBytes, Index_)
 
-                Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", temp_item.Slot,
-                            temp_item.Pk2Id, temp_item.Durability, temp_item.Amount, temp_item.Plus)
+                Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", slot,
+                            temp_item.ObjectID, temp_item.Data, temp_item.Data, temp_item.Plus)
 
                 If Settings.Log_GM Then
-                    Log.WriteGameLog(index_, "GM", "Item_Create",
-                                     String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", temp_item.Slot,
-                                                   temp_item.Pk2Id, temp_item.Durability, temp_item.Amount,
+                    Log.WriteGameLog(Index_, "GM", "Item_Create",
+                                     String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", slot,
+                                                   temp_item.ObjectID, temp_item.Data, temp_item.Data,
                                                    temp_item.Plus))
                 End If
             End If

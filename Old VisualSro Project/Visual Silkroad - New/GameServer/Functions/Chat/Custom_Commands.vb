@@ -307,6 +307,29 @@ Namespace GameMod
                         PlayerData(Index_).SetPosition = pos
                         OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End If
+
+                Case "\\skillset"
+                    Select Case tmp(1)
+                        Case "create"
+                            Dim name As String = tmp(2)
+                            CreateSkillSet(name)
+                        Case "save"
+                            For i = 0 To GameDB.Skills.Count - 1
+                                If GameDB.Skills(i) IsNot Nothing AndAlso GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId Then
+                                    Skillset_AddSkill(tmp(2), GameDB.Skills(i).SkillID)
+                                End If
+                            Next
+                        Case "clear"
+                            Skillset_Clear(tmp(2)) 'name
+                        Case "list"
+                            For i = 0 To GameDB.SkillSets.Keys.Count - 1
+                                Dim key As UInt32 = GameDB.SkillSets.Keys(i)
+                                SendPm(Index_, GameDB.SkillSets(key).Name, "Skillsets")
+                            Next
+                        Case "load"
+                            Dim name As String = tmp(2)
+
+                    End Select
             End Select
 
 

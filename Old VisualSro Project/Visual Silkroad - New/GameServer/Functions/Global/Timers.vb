@@ -534,7 +534,7 @@ Namespace Functions
                 For i = 0 To Server.MaxClients - 1
                     Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)
                     If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
-                        If Settings.Server_DebugMode AndAlso DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then
+                        If Settings.Server_DebugMode = False AndAlso DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then
                             Server.Disconnect(i)
                         ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
                             'LoginAuth is missing..

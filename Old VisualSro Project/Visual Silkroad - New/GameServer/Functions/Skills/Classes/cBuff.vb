@@ -1,11 +1,6 @@
 ﻿Imports System.Timers
 
 Namespace Functions
-    Public Class cSkill
-        Public SkillID As UInteger
-        Public OwnerID As UInteger
-    End Class
-
     Public Class cBuff
         Public OwnerID As UInteger
         Public OverID As UInteger
@@ -65,4 +60,3 @@ Namespace Functions
         SkillBuff = 1
     End Enum
 End Namespace
-

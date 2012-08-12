@@ -55,7 +55,7 @@ Namespace Functions
 
                             'Equip
                             temp_item.Plus = 0
-                            temp_item.Data = BuyItem.MAX_DURA
+                            temp_item.Data = Package.Amout
 
 
                             Dim invItem As New cInventoryItem

@@ -28,6 +28,7 @@ Namespace GameDB
 
         'Skills
         Public Skills() As cSkill
+        Public SkillSets As New Dictionary(Of UInt32, cSkillSet)
 
         'Guilds
         Public Guilds As New List(Of cGuild)
@@ -62,6 +63,8 @@ Namespace GameDB
                     GetGuildData()
 
                     FirstRun = False
+
+                    Log.WriteSystemLog("Inital Playerdata from Database loaded!")
                 Else
                     GetUserData()
                 End If
@@ -337,6 +340,33 @@ Namespace GameDB
                 Skills(i) = New cSkill
                 Skills(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                 Skills(i).SkillID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
+            Next
+        End Sub
+
+        Public Sub GetSkillSetData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From skillset_name")
+            Dim count As Integer = tmp.Tables(0).Rows.Count
+
+
+            For i = 0 To count - 1
+                Dim tmpSet As New cSkillSet
+                tmpSet.SetID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpSet.Name = Convert.ToString(tmp.Tables(0).Rows(i).ItemArray(1))
+                SkillSets.Add(tmpSet.SetID, tmpSet)
+            Next
+
+            tmp = Database.GetDataSet("SELECT * From skillset")
+            count = tmp.Tables(0).Rows.Count
+
+            For i = 0 To count - 1
+                Dim setID As UInt32 = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
+                Dim skillID = Convert.ToString(tmp.Tables(0).Rows(i).ItemArray(1))
+
+                If SkillSets.ContainsKey(setID) Then
+                    SkillSets(setID).Skills.Add(skillID)
+                Else
+                    Log.WriteSystemLog(setID & " not found!")
+                End If
             Next
         End Sub
 #End Region

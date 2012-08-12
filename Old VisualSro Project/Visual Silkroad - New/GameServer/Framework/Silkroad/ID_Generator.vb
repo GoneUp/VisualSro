@@ -114,7 +114,7 @@
         Private ItemIdCounter As UInt64 = 2
 
         Public Function GetItemId() As UInt64
-            Dim toreturn As UInteger = ItemIdCounter
+            Dim toreturn As UInt64 = ItemIdCounter
             If ItemIdCounter < UInt64.MaxValue Then
                 ItemIdCounter += 1
             ElseIf ItemIdCounter = UInt64.MaxValue Then
@@ -129,5 +129,20 @@
         Public Sub SetItemInitalValue(ByVal ID As UInt64)
             ItemIdCounter = ID + 1
         End Sub
+
+        '======================Skillset ID's
+
+        Public Function GetSkillsetId() As UInt32
+            Dim toreturn As UInt32 = 1
+            For i = 0 To GameDB.SkillSets.Keys.Count - 1
+                Dim key As UInt32 = GameDB.SkillSets.Keys(i)
+                If GameDB.SkillSets(key).SetID >= toreturn Then
+                    toreturn = GameDB.SkillSets(key).SetID + 1
+                End If
+            Next
+            Return toreturn
+        End Function
+
+
     End Module
 End Namespace

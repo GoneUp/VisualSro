@@ -125,13 +125,12 @@ Namespace Functions
             Dim _refmastery As cMastery = GetMasteryByID(_skill.MasteryID, Index_)
 
             If _skill Is Nothing Or _refmastery Is Nothing Then
-
+                PlayerData(Index_).Skilling = False
+                Exit Sub
             End If
 
 
-            If _
-                PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 And CheckIfUserOwnSkill(SkillID, Index_) = False And
-                _refmastery.Level >= _skill.MasteryLevel Then
+            If PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 And CheckIfUserOwnSkill(SkillID, Index_) = False And _refmastery.Level >= _skill.MasteryLevel Then
                 Dim skill As New cSkill
                 skill.OwnerID = PlayerData(Index_).CharacterId
                 skill.SkillID = SkillID
@@ -158,7 +157,7 @@ Namespace Functions
             Array.Resize(GameDB.Skills, NewIndex)
             GameDB.Skills(NewIndex - 1) = toadd
 
-            Database.SaveQuery(String.Format("INSERT INTO char_skills(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
+            Database.SaveQuery(String.Format("INSERT INTO char_skill(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
                                              toadd.SkillID))
         End Sub
 
@@ -167,9 +166,7 @@ Namespace Functions
             For i = 0 To GameDB.Masterys.Length - 1
 
                 If GameDB.Masterys(i) IsNot Nothing Then
-                    If _
-                        GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And
-                        GameDB.Masterys(i).MasteryID = MasteryID Then
+                    If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Masterys(i).MasteryID = MasteryID Then
                         Return GameDB.Masterys(i)
                     End If
                 Else

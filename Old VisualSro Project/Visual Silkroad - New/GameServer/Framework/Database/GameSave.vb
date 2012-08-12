@@ -83,5 +83,19 @@ Namespace GameDB
                                                      PlayerData(Index_).Pk2ID, PlayerData(Index_).Volume,
                                                      PlayerData(Index_).CharacterId))
         End Sub
+
+        Public Sub SaveSkillsetCreate(ByVal setID As UInt32, ByVal name As String)
+            Database.SaveQuery(String.Format("INSERT into skillset_name(setID, name) VALUES ('{0}', '{1}')", setID, name))
+        End Sub
+
+        Public Sub SaveSkillsetNewSkill(ByVal setID As UInt32, ByVal skill As UInt32)
+            Database.SaveQuery(String.Format("INSERT into skillset(setID, skillID) VALUES ('{0}', '{1}')", setID, skill))
+        End Sub
+        Public Sub SaveSkillsetRename(ByVal setID As UInt32, ByVal name As String)
+            Database.SaveQuery(String.Format("UPDATE skillset_name SET name='{0}' where setID='{1}'", name, setID))
+        End Sub
+        Public Sub SaveSkillsetClear(ByVal setID As UInt32)
+            Database.SaveQuery(String.Format("DELETE FROM skillset where setID='{0}'", setID))
+        End Sub
     End Module
 End Namespace

@@ -696,13 +696,13 @@ Module SilkroadData
         Return Nothing
     End Function
 
-    Structure MallPackage_
+    Public Class MallPackage_
         Public Name_Normal As String
         Public Name_Package As String
         Public Amout As UInt16
         Public Price As UInteger
         Public Variance As ULong
-    End Structure
+    End Class
 
     Public Sub DumpItemMall(ByVal FileAmoutPath As String, ByVal FilePricePath As String)
         RefMallItems.Clear()
@@ -716,17 +716,23 @@ Module SilkroadData
             tmp.Amout = tmpString(6)
             tmp.Variance = tmpString(8)
 
-            Dim ItemPriceFile As String() = File.ReadAllLines(FilePricePath)
-            For d As Integer = 0 To ItemPriceFile.Length - 1
-                Dim tmpString2 As String() = ItemPriceFile(d).Split(ControlChars.Tab)
-                If tmpString2(2) = tmp.Name_Package And tmpString2(3) = 2 Then
-                    tmp.Price = tmpString2(5)
-                    Exit For
-                End If
-            Next
-
             RefMallItems.Add(tmp)
         Next
+
+        Dim ItemPriceFile As String() = File.ReadAllLines(FilePricePath)
+        For d As Integer = 0 To ItemPriceFile.Length - 1
+            Dim tmpString As String() = ItemPriceFile(d).Split(ControlChars.Tab)
+            If tmpString(3) = 2 Then
+                For i = 0 To RefMallItems.Count - 1
+                    If RefMallItems(i).Name_Package = tmpString(2) Then
+                        RefMallItems(i).Name_Normal = tmpString(5)
+                        Exit For
+                    End If
+                Next
+
+            End If
+        Next
+
     End Sub
 
     Public Function GetItemMallItem(ByVal Code_Name As String) As MallPackage_

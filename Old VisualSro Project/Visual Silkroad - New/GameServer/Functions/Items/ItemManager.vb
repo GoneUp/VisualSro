@@ -153,6 +153,7 @@
         Public Sub RemoveItem(ByVal ID As UInt64)
             If GameDB.Items.ContainsKey(ID) Then
                 GameDB.Items.Remove(ID)
+                Database.SaveQuery(String.Format("DELETE FROM items where ID='{0}'", ID))
             Else
                 Throw New Exception("ItemManager:RemoveItem ItemID not found!")
             End If
@@ -163,26 +164,31 @@
                 Case cInventoryItem.Type.Inventory
                     If GameDB.InventoryItems.Contains(item) Then
                         GameDB.InventoryItems.Remove(item)
+                        Database.SaveQuery(String.Format("DELETE FROM inventory where CharID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
                 Case cInventoryItem.Type.AvatarInventory
                     If GameDB.AvatarInventoryItems.Contains(item) Then
                         GameDB.AvatarInventoryItems.Remove(item)
+                        Database.SaveQuery(String.Format("DELETE FROM inventory_avatar where CharID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
                 Case cInventoryItem.Type.COSInventory
                     If GameDB.COSInventoryItems.Contains(item) Then
                         GameDB.COSInventoryItems.Remove(item)
+                        Database.SaveQuery(String.Format("DELETE FROM inventory_cos where COSID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
                 Case cInventoryItem.Type.Storage
                     If GameDB.StorageItems.Contains(item) Then
                         GameDB.StorageItems.Remove(item)
+                        Database.SaveQuery(String.Format("DELETE FROM storage where AccountID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
                 Case cInventoryItem.Type.GuildStorage
                     If GameDB.GuildStorageItems.Contains(item) Then
                         GameDB.GuildStorageItems.Remove(item)
+                        Database.SaveQuery(String.Format("DELETE FROM storage_guild where GuildID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
             End Select
@@ -194,6 +200,8 @@
                     For i = 0 To GameDB.InventoryItems.Count - 1
                         If GameDB.InventoryItems(i).OwnerID = ownerID And GameDB.InventoryItems(i).Slot = slot Then
                             GameDB.InventoryItems.Remove(GameDB.InventoryItems(i))
+                            Database.SaveQuery(String.Format("DELETE FROM inventory where CharID='{0}' AND Slot='{1}'", GameDB.InventoryItems(i).OwnerID, GameDB.InventoryItems(i).Slot))
+                            Exit For
                         End If
                     Next
 
@@ -201,6 +209,8 @@
                     For i = 0 To GameDB.AvatarInventoryItems.Count - 1
                         If GameDB.AvatarInventoryItems(i).OwnerID = ownerID And GameDB.AvatarInventoryItems(i).Slot = slot Then
                             GameDB.AvatarInventoryItems.Remove(GameDB.AvatarInventoryItems(i))
+                            Database.SaveQuery(String.Format("DELETE FROM inventory_avatar where CharID='{0}' AND Slot='{1}'", GameDB.AvatarInventoryItems(i).OwnerID, GameDB.AvatarInventoryItems(i).Slot))
+                            Exit For
                         End If
                     Next
 
@@ -208,6 +218,8 @@
                     For i = 0 To GameDB.COSInventoryItems.Count - 1
                         If GameDB.COSInventoryItems(i).OwnerID = ownerID And GameDB.COSInventoryItems(i).Slot = slot Then
                             GameDB.COSInventoryItems.Remove(GameDB.COSInventoryItems(i))
+                            Database.SaveQuery(String.Format("DELETE FROM inventory_cos where COSID='{0}' AND Slot='{1}'", GameDB.COSInventoryItems(i).OwnerID, GameDB.COSInventoryItems(i).Slot))
+                            Exit For
                         End If
                     Next
 
@@ -215,6 +227,8 @@
                     For i = 0 To GameDB.StorageItems.Count - 1
                         If GameDB.StorageItems(i).OwnerID = ownerID And GameDB.StorageItems(i).Slot = slot Then
                             GameDB.StorageItems.Remove(GameDB.StorageItems(i))
+                            Database.SaveQuery(String.Format("DELETE FROM storage where AccountID='{0}' AND Slot='{1}'", GameDB.StorageItems(i).OwnerID, GameDB.StorageItems(i).Slot))
+                            Exit For
                         End If
                     Next
 
@@ -222,6 +236,8 @@
                     For i = 0 To GameDB.GuildStorageItems.Count - 1
                         If GameDB.GuildStorageItems(i).OwnerID = ownerID And GameDB.GuildStorageItems(i).Slot = slot Then
                             GameDB.GuildStorageItems.Remove(GameDB.GuildStorageItems(i))
+                            Database.SaveQuery(String.Format("DELETE FROM storage_guild where GuildID='{0}' AND Slot='{1}'", GameDB.GuildStorageItems(i).OwnerID, GameDB.GuildStorageItems(i).Slot))
+                            Exit For
                         End If
                     Next
 

@@ -122,7 +122,7 @@
                     Server.Stop()
                 End If
                 Database.ExecuteQuerys()
-                GlobalManagerCon.Disconnect()
+                'GlobalManagerCon.Disconnect()
 
                 Log.WriteSystemLog("Cleanup Server...")
 

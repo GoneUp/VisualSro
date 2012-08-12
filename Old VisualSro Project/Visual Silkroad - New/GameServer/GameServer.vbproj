@@ -155,7 +155,8 @@
     <Compile Include="Functions\Players\Movement\Movement.vb" />
     <Compile Include="Functions\Players\PlayerAttack.vb" />
     <Compile Include="Functions\Players\PlayerBuff.vb" />
-    <Compile Include="Functions\Skills\cMastery.vb" />
+    <Compile Include="Functions\Skills\Classes\cBuff.vb" />
+    <Compile Include="Functions\Skills\Classes\cMastery.vb" />
     <Compile Include="Functions\Chat\Custom_Commands.vb" />
     <Compile Include="Functions\Exchange\cExchange.vb" />
     <Compile Include="Functions\Exchange\Exchange.vb" />
@@ -173,8 +174,10 @@
     <Compile Include="Functions\Players\PlayerActions.vb" />
     <Compile Include="Functions\Players\Players.vb" />
     <Compile Include="Functions\Players\PlayerStats.vb" />
-    <Compile Include="Functions\Skills\cSkill.vb" />
+    <Compile Include="Functions\Skills\Classes\cSkill.vb" />
+    <Compile Include="Functions\Skills\Classes\cSkillSet.vb" />
     <Compile Include="Functions\Skills\Mastery.vb" />
+    <Compile Include="Functions\Skills\Skillset.vb" />
     <Compile Include="Functions\Stall\cStall.vb" />
     <Compile Include="Functions\Stall\Stall.vb" />
     <Compile Include="Global\GlobalDef.vb" />

@@ -325,12 +325,13 @@ Namespace Functions
                                                      .CharacterId))
 
                     ' Masterys
+                    Dim mastery As New cMastery
 
                     If IsCharChinese(model) Then
                         'Chinese Char
                         '257 - 259
 
-                        Dim mastery As New cMastery
+                        mastery = New cMastery
                         mastery.OwnerID = .CharacterId
                         mastery.Level = Settings.Player_StartMasteryLevel
                         mastery.MasteryID = 257
@@ -378,7 +379,7 @@ Namespace Functions
 
                         'Europe Char
                         '513 - 518
-                        Dim mastery As New cMastery
+                        mastery = New cMastery
                         mastery.OwnerID = .CharacterId
                         mastery.Level = Settings.Player_StartMasteryLevel
                         mastery.MasteryID = 513
@@ -414,6 +415,12 @@ Namespace Functions
                         mastery.MasteryID = 518
                         AddMasteryToDB(mastery)
                     End If
+
+                    'Job Mastery
+                    Mastery.OwnerID = .CharacterId
+                    Mastery.Level = Settings.Player_StartMasteryLevel
+                    mastery.MasteryID = 1000
+                    AddMasteryToDB(Mastery)
 
 
                     'ITEMS

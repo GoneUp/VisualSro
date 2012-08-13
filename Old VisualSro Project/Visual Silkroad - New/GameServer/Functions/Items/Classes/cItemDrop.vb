@@ -1,6 +1,6 @@
 ﻿Namespace Functions
     Class cItemDrop
-        Public UniqueID As UInteger
+        Inherits cGameObject
         Public DroppedBy As UInteger
         Public DespawnTime As DateTime
         Public Position As Position

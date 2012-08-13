@@ -59,6 +59,8 @@ Namespace Settings
         Public Server_SpawnsPerSec As UInteger = 50
         Public Server_SpawnRate As Integer = 2
 
+        Public Server_WorldChannel As UInt32 = 1
+
         Public Log_Detail As Boolean = False
         Public Log_GM As Boolean = False
         Public Log_Mall As Boolean = False
@@ -143,6 +145,7 @@ Namespace Settings
             Server.Port = Server_Port
             Server.MaxNormalClients = Server_NormalSlots
             Server.MaxClients = Server_MaxClients
+            Server.Server_DebugMode = Server_DebugMode
         End Sub
     End Module
 End Namespace

@@ -32,6 +32,7 @@ Namespace Functions
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.AUTH
             Else
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
 

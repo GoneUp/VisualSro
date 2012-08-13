@@ -22,6 +22,7 @@ Namespace Functions
                 RefObj = GetObject(NpcList(UniqueID).Pk2ID)
             Else
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             PackageName = RefObj.Shop.Tab(shopline).Items(itemline).PackageName
@@ -124,6 +125,7 @@ Namespace Functions
 
             If Inventorys(Index_).UserItems(slot).ItemID = 0 Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim InvItem As cInventoryItem = Inventorys(Index_).UserItems(slot)

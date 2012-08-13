@@ -127,6 +127,7 @@ Namespace Functions
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LAUNCHER
             Else
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim writer As New PacketWriter
@@ -167,6 +168,7 @@ Namespace Functions
                 Timers.LoginInfoTimer(Index_).Start()
             ElseIf SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim NameServer As String = "SRO_Russia_Official"
@@ -212,6 +214,7 @@ Namespace Functions
         Public Sub HandleLogin(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim loginMethod As Byte = packet.Byte()
@@ -368,8 +371,6 @@ Namespace Functions
                             GlobalManagerCon.Log("gmc err: GS not online! user: " & user)
                     End Select
                 End If
-
-
             End If
         End Sub
     End Module

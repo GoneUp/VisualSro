@@ -26,8 +26,7 @@ Namespace Functions
             writer.Float(Item_.Position.X)
             writer.Float(Item_.Position.Z)
             writer.Float(Item_.Position.Y)
-            writer.Word(0)
-            'angle
+            writer.Word(0)  'angle
 
             writer.Byte(0)
             ' writer.DWord(UInt32.MaxValue)
@@ -41,6 +40,7 @@ Namespace Functions
             tmp_.UniqueID = Id_Gen.GetUnqiueId
             tmp_.DroppedBy = InvItem.OwnerID
             tmp_.Position = Position
+            tmp_.ChannelId = Settings.Server_WorldChannel
             tmp_.Item = Item
             tmp_.DespawnTime = Date.Now.AddMinutes(3)
 
@@ -64,12 +64,9 @@ Namespace Functions
                 If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                     If CheckRange(player.Position, Position) Then
                         If PlayerData(refindex).SpawnedItems.Contains(tmp_.UniqueID) = False Then
-                            'Dim tmpSpawn As New GroupSpawn
-                            'tmpSpawn.AddObject(tmp_.UniqueID)
-                            'Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
-                            Dim writer As New PacketWriter
-                            CreateItemSpawnPacket(tmp_, writer, True)
-                            Server.Send(writer.GetBytes, refindex)
+                            Dim tmpSpawn As New GroupSpawn
+                            tmpSpawn.AddObject(tmp_.UniqueID)
+                            Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
                             PlayerData(refindex).SpawnedItems.Add(tmp_.UniqueID)
                         End If
                     End If

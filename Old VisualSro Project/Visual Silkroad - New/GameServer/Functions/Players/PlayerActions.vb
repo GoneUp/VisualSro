@@ -16,7 +16,6 @@ Namespace Functions
                     Server.Send(writer.GetBytes, Index_)
 
                     Timers.PlayerExitTimer(Index_).Interval = countdown * 1000
-
                 Case 2 'Restart
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
@@ -106,12 +105,16 @@ Namespace Functions
         End Sub
 
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)
+            If PlayerData(Index_).TeleportType = TeleportType_.None Then
+                Server.Disconnect(Index_)
+                Exit Sub
+            End If
+
             DespawnPlayerTeleport(Index_)
             PlayerData(Index_).Ingame = False
+            SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.GOING_INGAME
 
             Dim writer As New PacketWriter
-
-
             If PlayerData(Index_).TeleportType = TeleportType_.Npc Then
                 writer.Create(ServerOpcodes.GAME_LOADING_START_2)
                 writer.Byte(PlayerData(Index_).Position.XSector)
@@ -120,7 +123,7 @@ Namespace Functions
 
                 OnCharacterInfo(Index_)
 
-            Else
+            ElseIf PlayerData(Index_).TeleportType = TeleportType_.GM Then
                 writer.Create(ServerOpcodes.GAME_LOADING_START)
                 Server.Send(writer.GetBytes, Index_)
 
@@ -134,17 +137,14 @@ Namespace Functions
 
             writer = New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHARACTER_ID)
-            writer.DWord(PlayerData(Index_).UniqueID)
-            'charid
-            writer.Word(Date.Now.Day)
-            'moon pos
-            writer.Byte(Date.Now.Hour)
-            'hours
-            writer.Byte(Date.Now.Minute)
-            'minute
+            writer.DWord(PlayerData(Index_).UniqueID)  'charid
+            writer.Word(Date.Now.Day)  'moon pos
+            writer.Byte(Date.Now.Hour) 'hours
+            writer.Byte(Date.Now.Minute) 'minute
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = False
+            PlayerData(Index_).TeleportType = TeleportType_.None
         End Sub
 
         Public Sub OnAngleUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -222,8 +222,7 @@ Namespace Functions
                 End If
             Next
 
-            Database.SaveQuery(
-                String.Format("UPDATE hotkeys SET Type='{0}', IconID='{1}' WHERE OwnerID='{2}' AND Slot='{3}' ",
+            Database.SaveQuery(String.Format("UPDATE hotkeys SET Type='{0}', IconID='{1}' WHERE OwnerID='{2}' AND Slot='{3}' ",
                               hotkey.Type, hotkey.IconID, hotkey.OwnerID, hotkey.Slot))
         End Sub
 
@@ -326,7 +325,7 @@ Namespace Functions
             PlayerData(Index_).Alive = False
             PlayerData(Index_).PositionDead = PlayerData(Index_).Position
             UpdateHP(Index_)
-            'GetXP(GetLevelDataByLevel(PlayerData(Index_).Level).Experience * 0.01, 0, Index_, PlayerData(Index_).UniqueId) 'Reduce Experience by 1 %
+            GetXP(GetLevelData(PlayerData(Index_).Level).Experience * 0.01, 0, Index_, PlayerData(Index_).UniqueID) 'Reduce Experience by 1 %
 
             GameDB.SaveDeathPosition(Index_)
         End Sub
@@ -375,6 +374,7 @@ Namespace Functions
 
             If NpcList.ContainsKey(ObjectId) = False Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim ref As SilkroadObject = GetObject(NpcList(ObjectId).Pk2ID)

@@ -7,6 +7,7 @@ Namespace Functions
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST
             Else
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim tag As Byte = pack.Byte
@@ -46,6 +47,7 @@ Namespace Functions
                     If CharListing(Index_).Chars(i) Is Nothing Then
                         Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & CharListing(Index_).LoginInformation.Name)
                         Server.Disconnect(Index_)
+                        Exit Sub
                     End If
 
                     With CharListing(Index_).Chars(i)
@@ -215,6 +217,7 @@ Namespace Functions
                 'Wrong Model Code! 
                 Server.Disconnect(Index_)
                 Log.WriteSystemLog(String.Format("[Character Creation][Wrong Model: {0}][Index: {1}]", model, Index_))
+                Exit Sub
             End If
 
             Dim _refitems(4) As cRefItem
@@ -228,6 +231,7 @@ Namespace Functions
                     Server.Disconnect(Index_)
                     Log.WriteSystemLog(String.Format("[Character Creation][Wrong Item: {0}][Index: {1}]",
                                                      _refitems(i).ITEM_TYPE_NAME, Index_))
+                    Exit Sub
                 End If
                 Debug.Print("[Character Creation][" & i & "][ID:" & _items(i) & "]")
             Next
@@ -545,6 +549,7 @@ Namespace Functions
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.GOING_INGAME
             Else
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim SelectedNick As String = pack.String(pack.Word)
@@ -578,6 +583,8 @@ Namespace Functions
             Player_CheckDeath(Index_, True)
             GameMod.Damage.OnPlayerLogon(Index_)
 
+            'Instance Stuff
+            PlayerData(Index_).ChannelId = Settings.Server_WorldChannel
 
             'Packet's
             writer = New PacketWriter
@@ -783,6 +790,7 @@ Namespace Functions
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.INGAME
             Else
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             PlayerData(Index_).Ingame = True
@@ -815,6 +823,7 @@ Namespace Functions
                 If CharListing(Index_).Chars(i) Is Nothing Then
                     Log.WriteSystemLog("Charlist, Char is nothing, AccID: " & CharListing(Index_).LoginInformation.Name)
                     Server.Disconnect(Index_)
+                    Exit Sub
                 End If
 
                 With CharListing(Index_).Chars(i)

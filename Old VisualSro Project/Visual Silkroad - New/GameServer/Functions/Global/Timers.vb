@@ -387,6 +387,7 @@ Namespace Functions
                             ObjectSpawnCheck(Index_)
                             SendPm(Index_, "Walk End", "hh")
 
+                            GameDB.SavePosition(Index_)
                             CheckForCaveTeleporter(Index_)
                         End If
                     End If

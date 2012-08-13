@@ -90,8 +90,10 @@ Class Program
             read = read + length + 6
 
             Dim packet As New PacketReader(newbuff)
+            If Settings.Server_DebugMode = True Then
+                Log.LogPacket(newbuff, False)
+            End If
 
-            'Log.LogPacket(newbuff, False)
             Functions.Parse(packet, index_)
         Loop
     End Sub

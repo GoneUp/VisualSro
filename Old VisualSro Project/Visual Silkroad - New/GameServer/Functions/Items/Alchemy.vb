@@ -27,6 +27,7 @@ Namespace Functions
 
             If weapon_inv.ItemID = 0 Or GameDB.Items.ContainsKey(weapon_inv.ItemID) = False Or elex_inv.ItemID = 0 Or GameDB.Items.ContainsKey(elex_inv.ItemID) = False Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim weapon As cItem = GameDB.Items(weapon_inv.ItemID)
@@ -36,6 +37,7 @@ Namespace Functions
 
             If ref_weapon.CLASS_A <> 1 Or ref_elex.CLASS_A <> 3 Or ref_elex.CLASS_B <> 3 <> ref_elex.CLASS_C <> 10 Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim success As Boolean = CheckForSuccess(weapon.Plus, 0)
@@ -96,6 +98,7 @@ Namespace Functions
 
             If weapon_inv.ItemID = 0 Or GameDB.Items.ContainsKey(weapon_inv.ItemID) = False Or elex_inv.ItemID = 0 Or GameDB.Items.ContainsKey(elex_inv.ItemID) = False Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
             Dim weapon As cItem = GameDB.Items(weapon_inv.ItemID)
@@ -108,6 +111,7 @@ Namespace Functions
 
             If ref_weapon.CLASS_A <> 1 Or ref_elex.CLASS_A <> 3 Or ref_elex.CLASS_B <> 3 <> ref_elex.CLASS_C <> 10 Or ref_powder.CLASS_A <> 3 Or ref_powder.CLASS_B <> 3 <> ref_powder.CLASS_C <> 10 Then
                 Server.Disconnect(Index_)
+                Exit Sub
             End If
 
 

@@ -68,7 +68,7 @@ Namespace Functions
         ''' <returns>The new Mob Unique Id</returns>
         ''' <remarks></remarks>
         Public Function SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position,
-                                 ByVal Angle As UInteger, ByVal SpotID As Long) As UInteger
+                                 ByVal Angle As UInteger, ByVal SpotID As Long, Optional ByVal channelID As UInt32 = UInt32.MaxValue) As UInteger
             Dim mob_ As SilkroadObject = GetObject(MobID)
             Dim tmp As New cMonster
             tmp.UniqueID = Id_Gen.GetUnqiueId
@@ -79,6 +79,12 @@ Namespace Functions
             tmp.SpotID = SpotID
             tmp.Mob_Type = Type
             tmp.HP_Cur = mob_.Hp
+
+            If channelID = UInt32.MaxValue Then
+                tmp.ChannelId = Settings.Server_WorldChannel
+            Else
+                tmp.ChannelId = channelID
+            End If
 
             Try
                 'Try Catch, due to several spawn errors from gm's
@@ -122,22 +128,22 @@ Namespace Functions
             End If
 
 
-            For refindex As Integer = 0 To Server.MaxClients
-                Dim socket As Socket = Server.ClientList.GetSocket(refindex)
-                Dim player As cCharacter = PlayerData(refindex)
-                'Check if Player is ingame
-                If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
-                    If CheckRange(player.Position, Position) Then
-                        If PlayerData(refindex).SpawnedMonsters.Contains(tmp.UniqueID) = False Then
-                            Dim tmpSpawn As New GroupSpawn
-                            tmpSpawn.AddObject(tmp.UniqueID)
-                            SendNotice(tmp.UniqueID & " type: " & mob_.TypeName)
-                            tmpSpawn.Send(refindex, GroupSpawn.GroupSpawnMode.SPAWN)
-                            PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
-                        End If
-                    End If
-                End If
-            Next refindex
+            'For refindex As Integer = 0 To Server.MaxClients - 1
+            '    Dim socket As Socket = Server.ClientList.GetSocket(refindex)
+            '    Dim player As cCharacter = PlayerData(refindex)
+            '    'Check if Player is ingame
+            '    If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
+            '        If CheckRange(player.Position, Position) Then
+            '            If PlayerData(refindex).SpawnedMonsters.Contains(tmp.UniqueID) = False Then
+            '                Dim tmpSpawn As New GroupSpawn
+            '                tmpSpawn.AddObject(tmp.UniqueID)
+            '                SendNotice(tmp.UniqueID & " type: " & mob_.TypeName)
+            '                tmpSpawn.Send(refindex, GroupSpawn.GroupSpawnMode.SPAWN)
+            '                PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
+            '            End If
+            '        End If
+            '    End If
+            'Next refindex
 
             Return tmp.UniqueID
         End Function

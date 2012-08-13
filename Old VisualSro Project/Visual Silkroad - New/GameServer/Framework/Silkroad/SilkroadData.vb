@@ -5,7 +5,6 @@ Module SilkroadData
     Public RefItems As New Dictionary(Of UInteger, cRefItem)
     Public RefGoldData As New List(Of cGoldData)
     Public RefLevelData As New List(Of LevelData)
-
     Public RefTmpSkills As New Dictionary(Of UInteger, RefSkill.tmpSkill)
     Public RefSkills As New Dictionary(Of UInteger, RefSkill)
     Public RefSkillGroups As New Dictionary(Of String, SkillGroup)
@@ -61,12 +60,16 @@ Module SilkroadData
             Log.WriteSystemLog("Loaded " & RefSpecialZones.Count & " Special_Sectors.")
 
             DumpNameFiles()
+            Log.WriteSystemLog("Loaded Namefile.")
 
             DumpNpcChatFile(base_path & "\data\npcchatid.txt")
+            Log.WriteSystemLog("Loaded NpcChat data.")
 
             DumpAbuseListFile(base_path & "\data\abuselist.txt")
+            Log.WriteSystemLog("Loaded " & RefAbuseList.Count & "  Abuselist-Entry's.")
 
             DumpShopDataFile()
+            Log.WriteSystemLog("Loaded Shop data.")
 
             DumpCaveTeleporterFile(base_path & "\data\cave_teleport.txt")
             Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
@@ -512,7 +515,12 @@ Module SilkroadData
             RefSkills.Add(tmp.Pk2Id, tmp)
 
             If RefSkillGroups.ContainsKey(tmp.SkillGroupName) Then
-                RefSkillGroups(tmp.SkillGroupName).Skills.Add(tmp.SkillGroupLevel, tmp.Pk2Id)
+                If RefSkillGroups(tmp.SkillGroupName).Skills.ContainsKey(tmp.SkillGroupLevel) = False Then
+                    RefSkillGroups(tmp.SkillGroupName).Skills.Add(tmp.SkillGroupLevel, tmp.Pk2Id)
+                Else
+                    Debug.Print(0)
+                End If
+
             Else
                 Dim tmpGroup As New SkillGroup
                 tmpGroup.ID = tmp.SkillGroupID
@@ -1051,7 +1059,7 @@ Module SilkroadData
                 End If
             End If
         Next
-
+        Log.WriteSystemLog("Shop")
 
         'Dump Tabs
         lines = File.ReadAllLines(base_path & "data\refshoptab.txt")
@@ -1079,8 +1087,10 @@ Module SilkroadData
                 End If
             End If
         Next
+        Log.WriteSystemLog("Tabs")
 
         CorrectHotanData()
+        Log.WriteSystemLog("Tabs2")
 
         'Dump Items
         lines = File.ReadAllLines(base_path & "data\refshopgoods.txt")
@@ -1096,14 +1106,10 @@ Module SilkroadData
                         For r = 0 To RefObjects(pk2Id).Shop.Tab.Count - 1
                             If RefObjects(pk2Id).Shop.Tab(r) IsNot Nothing Then
                                 If RefObjects(pk2Id).Shop.Tab(r).TabName = tabName Then
-                                    If RefObjects(pk2Id).Shop.Tab(r).Items.Count <= itemLine Then
-                                        Dim d = RefObjects(pk2Id).Shop.Tab(r)
-                                        Debug.Print(9)
-                                    End If
-
                                     RefObjects(pk2Id).Shop.Tab(r).Items(itemLine) = New ShopData_.ShopItem_
                                     RefObjects(pk2Id).Shop.Tab(r).Items(itemLine).ItemLine = itemLine
                                     RefObjects(pk2Id).Shop.Tab(r).Items(itemLine).PackageName = tmpString(3)
+                                    Exit For
                                 End If
                             End If
                         Next

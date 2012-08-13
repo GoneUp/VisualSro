@@ -56,6 +56,7 @@ Namespace GameDB
 
                     GetMasteryData()
                     GetSkillData()
+                    GetSkillSetData()
 
                     GetPositionData()
                     GetHotkeyData()

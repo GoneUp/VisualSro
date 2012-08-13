@@ -76,10 +76,11 @@ Namespace Settings
             Database.DbUsername = Database_User
             Database.DbPassword = Database_Password
 
-            Server.ip = Server_Ip
+            Server.Ip = Server_Ip
             Server.Port = Server_Port
             Server.MaxNormalClients = Server_NormalSlots
             Server.MaxClients = Server_MaxClients
+            Server.Server_DebugMode = Server_DebugMode
         End Sub
 
     End Module

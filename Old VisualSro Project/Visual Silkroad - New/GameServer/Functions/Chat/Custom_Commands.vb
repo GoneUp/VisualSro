@@ -314,27 +314,71 @@ Namespace GameMod
                     Select Case tmp(1)
                         Case "create"
                             CreateSkillSet(name)
-                            SendPm(Index_, "Skillset " & name & " created!", "SERVER")
+                            SendPm(Index_, "Skillset " & name & " created!", "[SERVER]")
                         Case "save"
                             For i = 0 To GameDB.Skills.Count - 1
                                 If GameDB.Skills(i) IsNot Nothing AndAlso GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId Then
                                     Skillset_AddSkill(name, GameDB.Skills(i).SkillID)
                                 End If
                             Next
-                            SendPm(Index_, "Skillset " & name & " saved!", "SERVER")
+                            SendPm(Index_, "Skillset " & name & " saved!", "[SERVER]")
                         Case "clear"
                             Skillset_Clear(tmp(2)) 'name
-                            SendPm(Index_, "Skillset " & name & " cleared!", "SERVER")
+                            SendPm(Index_, "Skillset " & name & " cleared!", "[SERVER]")
                         Case "list"
                             SendPm(Index_, "Skillset List: ", "SERVER")
                             For i = 0 To GameDB.SkillSets.Keys.Count - 1
                                 Dim key As UInt32 = GameDB.SkillSets.Keys(i)
-                                SendPm(Index_, GameDB.SkillSets(key).Name, "SERVER")
+                                SendPm(Index_, GameDB.SkillSets(key).Name, "[SERVER]")
                             Next
                         Case "load"
                             Skillset_Load(name, Index_)
                             SendPm(Index_, "Skillset " & name & " loaded!", "[SERVER]")
                             OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
+                    End Select
+
+                Case "\\channel"
+                    Select Case tmp(1)
+                        Case "actual"
+                            SendPm(Index_, "Actual Channel: " & PlayerData(Index_).ChannelId & ", AvoidChannel:" & PlayerData(Index_).AvoidChannels.ToString, "[SERVER]")
+                        Case "switch"
+                            Dim newchannel As UInt32 = Convert.ToUInt32(tmp(2))
+                            PlayerData(Index_).ChannelId = newchannel
+                            ObjectSpawnCheck(Index_)
+                        Case "seeall"
+                            If PlayerData(Index_).AvoidChannels Then
+                                PlayerData(Index_).AvoidChannels = False
+                            Else
+                                PlayerData(Index_).AvoidChannels = True
+
+                            End If
+                            ObjectSpawnCheck(Index_)
+                    End Select
+
+                Case "\\kill"
+                    'Monsters
+                    Select Case tmp(1)
+                        Case "view"
+                            Dim mon_list = PlayerData(Index_).SpawnedMonsters
+                            For i = 0 To mon_list.Count - 1
+                                KillMob(mon_list(i))
+                            Next
+
+                            Dim player_list = PlayerData(Index_).SpawnedPlayers
+                            For i = 0 To player_list.Count - 1
+                                KillPlayer(player_list(i))
+                            Next
+                        Case "all"
+                            Dim mon_list = MobList.Keys.ToList
+                            For i = 0 To mon_list.Count - 1
+                                KillMob(mon_list(i))
+                            Next
+
+                            For i = 0 To Functions.PlayerData.Count - 1
+                                If Functions.PlayerData(i) IsNot Nothing AndAlso Functions.PlayerData(i).GM = False Then
+                                    KillPlayer(i)
+                                End If
+                            Next
                     End Select
             End Select
 

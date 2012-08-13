@@ -394,22 +394,6 @@
         End Sub
     End Class
 
-    Public Class Position
-        Public XSector As Byte
-        Public YSector As Byte
-        Public X As Single
-        Public Z As Single
-        Public Y As Single
-
-        Public Function ToGameX() As Single
-            Return CSng((XSector - 135) * 192 + (X / 10))
-        End Function
-
-        Public Function ToGameY() As Single
-            Return CSng((YSector - 92) * 192 + (Y / 10))
-        End Function
-    End Class
-
     Public Enum UseItemTypes
         None = 0
         Pot = 1
@@ -419,16 +403,10 @@
         Reverse_Scroll_Point = 5
     End Enum
 
-    Public Structure cHotKey
-        Public OwnerID As UInteger
-        Public Type As UInteger
-        Public Slot As UInteger
-        Public IconID As UInteger
-    End Structure
-
     Public Enum TeleportType_
-        Npc = 0
-        GM = 1
+        None = 0
+        Npc = 1
+        GM = 2
     End Enum
 
 

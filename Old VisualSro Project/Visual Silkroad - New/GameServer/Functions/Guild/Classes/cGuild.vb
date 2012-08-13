@@ -10,7 +10,6 @@
 
         Public Member As New List(Of GuildMember_)
 
-
         Structure GuildMember_
             Public CharacterID As UInteger
             Public GuildID As Long

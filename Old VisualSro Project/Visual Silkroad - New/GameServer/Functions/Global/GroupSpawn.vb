@@ -39,7 +39,12 @@ Namespace Functions
                         '49 bytes min
                         '56 bytes max
                         Dim byteCount As UInt16 = data.Length
-                        CreateMonsterSpawnPacket(mob, refobject, data, False)
+                        If mode = GroupSpawnMode.SPAWN Then
+                            CreateMonsterSpawnPacket(mob, refobject, data, False)
+                        ElseIf mode = GroupSpawnMode.DESPAWN Then
+                            data.DWord(UniqueID)
+                        End If
+
                         writtenBytes += (data.Length - byteCount)
 
                         writtenUniqueIds.Add(UniqueID)
@@ -52,7 +57,12 @@ Namespace Functions
                     If NpcList.ContainsKey(UniqueID) Then
                         '47 max
                         Dim byteCount As UInt16 = data.Length
-                        CreateNPCSpawnPacket(UniqueID, data, False)
+                        If mode = GroupSpawnMode.SPAWN Then
+                            CreateNPCSpawnPacket(UniqueID, data, False)
+                        ElseIf mode = GroupSpawnMode.DESPAWN Then
+                            data.DWord(UniqueID)
+                        End If
+
                         writtenBytes += (data.Length - byteCount)
 
                         writtenUniqueIds.Add(UniqueID)
@@ -62,10 +72,15 @@ Namespace Functions
                         tmpUniqueIDs.Remove(UniqueID)
                     End If
 
-                    If ItemList.ContainsKey(UniqueID) Then
-                        '34 max
+                        If ItemList.ContainsKey(UniqueID) Then
+                            '34 max
                         Dim byteCount As UInt16 = data.Length
-                        CreateItemSpawnPacket(ItemList(UniqueID), data, False)
+
+                        If mode = GroupSpawnMode.SPAWN Then
+                            CreateItemSpawnPacket(ItemList(UniqueID), data, False)
+                        ElseIf mode = GroupSpawnMode.DESPAWN Then
+                            data.DWord(UniqueID)
+                        End If
                         writtenBytes += (data.Length - byteCount)
 
                         writtenUniqueIds.Add(UniqueID)

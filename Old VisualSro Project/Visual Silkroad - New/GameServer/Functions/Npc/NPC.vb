@@ -3,36 +3,6 @@ Imports SRFramework
 
 Namespace Functions
     Module NPC
-
-        '############## Use the new groupspawn class
-        'Public Function CreateNPCGroupSpawnPacket(ByVal npcUniqueIDs As List(Of UInteger)) As Byte()
-        '    Dim writer As New PacketWriter
-        '    writer.Create(ServerOpcodes.GroupSpawnStart)
-        '    writer.Byte(1)
-        '    'spawn
-        '    writer.Word(1)
-        '    Dim bytesHeader As Byte() = writer.GetBytes
-
-        '    Dim bytesBody As Byte()
-        '    Dim ms As New IO.MemoryStream(bytesBody)
-
-        '    For Each id As UInt32 In npcUniqueIDs
-        '        Dim spawnPacket() As Byte = CreateNPCSpawnPacket(id)
-        '        ms.Write(spawnPacket, ms.Length, spawnPacket.Length)
-        '    Next
-        '    ms.Close()
-
-        '    writer.Create(ServerOpcodes.GroupSpawnEnd)
-        '    Dim bytesEnd As Byte() = writer.GetBytes
-
-        '    Dim finalbytes((bytesHeader.Length + bytesBody.Length + bytesEnd.Length) - 1) As Byte
-        '    Array.ConstrainedCopy(bytesHeader, 0, finalbytes, 0, bytesHeader.Length)
-        '    Array.ConstrainedCopy(bytesBody, 0, finalbytes, 9, bytesBody.Length)
-        '    Array.ConstrainedCopy(bytesEnd, 0, finalbytes, (bytesBody.Length) + 9, bytesEnd.Length)
-        '    Return finalbytes
-        'End Function
-
-
         Public Sub CreateNPCSpawnPacket(ByVal NpcUniqueId As UInteger, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
             Dim npc As cNPC = NpcList(NpcUniqueId)
             Dim obj As SilkroadObject = GetObject(npc.Pk2ID)
@@ -80,7 +50,7 @@ Namespace Functions
             End Select
         End Sub
 
-        Public Sub SpawnNPC(ByVal Pk2Id As UInteger, ByVal Position As Position, ByVal Angle As UInt16)
+        Public Sub SpawnNPC(ByVal Pk2Id As UInteger, ByVal Position As Position, ByVal Angle As UInt16, Optional ByVal channelID As UInt32 = UInt32.MaxValue)
             Dim npc_ As SilkroadObject = GetObject(Pk2Id)
 
             If npc_ Is Nothing Then
@@ -91,11 +61,19 @@ Namespace Functions
             tmp.UniqueID = Id_Gen.GetUnqiueId
             tmp.Pk2ID = npc_.Pk2ID
             tmp.Angle = Angle
+
+            If channelID = UInt32.MaxValue Then
+                tmp.ChannelId = Settings.Server_WorldChannel
+            Else
+                tmp.ChannelId = channelID
+            End If
+
             If npc_.Type = SilkroadObject.Type_.Npc Then
                 tmp.Position = Position
             ElseIf npc_.Type = SilkroadObject.Type_.Teleport Then
                 tmp.Position = npc_.T_Position
             End If
+
 
             NpcList.Add(tmp.UniqueID, tmp)
 
@@ -194,8 +172,10 @@ Namespace Functions
 
                     If Point_ Is Nothing Then
                         Server.Disconnect(Index_)
+                        Exit Sub
                     ElseIf Point_.Links.ContainsKey(TeleportNumber) = False Then
                         Server.Disconnect(Index_)
+                        Exit Sub
                     End If
 
                     Dim Link As TeleportLink = Point_.Links(TeleportNumber)

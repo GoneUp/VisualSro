@@ -30,8 +30,8 @@ Namespace Auth
             Else
                 writer.Byte(2)
                 Server.Send(writer.GetBytes, Index_)
-                Server.Disconnect(Index_)
                 Log.WriteSystemLog("Auth failed: " & Server.ClientList.GetIP(Index_))
+                Server.Disconnect(Index_)
             End If
         End Sub
 

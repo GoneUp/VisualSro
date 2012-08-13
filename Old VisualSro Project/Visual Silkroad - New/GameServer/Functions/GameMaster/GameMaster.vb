@@ -238,8 +238,8 @@ Namespace Functions
 
             Select Case selector
                 Case "MOB"
-                    For i = 0 To count
-                        SpawnMob(objectid, type, PlayerData(Index_).Position, 0, -1)
+                    For i = 1 To count
+                        SpawnMob(objectid, type, PlayerData(Index_).Position, 0, -1, PlayerData(Index_).ChannelId)
                     Next
                 Case "NPC"
                     SpawnNPC(objectid, PlayerData(Index_).Position, 0)
@@ -250,6 +250,8 @@ Namespace Functions
                                  String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.TypeName,
                                                count))
             End If
+
+            ObjectSpawnCheck(Index_)
         End Sub
 
         Public Sub OnKillObject(ByVal Packet As PacketReader, ByVal Index_ As Integer)

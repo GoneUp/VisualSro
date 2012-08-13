@@ -46,7 +46,7 @@
                         Server.Disconnect(i)
                     End If
                 Next
-                ' GameServer.Server.stop()
+                Server.Stop()
                 DataBase.ExecuteQuerys()
                 End
 

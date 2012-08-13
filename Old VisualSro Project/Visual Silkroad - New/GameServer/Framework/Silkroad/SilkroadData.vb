@@ -6,8 +6,9 @@ Module SilkroadData
     Public RefGoldData As New List(Of cGoldData)
     Public RefLevelData As New List(Of LevelData)
 
-    Public RefTmpSkills As New Dictionary(Of UInteger, Skill.tmpSkill)
-    Public RefSkills As New Dictionary(Of UInteger, Skill)
+    Public RefTmpSkills As New Dictionary(Of UInteger, RefSkill.tmpSkill)
+    Public RefSkills As New Dictionary(Of UInteger, RefSkill)
+    Public RefSkillGroups As New Dictionary(Of String, SkillGroup)
     Public RefObjects As New Dictionary(Of UInteger, SilkroadObject)
     Public RefMallItems As New List(Of MallPackage_)
     Public RefReversePoints As New List(Of ReversePoint_)
@@ -81,6 +82,7 @@ Module SilkroadData
         End Try
     End Sub
 
+#Region "Items"
     Public Sub DumpItemFiles()
         RefItems.Clear()
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\itemdata.txt")
@@ -208,7 +210,9 @@ Module SilkroadData
         Next
         Throw New Exception("Item couldn't be found!")
     End Function
+#End Region
 
+#Region "Gold"
     Structure cGoldData
         Public Level As Byte
         Public MinGold As ULong
@@ -238,7 +242,9 @@ Module SilkroadData
         Next
         Throw New Exception("Level couldn't be found!")
     End Function
+#End Region
 
+#Region "LevelData"
     Structure LevelData
         Public Level As Byte
         Public MobEXP As UInteger
@@ -275,9 +281,10 @@ Module SilkroadData
             End If
         Next
     End Function
+#End Region
 
-
-    Public Class Skill
+#Region "Skill"
+    Public Class RefSkill
         Public Name As String
         Public Pk2Id As UInteger
         Public PreviousId As UInteger
@@ -295,6 +302,10 @@ Module SilkroadData
         Public NumberOfAttacks As Byte
         Public Type As Byte
         Public Type2 As Byte
+
+        Public SkillGroupID As UInt32
+        Public SkillGroupName As String
+        Public SkillGroupLevel As Byte
 
         Public SpawnPercent As Integer
 
@@ -322,6 +333,37 @@ Module SilkroadData
         End Structure
     End Class
 
+    Public Class SkillGroup
+        Private m_ID As UInt32 = 0
+        Public Property ID As UInt32
+            Get
+                Return m_ID
+            End Get
+            Set(ByVal value As UInt32)
+                m_ID = value
+            End Set
+        End Property
+
+        Private m_Name As String = ""
+        Public Property Name As String
+            Get
+                Return m_Name
+            End Get
+            Set(ByVal value As String)
+                m_Name = value
+            End Set
+        End Property
+
+        Private m_Skills As New Dictionary(Of Byte, UInt32) 'Key = Skill Series Level, Value = SkillID
+        Public Property Skills As Dictionary(Of Byte, UInt32)
+            Get
+                Return m_Skills
+            End Get
+            Set(ByVal value As Dictionary(Of Byte, UInt32))
+                m_Skills = value
+            End Set
+        End Property
+    End Class
 
 
     Public Class SkillTypeTable
@@ -370,7 +412,7 @@ Module SilkroadData
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-            Dim tmp As New Skill.tmpSkill()
+            Dim tmp As New RefSkill.tmpSkill()
             tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
             tmp.NextId = Convert.ToUInt32(tmpString(9))
             RefTmpSkills.Add(tmp.Pk2Id, tmp)
@@ -386,9 +428,12 @@ Module SilkroadData
             End If
 
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-            Dim tmp As New Skill()
+            Dim tmp As New RefSkill()
             tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
+            tmp.SkillGroupID = Convert.ToUInt32(tmpString(2))
             tmp.Name = tmpString(3)
+            tmp.SkillGroupName = tmpString(5)
+            tmp.SkillGroupLevel = Convert.ToByte(tmpString(7))
             tmp.NextId = Convert.ToUInt32(tmpString(9))
             tmp.CastTime = Convert.ToInt32(tmpString(13))
             tmp.MasteryID = Convert.ToUInt32(tmpString(34))
@@ -465,6 +510,17 @@ Module SilkroadData
 
 
             RefSkills.Add(tmp.Pk2Id, tmp)
+
+            If RefSkillGroups.ContainsKey(tmp.SkillGroupName) Then
+                RefSkillGroups(tmp.SkillGroupName).Skills.Add(tmp.SkillGroupLevel, tmp.Pk2Id)
+            Else
+                Dim tmpGroup As New SkillGroup
+                tmpGroup.ID = tmp.SkillGroupID
+                tmpGroup.Name = tmp.SkillGroupName
+                tmpGroup.Skills.Add(tmp.SkillGroupLevel, tmp.Pk2Id)
+
+                RefSkillGroups.Add(tmpGroup.Name, tmpGroup)
+            End If
         Next
 
         For Each key In RefSkills.Keys.ToList
@@ -475,7 +531,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Private Function GetSkillNumberOfAttacks(ByVal tmp As Skill.tmpSkill) As Byte
+    Private Function GetSkillNumberOfAttacks(ByVal tmp As RefSkill.tmpSkill) As Byte
         For i As Byte = 0 To 9
             If tmp.NextId <> 0 Then
                 tmp = GetTmpSkill(tmp.NextId)
@@ -484,6 +540,14 @@ Module SilkroadData
             End If
         Next
         Return 1
+    End Function
+
+    Private Function GetTmpSkill(ByVal NextId As UInteger) As RefSkill.tmpSkill
+        If RefTmpSkills.ContainsKey(NextId) Then
+            Return RefTmpSkills(NextId)
+        Else
+            Return Nothing
+        End If
     End Function
 
     Private Function GetSkillPreviosId(ByVal pk2id As UInteger) As UInteger
@@ -495,7 +559,7 @@ Module SilkroadData
         Return 0
     End Function
 
-    Public Function GetSkill(ByVal Pk2Id As UInteger) As Skill
+    Public Function GetSkill(ByVal Pk2Id As UInteger) As RefSkill
         If RefSkills.ContainsKey(Pk2Id) Then
             Return RefSkills(Pk2Id)
         Else
@@ -503,13 +567,13 @@ Module SilkroadData
         End If
     End Function
 
-    Private Function GetTmpSkill(ByVal NextId As UInteger) As Skill.tmpSkill
-        If RefTmpSkills.ContainsKey(NextId) Then
-            Return RefTmpSkills(NextId)
-        Else
-            Return Nothing
+    Public Function GetSkillGroup(ByVal SkillGroupName As String) As SkillGroup
+        If RefSkillGroups.ContainsKey(SkillGroupName) Then
+            Return RefSkillGroups(SkillGroupName)
         End If
+        Return Nothing
     End Function
+
 
     Private Function ParseSkillEffects(ByVal tmpEffectList() As Long) As List(Of SkillEffect)
         'Note: use the effect system, so any skill can use any effect (more coustumable, not so static)
@@ -532,8 +596,9 @@ Module SilkroadData
 
 
     End Function
+#End Region
 
-
+#Region "Objects"
     Public Class SilkroadObject
         Public Pk2ID As UInteger
 
@@ -664,7 +729,9 @@ Module SilkroadData
             Return Nothing
         End If
     End Function
+#End Region
 
+#Region "Reverse Points"
     Public Class ReversePoint_
         Public TeleportID As UInteger
         Public Position As New Position
@@ -695,7 +762,9 @@ Module SilkroadData
         Next
         Return Nothing
     End Function
+#End Region
 
+#Region "Mall"
     Public Class MallPackage_
         Public Name_Normal As String
         Public Name_Package As String
@@ -743,8 +812,9 @@ Module SilkroadData
         Next
         Return Nothing
     End Function
+#End Region
 
-
+#Region "Teleport"
     Public Sub DumpTeleportBuildings(ByVal path As String)
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
@@ -858,7 +928,9 @@ Module SilkroadData
         Next
         Return Nothing
     End Function
+#End Region
 
+#Region "SpecialSectors"
     Public Structure SpecialSector_
         Public Type As SpecialSector_Types
         Public XSec As Byte
@@ -909,7 +981,9 @@ Module SilkroadData
         Next
         Return False
     End Function
+#End Region
 
+#Region "Unique"
     Public Sub DumpUniqueFile(ByVal path As String)
         RefUniques.Clear()
 
@@ -929,8 +1003,9 @@ Module SilkroadData
         Next
         Return False
     End Function
+#End Region
 
-
+#Region "NPC/Shop"
     Public Sub DumpNpcChatFile(ByVal path As String)
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
@@ -951,16 +1026,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Sub DumpAbuseListFile(ByVal path As String)
-        RefAbuseList.Clear()
 
-        Dim lines As String() = File.ReadAllLines(path)
-        For i As Integer = 0 To lines.Length - 1
-            If lines(i).StartsWith("//") = False And lines(i) <> "" Then
-                RefAbuseList.Add(lines(i))
-            End If
-        Next i
-    End Sub
 
     Public Sub DumpShopDataFile()
 
@@ -1110,8 +1176,22 @@ Module SilkroadData
         Next
         Return -1
     End Function
+#End Region
 
+#Region "AbuseList"
+    Public Sub DumpAbuseListFile(ByVal path As String)
+        RefAbuseList.Clear()
 
+        Dim lines As String() = File.ReadAllLines(path)
+        For i As Integer = 0 To lines.Length - 1
+            If lines(i).StartsWith("//") = False And lines(i) <> "" Then
+                RefAbuseList.Add(lines(i))
+            End If
+        Next i
+    End Sub
+#End Region
+
+#Region "Caveteleport"
     Public Class CaveTeleporter_
         Public FromPosition As New Position
         Public Range As Integer
@@ -1139,7 +1219,9 @@ Module SilkroadData
             End If
         Next i
     End Sub
+#End Region
 
+#Region "NameFiles"
     Public Sub DumpNameFiles()
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\textdataname.txt")
         For i As Integer = 0 To paths.Length - 1
@@ -1181,4 +1263,5 @@ Module SilkroadData
             End If
         Next
     End Sub
+#End Region
 End Module

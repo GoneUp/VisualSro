@@ -309,26 +309,32 @@ Namespace GameMod
                     End If
 
                 Case "\\skillset"
+                    Dim name As String = tmp(2)
+
                     Select Case tmp(1)
                         Case "create"
-                            Dim name As String = tmp(2)
                             CreateSkillSet(name)
+                            SendPm(Index_, "Skillset " & name & " created!", "SERVER")
                         Case "save"
                             For i = 0 To GameDB.Skills.Count - 1
                                 If GameDB.Skills(i) IsNot Nothing AndAlso GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId Then
-                                    Skillset_AddSkill(tmp(2), GameDB.Skills(i).SkillID)
+                                    Skillset_AddSkill(name, GameDB.Skills(i).SkillID)
                                 End If
                             Next
+                            SendPm(Index_, "Skillset " & name & " saved!", "SERVER")
                         Case "clear"
                             Skillset_Clear(tmp(2)) 'name
+                            SendPm(Index_, "Skillset " & name & " cleared!", "SERVER")
                         Case "list"
+                            SendPm(Index_, "Skillset List: ", "SERVER")
                             For i = 0 To GameDB.SkillSets.Keys.Count - 1
                                 Dim key As UInt32 = GameDB.SkillSets.Keys(i)
-                                SendPm(Index_, GameDB.SkillSets(key).Name, "Skillsets")
+                                SendPm(Index_, GameDB.SkillSets(key).Name, "SERVER")
                             Next
                         Case "load"
-                            Dim name As String = tmp(2)
-
+                            Skillset_Load(name, Index_)
+                            SendPm(Index_, "Skillset " & name & " loaded!", "[SERVER]")
+                            OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                     End Select
             End Select
 

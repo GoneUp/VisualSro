@@ -12,7 +12,7 @@ Namespace Functions
             End If
 
             Dim Mob_ As cMonster = MobList(MobUniqueID)
-            Dim RefSkill As Skill
+            Dim RefSkill As RefSkill
 
             Mob_.AttackingId = PlayerData(Index_).UniqueID
 
@@ -136,7 +136,7 @@ Namespace Functions
         ''' <remarks></remarks>
         Function CalculateDamagePlayer(ByVal Index_ As Integer, ByVal Mob As SilkroadObject, ByVal SkillID As UInt32) _
             As UInteger
-            Dim RefSkill As Skill = GetSkill(SkillID)
+            Dim RefSkill As RefSkill = GetSkill(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
             If (CSng(Mob.Level) - PlayerData(Index_).Level) > -99 Then
@@ -257,7 +257,7 @@ Namespace Functions
             Return 0
         End Function
 
-        Public Sub CheckForSkillEffects(ByVal MobUniqueId As UInteger, ByVal RefSkill As Skill, ByVal Index_ As Integer)
+        Public Sub CheckForSkillEffects(ByVal MobUniqueId As UInteger, ByVal RefSkill As RefSkill, ByVal Index_ As Integer)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
 
             Select Case RefSkill.Effect_0

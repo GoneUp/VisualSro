@@ -41,7 +41,7 @@ Namespace Functions
                         Dim skillid As UInteger = packet.DWord
                         Dim type As Byte = packet.Byte()
                         'Type = 1--> Monster Attack --- Type = 0 --> Buff
-                        Dim refskill As Skill = GetSkill(skillid)
+                        Dim refskill As RefSkill = GetSkill(skillid)
 
                         Select Case type
                             Case 0
@@ -249,7 +249,7 @@ Namespace Functions
         End Sub
 
         Public Sub PlayerAttackBeginSkill(ByVal SkillID As UInt32, ByVal Index_ As Integer, ByVal MobUniqueId As Integer)
-            Dim RefSkill As Skill = GetSkill(SkillID)
+            Dim RefSkill As RefSkill = GetSkill(SkillID)
             Dim Mob_ As cMonster = MobList(MobUniqueId)
 
             If PlayerData(Index_).Busy Or CheckIfUserOwnSkill(SkillID, Index_) = False Then
@@ -313,7 +313,7 @@ Namespace Functions
         End Sub
 
         Public Sub PlayerAttackEndSkill(ByVal Index_ As Integer)
-            Dim RefSkill As Skill = GetSkill(PlayerData(Index_).UsingSkillId)
+            Dim RefSkill As RefSkill = GetSkill(PlayerData(Index_).UsingSkillId)
             Dim AttObject As New SilkroadObject
             Dim RefWeapon As New cRefItem
             Dim Mob_ As cMonster = MobList(PlayerData(Index_).AttackedId)
@@ -399,7 +399,7 @@ Namespace Functions
 
 
         Function CalculateDamageMob(ByVal Index_ As Integer, ByVal Mob As SilkroadObject, ByVal SkillID As UInt32) As UInteger
-            Dim RefSkill As Skill = GetSkill(SkillID)
+            Dim RefSkill As RefSkill = GetSkill(SkillID)
             Dim FinalDamage As UInteger
             Dim Balance As Double
             'If (CSng(PlayerData(Index_).Level) - Mob.Level) > -10 Then

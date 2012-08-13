@@ -121,8 +121,9 @@ Namespace Functions
             End If
             PlayerData(Index_).Skilling = True
 
-            Dim _skill As Skill = GetSkill(SkillID)
+            Dim _skill As RefSkill = GetSkill(SkillID)
             Dim _refmastery As cMastery = GetMasteryByID(_skill.MasteryID, Index_)
+            Dim _skillGroup As SkillGroup = GetSkillGroup(_skill.SkillGroupName)
 
             If _skill Is Nothing Or _refmastery Is Nothing Then
                 PlayerData(Index_).Skilling = False
@@ -130,35 +131,55 @@ Namespace Functions
             End If
 
 
+            'Check the previous skills in the SkillGroup
+            Dim requirementsFilled As Boolean = True
+
+            Dim list = _skillGroup.Skills.Keys.ToList
+            For i = 0 To list.Count - 1
+                Dim key As Byte = list(i)
+                If key < _skill.SkillGroupLevel Then
+                    If CheckIfUserOwnSkill(_skillGroup.Skills(key), Index_) = False Then
+                        requirementsFilled = False
+                    End If
+                End If
+            Next
+
+
             If PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 And CheckIfUserOwnSkill(SkillID, Index_) = False And _refmastery.Level >= _skill.MasteryLevel Then
-                Dim skill As New cSkill
-                skill.OwnerID = PlayerData(Index_).CharacterId
-                skill.SkillID = SkillID
-                AddSkillToDB(skill)
+                If requirementsFilled And _skillGroup.ID <> 0 Then
 
-                PlayerData(Index_).SkillPoints -= _skill.RequiredSp
-                UpdateSP(Index_)
+                    Dim skill As New cSkill
+                    skill.OwnerID = PlayerData(Index_).CharacterId
+                    skill.SkillID = SkillID
+                    AddSkillToDB(skill)
 
-                Dim writer As New PacketWriter
-                writer.Create(ServerOpcodes.GAME_SKILL_UP)
-                writer.Byte(1)
-                writer.DWord(SkillID)
-                Server.Send(writer.GetBytes, Index_)
+                    PlayerData(Index_).SkillPoints -= _skill.RequiredSp
+                    UpdateSP(Index_)
+
+                    Dim writer As New PacketWriter
+                    writer.Create(ServerOpcodes.GAME_SKILL_UP)
+                    writer.Byte(1)
+                    writer.DWord(SkillID)
+                    Server.Send(writer.GetBytes, Index_)
+
+                Else
+                    'SkillGroup error or previous Skills not skilled
+                    'Kick him ;)
+                    Server.Disconnect(Index_)
+                End If
             Else
-                'Not enough SP or other Errors
+                'Not enough SP or other Error
 
             End If
             PlayerData(Index_).Skilling = False
         End Sub
 
-
-        Private Sub AddSkillToDB(ByVal toadd As cSkill)
+        Public Sub AddSkillToDB(ByVal toadd As cSkill)
             Dim NewIndex As UInteger = GameDB.Skills.Length + 1
             Array.Resize(GameDB.Skills, NewIndex)
             GameDB.Skills(NewIndex - 1) = toadd
 
-            Database.SaveQuery(String.Format("INSERT INTO char_skill(owner, SkillID) VALUE ('{0}',{1})", toadd.OwnerID,
-                                             toadd.SkillID))
+            GameDB.SaveSkillAdd(toadd.OwnerID, toadd.SkillID)
         End Sub
 
 
@@ -179,8 +200,7 @@ Namespace Functions
         Public Function CheckIfUserOwnSkill(ByVal SkillID As UInteger, ByVal Index_ As Integer) As Boolean
             For i = 0 To GameDB.Skills.Length - 1
                 If GameDB.Skills(i) IsNot Nothing Then
-                    If GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Skills(i).SkillID = SkillID _
-                        Then
+                    If GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Skills(i).SkillID = SkillID Then
                         Return True
                     End If
                 End If

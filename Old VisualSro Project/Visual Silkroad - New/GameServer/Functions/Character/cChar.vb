@@ -381,7 +381,7 @@
 
 
                         Case BuffType_.SkillBuff
-                            Dim Ref As Skill = GetSkill(Buffs(key).SkillID)
+                            Dim Ref As RefSkill = GetSkill(Buffs(key).SkillID)
 
                             Select Case Ref.Effect_0
                                 Case Else

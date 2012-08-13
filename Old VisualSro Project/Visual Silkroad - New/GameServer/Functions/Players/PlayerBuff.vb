@@ -3,7 +3,7 @@
 Namespace Functions
     Module PlayerBuff
         Public Sub PlayerBuff_BeginnCasting(ByVal SkillID As UInt32, ByVal Index_ As Integer)
-            Dim RefSkill As Skill = GetSkill(SkillID)
+            Dim RefSkill As RefSkill = GetSkill(SkillID)
             Dim RefWeapon As New cRefItem
 
             If _
@@ -119,7 +119,7 @@ Namespace Functions
         End Sub
 
 
-        Private Sub AddBuffToList(ByVal refskill As Skill, ByVal buff As cBuff, ByVal Index_ As Integer)
+        Private Sub AddBuffToList(ByVal refskill As RefSkill, ByVal buff As cBuff, ByVal Index_ As Integer)
             PlayerData(Index_).Buffs.Add(buff.OverID, buff)
             PlayerData(Index_).Buffs(buff.OverID).ElaspedTimer_Start(refskill.UseDuration)
 

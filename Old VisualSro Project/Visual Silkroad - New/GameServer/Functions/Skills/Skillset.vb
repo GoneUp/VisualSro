@@ -68,8 +68,16 @@
 
             For i = 0 To GameDB.Skills.Count - 1
                 If GameDB.Skills(i) IsNot Nothing AndAlso GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId Then
-
+                    GameDB.SaveSkillDelete(GameDB.Skills(i).OwnerID, GameDB.Skills(i).SkillID)
+                    GameDB.Skills(i) = Nothing
                 End If
+            Next
+
+            For i = 0 To skillset.Skills.Count - 1
+                Dim tmp As New cSkill
+                tmp.OwnerID = PlayerData(Index_).CharacterId
+                tmp.SkillID = skillset.Skills(i)
+                AddSkillToDB(tmp)
             Next
         End Sub
     End Module

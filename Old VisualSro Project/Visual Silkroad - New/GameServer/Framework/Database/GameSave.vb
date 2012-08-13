@@ -91,11 +91,25 @@ Namespace GameDB
         Public Sub SaveSkillsetNewSkill(ByVal setID As UInt32, ByVal skill As UInt32)
             Database.SaveQuery(String.Format("INSERT into skillset(setID, skillID) VALUES ('{0}', '{1}')", setID, skill))
         End Sub
+
         Public Sub SaveSkillsetRename(ByVal setID As UInt32, ByVal name As String)
             Database.SaveQuery(String.Format("UPDATE skillset_name SET name='{0}' where setID='{1}'", name, setID))
         End Sub
+
         Public Sub SaveSkillsetClear(ByVal setID As UInt32)
             Database.SaveQuery(String.Format("DELETE FROM skillset where setID='{0}'", setID))
+        End Sub
+
+        Public Sub SaveSkillsetDelete(ByVal setID As UInt32)
+            Database.SaveQuery(String.Format("DELETE FROM skillset_name where setID='{0}'", setID))
+        End Sub
+
+        Public Sub SaveSkillAdd(ByVal ownerID As UInt32, ByVal skillID As UInt32)
+            Database.SaveQuery(String.Format("INSERT INTO char_skill(owner, SkillID) VALUE ('{0}',{1})", ownerID, skillID))
+        End Sub
+
+        Public Sub SaveSkillDelete(ByVal ownerID As UInt32, ByVal skillID As UInt32)
+            Database.SaveQuery(String.Format("DELETE FROM char_skill wherre owner='{0}' AND SkillID='{1}'", ownerID, skillID))
         End Sub
     End Module
 End Namespace

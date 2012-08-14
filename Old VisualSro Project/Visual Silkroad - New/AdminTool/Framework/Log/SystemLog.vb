@@ -4,11 +4,16 @@
 
         Public Sub WriteSystemLog(ByVal Message As String)
             Try
-                Console.WriteLine(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
-                FileQueryList.Add(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
+                Debug.Print(GetMessage(Message))
+                Console.WriteLine(GetMessage(Message))
+                FileQueryList.Add(GetMessage(Message))
             Catch ex As Exception
             End Try
         End Sub
+
+        Private Function GetMessage(ByVal message As String) As String
+            Return (String.Format("[{0}]       {1}", Date.Now.ToString, message))
+        End Function
 
         Public Sub WriteSystemFileQuerys()
             Dim writer As IO.StreamWriter

@@ -5,33 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>
     </ProductVersion>
-    <SchemaVersion>
-    </SchemaVersion>
-    <ProjectGuid>{161A834E-C717-4489-85FF-1359246AB1AD}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <StartupObject>GlobalManager.Program</StartupObject>
-    <RootNamespace>GlobalManager</RootNamespace>
-    <AssemblyName>GlobalManager</AssemblyName>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{96A43D26-5D5E-410D-AB12-C5DE80E9522A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>AdminTool.My.MyApplication</StartupObject>
+    <RootNamespace>AdminTool</RootNamespace>
+    <AssemblyName>AdminTool</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>Console</MyType>
+    <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -40,7 +23,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>GlobalManager.xml</DocumentationFile>
+    <DocumentationFile>AdminTool.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -50,7 +33,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>GlobalManager.xml</DocumentationFile>
+    <DocumentationFile>AdminTool.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -66,10 +49,11 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.3.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -81,33 +65,33 @@
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
     <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
     <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
     <Import Include="System.Linq" />
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Console\Commands.vb" />
-    <Compile Include="Console\Main.vb" />
-    <Compile Include="Framework\Database\GlobalDb.vb" />
-    <Compile Include="Framework\Log\GameLog.vb" />
+    <Compile Include="Framework\GlobalManager\Auth.vb" />
+    <Compile Include="Framework\GlobalManager\ShardService.vb" />
     <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Packets\PacketLog.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
-    <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
-    <Compile Include="Functions\AdminService\AdminDb.vb" />
-    <Compile Include="Functions\AdminService\AdminGlobalService.vb" />
-    <Compile Include="Functions\AdminService\AdminShardService.vb" />
-    <Compile Include="Functions\AdminService\GameMaster.vb" />
-    <Compile Include="Functions\AgentService\AgentDb.vb" />
-    <Compile Include="Functions\AgentService\AgentService.vb" />
-    <Compile Include="Functions\Auth\Auth.vb" />
-    <Compile Include="Functions\ShardService\ServerDb.vb" />
-    <Compile Include="Functions\Parser.vb" />
-    <Compile Include="Functions\ShardService\ShardControl.vb" />
-    <Compile Include="Functions\ShardService\ShardManager.vb" />
-    <Compile Include="Functions\ShardService\ShardService.vb" />
     <Compile Include="Global\GlobalDef.vb" />
+    <Compile Include="Forms\Login.Designer.vb">
+      <DependentUpon>Login.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Login.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Main.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Main.Designer.vb">
+      <DependentUpon>Main.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -125,6 +109,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Login.resx">
+      <DependentUpon>Login.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Main.resx">
+      <DependentUpon>Main.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -133,7 +123,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -144,29 +133,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 und x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Framework\SRFramework.vbproj">
       <Project>{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}</Project>

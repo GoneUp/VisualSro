@@ -14,7 +14,6 @@ Namespace Shard
                         'Init Serverr
                         Server_Gateway(ServerId).Online = True
                         Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
-                        SendServerInit(Index_)
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.GameServer
                     If Server_Game.ContainsKey(ServerId) = False AndAlso Server_Game(ServerId).Online Then
@@ -23,20 +22,18 @@ Namespace Shard
                         'Init Server
                         Server_Game(ServerId).State = GameServer._ServerState.Online
                         Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
-                        SendServerInit(Index_)
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
-
                     If Server_Download.ContainsKey(ServerId) = False AndAlso Server_Download(ServerId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
                         'Init Server
                         Server_Download(ServerId).Online = True
                         Log.WriteSystemLog(String.Format("Downloadserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
-                        SendServerInit(Index_)
                     End If
             End Select
 
+            SendServerInit(Index_)
             SendGlobalInfo(Index_, True)
         End Sub
 
@@ -49,32 +46,18 @@ Namespace Shard
 
         Friend Sub OnShutdownServer(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim ServerId As UInt16 = SessionInfo(Index_).ServerId
+            RemoveServer(ServerId, SessionInfo(Index_).Type)
 
             Select Case SessionInfo(Index_).Type
                 Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
-                    If Server_Gateway.ContainsKey(ServerId) Then
-                        Server_Gateway(ServerId).Online = False
-                        Server_Gateway.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
-                        SendShutdown(Index_)
-                    End If
+                    Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
                 Case cSessionInfo_GlobalManager._ServerTypes.GameServer
-                    If Server_Game.ContainsKey(ServerId) Then
-                        Server_Game(ServerId).State = GameServer._ServerState.Check
-                        Server_Game.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
-                        SendShutdown(Index_)
-                    End If
+                    Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
                 Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
-
-                    If Server_Download.ContainsKey(ServerId) Then
-                        Server_Download(ServerId).Online = False
-                        Server_Download.Remove(ServerId)
-                        Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
-                        SendShutdown(Index_)
-                    End If
+                    Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
             End Select
 
+            SendShutdown(Index_)
         End Sub
 
         Private Sub SendShutdown(ByVal index_ As Integer)

@@ -66,6 +66,7 @@ Class Program
     Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
         Log.WriteSystemLog("Client Disconnected : " & ip)
 
+        Shard.RemoveServer(SessionInfo(index).ServerId, SessionInfo(index).Type)
         SessionInfo(index) = Nothing
 
         If Server.OnlineClients > 0 Then
@@ -74,7 +75,6 @@ Class Program
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
-
         Dim read As Integer = 0
 
         Do While True

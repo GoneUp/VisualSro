@@ -494,6 +494,7 @@ Namespace Functions
 
             Try
                 Database.ExecuteQuerys()
+                Log.WriteSystemFileQuerys()
 
                 'GlobalManager..
                 If DateDiff(DateInterval.Second, GlobalManagerCon.LastPingTime, Date.Now) > 5 Then
@@ -530,8 +531,6 @@ Namespace Functions
             'Excluded from ClientList 
 
             Try
-                Dim Count As Integer = 0
-
                 For i = 0 To Server.MaxClients - 1
                     Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)
                     If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
@@ -540,13 +539,9 @@ Namespace Functions
                         ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
                             'LoginAuth is missing..
                             Server.Disconnect(i)
-                        Else
-                            Count += 1
                         End If
                     End If
                 Next
-
-                'Server.OnlineClients = Count
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")

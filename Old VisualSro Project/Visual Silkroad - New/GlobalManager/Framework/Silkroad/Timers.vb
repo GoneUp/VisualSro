@@ -32,6 +32,7 @@ Namespace Timers
             Try
 
                 Database.ExecuteQuerys()
+                Log.WriteSystemFileQuerys()
 
 
             Catch ex As Exception
@@ -82,13 +83,10 @@ Namespace Timers
                             'ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
                             '    'Later for check for missing Handshake Packets, ClientInfo
                             '    Server.Disconnect(i)
-                        Else
-                            Count += 1
                         End If
                     End If
                 Next
 
-                'Server.OnlineClients = Count
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: PING")

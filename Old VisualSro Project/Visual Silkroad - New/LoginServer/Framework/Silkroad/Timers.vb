@@ -44,6 +44,7 @@ Namespace Timers
 
             Try
                 Database.ExecuteQuerys()
+                Log.WriteSystemFileQuerys()
 
                 If DateDiff(DateInterval.Second, GlobalManagerCon.LastPingTime, Date.Now) > 5 Then
                     If GlobalManagerCon.ManagerSocket.Connected Then

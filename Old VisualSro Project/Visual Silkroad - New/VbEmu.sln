@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		VbEmu.vsmdi = VbEmu.vsmdi
 	EndProjectSection
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AdminTool", "AdminTool\AdminTool.vbproj", "{96A43D26-5D5E-410D-AB12-C5DE80E9522A}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = VbEmu.vsmdi
@@ -93,6 +95,18 @@ Global
 		{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}.Release|x64.ActiveCfg = Release|Any CPU
 		{CA26FA8B-3FB6-40E6-B3BF-8DCE791D1684}.Release|x86.ActiveCfg = Release|Any CPU
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Debug|x64.ActiveCfg = Debug|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Debug|x86.ActiveCfg = Debug|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Debug|x86.Build.0 = Debug|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Release|Any CPU.ActiveCfg = Release|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Release|x64.ActiveCfg = Release|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Release|x86.ActiveCfg = Release|x86
+		{96A43D26-5D5E-410D-AB12-C5DE80E9522A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

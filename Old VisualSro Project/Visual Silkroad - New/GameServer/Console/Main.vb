@@ -154,7 +154,7 @@ Friend Class Program
 
     Private Shared Sub gmc_OnGlobalManagerInit()
         Server.Start()
-        Log.WriteSystemLog("We are ready!")
+        Log.WriteSystemLog("GMC: We are ready!")
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerShutdown()

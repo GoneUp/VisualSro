@@ -270,10 +270,6 @@ Namespace Functions
                     .Gold = Settings.Player_StartGold
                     .SkillPoints = Settings.Player_StartSP
                     .GM = Settings.Player_StartGM
-
-                    .WalkSpeed = 16
-                    .RunSpeed = 50
-                    .BerserkSpeed = 100
                     .Strength = 20
                     .Intelligence = 20
                     .PVP = 0
@@ -281,6 +277,7 @@ Namespace Functions
                     .PositionDead = Settings.Player_StartReturnPos
                     .PositionRecall = Settings.Player_StartReturnPos
                     .PositionReturn = Settings.Player_StartReturnPos
+
                     If IsCharChinese(model) Then
                         .PosTracker = New cPositionTracker(Settings.PlayerStartPosCh, .WalkSpeed, .RunSpeed,
                                                             .BerserkSpeed)
@@ -288,6 +285,11 @@ Namespace Functions
                         .PosTracker = New cPositionTracker(Settings.Player_StartPos_Eu, .WalkSpeed, .RunSpeed,
                                                             .BerserkSpeed)
                     End If
+
+                    .WalkSpeed = 16
+                    .RunSpeed = 50
+                    .BerserkSpeed = 100
+
                     Const magdefmin As Double = 3.0
                     Const phydefmin As Double = 6.0
                     Const phyatkmin As UShort = 6

@@ -36,142 +36,147 @@ Namespace Functions
                         Functions.OnJoinWorldRequest(Index_)
                 End Select
 
-                If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.INGAME Then
-                    'Prevents User to send Ingame packet for ex. when they are on charlist
-                    Select Case opcode
-                        Case ClientOpcodes.PING
+                If SessionInfo(Index_) IsNot Nothing Then
+                    If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.INGAME Then
+                        'Prevents User to send Ingame packet for ex. when they are on charlist
+                        Select Case opcode
+                            Case ClientOpcodes.PING
 
-                            '============Ingame===========
-                        Case ClientOpcodes.GAME_CLIENT_STATUS
-                            Functions.OnClientStatusUpdate(packet, Index_)
+                                '============Ingame===========
+                            Case ClientOpcodes.GAME_CLIENT_STATUS
+                                Functions.OnClientStatusUpdate(packet, Index_)
 
-                        Case ClientOpcodes.GAME_MOVEMENT
-                            Functions.OnPlayerMovement(Index_, packet)
+                            Case ClientOpcodes.GAME_MOVEMENT
+                                Functions.OnPlayerMovement(Index_, packet)
 
-                        Case ClientOpcodes.GAME_CHAT
-                            Functions.OnChat(packet, Index_)
+                            Case ClientOpcodes.GAME_CHAT
+                                Functions.OnChat(packet, Index_)
 
-                        Case ClientOpcodes.GAME_GAMEMASTER
-                            Functions.OnGM(packet, Index_)
+                            Case ClientOpcodes.GAME_GAMEMASTER
+                                Functions.OnGM(packet, Index_)
 
-                        Case ClientOpcodes.GAME_ACTION
-                            Functions.OnPlayerAction(packet, Index_)
+                            Case ClientOpcodes.GAME_ACTION
+                                Functions.OnPlayerAction(packet, Index_)
 
-                        Case ClientOpcodes.GAME_ANGLE_UPDATE
-                            Functions.OnAngleUpdate(packet, Index_)
+                            Case ClientOpcodes.GAME_ANGLE_UPDATE
+                                Functions.OnAngleUpdate(packet, Index_)
 
-                        Case ClientOpcodes.GAME_TELEPORT_REPLY
-                            Functions.OnTeleportRequest(Index_)
+                            Case ClientOpcodes.GAME_TELEPORT_REPLY
+                                Functions.OnTeleportRequest(Index_)
 
-                        Case ClientOpcodes.GAME_EXIT
-                            Functions.OnLogout(packet, Index_)
+                            Case ClientOpcodes.GAME_EXIT
+                                Functions.OnLogout(packet, Index_)
 
-                        Case ClientOpcodes.GAME_EMOTION
-                            Functions.OnEmotion(packet, Index_)
+                            Case ClientOpcodes.GAME_EMOTION
+                                Functions.OnEmotion(packet, Index_)
 
-                        Case ClientOpcodes.GAME_HELPER_ICON
-                            Functions.OnHelperIcon(packet, Index_)
+                            Case ClientOpcodes.GAME_HELPER_ICON
+                                Functions.OnHelperIcon(packet, Index_)
 
-                        Case ClientOpcodes.GAME_HOTKEY_UPDATE
-                            Functions.OnHotkeyUpdate(packet, Index_)
+                            Case ClientOpcodes.GAME_HOTKEY_UPDATE
+                                Functions.OnHotkeyUpdate(packet, Index_)
 
-                        Case ClientOpcodes.GAME_SET_RETURN_POINT
-                            Functions.OnSetReturnPoint(packet, Index_)
+                            Case ClientOpcodes.GAME_SET_RETURN_POINT
+                                Functions.OnSetReturnPoint(packet, Index_)
 
-                        Case ClientOpcodes.GAME_BERSERK_ACTIVATE
-                            Functions.OnUseBerserk(packet, Index_)
+                            Case ClientOpcodes.GAME_BERSERK_ACTIVATE
+                                Functions.OnUseBerserk(packet, Index_)
 
-                            '=======ATTACK======
+                                '=======ATTACK======
 
-                        Case ClientOpcodes.GAME_TARGET
-                            Functions.OnSelectObject(packet, Index_)
+                            Case ClientOpcodes.GAME_TARGET
+                                Functions.OnSelectObject(packet, Index_)
 
-                        Case ClientOpcodes.GAME_ATTACK
-                            Functions.OnPlayerAttack(packet, Index_)
+                            Case ClientOpcodes.GAME_ATTACK
+                                Functions.OnPlayerAttack(packet, Index_)
 
-                        Case ClientOpcodes.GAME_DEATH_RESPAWN
-                            Functions.OnPlayerRespawn(packet, Index_)
+                            Case ClientOpcodes.GAME_DEATH_RESPAWN
+                                Functions.OnPlayerRespawn(packet, Index_)
 
-                            '=======NPC========
+                                '=======NPC========
 
-                        Case ClientOpcodes.GAME_NPC_CHAT
-                            Functions.OnNpcChatSelect(packet, Index_)
+                            Case ClientOpcodes.GAME_NPC_CHAT
+                                Functions.OnNpcChatSelect(packet, Index_)
 
-                        Case ClientOpcodes.GAME_NPC_CHAT_LEFT
-                            Functions.OnNpcChatLeft(packet, Index_)
+                            Case ClientOpcodes.GAME_NPC_CHAT_LEFT
+                                Functions.OnNpcChatLeft(packet, Index_)
 
-                        Case ClientOpcodes.GAME_NPC_TELEPORT
-                            Functions.OnNpcTeleport(packet, Index_)
+                            Case ClientOpcodes.GAME_NPC_TELEPORT
+                                Functions.OnNpcTeleport(packet, Index_)
 
-                            '=======ITEMS======
-                        Case ClientOpcodes.GAME_ALCHEMY
-                            Functions.OnAlchemyRequest(packet, Index_)
+                                '=======ITEMS======
+                            Case ClientOpcodes.GAME_ALCHEMY
+                                Functions.OnAlchemyRequest(packet, Index_)
 
-                        Case ClientOpcodes.GAME_ITEM_MOVE
-                            Functions.OnInventory(packet, Index_)
+                            Case ClientOpcodes.GAME_ITEM_MOVE
+                                Functions.OnInventory(packet, Index_)
 
-                        Case ClientOpcodes.GAME_ITEM_USE
-                            Functions.OnUseItem(packet, Index_)
+                            Case ClientOpcodes.GAME_ITEM_USE
+                                Functions.OnUseItem(packet, Index_)
 
-                        Case ClientOpcodes.GAME_SCROLL_CANCEL
-                            Functions.OnReturnScroll_Cancel(Index_)
+                            Case ClientOpcodes.GAME_SCROLL_CANCEL
+                                Functions.OnReturnScroll_Cancel(Index_)
 
-                            '========STR+INT UP=====
+                                '========STR+INT UP=====
 
-                        Case ClientOpcodes.GAME_STR_UP
-                            Functions.UpStrength(Index_)
+                            Case ClientOpcodes.GAME_STR_UP
+                                Functions.UpStrength(Index_)
 
-                        Case ClientOpcodes.GAME_INT_UP
-                            Functions.UpIntelligence(Index_)
+                            Case ClientOpcodes.GAME_INT_UP
+                                Functions.UpIntelligence(Index_)
 
-                            '======Mastery+Skills
+                                '======Mastery+Skills
 
-                        Case ClientOpcodes.GAME_MASTERY_UP
-                            Functions.OnUpMastery(packet, Index_)
+                            Case ClientOpcodes.GAME_MASTERY_UP
+                                Functions.OnUpMastery(packet, Index_)
 
-                        Case ClientOpcodes.GAME_SKILL_UP
-                            Functions.OnAddSkill(packet, Index_)
+                            Case ClientOpcodes.GAME_SKILL_UP
+                                Functions.OnAddSkill(packet, Index_)
 
-                            '=========EXCHANGE======
-                        Case ClientOpcodes.GAME_EXCHANGE_INVITE
-                            Functions.OnExchangeInvite(packet, Index_)
+                                '=========EXCHANGE======
+                            Case ClientOpcodes.GAME_EXCHANGE_INVITE
+                                Functions.OnExchangeInvite(packet, Index_)
 
-                        Case ClientOpcodes.GAME_EXCHANGE_INVITE_ACCEPT
-                            Functions.OnExchangeInviteReply(packet, Index_)
+                            Case ClientOpcodes.GAME_EXCHANGE_INVITE_ACCEPT
+                                Functions.OnExchangeInviteReply(packet, Index_)
 
-                        Case ClientOpcodes.GAME_EXCHANGE_CONFIRM
-                            Functions.OnExchangeConfirm(packet, Index_)
+                            Case ClientOpcodes.GAME_EXCHANGE_CONFIRM
+                                Functions.OnExchangeConfirm(packet, Index_)
 
-                        Case ClientOpcodes.GAME_EXCHANGE_APPROVE
-                            Functions.OnExchangeApprove(packet, Index_)
+                            Case ClientOpcodes.GAME_EXCHANGE_APPROVE
+                                Functions.OnExchangeApprove(packet, Index_)
 
-                        Case ClientOpcodes.GAME_EXCHANGE_ABORT
-                            Functions.OnExchangeAbort(packet, Index_)
+                            Case ClientOpcodes.GAME_EXCHANGE_ABORT
+                                Functions.OnExchangeAbort(packet, Index_)
 
-                            '========STALL==========
-                        Case ClientOpcodes.GAME_STALL_OPEN
-                            Functions.Stall_Open_Own(packet, Index_)
+                                '========STALL==========
+                            Case ClientOpcodes.GAME_STALL_OPEN
+                                Functions.Stall_Open_Own(packet, Index_)
 
-                        Case ClientOpcodes.GAME_STALL_SELECT
-                            Functions.Stall_Open_Other(packet, Index_)
+                            Case ClientOpcodes.GAME_STALL_SELECT
+                                Functions.Stall_Open_Other(packet, Index_)
 
-                        Case ClientOpcodes.GAME_STALL_DATA
-                            Functions.Stall_Data(packet, Index_)
+                            Case ClientOpcodes.GAME_STALL_DATA
+                                Functions.Stall_Data(packet, Index_)
 
-                        Case ClientOpcodes.GAME_STALL_BUY
-                            Functions.Stall_Buy(packet, Index_)
+                            Case ClientOpcodes.GAME_STALL_BUY
+                                Functions.Stall_Buy(packet, Index_)
 
-                        Case ClientOpcodes.GAME_STALL_CLOSE_OWN
-                            Functions.Stall_Close_Own(Index_)
+                            Case ClientOpcodes.GAME_STALL_CLOSE_OWN
+                                Functions.Stall_Close_Own(Index_)
 
-                        Case ClientOpcodes.GAME_STALL_CLOSE_VISITOR
-                            Functions.Stall_Close_Other(Index_)
+                            Case ClientOpcodes.GAME_STALL_CLOSE_VISITOR
+                                Functions.Stall_Close_Other(Index_)
 
-                        Case Else
-                            Log.WriteSystemLog(
-                                "opCode_2: " & opcode & " Packet : " &
-                                BitConverter.ToString(packet.ByteArray(length), 0, length))
-                    End Select
+                            Case Else
+                                Log.WriteSystemLog(
+                                    "opCode_2: " & opcode & " Packet : " &
+                                    BitConverter.ToString(packet.ByteArray(length), 0, length))
+                        End Select
+                    End If
+                Else
+                    'SessionInfo is nothing
+
                 End If
 
             Catch ex As Exception

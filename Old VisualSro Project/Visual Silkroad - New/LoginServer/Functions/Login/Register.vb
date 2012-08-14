@@ -24,7 +24,7 @@ Namespace Functions
 
             Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
 
-            Dim tmp As New LoginDb.UserArray
+            Dim tmp As New cUser
             tmp.AccountId = Id_Gen.GetNewAccountId
             tmp.Name = Name
             tmp.Pw = Password

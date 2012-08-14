@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\Classes\cINI.vb" />
+    <Compile Include="Framework\Classes\cUser.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\cServerbase.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\DownloadServer.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\GameServer.vb" />

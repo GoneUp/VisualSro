@@ -183,7 +183,7 @@ Namespace Functions
                             PlayerData(index_).CharacterName, GameDB.Chars(i).AccountID))
 
                     For U = 0 To GameDB.Users.Count - 1
-                        If GameDB.Users(U).Id = GameDB.Chars(i).AccountID Then
+                        If GameDB.Users(U).AccountId = GameDB.Chars(i).AccountID Then
                             GameDB.Users(U).Banned = True
                         End If
                     Next

@@ -1,8 +1,10 @@
-﻿Namespace Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Module Ban
 
         Public Sub CheckBannTime(ByVal UserIndex As Integer)
-            Dim user As LoginDb.UserArray = LoginDb.Users(UserIndex)
+            Dim user As cUser = LoginDb.Users(UserIndex)
             Try
                 If user.Banned = True Then
                     Dim wert As Integer = Date.Compare(user.BannTime, Date.Now)
@@ -21,7 +23,7 @@
         End Sub
 
         Public Sub BanUser(ByVal LeakTime As Date, ByVal UserIndex As Integer)
-            Dim user As LoginDb.UserArray = LoginDb.Users(UserIndex)
+            Dim user As cUser = LoginDb.Users(UserIndex)
             Try
                 user.Banned = True
                 user.BannTime = LeakTime

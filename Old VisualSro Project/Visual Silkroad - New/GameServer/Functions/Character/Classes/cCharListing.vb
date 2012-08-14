@@ -1,4 +1,6 @@
-﻿Namespace Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Public Class cCharListing
         Public LoginInformation As cUser
         Public Chars As New List(Of cCharacter)
@@ -10,7 +12,7 @@
         End Property
 
         Public Overrides Function ToString() As String
-            Dim accountString As String = String.Format("cCharListing; ID: {0}, Name: {1}", LoginInformation.Id, LoginInformation.Name)
+            Dim accountString As String = String.Format("cCharListing; ID: {0}, Name: {1}", LoginInformation.AccountId, LoginInformation.Name)
             Dim charString As String = ""
             Dim silkString As String = String.Format("Silk: {0}", LoginInformation.Silk)
 

@@ -1,16 +1,17 @@
-﻿Namespace LoginDb
+﻿Imports SRFramework
+
+Namespace LoginDb
     Module LoginDb
 
         'Timer
         Public WithEvents LoginDbUpdate As New System.Timers.Timer
 
         'Server
-        Public Servers As New List(Of Server_)
         Public News As New List(Of News_)
-        Public Users As New List(Of UserArray)
+        Public Users As New List(Of cUser)
         Public LoginInfoMessages As New List(Of LoginInfoMessage_)
 
-        Private InitalLoad As Boolean
+        Private InitalLoad As Boolean = True
 
         Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
             LoginDbUpdate.Stop()
@@ -18,10 +19,9 @@
 
 
             Try
-                If InitalLoad = False Then
+                If InitalLoad = True Then
                     Log.WriteSystemLog("Load Data from Database.")
 
-                    GetServerData()
                     GetNewsData()
                     GetUserData()
 
@@ -29,7 +29,6 @@
                     InitalLoad = True
 
                 Else
-                    GetServerData()
                     GetNewsData()
                     GetUserData()
                 End If
@@ -39,33 +38,6 @@
             End Try
 
             LoginDbUpdate.Start()
-        End Sub
-
-        Structure Server_
-            Public ServerId As UInteger
-            Public Name As String
-            Public AcUs As UInt16
-            Public MaxUs As UInt16
-            Public State As Byte
-            Public IP As String
-            Public Port As UInt16
-        End Structure
-        Public Sub GetServerData()
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Servers")
-            Servers.Clear()
-
-            For i = 0 To tmp.Tables(0).Rows.Count - 1
-                Dim tmp_server As New Server_
-                tmp_server.ServerId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                tmp_server.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                tmp_server.AcUs = CUShort(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmp_server.MaxUs = CUShort(tmp.Tables(0).Rows(i).ItemArray(3))
-                tmp_server.State = CByte(tmp.Tables(0).Rows(i).ItemArray(4))
-                tmp_server.IP = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
-                tmp_server.Port = CUShort(tmp.Tables(0).Rows(i).ItemArray(6))
-
-                Servers.Add(tmp_server)
-            Next
         End Sub
 
         Structure News_
@@ -105,28 +77,13 @@
             Next
         End Sub
 
-
-        Structure UserArray
-            Public AccountId As Integer
-            Public Name As String
-            Public Pw As String
-            Public FailedLogins As Integer
-            Public Banned As Boolean
-            Public BannTime As Date
-            Public BannReason As String
-            Public Permission As Byte '0x00 = normal user, 0x01 = prefered access to the server (premium), 0x02 = gm, 0x03 = admin
-
-            Public Silk As UInteger
-            Public Silk_Bonus As UInteger
-            Public Silk_Points As UInteger
-        End Structure
         Public Sub GetUserData()
 
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
             Users.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
-                Dim tmpUser As New UserArray
+                Dim tmpUser As New cUser
                 tmpUser.AccountId = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpUser.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
                 tmpUser.Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
@@ -150,15 +107,6 @@
                 End If
             Next
             Return -1
-        End Function
-
-        Public Function GetServer(ByVal id As Integer) As Server_
-            For i = 0 To Servers.Count - 1
-                If Servers(i).ServerId = id Then
-                    Return Servers(i)
-                End If
-            Next
-            Return Nothing
         End Function
     End Module
 End Namespace

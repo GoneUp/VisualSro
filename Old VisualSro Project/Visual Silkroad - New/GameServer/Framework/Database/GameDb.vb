@@ -1,5 +1,6 @@
 ﻿Imports System.Timers
 Imports GameServer.Functions
+Imports SRFramework
 
 Namespace GameDB
     Module GameDb
@@ -95,7 +96,7 @@ Namespace GameDB
 
             For i = 0 To UserCount - 1
                 Users(i) = New cUser
-                Users(i).Id = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                Users(i).AccountId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
                 Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
                 Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
@@ -488,7 +489,7 @@ Namespace GameDB
 
         Public Function GetUserIndex(ByVal accountID As UInteger) As Integer
             For i = 0 To Users.Length
-                If Users(i).Id = accountID Then
+                If Users(i).AccountId = accountID Then
                     Return i
                 End If
             Next
@@ -497,7 +498,7 @@ Namespace GameDB
 
         Public Function GetUser(ByVal accountID As UInteger) As cUser
             For i = 0 To Users.Length
-                If Users(i).Id = accountID Then
+                If Users(i).AccountId = accountID Then
                     Return Users(i)
                 End If
             Next
@@ -512,7 +513,7 @@ Namespace GameDB
 
             For i = 0 To Chars.Length - 1
                 If Chars(i) IsNot Nothing Then
-                    If charArray.LoginInformation.Id = Chars(i).AccountID Then
+                    If charArray.LoginInformation.AccountId = Chars(i).AccountID Then
                         charArray.Chars.Add(Chars(i))
                         CharCount += 1
                     End If

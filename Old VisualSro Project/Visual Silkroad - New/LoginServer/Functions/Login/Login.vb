@@ -289,7 +289,7 @@ Namespace Functions
 
                 ElseIf LoginDb.Users(userIndex).Pw <> pw Then
                     'pw falsch
-                    Dim user As LoginDb.UserArray = LoginDb.Users(userIndex)
+                    Dim user As cUser = LoginDb.Users(userIndex)
                     user.FailedLogins += 1
                     LoginDb.Users(userIndex) = user
 

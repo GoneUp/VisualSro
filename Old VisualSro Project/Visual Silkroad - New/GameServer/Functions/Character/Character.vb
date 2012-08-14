@@ -256,7 +256,7 @@ Namespace Functions
                 GameDB.Chars(newCharacterIndex) = New cCharacter
 
                 With GameDB.Chars(newCharacterIndex)
-                    .AccountID = CharListing(Index_).LoginInformation.Id
+                    .AccountID = CharListing(Index_).LoginInformation.AccountId
                     .CharacterName = nick
                     .CharacterId = Id_Gen.GetNewCharId
                     .UniqueID = Id_Gen.GetUnqiueId

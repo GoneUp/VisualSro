@@ -126,7 +126,6 @@
     <Compile Include="Framework\Packets\PacketLog.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Character\Classes\cHotkey.vb" />
-    <Compile Include="Functions\Character\Classes\cUser.vb" />
     <Compile Include="Functions\Character\Classes\Postion.vb" />
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\Classes\cGameObject.vb" />

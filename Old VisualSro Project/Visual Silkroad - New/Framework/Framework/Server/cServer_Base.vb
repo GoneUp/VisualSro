@@ -175,6 +175,10 @@ Public Class cServer_Base
 
             _ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
+        Catch argument_ex As ArgumentException
+            'Server was stopped?
+        Catch obj_ex As ObjectDisposedException
+            'Server was stopped
         Catch exception As Exception
             RaiseEvent OnServerError(exception, -1)
         End Try

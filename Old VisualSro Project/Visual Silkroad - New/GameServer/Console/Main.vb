@@ -81,6 +81,10 @@ Friend Class Program
                 Functions.DespawnPlayer(index)
                 Functions.CleanUpPlayerComplete(index)
             End If
+
+            If Settings.Server_DebugMode Then
+                Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
+            End If
         Catch ex As Exception
             Log.WriteSystemLog("Client disconnect error! " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
         Finally

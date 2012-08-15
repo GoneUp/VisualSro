@@ -3,7 +3,7 @@ Imports System.Net.Sockets, System.Net
 
 Public Class GlobalManagerClient
     Public ManagerSocket As Socket
-    Public ReceiveThread As New Threading.Thread(AddressOf ReceiveData)
+    Public ReceiveThread As Threading.Thread
 
     Public LastPingTime As DateTime
     Public LastInfoTime As DateTime
@@ -33,6 +33,8 @@ Public Class GlobalManagerClient
 
             ManagerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             ManagerSocket.Connect(New IPEndPoint(IPAddress.Parse(Ip), port))
+
+            ReceiveThread = New Threading.Thread(AddressOf ReceiveData)
             ReceiveThread.Start()
 
         Catch ex As Exception
@@ -50,11 +52,13 @@ Public Class GlobalManagerClient
     Public Sub Disconnect()
         Try
             If ManagerSocket IsNot Nothing Then
-                ManagerSocket.Disconnect(True)
-                ManagerSocket.Shutdown(SocketShutdown.Both)
+                ManagerSocket.Disconnect(False)
+                ManagerSocket.Close(1)
+                ReceiveThread.Abort()
                 ManagerSocket = Nothing
             End If
 
+            UpdateInfoAllowed = False
         Catch ex As Exception
             RaiseEvent OnError(ex, -3)
         Finally
@@ -86,16 +90,14 @@ Public Class GlobalManagerClient
                     Exit Do
                 End If
 
-            Catch exception As SocketException
+            Catch sock_ex As SocketException
                 RaiseEvent OnLog("Connection to GlobalManager lost!")
-                If exception.ErrorCode = &H2746 Then
-                    RaiseEvent OnError(exception, -10)
+                If sock_ex.ErrorCode = &H2746 Then
+                    RaiseEvent OnError(sock_ex, -10)
                 End If
-            Catch exception1 As Threading.ThreadAbortException
-                RaiseEvent OnLog("Connection to GlobalManager lost!")
-                RaiseEvent OnError(exception1, -10)
-            Catch exception2 As Exception
-                RaiseEvent OnError(exception2, -10)
+            Catch thread_ex As Threading.ThreadAbortException
+            Catch ex As Exception
+                RaiseEvent OnError(ex, -10)
                 Array.Clear(buffer, 0, buffer.Length)
             End Try
         Loop

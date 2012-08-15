@@ -279,16 +279,11 @@ Namespace Functions
                     .PositionReturn = Settings.Player_StartReturnPos
 
                     If IsCharChinese(model) Then
-                        .PosTracker = New cPositionTracker(Settings.PlayerStartPosCh, .WalkSpeed, .RunSpeed,
-                                                            .BerserkSpeed)
+                        .PosTracker = New cPositionTracker(Settings.PlayerStartPosCh, 16, 50, 100)
                     ElseIf IsCharEurope(model) Then
-                        .PosTracker = New cPositionTracker(Settings.Player_StartPos_Eu, .WalkSpeed, .RunSpeed,
-                                                            .BerserkSpeed)
+                        .PosTracker = New cPositionTracker(Settings.Player_StartPos_Eu, 16, 50, 100)
                     End If
 
-                    .WalkSpeed = 16
-                    .RunSpeed = 50
-                    .BerserkSpeed = 100
 
                     Const magdefmin As Double = 3.0
                     Const phydefmin As Double = 6.0

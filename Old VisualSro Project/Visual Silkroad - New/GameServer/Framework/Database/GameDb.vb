@@ -34,7 +34,7 @@ Namespace GameDB
         'Guilds
         Public Guilds As New List(Of cGuild)
 
-        Public FirstRun As Boolean = True
+        Public InitalLoad As Boolean = True
 
         Public Sub UpdateData() Handles GameDbUpdate.Elapsed
             GameDbUpdate.Stop()
@@ -42,7 +42,7 @@ Namespace GameDB
             '20 secs
 
             Try
-                If FirstRun Then
+                If InitalLoad Then
                     Log.WriteSystemLog("Loading Playerdata from DB now.")
 
                     GetUserData()
@@ -64,7 +64,7 @@ Namespace GameDB
 
                     GetGuildData()
 
-                    FirstRun = False
+                    InitalLoad = False
 
                     Log.WriteSystemLog("Inital Playerdata from Database loaded!")
                 Else

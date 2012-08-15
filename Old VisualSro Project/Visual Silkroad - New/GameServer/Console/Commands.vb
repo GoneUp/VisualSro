@@ -117,10 +117,11 @@
                         Server.Disconnect(i)
                     End If
                 Next
-                Server.Stop()
+
                 If Server.Online Then
                     Server.Stop()
                 End If
+
                 Database.ExecuteQuerys()
                 GlobalManagerCon.Disconnect()
 
@@ -129,6 +130,7 @@
                 Functions.GlobalGame.GlobalInit(Server.MaxClients)
                 GlobalDef.Initalize(Server.MaxClients)
                 SilkroadData.DumpDataFiles()
+                GameDB.InitalLoad = True
                 GameDB.UpdateData()
                 Functions.Timers.LoadTimers(Server.MaxClients)
                 GameMod.Damage.OnServerStart(Server.MaxClients)

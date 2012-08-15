@@ -19,7 +19,7 @@
             For i = 0 To GameDB.InventoryItems.Count - 1
                 If GameDB.InventoryItems(i) IsNot Nothing Then
                     If GameDB.InventoryItems(i).OwnerID = charID Then
-                        UserItems(i) = GameDB.InventoryItems(i)
+                        UserItems(GameDB.InventoryItems(i).Slot) = GameDB.InventoryItems(i)
                     End If
                 End If
             Next
@@ -27,7 +27,7 @@
             For i = 0 To GameDB.AvatarInventoryItems.Count - 1
                 If GameDB.AvatarInventoryItems(i) IsNot Nothing Then
                     If GameDB.AvatarInventoryItems(i).OwnerID = charID Then
-                        UserItems(i) = GameDB.AvatarInventoryItems(i)
+                        AvatarItems(GameDB.AvatarInventoryItems(i).Slot) = GameDB.AvatarInventoryItems(i)
                     End If
                 End If
             Next

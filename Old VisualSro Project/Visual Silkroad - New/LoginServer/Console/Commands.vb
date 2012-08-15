@@ -49,6 +49,31 @@
                 'End
                 GlobalManager.OnSendServerShutdown()
 
+            Case "/reinit"
+                Log.WriteSystemLog("Ending Server....")
+                For i = 0 To Server.MaxClients - 1
+                    If Server.ClientList.GetSocket(i) IsNot Nothing Then
+                        Server.Disconnect(i)
+                    End If
+                Next
+
+                If Server.Online Then
+                    Server.Stop()
+                End If
+
+                Database.ExecuteQuerys()
+                GlobalManagerCon.Disconnect()
+
+                Log.WriteSystemLog("Cleanup Server...")
+
+                GlobalDef.Initalize(Server.MaxClients)
+                LoginDb.InitalLoad = True
+                LoginDb.UpdateData()
+                Timers.LoadTimers(Server.MaxClients)
+
+
+                Log.WriteSystemLog("Reconnect GlobalManager...")
+                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
         End Select
 
 

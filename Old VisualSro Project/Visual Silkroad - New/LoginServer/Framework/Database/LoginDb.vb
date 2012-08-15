@@ -11,7 +11,7 @@ Namespace LoginDb
         Public Users As New List(Of cUser)
         Public LoginInfoMessages As New List(Of LoginInfoMessage_)
 
-        Private InitalLoad As Boolean = True
+        Public InitalLoad As Boolean = True
 
         Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
             LoginDbUpdate.Stop()

@@ -380,6 +380,12 @@ Namespace GameMod
                                 End If
                             Next
                     End Select
+
+
+                Case "\\fill"
+                    PlayerData(Index_).CHP = PlayerData(Index_).HP
+                    PlayerData(Index_).CMP = PlayerData(Index_).MP
+                    UpdateHP_MP(Index_)
             End Select
 
 

@@ -498,13 +498,13 @@ Namespace Functions
 
                 'GlobalManager..
                 If DateDiff(DateInterval.Second, GlobalManagerCon.LastPingTime, Date.Now) > 5 Then
-                    If GlobalManagerCon.ManagerSocket.Connected Then
+                    If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
                         GlobalManagerCon.SendPing()
                     End If
                 End If
 
                 If DateDiff(DateInterval.Second, GlobalManagerCon.LastInfoTime, Date.Now) > 10 And GlobalManagerCon.UpdateInfoAllowed Then
-                    If GlobalManagerCon.ManagerSocket.Connected Then
+                    If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
                         GlobalManager.OnSendMyInfo()
                     End If
                 End If

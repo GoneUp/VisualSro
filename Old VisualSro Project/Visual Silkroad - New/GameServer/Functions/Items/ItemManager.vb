@@ -13,7 +13,7 @@
         End Function
 
         Public Sub AddInvItem(ByVal item As cInventoryItem, ByVal type As cInventoryItem.Type)
-            If GameDB.Items.ContainsKey(item.ItemID) Then
+            If GameDB.Items.ContainsKey(item.ItemID) Or item.ItemID = 0 Then
                 Select Case type
                     Case cInventoryItem.Type.Inventory
                         GameDB.InventoryItems.Add(item)
@@ -55,6 +55,8 @@
         Public Sub UpdateItem(ByVal item As cItem)
             If GameDB.Items.ContainsKey(item.ID) Then
                 GameDB.Items(item.ID) = item
+                Database.SaveQuery(String.Format("Update items SET ObjectID='{0}', Plus='{1}', Variance='{2}', Data='{3}' WHERE ID='{4}'", _
+                                                item.ObjectID, item.Plus, item.Variance, item.Data, item.ID))
             Else
                 Throw New Exception("ItemManager:UpdateItem ItemID not found!")
             End If
@@ -66,6 +68,8 @@
                     For i = 0 To GameDB.InventoryItems.Count - 1
                         If GameDB.InventoryItems(i).OwnerID = item.OwnerID And GameDB.InventoryItems(i).Slot = item.Slot Then
                             GameDB.InventoryItems(i) = item
+                            Database.SaveQuery(String.Format("Update inventory SET ItemID='{0}' WHERE CharID='{1}' AND Slot='{2}'", _
+                                                             item.ItemID, item.OwnerID, item.Slot))
                             Exit Sub
                         End If
                     Next
@@ -74,6 +78,8 @@
                     For i = 0 To GameDB.AvatarInventoryItems.Count - 1
                         If GameDB.AvatarInventoryItems(i).OwnerID = item.OwnerID And GameDB.AvatarInventoryItems(i).Slot = item.Slot Then
                             GameDB.AvatarInventoryItems(i) = item
+                            Database.SaveQuery(String.Format("Update inventory_avatar SET ItemID='{0}' WHERE CharID='{1}' AND Slot='{2}'", _
+                                                        item.ItemID, item.OwnerID, item.Slot))
                             Exit Sub
                         End If
                     Next
@@ -82,6 +88,8 @@
                     For i = 0 To GameDB.COSInventoryItems.Count - 1
                         If GameDB.COSInventoryItems(i).OwnerID = item.OwnerID And GameDB.COSInventoryItems(i).Slot = item.Slot Then
                             GameDB.COSInventoryItems(i) = item
+                            Database.SaveQuery(String.Format("Update inventory_cos SET ItemID='{0}' WHERE COSID='{1}' AND Slot='{2}'", _
+                                                        item.ItemID, item.OwnerID, item.Slot))
                             Exit Sub
                         End If
                     Next
@@ -90,6 +98,8 @@
                     For i = 0 To GameDB.StorageItems.Count - 1
                         If GameDB.StorageItems(i).OwnerID = item.OwnerID And GameDB.StorageItems(i).Slot = item.Slot Then
                             GameDB.StorageItems(i) = item
+                            Database.SaveQuery(String.Format("Update storage SET ItemID='{0}' WHERE AccountID='{1}' AND Slot='{2}'", _
+                                                        item.ItemID, item.OwnerID, item.Slot))
                             Exit Sub
                         End If
                     Next
@@ -98,6 +108,8 @@
                     For i = 0 To GameDB.GuildStorageItems.Count - 1
                         If GameDB.GuildStorageItems(i).OwnerID = item.OwnerID And GameDB.GuildStorageItems(i).Slot = item.Slot Then
                             GameDB.GuildStorageItems(i) = item
+                            Database.SaveQuery(String.Format("Update storage_guild SET ItemID='{0}' WHERE GuildID='{1}' AND Slot='{2}'", _
+                                                      item.ItemID, item.OwnerID, item.Slot))
                             Exit Sub
                         End If
                     Next
@@ -111,6 +123,8 @@
                     For i = 0 To GameDB.InventoryItems.Count - 1
                         If GameDB.InventoryItems(i).OwnerID = ownerID And GameDB.InventoryItems(i).Slot = slot Then
                             GameDB.InventoryItems(i).ItemID = itemID
+                            Database.SaveQuery(String.Format("Update inventory SET ItemID='{0}' WHERE CharID='{1}' AND Slot='{2}'", _
+                                                            itemID, ownerID, slot))
                             Exit Sub
                         End If
                     Next
@@ -119,6 +133,8 @@
                     For i = 0 To GameDB.AvatarInventoryItems.Count - 1
                         If GameDB.AvatarInventoryItems(i).OwnerID = ownerID And GameDB.AvatarInventoryItems(i).Slot = slot Then
                             GameDB.AvatarInventoryItems(i).ItemID = itemID
+                            Database.SaveQuery(String.Format("Update inventory_avatar SET ItemID='{0}' WHERE CharID='{1}' AND Slot='{2}'", _
+                                                            itemID, ownerID, slot))
                             Exit Sub
                         End If
                     Next
@@ -127,6 +143,8 @@
                     For i = 0 To GameDB.COSInventoryItems.Count - 1
                         If GameDB.COSInventoryItems(i).OwnerID = ownerID And GameDB.COSInventoryItems(i).Slot = slot Then
                             GameDB.COSInventoryItems(i).ItemID = itemID
+                            Database.SaveQuery(String.Format("Update inventory_cos SET ItemID='{0}' WHERE COSID='{1}' AND Slot='{2}'", _
+                                                            itemID, ownerID, slot))
                             Exit Sub
                         End If
                     Next
@@ -135,6 +153,8 @@
                     For i = 0 To GameDB.StorageItems.Count - 1
                         If GameDB.StorageItems(i).OwnerID = ownerID And GameDB.StorageItems(i).Slot = slot Then
                             GameDB.StorageItems(i).ItemID = itemID
+                            Database.SaveQuery(String.Format("Update storage SET ItemID='{0}' WHERE AccountID='{1}' AND Slot='{2}'", _
+                                                            itemID, ownerID, slot))
                             Exit Sub
                         End If
                     Next
@@ -143,6 +163,8 @@
                     For i = 0 To GameDB.GuildStorageItems.Count - 1
                         If GameDB.GuildStorageItems(i).OwnerID = ownerID And GameDB.GuildStorageItems(i).Slot = slot Then
                             GameDB.GuildStorageItems(i).ItemID = itemID
+                            Database.SaveQuery(String.Format("Update storage_guild SET ItemID='{0}' WHERE GuildID='{1}' AND Slot='{2}'", _
+                                                            itemID, ownerID, slot))
                             Exit Sub
                         End If
                     Next

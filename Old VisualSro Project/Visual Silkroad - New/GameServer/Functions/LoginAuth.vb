@@ -72,7 +72,7 @@ Namespace Functions
                 writer.Byte(2) 'User is already logged in (c4?)
                 Server.Send(writer.GetBytes, Index_)
                 Server.Disconnect(Index_)
-            ElseIf Server.OnlineClients + 1 > Server.MaxNormalClients And GameDB.Users(userIndex).Permission = 0 Then
+            ElseIf Server.OnlineClients + 1 > Server.MaxNormalClients And GameDB.Users(userIndex).Permission = cUser.UserType.Normal Then
                 'overload prevention --> user conencts back to login
                 writer.Byte(2)
                 writer.Byte(4)  'Server Full 

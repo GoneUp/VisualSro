@@ -75,7 +75,7 @@ Namespace GameDB
         End Sub
 
         Public Sub SaveSilk(ByVal accountID As UInt32, ByVal silk As UInt32, ByVal silk_Bonus As UInt32, ByVal silk_Points As UInt32)
-            Database.SaveQuery(String.Format("UPDATE users SET silk='{0}' where id='{1}'", silk, accountID))
+            Database.SaveQuery(String.Format("UPDATE users SET silk='{0}', silk_bonus='{1}', silk_points='{2}' where id='{3}'", silk, silk_Bonus, silk_Points, accountID))
         End Sub
 
         Public Sub SaveCharType_Volume(ByVal Index_ As Integer)
@@ -109,7 +109,7 @@ Namespace GameDB
         End Sub
 
         Public Sub SaveSkillDelete(ByVal ownerID As UInt32, ByVal skillID As UInt32)
-            Database.SaveQuery(String.Format("DELETE FROM char_skill wherre owner='{0}' AND SkillID='{1}'", ownerID, skillID))
+            Database.SaveQuery(String.Format("DELETE FROM char_skill where owner='{0}' AND SkillID='{1}'", ownerID, skillID))
         End Sub
     End Module
 End Namespace

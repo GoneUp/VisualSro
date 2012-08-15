@@ -102,7 +102,10 @@ Namespace GameDB
                 Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
                 Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
                 Users(i).Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
-                Users(i).Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
+                Users(i).Silk_Bonus = CUInt(tmp.Tables(0).Rows(i).ItemArray(8))
+                Users(i).Silk_Points = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
+                Users(i).Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(10))
+                Users(i).StorageSlots = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(11))
             Next
         End Sub
 #End Region
@@ -182,6 +185,8 @@ Namespace GameDB
             Dim ItemCount = tmp.Tables(0).Rows.Count
             Dim InitalID As UInt64 = 2
 
+            Items.Clear()
+
             For i = 0 To (ItemCount - 1)
                 Dim tmpItem As New cItem
                 tmpItem.ID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(0))
@@ -247,6 +252,8 @@ Namespace GameDB
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory")
             Dim ItemCount = tmp.Tables(0).Rows.Count
 
+            InventoryItems.Clear()
+
             For i = 0 To (ItemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
@@ -259,6 +266,8 @@ Namespace GameDB
         Public Sub GetAvatarInventoryData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory_avatar")
             Dim ItemCount = tmp.Tables(0).Rows.Count
+
+            AvatarInventoryItems.Clear()
 
             For i = 0 To (ItemCount - 1)
                 Dim tmpItem As New cInventoryItem
@@ -273,6 +282,8 @@ Namespace GameDB
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory_cos")
             Dim ItemCount = tmp.Tables(0).Rows.Count
 
+            COSInventoryItems.Clear()
+
             For i = 0 To (ItemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
@@ -286,6 +297,8 @@ Namespace GameDB
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From storage")
             Dim ItemCount = tmp.Tables(0).Rows.Count
 
+            StorageItems.Clear()
+
             For i = 0 To (ItemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
@@ -298,6 +311,8 @@ Namespace GameDB
         Public Sub GetGuildStorageData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From storage_guild")
             Dim ItemCount = tmp.Tables(0).Rows.Count
+
+            GuildStorageItems.Clear()
 
             For i = 0 To (ItemCount - 1)
                 Dim tmpItem As New cInventoryItem
@@ -349,6 +364,7 @@ Namespace GameDB
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From skillset_name")
             Dim count As Integer = tmp.Tables(0).Rows.Count
 
+            SkillSets.Clear()
 
             For i = 0 To count - 1
                 Dim tmpSet As New cSkillSet
@@ -408,6 +424,8 @@ Namespace GameDB
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From hotkeys")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
 
+            Hotkeys.Clear()
+
             For i = 0 To Count - 1
                 Dim tmp_ As New cHotKey
                 tmp_.OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -424,6 +442,8 @@ Namespace GameDB
         Public Sub GetGuildData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From guild")
             Dim Count As Integer = tmp.Tables(0).Rows.Count
+
+            Guilds.Clear()
 
             For i = 0 To Count - 1
                 Dim tmp_ As New cGuild

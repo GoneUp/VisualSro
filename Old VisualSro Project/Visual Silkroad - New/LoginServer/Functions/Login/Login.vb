@@ -342,17 +342,18 @@ Namespace Functions
             Return key
         End Function
 
-        Public Sub LoginSendUserAuthSucceed(ByVal succeed As Byte, ByVal errortag As Byte, ByVal sessionID As UInteger, ByVal index_ As Integer)
+        Public Sub LoginSendUserAuthSucceed(ByVal succeed As Byte, ByVal errortag As Byte, ByVal sessionID As UInteger, ByVal Index_ As Integer)
             'ServerIndex + SessionID + Port + Index
-            Dim user As String = SessionInfo(index_).userName
-
-            If Server.ClientList.GetSocket(index_) Is Nothing Then
-                GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! user: " & user)
-            ElseIf Shard_Gameservers.ContainsKey(SessionInfo(index_).gameserverId) = False Then
-                GlobalManagerCon.Log("GS from GlobalManager dosen't existis! user: " & user)
+          
+            If Server.ClientList.GetSocket(Index_) Is Nothing Then
+                GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! user: " & Index_)
+            ElseIf Shard_Gameservers.ContainsKey(SessionInfo(Index_).gameserverId) = False Then
+                GlobalManagerCon.Log("GS from GlobalManager dosen't existis! user: " & Index_)
             Else
+                Dim user As String = SessionInfo(Index_).userName
+
                 If succeed = 1 Then
-                    Dim gs As GameServer = Shard_Gameservers(SessionInfo(index_).gameserverId)
+                    Dim gs As GameServer = Shard_Gameservers(SessionInfo(Index_).gameserverId)
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.LOGIN_AUTH)
                     writer.Byte(1)
@@ -360,7 +361,7 @@ Namespace Functions
                     writer.Word(gs.IP.Length)
                     writer.String(gs.IP)
                     writer.Word(gs.Port)
-                    Server.Send(writer.GetBytes, index_)
+                    Server.Send(writer.GetBytes, Index_)
                 Else
                     Select Case errortag
                         Case 1

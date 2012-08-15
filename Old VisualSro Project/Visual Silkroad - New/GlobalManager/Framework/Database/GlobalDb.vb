@@ -88,7 +88,10 @@ Namespace GlobalDb
                 tmpUser.BannReason = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
                 tmpUser.BannTime = CDate(tmp.Tables(0).Rows(i).ItemArray(6))
                 tmpUser.Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
-                tmpUser.Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(8))
+                tmpUser.Silk_Bonus = CUInt(tmp.Tables(0).Rows(i).ItemArray(8))
+                tmpUser.Silk_Points = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
+                tmpUser.Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(10))
+                tmpUser.StorageSlots = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(11))
 
                 Users.Add(tmpUser)
             Next

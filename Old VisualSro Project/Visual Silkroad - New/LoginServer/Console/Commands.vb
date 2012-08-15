@@ -74,6 +74,13 @@
 
                 Log.WriteSystemLog("Reconnect GlobalManager...")
                 GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
+            Case "/gmre"
+                'GlobalManagerReConnect
+                GlobalManagerCon.Disconnect()
+                Log.WriteSystemLog("Reconnect GlobalManager...")
+                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
         End Select
 
 

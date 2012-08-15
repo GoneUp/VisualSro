@@ -17,7 +17,8 @@ Friend Class Program
         AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
 
         AddHandler GlobalManagerCon.OnGlobalManagerInit, AddressOf Program.gmc_OnGlobalManagerInit
-        AddHandler GlobalManagerCon.OnGlobalManagerShutdown, AddressOf Program.gmc_OnGlobalManagerInit
+        AddHandler GlobalManagerCon.OnGlobalManagerShutdown, AddressOf Program.gmc_OnGlobalManagerShutdown
+        AddHandler GlobalManagerCon.OnGlobalManageConLost, AddressOf Program.gmc_OnGlobalManagerConLost
         AddHandler GlobalManagerCon.OnError, AddressOf Program.gmc_OnGlobalManagerError
         AddHandler GlobalManagerCon.OnLog, AddressOf Program.gmc_OnGlobalManagerLog
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.ParseGlobalManager
@@ -55,7 +56,7 @@ Friend Class Program
     End Sub
 
     Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-        If Settings.Server_DebugMode Then
+        If True Then
             Log.WriteSystemLog(String.Format("Client[{0}/{1}] Connected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
         End If
 
@@ -76,7 +77,7 @@ Friend Class Program
         SessionInfo(index) = Nothing
         Server.OnlineClients -= 1
 
-        If Settings.Server_DebugMode Then
+        If True Then
             Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
         End If
 
@@ -137,12 +138,15 @@ Friend Class Program
     End Sub
 
     Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
-        Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
+        Log.WriteSystemLog("Server Error: " & ex.Message & " Command: " & command & " Stacktrace: " & ex.StackTrace)
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerInit()
-        Server.Start()
-        Log.WriteSystemLog("We are ready!")
+        If Server.Online = False Then
+            Server.Start()
+        End If
+
+        Log.WriteSystemLog("GMC: We are ready!")
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerShutdown()
@@ -154,7 +158,14 @@ Friend Class Program
         Server.Stop()
         Database.ExecuteQuerys()
 
-        Log.WriteSystemLog("Server stopped, Data is save. Feel free to close!")
+        Log.WriteSystemLog("GMC: Server stopped, Data is save. Feel free to close!")
+    End Sub
+
+    Private Shared Sub gmc_OnGlobalManagerConLost()
+        Log.WriteSystemLog("GMC: Lost Connection, Cleanup!")
+        Shard_Gateways.Clear()
+        Shard_Gameservers.Clear()
+        Shard_Downloads.Clear()
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerLog(ByVal message As String)
@@ -162,7 +173,7 @@ Friend Class Program
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal index As String)
-        Log.WriteSystemLog("GMC error: " & ex.Message & " Index: " & index)
+        Log.WriteSystemLog("GMC Error: " & ex.Message & " Index: " & index & " Stacktrace: " & ex.StackTrace)
     End Sub
 End Class
 

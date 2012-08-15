@@ -18,7 +18,8 @@ Friend Class Program
         AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
 
         AddHandler GlobalManagerCon.OnGlobalManagerInit, AddressOf Program.gmc_OnGlobalManagerInit
-        AddHandler GlobalManagerCon.OnGlobalManagerShutdown, AddressOf Program.gmc_OnGlobalManagerInit
+        AddHandler GlobalManagerCon.OnGlobalManagerShutdown, AddressOf Program.gmc_OnGlobalManagerShutdown
+        AddHandler GlobalManagerCon.OnGlobalManageConLost, AddressOf Program.gmc_OnGlobalManagerConLost
         AddHandler GlobalManagerCon.OnError, AddressOf Program.gmc_OnGlobalManagerError
         AddHandler GlobalManagerCon.OnLog, AddressOf Program.gmc_OnGlobalManagerLog
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.Parser.ParseGlobalManager
@@ -82,7 +83,7 @@ Friend Class Program
                 Functions.CleanUpPlayerComplete(index)
             End If
 
-            If Settings.Server_DebugMode Then
+            If Settings.Log_Detail Then
                 Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
             End If
         Catch ex As Exception
@@ -153,7 +154,10 @@ Friend Class Program
     End Sub
 
     Private Shared Sub gmc_OnGlobalManagerInit()
-        Server.Start()
+        If Server.Online = False Then
+            Server.Start()
+        End If
+
         Log.WriteSystemLog("GMC: We are ready!")
     End Sub
 
@@ -169,12 +173,19 @@ Friend Class Program
         Log.WriteSystemLog("Server stopped, Data is save. Feel free to close!")
     End Sub
 
+    Private Shared Sub gmc_OnGlobalManagerConLost()
+        Log.WriteSystemLog("GMC: Lost Connection, Cleanup!")
+        Shard_Gateways.Clear()
+        Shard_Gameservers.Clear()
+        Shard_Downloads.Clear()
+    End Sub
+
     Private Shared Sub gmc_OnGlobalManagerLog(ByVal message As String)
         Log.WriteSystemLog("GMC Log: " & message)
     End Sub
 
-    Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal command As String)
-        Log.WriteSystemLog("GMC error: " & ex.Message & " Command: " & command)
+    Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal index As String)
+        Log.WriteSystemLog("GMC Error: " & ex.Message & " Index: " & index & " Stacktrace: " & ex.StackTrace)
     End Sub
 End Class
 

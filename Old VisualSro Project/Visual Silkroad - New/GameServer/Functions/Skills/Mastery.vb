@@ -139,7 +139,7 @@ Namespace Functions
                 Dim key As Byte = list(i)
                 If key < _skill.SkillGroupLevel Then
                     If CheckIfUserOwnSkill(_skillGroup.Skills(key), Index_) = False Then
-                        requirementsFilled = False
+                       requirementsFilled = False
                     End If
                 End If
             Next
@@ -166,11 +166,13 @@ Namespace Functions
                     'SkillGroup error or previous Skills not skilled
                     'Kick him ;)
                     Server.Disconnect(Index_)
+                    Exit Sub
                 End If
             Else
                 'Not enough SP or other Error
 
             End If
+
             PlayerData(Index_).Skilling = False
         End Sub
 

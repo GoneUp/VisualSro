@@ -33,13 +33,15 @@ Namespace Functions
 
             GameDB.FillCharList(CharListing(Index_))
 
-            writer.Byte(2)
-            'Char List
+            writer.Byte(2)  'Char List
             writer.Byte(1)
 
             writer.Byte(CharListing(Index_).NumberOfChars)
 
             If CharListing(Index_).NumberOfChars = 0 Then
+
+                'unknown byte thief - hunterr flag?
+                writer.Byte(0)
                 Server.Send(writer.GetBytes, Index_)
 
             ElseIf CharListing(Index_).NumberOfChars > 0 Then
@@ -74,7 +76,7 @@ Namespace Functions
                         writer.Byte(0) 'In Academy
 
                         'Now Items
-                        Dim Inventory As cInventory = New cInventory(.CharacterId, .MaxInvSlots)
+                        Dim Inventory As cInventory = New cInventory(.CharacterId, .MaxInvSlots, .MaxAvatarSlots)
 
                         Dim playerItemCount As Integer = 0
                         For slot = 0 To 9
@@ -119,7 +121,6 @@ Namespace Functions
                 writer.Byte(0)
 
                 Server.Send(writer.GetBytes, Index_)
-
             End If
         End Sub
 
@@ -319,7 +320,7 @@ Namespace Functions
                             Math.Round(.Position.X),
                             Math.Round(.Position.Z),
                             Math.Round(.Position.Y),
-                            GameDB.Chars(.CharacterId)))
+                            .CharacterId))
                     Database.SaveQuery(String.Format("INSERT INTO char_pos (OwnerCharID) VALUE ('{0}')",
                                                      .CharacterId))
                     Database.SaveQuery(String.Format("INSERT INTO guild_member (charid) VALUE ('{0}')",
@@ -441,6 +442,14 @@ Namespace Functions
                         tmp_item.ItemID = 0
                         ItemManager.AddInvItem(tmp_item, cInventoryItem.Type.AvatarInventory)
                     Next
+                    'Storage
+                    For slot = 0 To 255
+                        Dim tmp_item As New cInventoryItem
+                        tmp_item.OwnerID = .CharacterId
+                        tmp_item.Slot = slot
+                        tmp_item.ItemID = 0
+                        ItemManager.AddInvItem(tmp_item, cInventoryItem.Type.Storage)
+                    Next
 
 
                     '1 = Body = Inv 1
@@ -451,6 +460,7 @@ Namespace Functions
                     item.ObjectID = _items(1)
                     item.Plus = Math.Round(Rand.Next(Settings.Player_StartItemsPlusMin, Settings.Player_StartItemsPlusMax))
                     item.Data = _refitems(1).MAX_DURA
+                    item.CreatorName = .CharacterName & "#START"
                     Dim ID_1 As UInt64 = ItemManager.AddItem(item)
                     ItemManager.UpdateInvItem(.CharacterId, 1, ID_1, cInventoryItem.Type.Inventory)
 
@@ -458,6 +468,7 @@ Namespace Functions
                     item.ObjectID = _items(2)
                     item.Plus = Math.Round(Rand.Next(Settings.Player_StartItemsPlusMin, Settings.Player_StartItemsPlusMax))
                     item.Data = _refitems(2).MAX_DURA
+                    item.CreatorName = .CharacterName & "#START"
                     Dim ID_2 As UInt64 = ItemManager.AddItem(item)
                     ItemManager.UpdateInvItem(.CharacterId, 4, ID_2, cInventoryItem.Type.Inventory)
 
@@ -465,6 +476,7 @@ Namespace Functions
                     item.ObjectID = _items(3)
                     item.Plus = Math.Round(Rand.Next(Settings.Player_StartItemsPlusMin, Settings.Player_StartItemsPlusMax))
                     item.Data = _refitems(3).MAX_DURA
+                    item.CreatorName = .CharacterName & "#START"
                     Dim ID_3 As UInt64 = ItemManager.AddItem(item)
                     ItemManager.UpdateInvItem(.CharacterId, 5, ID_3, cInventoryItem.Type.Inventory)
 
@@ -472,6 +484,7 @@ Namespace Functions
                     item.ObjectID = _items(4)
                     item.Plus = Math.Round(Rand.Next(Settings.Player_StartItemsPlusMin, Settings.Player_StartItemsPlusMax))
                     item.Data = _refitems(4).MAX_DURA
+                    item.CreatorName = .CharacterName & "#START"
                     Dim ID_4 As UInt64 = ItemManager.AddItem(item)
                     ItemManager.UpdateInvItem(.CharacterId, 6, ID_4, cInventoryItem.Type.Inventory)
 
@@ -480,6 +493,7 @@ Namespace Functions
                         item.ObjectID = 251
                         item.Plus = Math.Round(Rand.Next(Settings.Player_StartItemsPlusMin, Settings.Player_StartItemsPlusMax))
                         item.Data = GetItemByID(251).MAX_DURA
+                        item.CreatorName = .CharacterName & "#START"
                         Dim ID_5 As UInt64 = ItemManager.AddItem(item)
                         ItemManager.UpdateInvItem(.CharacterId, 7, ID_5, cInventoryItem.Type.Inventory)
 
@@ -488,6 +502,7 @@ Namespace Functions
                         item = New cItem
                         item.ObjectID = 62
                         item.Data = 100
+                        item.CreatorName = .CharacterName & "#START"
                         Dim ID_5 As UInt64 = ItemManager.AddItem(item)
                         ItemManager.UpdateInvItem(.CharacterId, 7, ID_5, cInventoryItem.Type.Inventory)
 
@@ -496,6 +511,7 @@ Namespace Functions
                         item.ObjectID = 10738
                         item.Plus = Math.Round(Rand.Next(Settings.Player_StartItemsPlusMin, Settings.Player_StartItemsPlusMax))
                         item.Data = GetItemByID(251).MAX_DURA
+                        item.CreatorName = .CharacterName & "#START"
                         Dim ID_5 As UInt64 = ItemManager.AddItem(item)
                         ItemManager.UpdateInvItem(.CharacterId, 7, ID_5, cInventoryItem.Type.Inventory)
 
@@ -503,6 +519,7 @@ Namespace Functions
                         item = New cItem
                         item.ObjectID = 10376
                         item.Data = 100
+                        item.CreatorName = .CharacterName & "#START"
                         Dim ID_5 As UInt64 = ItemManager.AddItem(item)
                         ItemManager.UpdateInvItem(.CharacterId, 7, ID_5, cInventoryItem.Type.Inventory)
                     End If
@@ -520,10 +537,9 @@ Namespace Functions
 
                 End With
 
-                'Finish
-                writer.Byte(1)
-                'success
-                Server.Send(writer.GetBytes, Index_)
+
+                writer.Byte(1)  'Finish
+                Server.Send(writer.GetBytes, Index_) 'success
             End If
         End Sub
 
@@ -562,7 +578,7 @@ Namespace Functions
                     PlayerData(Index_) = CharListing(Index_).Chars(i)
                     PlayerData(Index_).UniqueID = Id_Gen.GetUnqiueId()
 
-                    Inventorys(Index_) = New cInventory(CharListing(Index_).Chars(i).CharacterId, CharListing(Index_).Chars(i).MaxInvSlots)
+                    Inventorys(Index_) = New cInventory(CharListing(Index_).Chars(i).CharacterId, CharListing(Index_).Chars(i).MaxInvSlots, CharListing(Index_).Chars(i).MaxAvatarSlots)
 
                     SessionInfo(Index_).Charname = SelectedNick
                     Exit For

@@ -219,8 +219,8 @@ Namespace Functions
                     End If
 
 
-                    Dim EXP As Long = (((ref_.Exp * GetMobExpMultiplier(mob_.Mob_Type)) * DmgPercent * Balance * GapFactorXP) * Settings.Server_XPRate)
-                    Dim SP As Long = ((ref_.Exp * DmgPercent * Balance * GapFactorSP) * Settings.Server_SPRate)
+                    Dim EXP As ULong = (((ref_.Exp * GetMobExpMultiplier(mob_.Mob_Type)) * DmgPercent * Balance * GapFactorXP) * Settings.Server_XPRate)
+                    Dim SP As ULong = ((ref_.Exp * DmgPercent * Balance * GapFactorSP) * Settings.Server_SPRate)
 
 
                     GetXP(EXP, SP, Index_, mob_.UniqueID)

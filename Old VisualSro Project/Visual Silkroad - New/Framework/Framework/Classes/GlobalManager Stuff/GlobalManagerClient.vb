@@ -12,6 +12,7 @@ Public Class GlobalManagerClient
 #Region "Events"
     Public Event OnGlobalManagerInit As dGlobalManagerInit
     Public Event OnGlobalManagerShutdown As dGlobalManagerInit
+    Public Event OnGlobalManageConLost As dGlobalManagerInit
     Public Event OnError As dError
     Public Event OnLog As dLog
     Public Event OnPacketReceived As dReceive
@@ -64,6 +65,7 @@ Public Class GlobalManagerClient
         Finally
             If ManagerSocket Is Nothing Then
                 RaiseEvent OnLog("Connection to GlobalManager closed!")
+                RaiseEvent OnGlobalManageConLost()
             End If
         End Try
     End Sub
@@ -85,14 +87,13 @@ Public Class GlobalManagerClient
                     End If
 
                 Else
-                    RaiseEvent OnLog("Connection to GlobalManager lost!")
-                    RaiseEvent OnError(New Exception("ConLost"), -10)
+                    RaiseEvent OnGlobalManageConLost()
                     Exit Do
                 End If
 
             Catch sock_ex As SocketException
-                RaiseEvent OnLog("Connection to GlobalManager lost!")
-                If sock_ex.ErrorCode = &H2746 Then
+                RaiseEvent OnGlobalManageConLost()
+                If sock_ex.ErrorCode <> &H2746 Then
                     RaiseEvent OnError(sock_ex, -10)
                 End If
             Catch thread_ex As Threading.ThreadAbortException
@@ -131,6 +132,7 @@ Public Class GlobalManagerClient
                     LastPingTime = Date.Now
                 End If
             End If
+        Catch sock_ex As SocketException
         Catch ex As Exception
             RaiseEvent OnError(ex, -5)
         End Try

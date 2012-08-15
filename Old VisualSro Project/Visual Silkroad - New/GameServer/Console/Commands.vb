@@ -57,9 +57,9 @@
                 GC.Collect()
                 Log.WriteSystemLog(
                     "Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64) / 1024 / 1024)
-            Case "/end"
 
-                GameServer.Log.WriteSystemLog("Ending Server....")
+            Case "/end"
+                Log.WriteSystemLog("Ending Server....")
                 For i = 0 To Functions.PlayerData.Count - 1
                     If Functions.PlayerData(i) IsNot Nothing Then
                         Server.Disconnect(i)
@@ -94,6 +94,7 @@
             Case "/respawnoff"
                 Settings.Server_SpawnRate = 0
                 Log.WriteSystemLog("Turned off Respawn")
+
             Case "/save"
                 Dim path = AppDomain.CurrentDomain.BaseDirectory & "npcpos_saved.txt"
                 Dim cloack As New Stopwatch
@@ -111,7 +112,7 @@
                 End If
 
             Case "/reinit"
-                GameServer.Log.WriteSystemLog("Ending Server....")
+                Log.WriteSystemLog("Ending Server....")
                 For i = 0 To Functions.PlayerData.Count - 1
                     If Functions.PlayerData(i) IsNot Nothing Then
                         Server.Disconnect(i)
@@ -137,6 +138,13 @@
 
                 Log.WriteSystemLog("Reconnect GlobalManager...")
                 GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
+            Case "/gmre"
+                'GlobalManagerReConnect
+                GlobalManagerCon.Disconnect()
+                Log.WriteSystemLog("Reconnect GlobalManager...")
+                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
         End Select
     End Sub
 End Module

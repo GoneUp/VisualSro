@@ -258,7 +258,9 @@ Namespace Functions
             Dim unique_Id As UInteger = Packet.DWord
 
 
-            For Each key In MobList.Keys.ToList
+            Dim list = MobList.Keys.ToList
+            For i = 0 To list.Count - 1
+                Dim key As UInt32 = list(i)
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList.Item(key)
                     If Mob_.UniqueID = unique_Id Then

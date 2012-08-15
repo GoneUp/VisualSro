@@ -26,7 +26,7 @@ Namespace LoginDb
                     GetUserData()
 
                     Log.WriteSystemLog("Loading Completed.")
-                    InitalLoad = True
+                    InitalLoad = False
 
                 Else
                     GetNewsData()

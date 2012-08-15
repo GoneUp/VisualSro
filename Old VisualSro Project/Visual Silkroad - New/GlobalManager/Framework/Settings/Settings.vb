@@ -16,7 +16,7 @@ Namespace Settings
         Public Server_NormalSlots As UInteger = 100
         Public Server_MaxClients As UInteger = 105
         Public Server_Id As UShort = 0
-        Private _Server_DebugMode As Boolean = True
+        Private _Server_DebugMode As Boolean = False
         Public Property Server_DebugMode 'Only for setting the PingDc on ClientList
             Get
                 Return _Server_DebugMode

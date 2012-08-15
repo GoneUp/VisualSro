@@ -24,10 +24,6 @@ Friend Class Program
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.Parser.ParseGlobalManager
         AddHandler GlobalManagerCon.OnGameserverUserauthReply, AddressOf Functions.Check_GlobalManagerUserAuthReply
 
-        Console.WindowHeight = 20
-        Console.BufferHeight = 50
-        Console.WindowWidth = 70
-        Console.BufferWidth = 70
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()

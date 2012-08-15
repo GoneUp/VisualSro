@@ -24,7 +24,7 @@ Namespace GlobalDb
                     GetUserData()
 
                     Log.WriteSystemLog("Loading Completed.")
-                    InitalLoad = True
+                    InitalLoad = False
 
                 Else
                     GetCertData()

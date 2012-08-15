@@ -2,10 +2,28 @@
 Imports System.Timers
 
 Public Class cClientList
-    Public SocketList(1) As Socket
-    Public LastPingTime(1) As DateTime
-    Public WithEvents PingTimer As New Timer
-    Public Server_DebugMode As Boolean = False
+
+#Region "Propertys"
+    Private m_SocketList As Socket()
+    Public Property SocketList As Socket()
+        Get
+            Return m_SocketList
+        End Get
+        Set(ByVal value As Socket())
+            m_SocketList = value
+        End Set
+    End Property
+
+    Public m_LastPingTime As DateTime()
+    Public Property LastPingTime As DateTime()
+        Get
+            Return m_LastPingTime
+        End Get
+        Set(ByVal value As DateTime())
+            m_LastPingTime = value
+        End Set
+    End Property
+#End Region
 
     Public Sub New(ByVal MaxUser As Integer)
         ReDim SocketList(MaxUser), LastPingTime(MaxUser)
@@ -42,7 +60,7 @@ Public Class cClientList
 
     Public Function GetSocket(ByVal index As Integer) As Socket
         Dim socket As Socket = Nothing
-        If (SocketList(index) IsNot Nothing) AndAlso SocketList(index).Connected Then
+        If (SocketList(index) IsNot Nothing) Then
             socket = SocketList(index)
         End If
         Return socket

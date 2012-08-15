@@ -72,7 +72,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <NoWarn>41999,42016</NoWarn>
-    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -109,7 +109,6 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\AdminControl.vb" />
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Framework\Database\GameDb.vb" />
     <Compile Include="Framework\Database\GameSave.vb" />

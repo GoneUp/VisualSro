@@ -84,6 +84,12 @@ Namespace Timers
 
                         Dim tmpMsg As LoginDb.LoginInfoMessage_ = LoginDb.LoginInfoMessages(SessionInfo(index_).LoginTextIndex)
                         Functions.LoginWriteSpecialText(tmpMsg.Text, index_)
+
+                        If SessionInfo(index_) Is Nothing Then
+                            'Due to the Send function in LoginWriteSpecialText it often happens that a client is disconnected now. And we are checking that :P
+                            Exit Sub
+                        End If
+
                         SessionInfo(index_).LoginTextIndex += 1
 
                         LoginInfoTimer(index_).Interval = tmpMsg.Delay * 1000

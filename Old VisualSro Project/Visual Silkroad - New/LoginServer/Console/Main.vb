@@ -23,10 +23,6 @@ Friend Class Program
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.ParseGlobalManager
         AddHandler GlobalManagerCon.OnGatewayUserauthReply, AddressOf Functions.LoginSendUserAuthSucceed
 
-        Console.WindowHeight = 10
-        Console.BufferHeight = 30
-        Console.WindowWidth = 60
-        Console.BufferWidth = 60
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()
@@ -59,7 +55,9 @@ Friend Class Program
     End Sub
 
     Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-        Log.WriteSystemLog("Client Connected : " & ip)
+        If Settings.Server_DebugMode Then
+            Log.WriteSystemLog(String.Format("Client[{0}/{1}] Connected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
+        End If
 
         SessionInfo(index) = New cSessionInfo_LoginServer
         Server.OnlineClients += 1
@@ -77,6 +75,12 @@ Friend Class Program
 
         SessionInfo(index) = Nothing
         Server.OnlineClients -= 1
+
+        If Settings.Server_DebugMode Then
+            Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
+        End If
+
+
         Server.RevTheard(index).Abort()
     End Sub
 

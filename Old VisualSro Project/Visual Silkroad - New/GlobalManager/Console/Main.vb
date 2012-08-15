@@ -18,10 +18,6 @@ Class Program
         AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnDatabaseConnected
         AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
 
-        Console.WindowHeight = 10
-        Console.BufferHeight = 300
-        Console.WindowWidth = 60
-        Console.BufferWidth = 60
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()

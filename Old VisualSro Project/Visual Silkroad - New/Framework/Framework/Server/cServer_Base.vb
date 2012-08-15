@@ -139,7 +139,7 @@ Public Class cServer_Base
     Public Sub [Stop]()
 
         Try
-            _ServerSocket.Shutdown(SocketShutdown.Both)
+            _ServerSocket.Close(1)
             _ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             ReDim RevTheard(MaxClients + 1)
         Catch exception As Exception
@@ -215,8 +215,15 @@ Public Class cServer_Base
 
                     Else
                         'Not Connected..
-                        ClientList.Delete(Index_)
-                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+                        socket = ClientList.GetSocket(Index_)
+                        If socket IsNot Nothing Then
+                            'Connection closed by the User.
+                            ClientList.Delete(Index_)
+                            RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+                        Else
+                            'Already Disconnected! 
+                            'Connection Closed by us
+                        End If
                         Exit Do
                     End If
                 Else
@@ -225,16 +232,18 @@ Public Class cServer_Base
                 End If
 
 
-            Catch exception As SocketException
-                If exception.ErrorCode = &H2746 Then
-                    ClientList.Delete(Index_)
-                    RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+            Catch sock_ex As SocketException
+                If sock_ex.ErrorCode = &H2746 Then
+                    If ClientList.GetSocket(Index_) IsNot Nothing Then
+                        ClientList.Delete(Index_)
+                        RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+                    End If
                 End If
                 Exit Do
-            Catch exception1 As ThreadAbortException
+            Catch thread_ex As ThreadAbortException
                 Exit Do
-            Catch exception2 As Exception
-                RaiseEvent OnServerError(exception2, Index_)
+            Catch ex As Exception
+                RaiseEvent OnServerError(ex, Index_)
                 Array.Clear(buffer, 0, buffer.Length)
             End Try
         Loop
@@ -244,8 +253,8 @@ Public Class cServer_Base
 #Region "Send"
     'Basic sending Class, other send methods must be impleted with "Children Classes"
     Public Sub Send(ByVal buff() As Byte, ByVal index As Integer)
+        Dim socket = ClientList.GetSocket(index)
         Try
-            Dim socket = ClientList.GetSocket(index)
             If socket IsNot Nothing Then
                 If socket.Connected Then
                     socket.Send(buff)
@@ -258,6 +267,13 @@ Public Class cServer_Base
                 RaiseEvent OnServerPacketLog(buff, True, index)
             End If
 
+        Catch sock_ex As SocketException
+            If sock_ex.ErrorCode = &H2746 Then
+                If ClientList.GetSocket(index) IsNot Nothing Then
+                    ClientList.Delete(index)
+                    RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
+                End If
+            End If
         Catch ex As Exception
             If Server_DebugMode Then
                 RaiseEvent OnServerError(ex, index)

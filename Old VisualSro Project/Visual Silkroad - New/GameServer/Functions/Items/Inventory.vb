@@ -726,6 +726,8 @@ Namespace Functions
                                 Case 7
                                     writer.Byte(1)
                                     writer.Word(0)
+                                Case Else
+                                    writer.Word(_item.Data)
                             End Select
                         Case Else
                             writer.Word(_item.Data)

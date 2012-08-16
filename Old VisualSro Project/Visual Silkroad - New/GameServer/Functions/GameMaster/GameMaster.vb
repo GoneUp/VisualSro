@@ -75,11 +75,9 @@ Namespace Functions
                 End If
 
 
-                Dim invItem As New cInventoryItem
-                invItem.OwnerID = PlayerData(Index_).CharacterId
-                invItem.Slot = slot
-                invItem.ItemID = ItemManager.AddItem(temp_item)
-
+                Dim ID As UInt64 = ItemManager.AddItem(temp_item)
+                Inventorys(Index_).UserItems(slot).ItemID = ID
+                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_ITEM_MOVE)

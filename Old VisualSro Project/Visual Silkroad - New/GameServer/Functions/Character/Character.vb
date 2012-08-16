@@ -728,6 +728,7 @@ Namespace Functions
             writer.Byte(0)
             writer.Byte(0)
             writer.Byte(0)
+            writer.Byte(0)
             writer.Byte(chari.Berserk)
             writer.Float(chari.WalkSpeed)
             writer.Float(chari.RunSpeed)
@@ -741,8 +742,7 @@ Namespace Functions
             writer.Word(chari.AliasName.Length)
             writer.String(chari.AliasName)
             writer.Word(0)
-            writer.Byte(0)
-            '0=not selected, 1 = hunter
+            writer.Byte(0)            '0=not selected, 1 = hunter
             writer.Byte(1)
             writer.QWord(0)
             writer.DWord(0)
@@ -793,7 +793,7 @@ Namespace Functions
             writer.Word(1)
             writer.Word(1)
             writer.Byte(0)
-            writer.Byte(2)
+            writer.Byte(1)
 
             Server.Send(writer.GetBytes, Index_)
         End Sub

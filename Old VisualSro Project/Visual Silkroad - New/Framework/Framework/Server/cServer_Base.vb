@@ -193,6 +193,8 @@ Public Class cServer_Base
 
             ClientList.Delete(index)
             RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
+
+        Catch thread_ex As ThreadAbortException
         Catch ex As Exception
             RaiseEvent OnServerError(ex, -4)
         End Try

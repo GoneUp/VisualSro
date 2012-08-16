@@ -15,7 +15,7 @@ Namespace Agent
             'Checks now 
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.GATEWAY_SEND_USERAUTH)
-            writer.DWord(Index_)
+            writer.DWord(tmp.UserIndex)
 
             If Shard.Server_Game.ContainsKey(tmp.GameServerId) Then
                 If Shard.Server_Game(tmp.GameServerId).State = GameServer._ServerState.Online Then
@@ -43,11 +43,10 @@ Namespace Agent
 
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.GAMESERVER_CHECK_USERAUTH)
-
+            writer.DWord(tmp.UserIndex)
 
             If UserAuthCache.ContainsKey(tmp.SessionId) Then
                 If UserAuthCache(tmp.SessionId).UserName = tmp.UserName And UserAuthCache(tmp.SessionId).UserPw = tmp.UserPw Then
-                    writer.DWord(tmp.UserIndex)
                     writer.Byte(1)
                 Else
                     writer.Byte(2) 'Fail

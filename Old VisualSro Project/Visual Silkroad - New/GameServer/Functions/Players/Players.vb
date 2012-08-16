@@ -100,7 +100,9 @@ Namespace Functions
             writer.Byte(chari.Alive) ' death flag
             writer.Byte(chari.ActionFlag) 'action flag 
             writer.Byte(0) 'jobmode? 3=normal?
+            writer.Byte(0)  'unknown
             writer.Byte(chari.Berserk) 'berserk activated
+
             writer.Float(chari.WalkSpeed)
             writer.Float(chari.RunSpeed)
             writer.Float(chari.BerserkSpeed)
@@ -172,7 +174,7 @@ Namespace Functions
 
             writer.Byte(0)
             writer.Byte(chari.PVP)
-            'writer.byte(4)
+            'writer.Byte(3)
             Return writer.GetBytes
         End Function
 

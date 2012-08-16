@@ -80,9 +80,6 @@ Friend Class Program
         If True Then
             Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
         End If
-
-
-        Server.RevTheard(index).Abort()
     End Sub
 
     Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)

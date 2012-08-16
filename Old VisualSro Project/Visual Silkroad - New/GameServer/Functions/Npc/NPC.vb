@@ -30,6 +30,7 @@ Namespace Functions
                     writer.Byte(0)
                     writer.Byte(0)
                     writer.Byte(0)
+                    writer.Byte(0)  'unknown
 
                     'speeds
                     writer.DWord(0)

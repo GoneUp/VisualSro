@@ -181,17 +181,6 @@ Namespace Functions
             writer.String(NameServer)
             writer.Byte(0) 'Out of nameservers
 
-
-            'For i = 0 To LoginDb.Servers.Count - 1
-            '    writer.Byte(1) 'New Gameserver
-            '    writer.Word(LoginDb.Servers(i).ServerId)
-            '    writer.Word(LoginDb.Servers(i).Name.Length)
-            '    writer.String(LoginDb.Servers(i).Name)
-            '    writer.Word(LoginDb.Servers(i).AcUs)
-            '    writer.Word(LoginDb.Servers(i).MaxUs)
-            '    writer.Byte(LoginDb.Servers(i).State)
-            'Next
-
             Dim tmplist = Shard_Gameservers.Keys.ToList
             For i = 0 To tmplist.Count - 1
                 Dim key As UShort = tmplist(i)

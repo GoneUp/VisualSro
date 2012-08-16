@@ -44,7 +44,7 @@ Namespace Functions
             writer.Byte(0)   'action flag 
             writer.Byte(0) 'jobmode? 3=normal?
             writer.Byte(0)  'berserk activated
-
+            writer.Byte(0)  'unknown
 
             writer.Float(obj.WalkSpeed)     'walkspeed
             writer.Float(obj.RunSpeed) 'runspeed

@@ -59,10 +59,9 @@ Namespace Functions
                             temp_item.Data = Package.Amout
 
 
-                            Dim invItem As New cInventoryItem
-                            invItem.OwnerID = PlayerData(Index_).CharacterId
-                            invItem.Slot = Slot
-                            invItem.ItemID = ItemManager.AddItem(temp_item)
+                            Dim ID As UInt64 = ItemManager.AddItem(temp_item)
+                            Inventorys(Index_).UserItems(Slot).ItemID = ID
+                            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Slot), cInventoryItem.Type.Inventory)
 
                             'SAVE IT
                             ItemSlots.Add(Slot)
@@ -80,10 +79,9 @@ Namespace Functions
                         'Equip
                         temp_item.Data = amout
 
-                        Dim invItem As New cInventoryItem
-                        invItem.OwnerID = PlayerData(Index_).CharacterId
-                        invItem.Slot = Slot
-                        invItem.ItemID = ItemManager.AddItem(temp_item)
+                        Dim ID As UInt64 = ItemManager.AddItem(temp_item)
+                        Inventorys(Index_).UserItems(Slot).ItemID = ID
+                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Slot), cInventoryItem.Type.Inventory)
 
                         'SAVE IT
                         ItemSlots.Add(Slot)

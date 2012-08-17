@@ -174,7 +174,7 @@ Namespace Functions
 
             writer.Byte(0)
             writer.Byte(chari.PVP)
-            'writer.Byte(3)
+            writer.Byte(3)
             Return writer.GetBytes
         End Function
 

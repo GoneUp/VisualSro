@@ -47,5 +47,10 @@
             Storage
             GuildStorage
         End Enum
+
+
+        Public Overrides Function ToString() As String
+            Return (String.Format("OwnerID: {0}, Slot: {1}, ItemID: {2}", OwnerID, Slot, ItemID))
+        End Function
     End Class
 End Namespace

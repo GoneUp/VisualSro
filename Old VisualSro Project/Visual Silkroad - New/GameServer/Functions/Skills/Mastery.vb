@@ -119,13 +119,19 @@ Namespace Functions
             If PlayerData(Index_).Skilling = True Then
                 Exit Sub
             End If
-            PlayerData(Index_).Skilling = True
 
+            PlayerData(Index_).Skilling = True
             Dim _skill As RefSkill = GetSkill(SkillID)
+
+            If _skill Is Nothing Then
+                PlayerData(Index_).Skilling = False
+                Exit Sub
+            End If
+
             Dim _refmastery As cMastery = GetMasteryByID(_skill.MasteryID, Index_)
             Dim _skillGroup As SkillGroup = GetSkillGroup(_skill.SkillGroupName)
 
-            If _skill Is Nothing Or _refmastery Is Nothing Then
+            If _refmastery Is Nothing Then
                 PlayerData(Index_).Skilling = False
                 Exit Sub
             End If

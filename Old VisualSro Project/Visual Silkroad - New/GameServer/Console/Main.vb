@@ -81,6 +81,7 @@ Friend Class Program
             If Functions.PlayerData(index) IsNot Nothing Then
                 Functions.DespawnPlayer(index)
                 Functions.CleanUpPlayerComplete(index)
+                GameDB.UpdateChar(Functions.PlayerData(index))
             End If
 
             If Settings.Log_Detail Then

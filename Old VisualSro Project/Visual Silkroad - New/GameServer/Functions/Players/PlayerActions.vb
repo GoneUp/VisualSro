@@ -11,8 +11,8 @@ Namespace Functions
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
                     writer.Byte(1) 'succeed
+                    writer.DWord(countdown)
                     writer.Byte(tag)
-                    writer.Byte(countdown)
                     Server.Send(writer.GetBytes, Index_)
 
                     Timers.PlayerExitTimer(Index_).Interval = countdown * 1000
@@ -20,8 +20,8 @@ Namespace Functions
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
                     writer.Byte(1) 'succeed
+                    writer.DWord(0)
                     writer.Byte(tag)
-                    writer.Byte(countdown)
                     Server.Send(writer.GetBytes, Index_)
 
                     GameMod.Damage.OnPlayerLogoff(Index_)

@@ -541,6 +541,17 @@ Namespace GameDB
             Next
         End Sub
 
+        Public Sub UpdateChar(ByVal tmpChar As cCharacter)
+            For i = 0 To Chars.Length - 1
+                If Chars(i) IsNot Nothing Then
+                    If Chars(i).CharacterId = tmpChar.CharacterId Then
+                        Chars(i) = tmpChar
+                    End If
+                End If
+            Next
+        End Sub
+
+
         Public Function CheckNick(ByVal nick As String) As Boolean
             Dim free As Boolean = True
             For i = 0 To Chars.Length - 1

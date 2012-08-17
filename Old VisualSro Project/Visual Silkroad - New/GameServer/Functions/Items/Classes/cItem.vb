@@ -71,6 +71,10 @@
                 m_Blues = value
             End Set
         End Property
+
+        Public Overrides Function ToString() As String
+            Return (String.Format("ID: {0}, ObjectID: {1}, Plus: {2}, Variance: {3}, Data: {4}", ID, ObjectID, Variance, Data))
+        End Function
     End Class
 
     Public Class cBluestat
@@ -92,5 +96,9 @@
                 m_BlueTyp = value
             End Set
         End Property
+
+        Public Overrides Function ToString() As String
+            Return (String.Format("Type: {0}, Amout: {1}", Type, Amout))
+        End Function
     End Class
 End Namespace

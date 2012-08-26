@@ -217,8 +217,10 @@
         Admin_GetInfo = &H1006
         Admin_UpdateInfo = &H1007
 
-        GATEWAYSERVER_USERAUTH = &H1010
-        GAMESERVER_CHECK_USERAUTH = &H1011
+        AGENT_USERAUTH = &H1010
+        AGNET_CHECK_USERAUTH = &H1011
+        AGENT_SILK = &H1012
+        AGENT_USERINFO = &H1013
     End Enum
 
     Enum InternalServerOpcodes As UShort
@@ -232,8 +234,10 @@
         Admin_GetInfo = &HC006
         Admin_UpdateInfo = &HC007
 
-        GATEWAY_SEND_USERAUTH = &HC010
-        GAMESERVER_CHECK_USERAUTH = &HC011
+        AGENT_SEND_USERAUTH = &HC010
+        AGENT_CHECK_USERAUTH = &HC011
+        AGENT_SILK = &HC012
+        AGENT_USERINFO = &HC013
     End Enum
 
 

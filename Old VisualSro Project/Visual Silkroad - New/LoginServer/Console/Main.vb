@@ -3,6 +3,7 @@
 Friend Class Program
 
     Shared Sub Main()
+        'Event's
         AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
         AddHandler Server.OnClientDisconnect, AddressOf Program.Server_OnClientDisconnect
         AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
@@ -24,19 +25,25 @@ Friend Class Program
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.ParseGlobalManager
         AddHandler GlobalManagerCon.OnGatewayUserauthReply, AddressOf Functions.LoginSendUserAuthSucceed
 
+        AddHandler Log.OnDatabaseQuery, AddressOf log_OnDatabaseQuery
+
+        'Console
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()
         Console.Title = "LOGINSERVER ALPHA"
         Log.WriteSystemLog("Starting Server")
 
+        'Settings
         Log.WriteSystemLog("Loading Settings.")
         Settings.LoadSettings()
         Settings.SetToServer()
 
+        'Database
         Log.WriteSystemLog("Loaded Settings. Conneting Database.")
         Database.Connect()
 
+        'Load Data, Init GlobalDef
         Log.WriteSystemLog("Connected Database. Starting Server now.")
         LoginDb.UpdateData()
         Timers.LoadTimers(Server.MaxClients)
@@ -171,6 +178,10 @@ Friend Class Program
 
     Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal index As String)
         Log.WriteSystemLog("GMC Error: " & ex.Message & " Index: " & index & " Stacktrace: " & ex.StackTrace)
+    End Sub
+
+    Private Shared Sub log_OnDatabaseQuery(ByVal command As String)
+        Database.SaveQuery(command)
     End Sub
 End Class
 

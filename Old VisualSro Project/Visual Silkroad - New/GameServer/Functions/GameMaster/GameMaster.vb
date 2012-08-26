@@ -45,7 +45,7 @@ Namespace Functions
             Else
                 Server.Disconnect(Index_)
 
-                Log.WriteGameLog(Index_, "GM", "Unautorized", "Gm_Command_Try:" & tag)
+                Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Unautorized", "Gm_Command_Try:" & tag)
                 'Hack Versuch
             End If
         End Sub
@@ -93,7 +93,7 @@ Namespace Functions
                             temp_item.ObjectID, temp_item.Data, temp_item.Data, temp_item.Plus)
 
                 If Settings.Log_GM Then
-                    Log.WriteGameLog(Index_, "GM", "Item_Create",
+                    Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Item_Create",
                                      String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", slot,
                                                    temp_item.ObjectID, temp_item.Data, temp_item.Data,
                                                    temp_item.Plus))
@@ -200,7 +200,7 @@ Namespace Functions
             Next i
 
             If Settings.Log_GM Then
-                Log.WriteGameLog(index_, "GM", "Ban", String.Format("Banned User:" & Name))
+                Log.WriteGameLog(index_, Server.ClientList.GetIP(index_), "GM", "Ban", String.Format("Banned User:" & Name))
             End If
         End Sub
 
@@ -244,7 +244,7 @@ Namespace Functions
             End Select
 
             If Settings.Log_GM Then
-                Log.WriteGameLog(Index_, "GM", "Monster_Spawn",
+                Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Monster_Spawn",
                                  String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.TypeName,
                                                count))
             End If

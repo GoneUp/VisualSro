@@ -14,7 +14,7 @@ Public Class cClientList
         End Set
     End Property
 
-    Public m_LastPingTime As DateTime()
+    Private m_LastPingTime As DateTime()
     Public Property LastPingTime As DateTime()
         Get
             Return m_LastPingTime

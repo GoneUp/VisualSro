@@ -1,4 +1,5 @@
-﻿Public Class cUser
+﻿<Serializable()>
+Public Class cUser
     Private m_AccountId As Integer = 0
     Public Property AccountId As String
         Get
@@ -60,7 +61,7 @@
         End Set
     End Property
 
-    Public m_BannReason As String = ""
+    Private m_BannReason As String = ""
     Public Property BannReason As String
         Get
             Return m_BannReason
@@ -92,7 +93,7 @@
     End Property
 
 
-    Public m_silk As UInteger = 0
+    Private m_silk As UInteger = 0
     Public Property Silk As UInt32
         Get
             Return m_silk
@@ -102,7 +103,7 @@
         End Set
     End Property
 
-    Public m_silk_Bonus As UInteger = 0
+    Private m_silk_Bonus As UInteger = 0
     Public Property Silk_Bonus As UInt32
         Get
             Return m_silk_Bonus

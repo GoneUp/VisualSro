@@ -2,8 +2,8 @@
 
 Module GlobalDef
     Public Database As New cDatabase
-
     Public Server As New cServer_Base
+    Public Log As New cLog
 
     Public SessionInfo(1) As cSessionInfo_GlobalManager
 

@@ -76,7 +76,7 @@
     <Compile Include="Framework\Classes\GlobalManager Stuff\GatewayServer.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\GlobalManagerClient.vb" />
     <Compile Include="Framework\Database\cDatabase.vb" />
-    <Compile Include="Framework\Log\SystemLog.vb" />
+    <Compile Include="Framework\Log\cLog.vb" />
     <Compile Include="Framework\Packets\Opcodes.vb" />
     <Compile Include="Framework\Packets\PacketReader.vb" />
     <Compile Include="Framework\Packets\PacketWriter.vb" />

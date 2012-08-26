@@ -29,7 +29,7 @@ Namespace Functions
 
             If Settings.Log_Connect Then
                 With SessionInfo(Index_)
-                    Log.WriteGameLog(Index_, "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", .Locale, .ClientName, .Version))
+                    Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", .Locale, .ClientName, .Version))
                 End With
             End If
 
@@ -317,7 +317,7 @@ Namespace Functions
                         GlobalManager.OnSendUserAuth(serverID, id, pw, Index_)
 
                         If Settings.Log_Login Then
-                            Log.WriteGameLog(Index_, "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.ServerName))
+                            Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.ServerName))
                         End If
                     End If
                 End If

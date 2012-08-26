@@ -1,6 +1,6 @@
 ﻿Imports SRFramework
 
-Namespace GlobalDb
+Namespace GlobalDB
     Module GlobalDb
 
         'Timer
@@ -97,15 +97,31 @@ Namespace GlobalDb
             Next
         End Sub
 
-
-
-        Public Function GetUser(ByVal id As String) As Integer
+        Public Function GetUser(ByVal name As String) As cUser
             For i = 0 To (Users.Count - 1)
-                If Users(i).Name = id Then
-                    Return i
+                If Users(i).Name = name Then
+                    Return Users(i)
                 End If
             Next
-            Return -1
+            Return Nothing
         End Function
+
+        Public Function GetUser(ByVal accountID As UInt32) As cUser
+            For i = 0 To (Users.Count - 1)
+                If Users(i).AccountId = accountID Then
+                    Return Users(i)
+                End If
+            Next
+            Return Nothing
+        End Function
+
+        Public Sub UpdateUser(ByVal user As cUser)
+            For i = 0 To (Users.Count - 1)
+                If Users(i).AccountId = user.AccountId Then
+                    Users(i) = user
+                End If
+            Next
+        End Sub
+
     End Module
 End Namespace

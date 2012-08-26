@@ -31,9 +31,9 @@ Namespace Functions
                         Shard.OnShutdownServer(packet, Index_)
                     Case InternalClientOpcodes.SERVER_INFO
                         Shard.OnServerInfo(packet, Index_)
-                    Case InternalClientOpcodes.GATEWAYSERVER_USERAUTH
-                        Agent.OnSendUserAuth(packet, Index_)
-                    Case InternalClientOpcodes.GAMESERVER_CHECK_USERAUTH
+                    Case InternalClientOpcodes.AGENT_USERAUTH
+                        Agent.OnUserAuth(packet, Index_)
+                    Case InternalClientOpcodes.AGNET_CHECK_USERAUTH
                         Agent.OnCheckUserAuth(packet, Index_)
                 End Select
             End If

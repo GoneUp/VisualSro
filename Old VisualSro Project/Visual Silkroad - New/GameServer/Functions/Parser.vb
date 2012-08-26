@@ -205,7 +205,7 @@ Namespace Functions
                 Case InternalServerOpcodes.GLOBAL_INFO
                     GlobalManager.OnGlobalInfo(packet)
 
-                Case InternalServerOpcodes.GAMESERVER_CHECK_USERAUTH
+                Case InternalServerOpcodes.AGENT_CHECK_USERAUTH
                     GlobalManager.OnGameserverUserAuthReply(packet)
 
                 Case Else

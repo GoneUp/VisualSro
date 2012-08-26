@@ -9,172 +9,173 @@ Namespace Functions
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function CreateSpawnPacket(ByVal Index_ As Integer) As Byte()
-
-            Dim chari As cCharacter = PlayerData(Index_) 'Only for faster Code writing
-
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
-            writer.DWord(chari.Pk2ID)
-            writer.Byte(chari.Volume)
-            writer.Byte(0)
-            writer.Byte(0)
-            writer.Byte(chari.HelperIcon)
 
-            'items
+            With PlayerData(Index_)
+                writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
+                writer.DWord(.Pk2ID)
+                writer.Byte(.Volume)
+                writer.Byte(0)
+                writer.Byte(0)
+                writer.Byte(.HelperIcon)
 
-            Dim PlayerItemCount As Integer = 0
-            For slot = 0 To 9
-                If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
-                    Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(slot).ItemID)
-                    If item.ObjectID <> 62 Then
-                        PlayerItemCount += 1
+                'items
+
+                Dim PlayerItemCount As Integer = 0
+                For slot = 0 To 9
+                    If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
+                        Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(slot).ItemID)
+                        If item.ObjectID <> 62 Then
+                            PlayerItemCount += 1
+                        End If
                     End If
-                End If
-            Next
+                Next
 
-            writer.Byte(chari.MaxInvSlots)
-            writer.Byte(PlayerItemCount)
+                writer.Byte(.MaxInvSlots)
+                writer.Byte(PlayerItemCount)
 
-            For slot = 0 To 9
-                If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
-                    Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(slot).ItemID)
-                    If item.ObjectID <> 62 Then 'Dont send arrows
+                For slot = 0 To 9
+                    If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
+                        Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(slot).ItemID)
+                        If item.ObjectID <> 62 Then 'Dont send arrows
+                            writer.DWord(item.ObjectID)
+                            writer.Byte(item.Plus)
+                        End If
+
+                    End If
+                Next
+
+                writer.Byte(.MaxAvatarSlots) 'Avatar Slots
+
+
+                Dim AvatarItemCount As Integer = 0
+                For slot = 0 To .MaxAvatarSlots - 1
+                    If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
+                        AvatarItemCount += 1
+                    End If
+                Next
+
+                writer.Byte(AvatarItemCount)
+
+                For slot = 0 To .MaxAvatarSlots - 1
+                    If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
+                        Dim item As cItem = GameDB.Items(Inventorys(Index_).AvatarItems(slot).ItemID)
                         writer.DWord(item.ObjectID)
                         writer.Byte(item.Plus)
                     End If
+                Next
 
+                writer.Byte(0) 'Duplicate List
+
+
+                writer.DWord(.UniqueID)
+                writer.Byte(.Position.XSector)
+                writer.Byte(.Position.YSector)
+                writer.Float(.Position.X)
+                writer.Float(.Position.Z)
+                writer.Float(.Position.Y)
+                writer.Word(.Angle)
+
+                writer.Byte(.PosTracker.MoveState) 'dest
+
+                If .PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
+                    writer.Byte(0) 'Walking
+                Else
+                    writer.Byte(1) 'Running + Zerk
                 End If
-            Next
 
-            writer.Byte(chari.MaxAvatarSlots) 'Avatar Slots
-
-
-            Dim AvatarItemCount As Integer = 0
-            For slot = 0 To chari.MaxAvatarSlots - 1
-                If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
-                    AvatarItemCount += 1
+                If .PosTracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+                    writer.Byte(0) 'dest
+                    writer.Word(.Angle)
+                ElseIf .PosTracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                    writer.Byte(.PosTracker.WalkPos.XSector)
+                    writer.Byte(.PosTracker.WalkPos.YSector)
+                    writer.Byte(BitConverter.GetBytes(CShort(.PosTracker.WalkPos.X)))
+                    writer.Byte(BitConverter.GetBytes(CShort(.PosTracker.WalkPos.Z)))
+                    writer.Byte(BitConverter.GetBytes(CShort(.PosTracker.WalkPos.Y)))
                 End If
-            Next
 
-            writer.Byte(AvatarItemCount)
 
-            For slot = 0 To chari.MaxAvatarSlots - 1
-                If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
-                    Dim item As cItem = GameDB.Items(Inventorys(Index_).AvatarItems(slot).ItemID)
-                    writer.DWord(item.ObjectID)
-                    writer.Byte(item.Plus)
+                writer.Byte(.Alive) ' death flag
+                writer.Byte(.ActionFlag) 'action flag 
+                writer.Byte(0) 'jobmode? 3=normal?
+                writer.Byte(0)  'unknown
+                writer.Byte(.Berserk) 'berserk activated
+
+                writer.Float(.WalkSpeed)
+                writer.Float(.RunSpeed)
+                writer.Float(.BerserkSpeed)
+
+                writer.Byte(.Buffs.Count)
+                'no buffs for now
+                Dim tmplist As Array = .Buffs.Keys.ToArray
+                For Each key In tmplist
+                    If .Buffs.ContainsKey(key) Then
+                        writer.DWord(.Buffs(key).SkillID)
+                        writer.DWord(.Buffs(key).OverID)
+                    End If
+                Next
+
+
+                writer.Word(.CharacterName.Length)
+                writer.String(.CharacterName)
+
+                writer.Byte(0) 'job type
+                writer.Byte(0) 'Job Level
+                writer.Byte(0) 'PK Flag
+                writer.Byte(0) 'Transport
+                ' writer.DWord(0) IF Transportflag = 1
+                If .InStall = True Then
+                    writer.Byte(4)
+                    'Stall Flag
+                Else
+                    writer.Byte(0)
                 End If
-            Next
-
-            writer.Byte(0) 'Duplicate List
 
 
-            writer.DWord(chari.UniqueID)
-            writer.Byte(chari.Position.XSector)
-            writer.Byte(chari.Position.YSector)
-            writer.Float(chari.Position.X)
-            writer.Float(chari.Position.Z)
-            writer.Float(chari.Position.Y)
-            writer.Word(chari.Angle)
+                If .InGuild = True Then
+                    Dim guild As cGuild = GameDB.GetGuild(.GuildID)
+                    Dim member As cGuild.GuildMember_ = GetMember(.GuildID, .CharacterId)
 
-            writer.Byte(chari.PosTracker.MoveState) 'dest
+                    writer.Word(guild.Name.Length)
+                    writer.String(guild.Name)
+                    writer.DWord(guild.GuildID)
+                    writer.Word(member.GrantName.Length)
+                    writer.String(member.GrantName)
 
-            If chari.PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
-                writer.Byte(0) 'Walking
-            Else
-                writer.Byte(1) 'Running + Zerk
-            End If
+                    writer.DWord(0) 'guild emblem id
+                    writer.DWord(0) 'union id
+                    writer.DWord(0) 'union emblem id
 
-            If chari.PosTracker.MoveState = cPositionTracker.enumMoveState.Standing Then
-                writer.Byte(0) 'dest
-                writer.Word(chari.Angle)
-            ElseIf chari.PosTracker.MoveState = cPositionTracker.enumMoveState.Walking Then
-                writer.Byte(chari.PosTracker.WalkPos.XSector)
-                writer.Byte(chari.PosTracker.WalkPos.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(chari.PosTracker.WalkPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(chari.PosTracker.WalkPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(chari.PosTracker.WalkPos.Y)))
-            End If
+                Else
 
+                    writer.Word(0)
+                    writer.DWord(0)
+                    writer.Word(0)
 
-            writer.Byte(chari.Alive) ' death flag
-            writer.Byte(chari.ActionFlag) 'action flag 
-            writer.Byte(0) 'jobmode? 3=normal?
-            writer.Byte(0)  'unknown
-            writer.Byte(chari.Berserk) 'berserk activated
-
-            writer.Float(chari.WalkSpeed)
-            writer.Float(chari.RunSpeed)
-            writer.Float(chari.BerserkSpeed)
-
-            writer.Byte(chari.Buffs.Count)
-            'no buffs for now
-            Dim tmplist As Array = chari.Buffs.Keys.ToArray
-            For Each key In tmplist
-                If chari.Buffs.ContainsKey(key) Then
-                    writer.DWord(chari.Buffs(key).SkillID)
-                    writer.DWord(chari.Buffs(key).OverID)
+                    writer.DWord(0) 'guild emblem id
+                    writer.DWord(0)  'union id
+                    writer.DWord(0) 'union emblem id
                 End If
-            Next
+
+                writer.Byte(0) 'guildwar falg
+                writer.Byte(0) 'FW Role
 
 
-            writer.Word(chari.CharacterName.Length)
-            writer.String(chari.CharacterName)
+                If .InStall = True Then
+                    Dim Stall_Index As Integer = GetStallIndex(.StallID)
 
-            writer.Byte(0) 'job type
-            writer.Byte(0) 'Job Level
-            writer.Byte(0) 'PK Flag
-            writer.Byte(0) 'Transport
-            ' writer.DWord(0) IF Transportflag = 1
-            If chari.InStall = True Then
-                writer.Byte(4)
-                'Stall Flag
-            Else
+                    writer.Word(Stalls(Index_).StallName.Length)
+                    writer.UString(Stalls(Index_).StallName)
+                    writer.DWord(0) 'Stall Dekoration ID
+                End If
+
+
                 writer.Byte(0)
-            End If
+                writer.Byte(.PVP)
+                writer.Byte(3)
 
-
-            If chari.InGuild = True Then
-                Dim guild As cGuild = GameDB.GetGuild(chari.GuildID)
-                Dim member As cGuild.GuildMember_ = GetMember(chari.GuildID, chari.CharacterId)
-
-                writer.Word(guild.Name.Length)
-                writer.String(guild.Name)
-                writer.DWord(guild.GuildID)
-                writer.Word(member.GrantName.Length)
-                writer.String(member.GrantName)
-
-                writer.DWord(0) 'guild emblem id
-                writer.DWord(0) 'union id
-                writer.DWord(0) 'union emblem id
-
-            Else
-
-                writer.Word(0)
-                writer.DWord(0)
-                writer.Word(0)
-
-                writer.DWord(0) 'guild emblem id
-                writer.DWord(0)  'union id
-                writer.DWord(0) 'union emblem id
-            End If
-
-            writer.Byte(0) 'guildwar falg
-            writer.Byte(0) 'FW Role
-
-
-            If chari.InStall = True Then
-                Dim Stall_Index As Integer = GetStallIndex(chari.StallID)
-
-                writer.Word(Stalls(Index_).StallName.Length)
-                writer.UString(Stalls(Index_).StallName)
-                writer.DWord(0) 'Stall Dekoration ID
-            End If
-
-
-            writer.Byte(0)
-            writer.Byte(chari.PVP)
-            writer.Byte(3)
+            End With
             Return writer.GetBytes
         End Function
 

@@ -57,7 +57,7 @@ Namespace Functions
                 Case InternalServerOpcodes.GLOBAL_INFO
                     GlobalManager.OnGlobalInfo(packet)
 
-                Case InternalServerOpcodes.GATEWAY_SEND_USERAUTH
+                Case InternalServerOpcodes.AGENT_SEND_USERAUTH
                     GlobalManager.OnUserAuthReply(packet)
 
                 Case Else

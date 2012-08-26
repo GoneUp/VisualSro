@@ -4,7 +4,7 @@ Namespace GlobalManager
     Module AgentService
         Public Sub OnSendUserAuth(ByVal gameserverId As UShort, ByVal username As String, ByVal password As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
-            writer.Create(InternalClientOpcodes.GATEWAYSERVER_USERAUTH)
+            writer.Create(InternalClientOpcodes.AGENT_USERAUTH)
             writer.DWord(Index_)
             writer.Word(gameserverId)
             writer.Word(username.Length)

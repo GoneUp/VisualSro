@@ -74,7 +74,7 @@ Namespace Functions
                     writer.Word(amout)
                     Server.Send(writer.GetBytes, Index_)
 
-                    Log.WriteGameLog(Index_, "Item_Mall", "Buy",
+                    Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Item_Mall", "Buy",
                                      String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, mallPackage.Price))
                 Else
                     writer.Create(ServerOpcodes.GAME_ITEM_MOVE)

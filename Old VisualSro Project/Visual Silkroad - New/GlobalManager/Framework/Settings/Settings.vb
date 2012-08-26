@@ -27,6 +27,10 @@ Namespace Settings
             End Set
         End Property
 
+        Public Agent_Auto_Register As Boolean = False
+        Public Agent_Max_FailedLogins As Integer = 5
+        Public Agent_Max_RegistersPerDay As Integer = 3
+
 
         Public Const Server_ProtocolVersion As UInteger = 1
 
@@ -44,6 +48,10 @@ Namespace Settings
             Database_Database = File.Read("DATABASE", "Database", "visualsro")
             Database_User = File.Read("DATABASE", "User", "root")
             Database_Password = File.Read("DATABASE", "Password", "sremu")
+
+            Agent_Auto_Register = CBool(File.Read("AGENT", "Auto_Register", "0"))
+            Agent_Max_FailedLogins = File.Read("AGENT", "Max_FailedLogins", "5")
+            Agent_Max_RegistersPerDay = File.Read("AGENT", "Max_RegistersPerDay", "3")
 
             Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
         End Sub

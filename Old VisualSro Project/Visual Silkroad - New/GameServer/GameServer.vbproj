@@ -116,13 +116,10 @@
     <Compile Include="Framework\GlobalManager\Auth.vb" />
     <Compile Include="Framework\GlobalManager\ShardControl.vb" />
     <Compile Include="Framework\GlobalManager\ShardService.vb" />
-    <Compile Include="Framework\Log\GameLog.vb" />
-    <Compile Include="Framework\Log\SystemLog.vb" />
     <Compile Include="Framework\Server\cServer_Gameserver.vb" />
     <Compile Include="Framework\Silkroad\Formula.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\SilkroadData.vb" />
-    <Compile Include="Framework\Packets\PacketLog.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Character\Classes\cHotkey.vb" />
     <Compile Include="Functions\Character\Classes\Postion.vb" />

@@ -2,10 +2,9 @@
 
 Module GlobalDef
     Public Database As New cDatabase
-
     Public GlobalManagerCon As New GlobalManagerClient
-
     Public Server As New cServer_Gameserver
+    Public Log As New cLog
 
     Public Shard_Gateways As New Dictionary(Of UShort, GatewayServer) 'Key=ServerId
     Public Shard_Downloads As New Dictionary(Of UShort, DownloadServer)

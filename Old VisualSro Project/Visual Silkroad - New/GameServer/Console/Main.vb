@@ -25,6 +25,8 @@ Friend Class Program
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.Parser.ParseGlobalManager
         AddHandler GlobalManagerCon.OnGameserverUserauthReply, AddressOf Functions.Check_GlobalManagerUserAuthReply
 
+        AddHandler Log.OnDatabaseQuery, AddressOf log_OnDatabaseQuery
+
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()
@@ -187,6 +189,10 @@ Friend Class Program
 
     Private Shared Sub gmc_OnGlobalManagerError(ByVal ex As Exception, ByVal index As String)
         Log.WriteSystemLog("GMC Error: " & ex.Message & " Index: " & index & " Stacktrace: " & ex.StackTrace)
+    End Sub
+
+    Private Shared Sub log_OnDatabaseQuery(ByVal command As String)
+        Database.SaveQuery(command)
     End Sub
 End Class
 

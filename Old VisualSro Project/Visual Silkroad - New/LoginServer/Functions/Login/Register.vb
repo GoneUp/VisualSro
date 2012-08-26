@@ -2,6 +2,13 @@
 
 Namespace Functions
     Module Register
+        Structure Register_
+            Public IP As String
+            Public Name As String
+            Public Password As String
+            Public Time As Date
+        End Structure
+
 
         Public RegisterList As New List(Of Register_)
         Public Rand As New Random
@@ -19,7 +26,6 @@ Namespace Functions
                 LoginWriteSpecialText("Please don't enter any Chars like ä, ö, ü.", Index_)
                 Return False
             End If
-
 
 
             Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", Name, Password))
@@ -42,7 +48,7 @@ Namespace Functions
             RegisterList.Add(tmp_2)
 
             If Settings.Log_Register Then
-                Log.WriteGameLog(Index_, "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
+                Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Register", "(None)", String.Format("Name: {0}, Password: {1}", Name, Password))
             End If
 
             Return True
@@ -76,12 +82,6 @@ Namespace Functions
         End Function
 
 
-        Structure Register_
-            Public IP As String
-            Public Name As String
-            Public Password As String
-            Public Time As Date
-        End Structure
     End Module
 End Namespace
 

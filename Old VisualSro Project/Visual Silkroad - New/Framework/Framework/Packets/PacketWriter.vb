@@ -3,18 +3,30 @@
 Public Class PacketWriter
     Private bw As BinaryWriter
     Private dataLen As UInt16
-    Private ms As New MemoryStream()
 
-    Public Sub [Byte](ByVal data As Byte)
-        Me.bw.Write(data)
-        Me.dataLen += 2
+    Private ms As New MemoryStream()
+    Public Property BaseStream As MemoryStream
+        Get
+            Return ms
+        End Get
+        Set(ByVal value As MemoryStream)
+            ms = value
+        End Set
+    End Property
+
+    Public Sub New()
+
     End Sub
 
-    Public Sub [Byte](ByVal array As Byte())
-        For Each b As Byte In array
-            Me.bw.Write(b)
-            Me.dataLen += 2
-        Next
+    Public Sub New(ByVal opcode As UShort)
+        Me.bw = Nothing
+        Me.ms = Nothing
+        Me.ms = New MemoryStream()
+        Me.bw = New BinaryWriter(Me.ms)
+        Me.bw.Write(CUShort(0))
+        Me.dataLen = 0
+        Me.Word(opcode)
+        Me.Word(0)
     End Sub
 
     Public Sub Create(ByVal opcode As UShort)
@@ -26,6 +38,18 @@ Public Class PacketWriter
         Me.dataLen = 0
         Me.Word(opcode)
         Me.Word(0)
+    End Sub
+
+    Public Sub [Byte](ByVal data As Byte)
+        Me.bw.Write(data)
+        Me.dataLen += 2
+    End Sub
+
+    Public Sub [Byte](ByVal array As Byte())
+        For Each b As Byte In array
+            Me.bw.Write(b)
+            Me.dataLen += 2
+        Next
     End Sub
 
     Public Sub DWord(ByVal data As UInteger)

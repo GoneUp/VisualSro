@@ -18,6 +18,8 @@ Class Program
         AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnDatabaseConnected
         AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
 
+        AddHandler Log.OnDatabaseQuery, AddressOf log_OnDatabaseQuery
+
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()
@@ -124,6 +126,10 @@ Class Program
 
     Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
         Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
+    End Sub
+
+    Private Shared Sub log_OnDatabaseQuery(ByVal command As String)
+        Database.SaveQuery(command)
     End Sub
 End Class
 

@@ -88,10 +88,8 @@
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
     <Compile Include="Console\Main.vb" />
+    <Compile Include="Framework\Database\GameSave.vb" />
     <Compile Include="Framework\Database\GlobalDb.vb" />
-    <Compile Include="Framework\Log\GameLog.vb" />
-    <Compile Include="Framework\Log\SystemLog.vb" />
-    <Compile Include="Framework\Packets\PacketLog.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\ID_Generator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />

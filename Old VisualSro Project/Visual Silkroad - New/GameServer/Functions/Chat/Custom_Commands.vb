@@ -202,7 +202,7 @@ Namespace GameMod
                                     temp_item.Plus)
 
                         If Settings.Log_GM Then
-                            Log.WriteGameLog(Index_, "GM", "Item_Create",
+                            Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Item_Create",
                                              String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}",
                                                            slot, temp_item.ObjectID, temp_item.Data,
                                                            temp_item.Data, temp_item.Plus))

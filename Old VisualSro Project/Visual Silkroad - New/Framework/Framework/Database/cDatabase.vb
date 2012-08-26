@@ -231,11 +231,13 @@ Public Class cDatabase
 #End Region
 
 #Region "Injection Check"
-    Public Function CheckForInjection(ByVal command As String)
-        If command.Contains(";") Then
-            Return True
-        End If
-        Return False
+    Public Function CheckForInjection(ByVal parameter As String) As String
+        Dim tmpStr As String = parameter
+        tmpStr.Replace(";", "")
+        tmpStr.Replace("--", "")
+        tmpStr.Replace("'", "")
+        tmpStr.Replace("=", "")
+        Return tmpStr
     End Function
 
 

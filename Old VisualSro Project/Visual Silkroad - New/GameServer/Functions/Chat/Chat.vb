@@ -54,7 +54,7 @@ Namespace Functions
                 Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
 
                 If Settings.Log_Chat Then
-                    Log.WriteGameLog(Index_, "Chat", "Public", "Message: " & message)
+                    Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Public", "Message: " & message)
                 End If
             End If
         End Sub
@@ -99,7 +99,7 @@ Namespace Functions
                 Server.Send(writer.GetBytes, receiverIndex)
 
                 If Settings.Log_Chat Then
-                    Log.WriteGameLog(Index_, "Chat", "Whisper",
+                    Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Whisper",
                                      String.Format("Sender: {0} Message: {1}", receiver, message))
                 End If
             ElseIf receiver = "[DAMAGE_MOD]" Then
@@ -159,7 +159,7 @@ Namespace Functions
                 GameMod.CheckForCoustum(message, Index_)
 
                 If Settings.Log_Chat Then
-                    Log.WriteGameLog(Index_, "Chat", "GM", "Message: " & message)
+                    Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "GM", "Message: " & message)
                 End If
             End If
         End Sub
@@ -173,7 +173,7 @@ Namespace Functions
                 SendNotice(message)
 
                 If Settings.Log_Chat Then
-                    Log.WriteGameLog(Index_, "Chat", "Notice", "Message: " & message)
+                    Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Notice", "Message: " & message)
                 End If
 
             End If
@@ -204,7 +204,7 @@ Namespace Functions
             Server.SendToAllIngame(writer.GetBytes)
 
             If Settings.Log_Chat Then
-                Log.WriteGameLog(Index_, "Chat", "Global", "Message: " & Message)
+                Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Global", "Message: " & Message)
             End If
         End Sub
 

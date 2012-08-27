@@ -73,7 +73,7 @@ Public Class PacketReader
         Return Me._packetData
     End Function
 
-    Public ReadOnly Property DataLen() As Integer
+    Public ReadOnly Property Length() As Integer
         Get
             Return Me._ms.Length
         End Get

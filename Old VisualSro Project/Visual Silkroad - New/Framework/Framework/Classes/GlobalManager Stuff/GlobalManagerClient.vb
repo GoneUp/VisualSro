@@ -9,6 +9,10 @@ Public Class GlobalManagerClient
     Public LastInfoTime As DateTime
     Public UpdateInfoAllowed As Boolean = False
 
+    Public DownloadCounter As New cByteCounter
+    Public UploadCounter As New cByteCounter
+
+
 #Region "Events"
     Public Event OnGlobalManagerInit As dGlobalManagerInit
     Public Event OnGlobalManagerShutdown As dGlobalManagerInit
@@ -105,20 +109,24 @@ Public Class GlobalManagerClient
     End Sub
 
     Private Sub Manager_OnReceiveData(ByVal buffer() As Byte)
-        Dim Pointer As Integer = 0
+        Dim position As Integer = 0
+
         Do While True
-            Dim length As Integer = BitConverter.ToUInt16(buffer, Pointer)
-            Dim opc As Integer = BitConverter.ToUInt16(buffer, Pointer + 2)
+            Dim length As Integer = BitConverter.ToUInt16(buffer, position)
+            Dim opc As Integer = BitConverter.ToUInt16(buffer, position + 2)
 
             If length = 0 And opc = 0 Then 'endless prevention
                 Exit Do
             End If
 
             Dim newbuff(length + 5) As Byte
-            Array.ConstrainedCopy(buffer, Pointer, newbuff, 0, length + 6)
-            Pointer = Pointer + length + 6
+            Array.ConstrainedCopy(buffer, position, newbuff, 0, length + 6)
+            position = position + length + 6
 
             Dim packet As New PacketReader(newbuff)
+
+            DownloadCounter.AddPacket(packet, PacketSource.Server)
+
             RaiseEvent OnPacketReceived(packet)
         Loop
     End Sub
@@ -130,6 +138,8 @@ Public Class GlobalManagerClient
                 If ManagerSocket.Connected Then
                     ManagerSocket.Send(buff)
                     LastPingTime = Date.Now
+
+                    UploadCounter.AddPacket(buff.Length, PacketSource.Client)
                 End If
             End If
         Catch sock_ex As SocketException

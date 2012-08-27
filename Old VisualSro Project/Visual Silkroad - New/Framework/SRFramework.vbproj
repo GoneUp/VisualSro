@@ -68,9 +68,11 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\Classes\cByteCounter.vb" />
+    <Compile Include="Framework\Classes\cIDGen.vb" />
     <Compile Include="Framework\Classes\cINI.vb" />
     <Compile Include="Framework\Classes\cUser.vb" />
-    <Compile Include="Framework\Classes\GlobalManager Stuff\cServerbase.vb" />
+    <Compile Include="Framework\Classes\GlobalManager Stuff\cGM_Server_Base.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\DownloadServer.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\GameServer.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\GatewayServer.vb" />

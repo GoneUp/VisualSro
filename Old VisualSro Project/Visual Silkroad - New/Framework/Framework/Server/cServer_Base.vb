@@ -12,8 +12,12 @@ Public Class cServer_Base
     Private _ClientList As cClientList
     Private _Online As Boolean = False
 
+    Private _DownloadCounter As New cByteCounter
+    Private _UploadCounter As New cByteCounter
+
     Private _ServerSocket As Socket
     Private _RevTheard(1) As Thread
+
 
 
 #Region "Events"
@@ -107,6 +111,24 @@ Public Class cServer_Base
         End Get
         Set(ByVal value As Boolean)
             _Online = value
+        End Set
+    End Property
+
+    Public Property DownloadCounter As cByteCounter
+        Get
+            Return _DownloadCounter
+        End Get
+        Set(ByVal value As cByteCounter)
+            _DownloadCounter = value
+        End Set
+    End Property
+
+    Public Property UploadCounter As cByteCounter
+        Get
+            Return _UploadCounter
+        End Get
+        Set(ByVal value As cByteCounter)
+            _UploadCounter = value
         End Set
     End Property
 #End Region
@@ -289,6 +311,8 @@ Public Class cServer_Base
             If Server_DebugMode = True Then
                 RaiseEvent OnServerPacketLog(buff, True, index)
             End If
+
+            UploadCounter.AddPacket(buff.Length, PacketSource.Server)
 
         Catch sock_ex As SocketException
             If sock_ex.ErrorCode = &H2746 Then

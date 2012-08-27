@@ -145,6 +145,9 @@
                 Log.WriteSystemLog("Reconnect GlobalManager...")
                 GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
 
+            Case "wnd"
+                Dim wnd As New PerfWnd
+                wnd.Show()
         End Select
     End Sub
 End Module

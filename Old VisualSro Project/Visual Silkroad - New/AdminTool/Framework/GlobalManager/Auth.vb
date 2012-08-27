@@ -3,7 +3,7 @@
 Namespace GlobalManager
     Module Auth
         Public Sub OnHandshake(ByVal packet As PacketReader)
-            If packet.DataLen = 8 Then
+            If packet.Length = 8 Then
                 Dim BaseKey As UInt16 = packet.Word
                 Dim NewKey = CalculateNewKey(BaseKey)
 
@@ -12,7 +12,7 @@ Namespace GlobalManager
                 writer.DWord(NewKey)
                 GlobalManagerCon.Send(writer.GetBytes)
 
-            ElseIf packet.DataLen = 7 Then
+            ElseIf packet.Length = 7 Then
                 Dim success As Byte = packet.Byte
 
                 If success = 1 Then

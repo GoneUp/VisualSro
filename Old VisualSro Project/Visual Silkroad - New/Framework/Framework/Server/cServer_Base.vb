@@ -13,7 +13,7 @@ Public Class cServer_Base
     Private _Online As Boolean = False
 
     Private _ServerSocket As Socket
-    Public RevTheard(1) As Thread
+    Private _RevTheard(1) As Thread
 
 
 #Region "Events"
@@ -126,13 +126,26 @@ Public Class cServer_Base
             _ServerSocket.Listen(5)
             _ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
-            ReDim RevTheard(MaxClients + 1)
-        Catch exception As Exception
-            RaiseEvent OnServerError(exception, -2)
+            ReDim _RevTheard(MaxClients + 1)
+        Catch sock_ex As SocketException
+            If sock_ex.ErrorCode = 10048 Then
+                'Endpoint already in use
+                RaiseEvent OnServerLog("Cannout bind Server. Port is already in use!!!")
+            Else
+                'Other Socket Error
+                RaiseEvent OnServerError(sock_ex, -5)
+            End If
+
+        Catch ex As Exception
+            RaiseEvent OnServerError(ex, -2)
+
         Finally
-            Dim time As String = DateTime.Now.ToString()
-            RaiseEvent OnServerStarted(time)
-            Online = True
+            If _ServerSocket IsNot Nothing AndAlso _ServerSocket.IsBound Then
+                RaiseEvent OnServerStarted(DateTime.Now.ToString())
+                Online = True
+            Else
+                RaiseEvent OnServerLog("Server NOT started! Check your configuration.")
+            End If
         End Try
     End Sub
 
@@ -141,13 +154,17 @@ Public Class cServer_Base
         Try
             _ServerSocket.Close(1)
             _ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-            ReDim RevTheard(MaxClients + 1)
-        Catch exception As Exception
-            RaiseEvent OnServerError(exception, -3)
+            ReDim _RevTheard(MaxClients + 1)
+
+        Catch ex As Exception
+            RaiseEvent OnServerError(ex, -3)
         Finally
-            Dim time As String = DateTime.Now.ToString()
-            RaiseEvent OnServerStopped(time)
-            Online = False
+            If _ServerSocket IsNot Nothing AndAlso _ServerSocket.IsBound = False Then
+                RaiseEvent OnServerStopped(DateTime.Now.ToString())
+                Online = False
+            Else
+                RaiseEvent OnServerLog("Server NOT stopped! Check your configuration.")
+            End If
         End Try
     End Sub
 #End Region
@@ -160,8 +177,8 @@ Public Class cServer_Base
                 ClientList.Add(sock)
                 Dim index As Integer = ClientList.FindIndex(sock)
                 RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
-                RevTheard(index) = New Thread(AddressOf ReceiveData)
-                RevTheard(index).Start(index)
+                _RevTheard(index) = New Thread(AddressOf ReceiveData)
+                _RevTheard(index).Start(index)
             Else
                 'Absolute maximum capaticy of the server, 
                 'normally shouldn't apperar since there is a buffer zone between MaxNormalClients and the real maxClients variable.
@@ -179,8 +196,8 @@ Public Class cServer_Base
             'Server was stopped?
         Catch obj_ex As ObjectDisposedException
             'Server was stopped
-        Catch exception As Exception
-            RaiseEvent OnServerError(exception, -1)
+        Catch ex As Exception
+            RaiseEvent OnServerError(ex, -1)
         End Try
     End Sub
 

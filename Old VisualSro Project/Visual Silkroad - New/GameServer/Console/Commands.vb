@@ -1,4 +1,7 @@
 ﻿Module Commands
+
+    Private perfWnd As PerfWnd
+
     Public Sub CheckCommand(ByVal FullMessage As String)
 
         Dim msg() As String = FullMessage.Split(" ")
@@ -60,13 +63,7 @@
 
             Case "/end"
                 Log.WriteSystemLog("Ending Server....")
-                For i = 0 To Functions.PlayerData.Count - 1
-                    If Functions.PlayerData(i) IsNot Nothing Then
-                        Server.Disconnect(i)
-                    End If
-                Next
-                Server.Stop()
-                Database.ExecuteQuerys()
+                GlobalManager.OnSendServerShutdown()
 
 
             Case "/debug"
@@ -113,8 +110,8 @@
 
             Case "/reinit"
                 Log.WriteSystemLog("Ending Server....")
-                For i = 0 To Functions.PlayerData.Count - 1
-                    If Functions.PlayerData(i) IsNot Nothing Then
+                For i = 0 To Server.MaxClients - 1
+                    If SessionInfo(i) IsNot Nothing Then
                         Server.Disconnect(i)
                     End If
                 Next
@@ -124,30 +121,23 @@
                 End If
 
                 Database.ExecuteQuerys()
+
+                GlobalManagerCon.UserSidedShutdown = True
+                GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
                 GlobalManagerCon.Disconnect()
 
-                Log.WriteSystemLog("Cleanup Server...")
-
-                Functions.GlobalGame.GlobalInit(Server.MaxClients)
-                GlobalDef.Initalize(Server.MaxClients)
-                SilkroadData.DumpDataFiles()
-                GameDB.InitalLoad = True
-                GameDB.UpdateData()
-                Functions.Timers.LoadTimers(Server.MaxClients)
-                GameMod.Damage.OnServerStart(Server.MaxClients)
-
-                Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
 
             Case "/gmre"
                 'GlobalManagerReConnect
+                Log.WriteSystemLog("GMC: Started disconnect...")
+                GlobalManagerCon.UserSidedShutdown = True
+                GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reconnect
                 GlobalManagerCon.Disconnect()
-                Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
 
             Case "wnd"
-                Dim wnd As New PerfWnd
-                wnd.Show()
+                perfWnd = New PerfWnd
+                perfWnd.Show()
         End Select
     End Sub
 End Module

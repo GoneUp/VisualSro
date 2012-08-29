@@ -39,20 +39,12 @@
                 Console.Clear()
 
             Case "/end"
-                'For i = 0 To ClientList.SessionInfo.Count - 1
-                '    If ClientList.SessionInfo(i) IsNot Nothing Then
-                '        Server.Dissconnect(i)
-                '    End If
-                'Next
-                'Server.Stop()
-                'Database.ExecuteQuerys()
-                'End
                 GlobalManager.OnSendServerShutdown()
 
-            Case "/reinit"
+           Case "/reinit"
                 Log.WriteSystemLog("Ending Server....")
                 For i = 0 To Server.MaxClients - 1
-                    If Server.ClientList.GetSocket(i) IsNot Nothing Then
+                    If SessionInfo(i) IsNot Nothing Then
                         Server.Disconnect(i)
                     End If
                 Next
@@ -62,24 +54,19 @@
                 End If
 
                 Database.ExecuteQuerys()
+
+                GlobalManagerCon.UserSidedShutdown = True
+                GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
                 GlobalManagerCon.Disconnect()
 
-                Log.WriteSystemLog("Cleanup Server...")
-
-                GlobalDef.Initalize(Server.MaxClients)
-                LoginDb.InitalLoad = True
-                LoginDb.UpdateData()
-                Timers.LoadTimers(Server.MaxClients)
-
-
-                Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
 
             Case "/gmre"
                 'GlobalManagerReConnect
+                Log.WriteSystemLog("GMC: Started disconnect...")
+                GlobalManagerCon.UserSidedShutdown = True
+                GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reconnect
                 GlobalManagerCon.Disconnect()
-                Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
 
         End Select
 

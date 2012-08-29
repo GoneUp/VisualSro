@@ -71,10 +71,10 @@ Public Class cServer_Gameserver
         Next i
     End Sub
 
-    Public Sub SendIfPlayerIsSpawned(ByVal buff() As Byte, ByVal Index_ As Integer)
+    Public Sub SendIfPlayerIsSpawned(ByVal buff() As Byte, ByVal Index_ As Integer, Optional ByVal expect_me As Boolean = False)
         For i = 0 To MaxClients - 1
             If PlayerData(i) IsNot Nothing Then
-                If PlayerData(i).SpawnedPlayers.Contains(Index_) Or Index_ = i Then
+                If PlayerData(i).SpawnedPlayers.Contains(Index_) Or (Index_ = i And expect_me = False) Then
                     If PlayerData(i).Ingame = True Then
                         Send(buff, i)
                     End If

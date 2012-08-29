@@ -231,7 +231,7 @@ Public Class cDatabase
 #End Region
 
 #Region "Injection Check"
-    Public Function CheckForInjection(ByVal parameter As String) As String
+    Public Shared Function CheckForInjection(ByVal parameter As String) As String
         Dim tmpStr As String = parameter
         tmpStr.Replace(";", "")
         tmpStr.Replace("--", "")

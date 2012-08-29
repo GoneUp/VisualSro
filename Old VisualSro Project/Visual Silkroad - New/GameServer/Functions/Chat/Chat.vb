@@ -51,7 +51,7 @@ Namespace Functions
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(messagelength)
                 writer.UString(message)
-                Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_, True)
 
                 If Settings.Log_Chat Then
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Public", "Message: " & message)
@@ -104,7 +104,7 @@ Namespace Functions
                 End If
             ElseIf receiver = "[DAMAGE_MOD]" Then
                 GameServer.GameMod.Damage.ParseMessage(Index_, message)
-            ElseIf receiver = "[Vagina]" And PlayerData(Index_).InStall Then
+            ElseIf receiver = "[VAGINA]" And PlayerData(Index_).InStall Then
                 SendNotice("E=MC Vagina", Index_)
                 SendNotice("Easteregg: " & message, Index_)
             Else
@@ -134,7 +134,6 @@ Namespace Functions
         End Sub
 
         Public Sub OnGameMasterChat(ByVal Packet As PacketReader, ByVal Index_ As Integer)
-
             If PlayerData(Index_).GM Then
                 Dim counter As Byte = Packet.Byte
                 Packet.Byte()
@@ -154,7 +153,7 @@ Namespace Functions
                 writer.DWord(PlayerData(Index_).UniqueID)
                 writer.Word(messagelength)
                 writer.UString(message)
-                Server.SendToAllInRangeExpectMe(writer.GetBytes, Index_)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_, True)
 
                 GameMod.CheckForCoustum(message, Index_)
 

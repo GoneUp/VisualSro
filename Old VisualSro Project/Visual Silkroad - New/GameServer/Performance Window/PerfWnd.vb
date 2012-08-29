@@ -12,22 +12,22 @@ Public Class PerfWnd
     End Sub
 
     Private Sub TimerElapsed()
-        lblDLMain_TB.Text = cByteCounter.FormatVolume(Server.DownloadCounter.TotalBytes)
-        lblDLMain_TP.Text = cByteCounter.FormatVolume(Server.DownloadCounter.TotalPackets)
-        lblDLMain_BS.Text = cByteCounter.FormatBandwidth(Server.DownloadCounter.BytesPerS)
-        lblDLMain_PS.Text = cByteCounter.FormatBandwidth(Server.DownloadCounter.PacketsPerS)
+        Me.Invoke(Sub() lblDLMain_TB.Text = cByteCounter.FormatVolume(Server.DownloadCounter.TotalBytes))
+        Me.Invoke(Sub() lblDLMain_TP.Text = (Server.DownloadCounter.TotalPackets))
+        Me.Invoke(Sub() lblDLMain_BS.Text = cByteCounter.FormatBandwidth(Server.DownloadCounter.BytesPerS))
+        Me.Invoke(Sub() lblDLMain_PS.Text = cByteCounter.FormatBandwidth(Server.DownloadCounter.PacketsPerS))
 
-        lblULMain_Tb.Text = cByteCounter.FormatVolume(Server.UploadCounter.TotalBytes)
-        lblULMain_TP.Text = cByteCounter.FormatVolume(Server.UploadCounter.TotalPackets)
-        lblULMain_BS.Text = cByteCounter.FormatBandwidth(Server.UploadCounter.BytesPerS)
-        lblULMain_PS.Text = cByteCounter.FormatBandwidth(Server.UploadCounter.PacketsPerS)
+        Me.Invoke(Sub() lblULMain_Tb.Text = cByteCounter.FormatVolume(Server.UploadCounter.TotalBytes))
+        Me.Invoke(Sub() lblULMain_TP.Text = (Server.UploadCounter.TotalPackets))
+        Me.Invoke(Sub() lblULMain_BS.Text = cByteCounter.FormatBandwidth(Server.UploadCounter.BytesPerS))
+        Me.Invoke(Sub() lblULMain_PS.Text = cByteCounter.FormatBandwidth(Server.UploadCounter.PacketsPerS))
 
-        lblGMCMain_TB.Text = cByteCounter.FormatVolume(GlobalManagerCon.DownloadCounter.TotalBytes + GlobalManagerCon.UploadCounter.TotalBytes)
-        lblGMCMain_TP.Text = cByteCounter.FormatVolume(GlobalManagerCon.DownloadCounter.TotalPackets + GlobalManagerCon.UploadCounter.TotalPackets)
-        lblGMCMain_BS.Text = cByteCounter.FormatBandwidth(GlobalManagerCon.DownloadCounter.BytesPerS + GlobalManagerCon.UploadCounter.BytesPerS)
-        lblGMCMain_PS.Text = cByteCounter.FormatBandwidth(GlobalManagerCon.DownloadCounter.PacketsPerS + GlobalManagerCon.UploadCounter.PacketsPerS)
+        Me.Invoke(Sub() lblGMCMain_TB.Text = cByteCounter.FormatVolume(GlobalManagerCon.DownloadCounter.TotalBytes + GlobalManagerCon.UploadCounter.TotalBytes))
+        Me.Invoke(Sub() lblGMCMain_TP.Text = (GlobalManagerCon.DownloadCounter.TotalPackets + GlobalManagerCon.UploadCounter.TotalPackets))
+        Me.Invoke(Sub() lblGMCMain_BS.Text = cByteCounter.FormatBandwidth(GlobalManagerCon.DownloadCounter.BytesPerS + GlobalManagerCon.UploadCounter.BytesPerS))
+        Me.Invoke(Sub() lblGMCMain_PS.Text = cByteCounter.FormatBandwidth(GlobalManagerCon.DownloadCounter.PacketsPerS + GlobalManagerCon.UploadCounter.PacketsPerS))
 
-        lblTime.Text = Date.Now
+        Me.Invoke(Sub() lblTime.Text = Date.Now)
     End Sub
 
     Private Sub PerfWnd_FormClosed(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles MyBase.FormClosed

@@ -2,6 +2,8 @@
 Imports System.Net.Sockets, System.Net
 
 Public Class GlobalManagerClient
+
+#Region "Fields"
     Public ManagerSocket As Socket
     Public ReceiveThread As Threading.Thread
 
@@ -9,9 +11,13 @@ Public Class GlobalManagerClient
     Public LastInfoTime As DateTime
     Public UpdateInfoAllowed As Boolean = False
 
+    Public UserSidedShutdown As Boolean = False
+    'If the shutdown is usersided, we may want to know the reason
+    Public ShutdownReason As GMCShutdownReason = GlobalManagerClient.GMCShutdownReason.Normal_Shutdown
+
     Public DownloadCounter As New cByteCounter
     Public UploadCounter As New cByteCounter
-
+#End Region
 
 #Region "Events"
     Public Event OnGlobalManagerInit As dGlobalManagerInit
@@ -170,5 +176,13 @@ Public Class GlobalManagerClient
     Public Sub Log(ByVal message As String)
         RaiseEvent OnLog(message)
     End Sub
+#End Region
+
+#Region "Enums"
+    Public Enum GMCShutdownReason As Byte
+        Normal_Shutdown = 0
+        Reconnect = 1
+        Reinit = 2
+    End Enum
 #End Region
 End Class

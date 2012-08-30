@@ -16,6 +16,7 @@ Namespace Functions
                     Server.Send(writer.GetBytes, Index_)
 
                     Timers.PlayerExitTimer(Index_).Interval = countdown * 1000
+                    Timers.PlayerExitTimer(Index_).Start()
                 Case 2 'Restart
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)

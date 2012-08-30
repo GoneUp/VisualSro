@@ -122,17 +122,30 @@
 
                 Database.ExecuteQuerys()
 
-                GlobalManagerCon.UserSidedShutdown = True
-                GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
-                GlobalManagerCon.Disconnect()
+                If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
+                    GlobalManagerCon.UserSidedShutdown = True
+                    GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
+                    GlobalManager.OnSendServerShutdown()
+                Else
+                    Log.WriteSystemLog("GMC: Already disconnected!")
+                    GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                End If
+
+
 
 
             Case "/gmre"
                 'GlobalManagerReConnect
                 Log.WriteSystemLog("GMC: Started disconnect...")
-                GlobalManagerCon.UserSidedShutdown = True
-                GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reconnect
-                GlobalManagerCon.Disconnect()
+                If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
+                    GlobalManagerCon.UserSidedShutdown = True
+                    GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reconnect
+                    GlobalManager.OnSendServerShutdown()
+                Else
+                    Log.WriteSystemLog("GMC: Already disconnected!")
+                    GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                End If
+
 
 
             Case "wnd"

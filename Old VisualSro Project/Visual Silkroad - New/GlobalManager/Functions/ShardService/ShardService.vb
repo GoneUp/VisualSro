@@ -57,6 +57,8 @@ Namespace Shard
                     Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
             End Select
 
+            SendGlobalInfo(Index_, True) 'Sent the news to all
+
             SendShutdown(Index_)
         End Sub
 

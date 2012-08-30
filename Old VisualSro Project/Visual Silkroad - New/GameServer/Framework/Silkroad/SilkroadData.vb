@@ -9,7 +9,7 @@ Module SilkroadData
     Public RefSkills As New Dictionary(Of UInteger, RefSkill)
     Public RefSkillGroups As New Dictionary(Of String, SkillGroup)
     Public RefObjects As New Dictionary(Of UInteger, SilkroadObject)
-    Public RefMallItems As New List(Of MallPackage_)
+    Public RefMallItems As New List(Of PackageItem)
     Public RefReversePoints As New List(Of ReversePoint_)
     Public RefTeleportPoints As New List(Of TeleportPoint_)
     Public RefSpecialZones As New List(Of SpecialSector_)
@@ -48,7 +48,7 @@ Module SilkroadData
             DumpReversePoints(base_path & "data\reverse_points.txt")
             Log.WriteSystemLog("Loaded " & RefReversePoints.Count & " Reverse-Points.")
 
-            DumpItemMall(base_path & "data\refscrapofpackageitem.txt", base_path & "data\refpricepolicyofitem.txt")
+            DumpItemMall(base_path & "data\refpackageitem.txt", base_path & "data\refscrapofpackageitem.txt", base_path & "data\refpricepolicyofitem.txt")
             Log.WriteSystemLog("Loaded " & RefMallItems.Count & " ItemMall-Items.")
 
             DumpTeleportBuildings(base_path & "data\teleportbuilding.txt")
@@ -773,48 +773,87 @@ Module SilkroadData
 #End Region
 
 #Region "Mall"
-    Public Class MallPackage_
-        Public Name_Normal As String
-        Public Name_Package As String
-        Public Amout As UInt16
-        Public Price As UInteger
+    Public Class PackageItem
+        Public Code_Name As String
+        Public Package_Name As String
+
+        Public Name_Real_Code As String
+        Public Name_Real As String
+        Public Description_Code As String
+        Public Description As String
+
+        Public Data As UInt32
         Public Variance As ULong
+        Public Payments As New Dictionary(Of UShort, MallPaymentEntry) 'Key = PaymentDevice
     End Class
 
-    Public Sub DumpItemMall(ByVal FileAmoutPath As String, ByVal FilePricePath As String)
+    Public Class MallPaymentEntry
+        Public PaymentDevice As PaymentDevices
+        Public Price As UInt32
+
+        Public Enum PaymentDevices As UShort
+            Normal = 1
+            Mall = 2
+            Mall_Point = 4
+            Mall_Bonus = 16
+        End Enum
+    End Class
+
+
+    Public Sub DumpItemMall(ByVal filePackagePath As String, ByVal fileScrapPath As String, ByVal filePricePath As String)
         RefMallItems.Clear()
 
-        Dim lines As String() = File.ReadAllLines(FileAmoutPath)
+        Dim lines As String() = File.ReadAllLines(filePackagePath)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-            Dim tmp As New MallPackage_
-            tmp.Name_Package = tmpString(2)
-            tmp.Name_Normal = tmpString(3)
-            tmp.Amout = tmpString(6)
-            tmp.Variance = tmpString(8)
+            Dim tmp As New PackageItem
+            tmp.Package_Name = tmpString(3)
+            tmp.Name_Real_Code = tmpString(6)
+            tmp.Description_Code = tmpString(7)
 
             RefMallItems.Add(tmp)
         Next
 
-        Dim ItemPriceFile As String() = File.ReadAllLines(FilePricePath)
-        For d As Integer = 0 To ItemPriceFile.Length - 1
-            Dim tmpString As String() = ItemPriceFile(d).Split(ControlChars.Tab)
-            If tmpString(3) = 2 Then
-                For i = 0 To RefMallItems.Count - 1
-                    If RefMallItems(i).Name_Package = tmpString(2) Then
-                        RefMallItems(i).Name_Normal = tmpString(5)
-                        Exit For
-                    End If
-                Next
-
-            End If
+        Dim itemScrapFile As String() = File.ReadAllLines(fileScrapPath)
+        For d As Integer = 0 To itemScrapFile.Length - 1
+            Dim tmpString As String() = itemScrapFile(d).Split(ControlChars.Tab)
+            For i = 0 To RefMallItems.Count - 1
+                If RefMallItems(i).Package_Name = tmpString(2) Then
+                    RefMallItems(i).Code_Name = tmpString(3)
+                    RefMallItems(i).Data = tmpString(6)
+                    RefMallItems(i).Variance = tmpString(8)
+                    Exit For
+                End If
+            Next
         Next
 
+
+        Dim ItemPriceFile As String() = File.ReadAllLines(filePricePath)
+        For d As Integer = 0 To ItemPriceFile.Length - 1
+            Dim tmpString As String() = ItemPriceFile(d).Split(ControlChars.Tab)
+            For i = 0 To RefMallItems.Count - 1
+                If RefMallItems(i).Package_Name = tmpString(2) Then
+                    Dim tmp As New MallPaymentEntry
+                    If tmpString(3) < 0 Or tmpString(3) > 255 Then
+                        Log.WriteSystemLog(tmpString(2))
+                    End If
+
+                    tmp.PaymentDevice = tmpString(3)
+                    tmp.Price = tmpString(5)
+                    RefMallItems(i).Payments.Add(tmp.PaymentDevice, tmp)
+                    Exit For
+                End If
+            Next
+        Next
     End Sub
 
-    Public Function GetItemMallItem(ByVal Code_Name As String) As MallPackage_
+    Public Sub DumpItemMallNames()
+        Dim LanguageTabIndex As Byte = 9
+    End Sub
+
+    Public Function GetItemMallItem(ByVal code_Name As String) As PackageItem
         For i = 0 To RefMallItems.Count - 1
-            If RefMallItems(i).Name_Package = Code_Name Then
+            If RefMallItems(i).Package_Name = code_Name Then
                 Return RefMallItems(i)
             End If
         Next

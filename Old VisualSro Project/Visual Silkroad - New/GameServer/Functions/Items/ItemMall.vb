@@ -19,18 +19,20 @@ Namespace Functions
             Dim type4 As Byte = packet.Byte
             Dim type5 As Byte = packet.Byte
             Dim LongName As String = packet.String(packet.Word)
-            Dim mallPackage As MallPackage_ = GetItemMallItem(LongName)
+            Dim mallPackage As PackageItem = GetItemMallItem(LongName)
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
             Dim UserIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
 
-            If LongName = mallPackage.Name_Package Then
-                If GameDB.Users(UserIndex).Silk - (mallPackage.Price * amout) >= 0 And GetFreeItemSlot(Index_) <> -1 Then
+            If LongName = mallPackage.Package_Name Then
+                Dim paymentEntry As MallPaymentEntry = mallPackage.Payments(MallPaymentEntry.PaymentDevices.Mall)
+
+                If (paymentEntry IsNot Nothing) AndAlso (GameDB.Users(UserIndex).Silk - (paymentEntry.Price * amout) >= 0 And GetFreeItemSlot(Index_) <> -1) Then
                     Dim ItemSlots As New List(Of Byte)
 
                     For i = 1 To amout
-                        Dim _Refitem As cRefItem = GetItemByName(mallPackage.Name_Normal)
+                        Dim _Refitem As cRefItem = GetItemByName(mallPackage.Code_Name)
                         Dim slot As Byte = GetFreeItemSlot(Index_)
                         Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
                         Dim item As New cItem
@@ -45,7 +47,7 @@ Namespace Functions
                             Case 2
                                 item.Data = 1
                             Case 3
-                                item.Data = mallPackage.Amout
+                                item.Data = mallPackage.Data
                         End Select
 
                         Dim ID As UInt64 = ItemManager.AddItem(item)
@@ -54,7 +56,7 @@ Namespace Functions
 
                         ItemSlots.Add(slot)
 
-                        GameDB.Users(UserIndex).Silk -= mallPackage.Price * amout
+                        GameDB.Users(UserIndex).Silk -= paymentEntry.Price * amout
                         GameDB.SaveSilk(Index_, GameDB.Users(UserIndex).Silk, GameDB.Users(UserIndex).Silk_Bonus, GameDB.Users(UserIndex).Silk_Points)
                         OnSendSilks(Index_)
                     Next
@@ -75,7 +77,7 @@ Namespace Functions
                     Server.Send(writer.GetBytes, Index_)
 
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Item_Mall", "Buy",
-                                     String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, mallPackage.Price))
+                                     String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, paymentEntry.Price))
                 Else
                     writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                     writer.Byte(2)

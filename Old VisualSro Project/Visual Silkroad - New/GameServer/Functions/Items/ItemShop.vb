@@ -26,8 +26,8 @@ Namespace Functions
             End If
 
             PackageName = RefObj.Shop.Tab(shopline).Items(itemline).PackageName
-            Dim Package As MallPackage_ = GetItemMallItem(PackageName)
-            Dim BuyItem As cRefItem = GetItemByName(Package.Name_Normal)
+            Dim Package As PackageItem = GetItemMallItem(PackageName)
+            Dim BuyItem As cRefItem = GetItemByName(Package.Code_Name)
 
             Select Case BuyItem.CLASS_A
                 Case 1
@@ -56,7 +56,7 @@ Namespace Functions
 
                             'Equip
                             temp_item.Plus = 0
-                            temp_item.Data = Package.Amout
+                            temp_item.Data = Package.Data
 
 
                             Dim ID As UInt64 = ItemManager.AddItem(temp_item)

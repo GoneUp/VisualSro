@@ -34,7 +34,7 @@ Namespace Functions
 
             PlayerData(Index_).Busy = True
             PlayerData(Index_).Attacking = False
-            PlayerData(Index_).AttackType = AttackType_.Buff
+            PlayerData(Index_).AttackType = AttackTypes.Buff
             PlayerData(Index_).AttackedId = 0
             PlayerData(Index_).UsingSkillId = SkillID
             PlayerData(Index_).SkillOverId = tmp.OverID
@@ -78,7 +78,7 @@ Namespace Functions
             'Clean Up
             PlayerData(Index_).Busy = False
             PlayerData(Index_).Attacking = False
-            PlayerData(Index_).AttackType = AttackType_.Normal
+            PlayerData(Index_).AttackType = AttackTypes.Normal
             PlayerData(Index_).AttackedId = 0
             PlayerData(Index_).UsingSkillId = 0
             PlayerData(Index_).SkillOverId = 0

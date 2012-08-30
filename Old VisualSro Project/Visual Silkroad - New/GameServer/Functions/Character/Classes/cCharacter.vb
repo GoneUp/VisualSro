@@ -92,7 +92,7 @@
         Public Attacking As Boolean = False
         Public AttackedId As UInt32 = 0
         Public UsingSkillId As UInt32 = 0
-        Public AttackType As AttackType_
+        Public AttackType As AttackTypes
         Public SkillOverId As UInt32 = 0
         Public CastingId As UInt32 = 0
         Public LastSelected As UInt32 = 0
@@ -104,7 +104,8 @@
 
         Public Buffs As New Dictionary(Of UInteger, cBuff) 'Key = SkillOverId
 
-        Public TeleportType As TeleportType_
+        Public TeleportType As TeleportTypes
+        Public ExitType As ExitTypes
         Public BuybackList As New List(Of cItem)
 
         Public ReadOnly Property Position() As Position
@@ -403,16 +404,20 @@
         Reverse_Scroll_Point = 5
     End Enum
 
-    Public Enum TeleportType_
+    Public Enum TeleportTypes
         None = 0
         Npc = 1
         GM = 2
     End Enum
 
-
-    Public Enum AttackType_
+    Public Enum AttackTypes
         Normal = 0
         Skill = 1
         Buff = 2
+    End Enum
+
+    Public Enum ExitTypes
+        Normal_Exit = 0
+        Reconnect = 1
     End Enum
 End Namespace

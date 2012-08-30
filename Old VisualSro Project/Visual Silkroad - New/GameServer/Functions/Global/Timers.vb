@@ -96,15 +96,15 @@ Namespace Functions
                         Dim mob_ As cMonster = MobList(PlayerData(Index_).AttackedId)
 
                         If mob_.Death = False Then
-                            If PlayerData(Index_).AttackType = AttackType_.Normal Then
+                            If PlayerData(Index_).AttackType = AttackTypes.Normal Then
                                 PlayerAttackNormal(Index_, mob_.UniqueID)
-                            ElseIf PlayerData(Index_).AttackType = AttackType_.Skill Then
+                            ElseIf PlayerData(Index_).AttackType = AttackTypes.Skill Then
                                 PlayerAttackEndSkill(Index_)
                             End If
                         End If
 
                     Else
-                        If PlayerData(Index_).AttackType = AttackType_.Buff Then
+                        If PlayerData(Index_).AttackType = AttackTypes.Buff Then
                             PlayerBuff_EndCasting(Index_)
                         End If
                     End If

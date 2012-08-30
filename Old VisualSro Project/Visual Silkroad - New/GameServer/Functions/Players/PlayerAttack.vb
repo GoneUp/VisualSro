@@ -56,13 +56,13 @@ Namespace Functions
                                     End If
 
                                 Else
-                                    If PlayerData(Index_).AttackType = AttackType_.Normal Then
+                                    If PlayerData(Index_).AttackType = AttackTypes.Normal Then
                                         If MobList.ContainsKey(ObjectID) And MobList(ObjectID).Death = False Then
                                             'Cleanup the regular Attack before using a Skill
                                             PlayerAttackTimer(Index_).Stop()
                                             PlayerData(Index_).Attacking = False
                                             PlayerData(Index_).Busy = False
-                                            PlayerData(Index_).AttackType = AttackType_.Normal
+                                            PlayerData(Index_).AttackType = AttackTypes.Normal
                                             PlayerData(Index_).AttackedId = 0
                                             PlayerData(Index_).UsingSkillId = 0
                                             PlayerData(Index_).SkillOverId = 0
@@ -95,7 +95,7 @@ Namespace Functions
                 PlayerData(Index_).Busy = False
                 PlayerData(Index_).AttackedId = 0
                 PlayerData(Index_).UsingSkillId = 0
-                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackType = AttackTypes.Normal
                 PlayerAttackTimer(Index_).Stop()
             End If
         End Sub
@@ -122,7 +122,7 @@ Namespace Functions
             Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, mob.Position)
             If distance >= (Math.Sqrt(refWeapon.ATTACK_DISTANCE)) Then
                 Dim walktime As Single = MoveUserToObject(Index_, mob.Position, (Math.Sqrt(refWeapon.ATTACK_DISTANCE)))
-                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackType = AttackTypes.Normal
                 PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
 
                 PlayerAttackTimer(Index_).Interval = walktime
@@ -228,7 +228,7 @@ Namespace Functions
 
                 PlayerData(Index_).Attacking = False
                 PlayerData(Index_).Busy = False
-                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackType = AttackTypes.Normal
                 PlayerData(Index_).AttackedId = 0
                 PlayerData(Index_).UsingSkillId = 0
                 PlayerData(Index_).SkillOverId = 0
@@ -237,7 +237,7 @@ Namespace Functions
                 PlayerData(Index_).Busy = True
                 PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
                 PlayerData(Index_).UsingSkillId = attackType
-                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackType = AttackTypes.Normal
                 If PlayerAttackTimer(Index_).Enabled = False Then
                     PlayerAttackTimer(Index_).Interval = 2500
                     PlayerAttackTimer(Index_).Start()
@@ -259,7 +259,7 @@ Namespace Functions
 
             If CalculateDistance(PlayerData(Index_).Position, Mob_.Position) >= RefSkill.Distance Then
                 Dim Walktime As Single = MoveUserToObject(Index_, Mob_.Position, RefSkill.Distance)
-                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackType = AttackTypes.Normal
                 PlayerData(Index_).AttackedId = MobList(MobUniqueId).UniqueID
 
                 PlayerAttackTimer(Index_).Interval = Walktime
@@ -282,7 +282,7 @@ Namespace Functions
             PlayerData(Index_).AttackedId = Mob_.UniqueID
             PlayerData(Index_).Attacking = True
             PlayerData(Index_).UsingSkillId = SkillID
-            PlayerData(Index_).AttackType = AttackType_.Skill
+            PlayerData(Index_).AttackType = AttackTypes.Skill
             PlayerData(Index_).SkillOverId = Id_Gen.GetSkillOverId
             MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, True)
 
@@ -379,14 +379,14 @@ Namespace Functions
 
                 PlayerData(Index_).Attacking = False
                 PlayerData(Index_).Busy = False
-                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackType = AttackTypes.Normal
                 PlayerData(Index_).AttackedId = 0
                 PlayerData(Index_).UsingSkillId = 0
                 PlayerData(Index_).SkillOverId = 0
             Else
                 PlayerData(Index_).Attacking = True
                 PlayerData(Index_).Busy = True
-                PlayerData(Index_).AttackType = AttackType_.Normal
+                PlayerData(Index_).AttackType = AttackTypes.Normal
                 If PlayerAttackTimer(Index_).Enabled = False Then
                     PlayerAttackTimer(Index_).Interval = 2500
                     PlayerAttackTimer(Index_).Start()

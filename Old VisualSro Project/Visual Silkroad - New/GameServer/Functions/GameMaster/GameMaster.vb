@@ -113,7 +113,7 @@ Namespace Functions
             'Not sure 
 
             PlayerData(index_).SetPosition = to_pos
-            PlayerData(index_).TeleportType = TeleportType_.GM
+            PlayerData(index_).TeleportType = TeleportTypes.GM
 
             GameDB.SavePosition(index_)
 

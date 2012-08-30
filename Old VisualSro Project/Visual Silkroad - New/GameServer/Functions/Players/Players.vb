@@ -264,7 +264,7 @@ Namespace Functions
             PlayerData(Index_).UsingSkillId = 0
             PlayerData(Index_).SkillOverId = 0
             PlayerData(Index_).CastingId = 0
-            PlayerData(Index_).AttackType = AttackType_.Normal
+            PlayerData(Index_).AttackType = AttackTypes.Normal
             PlayerData(Index_).LastSelected = 0
             PlayerData(Index_).UsedItem = UseItemTypes.None
             PlayerData(Index_).UsedItemParameter = 0

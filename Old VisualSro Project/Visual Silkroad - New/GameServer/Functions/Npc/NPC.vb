@@ -207,7 +207,7 @@ Namespace Functions
                     Else
                         PlayerData(Index_).Busy = True
                         PlayerData(Index_).SetPosition = Point_.ToPos
-                        PlayerData(Index_).TeleportType = TeleportType_.Npc
+                        PlayerData(Index_).TeleportType = TeleportTypes.Npc
 
                         PlayerData(Index_).Gold -= Link.Cost
                         UpdateGold(Index_)

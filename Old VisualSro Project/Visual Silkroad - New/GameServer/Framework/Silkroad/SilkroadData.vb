@@ -18,6 +18,7 @@ Module SilkroadData
     Public RefUniques As New List(Of UInteger)
     Public RefAbuseList As New List(Of String)
     Public RefCaveTeleporter As New List(Of CaveTeleporter_)
+    Public RefSilkroadNameEntys As New Dictionary(Of String,String )
 
     Public base_path As String = AppDomain.CurrentDomain.BaseDirectory
 
@@ -36,6 +37,9 @@ Module SilkroadData
             DumpLevelData(base_path & "data\leveldata.txt")
             Log.WriteSystemLog("Loaded " & RefLevelData.Count & " Ref-Levels.")
 
+            DumpNameFiles()
+            Log.WriteSystemLog("Loaded " & RefSilkroadNameEntys.Count & " Name-Entry's.")
+
             DumpSkillFiles()
             Log.WriteSystemLog("Loaded " & RefSkills.Count & " Ref-Skills.")
 
@@ -49,6 +53,7 @@ Module SilkroadData
             Log.WriteSystemLog("Loaded " & RefReversePoints.Count & " Reverse-Points.")
 
             DumpItemMall(base_path & "data\refpackageitem.txt", base_path & "data\refscrapofpackageitem.txt", base_path & "data\refpricepolicyofitem.txt")
+            DumpItemMallNames()
             Log.WriteSystemLog("Loaded " & RefMallItems.Count & " ItemMall-Items.")
 
             DumpTeleportBuildings(base_path & "data\teleportbuilding.txt")
@@ -58,9 +63,6 @@ Module SilkroadData
 
             DumpSpecialSectorFile(base_path & "\data\special_sectors.txt")
             Log.WriteSystemLog("Loaded " & RefSpecialZones.Count & " Special_Sectors.")
-
-            DumpNameFiles()
-            Log.WriteSystemLog("Loaded Namefile.")
 
             DumpNpcChatFile(base_path & "\data\npcchatid.txt")
             Log.WriteSystemLog("Loaded NpcChat data.")
@@ -250,7 +252,7 @@ Module SilkroadData
 #Region "LevelData"
     Structure LevelData
         Public Level As Byte
-        Public MobEXP As UInteger
+        Public MobEXP As ULong
         Public Experience As ULong
         Public SkillPoints As ULong
     End Structure
@@ -774,16 +776,16 @@ Module SilkroadData
 
 #Region "Mall"
     Public Class PackageItem
-        Public Code_Name As String
-        Public Package_Name As String
+        Public Code_Name As String = ""
+        Public Package_Name As String = ""
 
-        Public Name_Real_Code As String
-        Public Name_Real As String
-        Public Description_Code As String
-        Public Description As String
+        Public Name_Real_Code As String = ""
+        Public Name_Real As String = ""
+        Public Description_Code As String = ""
+        Public Description As String = ""
 
-        Public Data As UInt32
-        Public Variance As ULong
+        Public Data As UInt32 = 0
+        Public Variance As UInt64 = 0
         Public Payments As New Dictionary(Of UShort, MallPaymentEntry) 'Key = PaymentDevice
     End Class
 
@@ -834,10 +836,6 @@ Module SilkroadData
             For i = 0 To RefMallItems.Count - 1
                 If RefMallItems(i).Package_Name = tmpString(2) Then
                     Dim tmp As New MallPaymentEntry
-                    If tmpString(3) < 0 Or tmpString(3) > 255 Then
-                        Log.WriteSystemLog(tmpString(2))
-                    End If
-
                     tmp.PaymentDevice = tmpString(3)
                     tmp.Price = tmpString(5)
                     RefMallItems(i).Payments.Add(tmp.PaymentDevice, tmp)
@@ -848,7 +846,15 @@ Module SilkroadData
     End Sub
 
     Public Sub DumpItemMallNames()
-        Dim LanguageTabIndex As Byte = 9
+        For i = 0 To RefMallItems.Count - 1
+            If RefSilkroadNameEntys.ContainsKey(RefMallItems(i).Name_Real_Code) Then
+                RefMallItems(i).Name_Real = RefSilkroadNameEntys(RefMallItems(i).Name_Real_Code)
+            End If
+
+            If RefSilkroadNameEntys.ContainsKey(RefMallItems(i).Description_Code) Then
+                RefMallItems(i).Description = RefSilkroadNameEntys(RefMallItems(i).Description_Code)
+            End If
+        Next
     End Sub
 
     Public Function GetItemMallItem(ByVal code_Name As String) As PackageItem
@@ -1267,6 +1273,11 @@ Module SilkroadData
 #End Region
 
 #Region "NameFiles"
+    Public Class SilkroadNameEntry
+        Public Code_Name As String
+        Public Content As String
+    End Class
+
     Public Sub DumpNameFiles()
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\textdataname.txt")
         For i As Integer = 0 To paths.Length - 1
@@ -1275,36 +1286,16 @@ Module SilkroadData
     End Sub
 
     Public Sub DumpNameFile(ByVal path As String)
+        Dim LanguageTabIndex As Byte = 8
         Dim lines As String() = File.ReadAllLines(path)
 
         For i As Integer = 0 To lines.Length - 1
-            If lines(i).StartsWith("//") = False Then
-                Try
-                    Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                    If tmpString(0) = "1" Then
-                        Dim tmp2 As String() = tmpString(1).Split("_")
-                        Select Case tmp2(1)
-                            Case "MOB"
-                                Dim tmplist As Array = RefObjects.Keys.ToArray
-                                For Each key In tmplist
-                                    If RefObjects.ContainsKey(key) Then
-                                        If RefObjects(key).InternalName = tmpString(1) Then
-                                            RefObjects(key).RealName = tmpString(8)
-                                            Exit For
-                                        End If
-                                    End If
-                                Next
+            If lines(i).StartsWith("//") = False And lines(i) <> "" And lines(i).StartsWith("1" & ControlChars.Tab) = True Then
 
-                            Case "NPC"
-                            Case "SKILL"
-                            Case "ITEM"
-                            Case "MK"
-                            Case "ZONE"
-                        End Select
-                    End If
-
-                Catch ex As Exception
-                End Try
+                Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
+                If tmpString.Length >= LanguageTabIndex AndAlso tmpString(1).StartsWith("SN") And RefSilkroadNameEntys.ContainsKey(tmpString(1)) = False Then
+                    RefSilkroadNameEntys.Add(tmpString(1), tmpString(LanguageTabIndex))
+                End If
             End If
         Next
     End Sub

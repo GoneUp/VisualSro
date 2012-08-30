@@ -3,31 +3,25 @@
 Namespace Functions
     Module PlayerActions
         Public Sub OnLogout(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            If PlayerData(Index_).InExchange Or PlayerData(Index_).InStall Or PlayerData(Index_).Attacking Then
+                'TODO: Add a proper handling + response
+                Exit Sub
+            End If
+
             Dim countdown As Byte = 5
 
             Dim tag As Byte = packet.Byte
-            Select Case tag
-                Case 1 'Normal Exit
-                    Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
-                    writer.Byte(1) 'succeed
-                    writer.DWord(countdown)
-                    writer.Byte(tag)
-                    Server.Send(writer.GetBytes, Index_)
+            Dim writer As New PacketWriter
 
-                    Timers.PlayerExitTimer(Index_).Interval = countdown * 1000
-                    Timers.PlayerExitTimer(Index_).Start()
-                Case 2 'Restart
-                    Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
-                    writer.Byte(1) 'succeed
-                    writer.DWord(0)
-                    writer.Byte(tag)
-                    Server.Send(writer.GetBytes, Index_)
+            writer.Create(ServerOpcodes.GAME_EXIT_COUNTDOWN)
+            writer.Byte(1) 'succeed
+            writer.DWord(countdown)
+            writer.Byte(tag)
+            Server.Send(writer.GetBytes, Index_)
 
-                    GameMod.Damage.OnPlayerLogoff(Index_)
-                    Server.Disconnect(Index_)
-            End Select
+            PlayerData(Index_).ExitType = tag
+            Timers.PlayerExitTimer(Index_).Interval = countdown * 1000
+            Timers.PlayerExitTimer(Index_).Start()
         End Sub
 
         Public Sub OnPlayerAction(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -102,11 +96,11 @@ Namespace Functions
             writer.Byte(YSec)
             Server.Send(writer.GetBytes, Index_)
 
-            PlayerData(Index_).TeleportType = TeleportType_.GM
+            PlayerData(Index_).TeleportType = TeleportTypes.GM
         End Sub
 
         Public Sub OnTeleportRequest(ByVal Index_ As Integer)
-            If PlayerData(Index_).TeleportType = TeleportType_.None Then
+            If PlayerData(Index_).TeleportType = TeleportTypes.None Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If
@@ -116,7 +110,7 @@ Namespace Functions
             SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.GOING_INGAME
 
             Dim writer As New PacketWriter
-            If PlayerData(Index_).TeleportType = TeleportType_.Npc Then
+            If PlayerData(Index_).TeleportType = TeleportTypes.Npc Then
                 writer.Create(ServerOpcodes.GAME_LOADING_START_2)
                 writer.Byte(PlayerData(Index_).Position.XSector)
                 writer.Byte(PlayerData(Index_).Position.YSector)
@@ -124,7 +118,7 @@ Namespace Functions
 
                 OnCharacterInfo(Index_)
 
-            ElseIf PlayerData(Index_).TeleportType = TeleportType_.GM Then
+            ElseIf PlayerData(Index_).TeleportType = TeleportTypes.GM Then
                 writer.Create(ServerOpcodes.GAME_LOADING_START)
                 Server.Send(writer.GetBytes, Index_)
 
@@ -145,7 +139,7 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = False
-            PlayerData(Index_).TeleportType = TeleportType_.None
+            PlayerData(Index_).TeleportType = TeleportTypes.None
         End Sub
 
         Public Sub OnAngleUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -318,7 +312,7 @@ Namespace Functions
             PlayerAttackTimer(Index_).Stop()
             PlayerData(Index_).Attacking = False
             PlayerData(Index_).Busy = True
-            PlayerData(Index_).AttackType = AttackType_.Normal
+            PlayerData(Index_).AttackType = AttackTypes.Normal
             PlayerData(Index_).AttackedId = 0
             PlayerData(Index_).UsingSkillId = 0
             PlayerData(Index_).SkillOverId = 0

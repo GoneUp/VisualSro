@@ -19,7 +19,7 @@ Namespace Functions
             Dim type4 As Byte = packet.Byte
             Dim type5 As Byte = packet.Byte
             Dim LongName As String = packet.String(packet.Word)
-            Dim mallPackage As PackageItem = GetItemMallItem(LongName)
+            Dim mallPackage As PackageItem = GetPackageItem(LongName)
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 

@@ -164,7 +164,7 @@ Namespace Functions
         End Sub
 
         Public Sub OnNoticeChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            If PlayerData(Index_).GM = True Then
+            If PlayerData(Index_).GM Then
                 Dim counter As Byte = packet.Byte
                 Dim messagelength As UInt16 = packet.Word
                 Dim message As String = packet.UString(messagelength)

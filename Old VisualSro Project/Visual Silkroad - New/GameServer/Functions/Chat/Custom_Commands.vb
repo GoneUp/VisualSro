@@ -345,6 +345,7 @@ Namespace GameMod
                             Dim newchannel As UInt32 = Convert.ToUInt32(tmp(2))
                             PlayerData(Index_).ChannelId = newchannel
                             ObjectSpawnCheck(Index_)
+                            SendPm(Index_, "New Channel: " & PlayerData(Index_).ChannelId, "[SERVER]")
                         Case "seeall"
                             If PlayerData(Index_).AvoidChannels Then
                                 PlayerData(Index_).AvoidChannels = False
@@ -353,6 +354,7 @@ Namespace GameMod
 
                             End If
                             ObjectSpawnCheck(Index_)
+                            SendPm(Index_, "Actual Channel: " & PlayerData(Index_).ChannelId & ", AvoidChannel:" & PlayerData(Index_).AvoidChannels.ToString, "[SERVER]")
                     End Select
 
                 Case "\\kill"
@@ -368,6 +370,7 @@ Namespace GameMod
                             For i = 0 To player_list.Count - 1
                                 KillPlayer(player_list(i))
                             Next
+                            SendPm(Index_, "Killed view!", "[SERVER]")
                         Case "all"
                             Dim mon_list = MobList.Keys.ToList
                             For i = 0 To mon_list.Count - 1
@@ -379,6 +382,7 @@ Namespace GameMod
                                     KillPlayer(i)
                                 End If
                             Next
+                            SendPm(Index_, "Killed all!", "[SERVER]")
                     End Select
 
 

@@ -562,6 +562,8 @@ Namespace Functions
                     End If
                 Next
 
+                PlayerExitTimer(Index_).Stop()
+
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_EXIT_FINAL)
                 Server.Send(writer.GetBytes, Index_)

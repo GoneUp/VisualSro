@@ -25,8 +25,8 @@ Namespace Functions
                 Exit Sub
             End If
 
-            PackageName = RefObj.Shop.Tab(shopline).Items(itemline).PackageName
-            Dim Package As PackageItem = GetItemMallItem(PackageName)
+            PackageName = RefObj.Shop.Tabs(shopline).Items(itemline).PackageName
+            Dim Package As PackageItem = GetPackageItem(PackageName)
             Dim BuyItem As cRefItem = GetItemByName(Package.Code_Name)
 
             Select Case BuyItem.CLASS_A
@@ -167,23 +167,41 @@ Namespace Functions
         Class ShopData_
             Public Pk2ID As UInteger
             Public StoreName As String
-            Public Tab(20) As ShopTab_
+            Public Tabs As New List(Of ShopTab_)
 
             Class ShopTab_
                 Public TabName As String
-                Public Items(60) As ShopItem_
+                Public Items(60) As ShopItem
             End Class
 
-            Class ShopItem_
-                Public ItemLine As Byte
-                Public PackageName As String
-            End Class
+        End Class
 
-            Sub Init()
-                For i = 0 To Tab.Count - 1
-                    Tab(i) = New ShopTab_
-                Next
-            End Sub
+        Public Class ShopGroup
+            Public Group_Name As String = ""
+            Public Object_Code_Name As String = ""
+            Public Store_Name As String = ""
+        End Class
+
+        Public Class Shop
+            Public Name As String = ""
+            Public Object_Code_Name As String = ""
+            Public TabGroups As New List(Of ShopTabGroup)
+            Public Tabs As New Dictionary(Of Byte, ShopTab) 'after parsing the whole stuff we insert our tabs here
+        End Class
+
+        Public Class ShopTabGroup
+            Public Group_Name As String = ""
+            Public ShopTabs As New Dictionary(Of Byte, ShopTab)
+        End Class
+
+        Public Class ShopTab
+            Public Tab_Name As String = ""
+            Public Items As New Dictionary(Of Byte, String)
+        End Class
+
+        Class ShopItem
+            Public ItemLine As Byte
+            Public PackageName As String
         End Class
     End Module
 End Namespace

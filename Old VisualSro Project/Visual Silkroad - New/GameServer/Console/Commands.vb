@@ -146,11 +146,12 @@
                     GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
                 End If
 
-
-
-            Case "wnd"
+            Case "/wnd"
                 perfWnd = New PerfWnd
                 perfWnd.Show()
+
+            Case "/writeimtable"
+                GameEdit.WriteItemMallTables()
         End Select
     End Sub
 End Module

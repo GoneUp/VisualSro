@@ -558,7 +558,7 @@ Namespace Functions
         End Sub
 
         Public Sub CharLoading(ByVal Index_ As Integer, ByVal pack As PacketReader)
-            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST Then
+            If CharListing(Index_) Is Nothing And SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST Then
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.GOING_INGAME
             Else
                 Server.Disconnect(Index_)
@@ -586,7 +586,7 @@ Namespace Functions
             Next
 
             'No Char....
-            If SessionInfo(Index_).Charname = "" Then
+            If SessionInfo(Index_).Charname = "" Or PlayerData(Index_) Is Nothing Or Inventorys(Index_) Is Nothing Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If

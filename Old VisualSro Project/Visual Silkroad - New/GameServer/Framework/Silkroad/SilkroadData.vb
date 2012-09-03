@@ -1097,6 +1097,10 @@ Module SilkroadData
 
 
     Public Sub DumpShopDataFile()
+        RefShops.Clear()
+        RefShopGroups.Clear()
+        RefShopTabGroups.Clear()
+
         'refshop.txt --> refmappingshopwithtab.txt --> refshoptab.txt --> refshopgoods.txt
         'refshopgroup --> refmappingshopgroup.txt
 
@@ -1178,8 +1182,19 @@ Module SilkroadData
                 tmp.Tab_Name = tabName
 
                 If RefShopTabGroups.ContainsKey(tabGroup) Then
-                    Dim tabIndex As Byte = GetShopTabIndex(tabName)
-                    RefShopTabGroups(tabGroup).ShopTabs.Add(tabIndex, tmp)
+                    Try
+                        Dim tabIndex As Byte = GetShopTabIndex(tabName)
+
+                        If tabIndex <> 255 Then
+                            RefShopTabGroups(tabGroup).ShopTabs.Add(tabIndex, tmp)
+                        Else
+                            RefShopTabGroups(tabGroup).ShopTabs.Add(RefShopTabGroups(tabGroup).ShopTabs.Count + 1, tmp)
+                        End If
+
+                    Catch ex As Exception
+
+                    End Try
+
                 End If
             End If
         Next
@@ -1311,7 +1326,12 @@ Module SilkroadData
     End Function
 
     Private Function GetShopTabIndex(ByVal tabName As String) As Byte
-        Return tabName.Substring(tabName.Length - 1)
+        If tabName.StartsWith("STORE") Then
+            Return tabName.Substring(tabName.Length - 1)
+        End If
+
+        'If 255 is returned, a continions shoptabindex will be given
+        Return 255
     End Function
 #End Region
 

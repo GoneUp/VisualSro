@@ -31,10 +31,10 @@ Namespace Settings
         Public Agent_Max_FailedLogins As Integer = 5
         Public Agent_Max_RegistersPerDay As Integer = 3
 
-
         Public Const Server_ProtocolVersion As UInteger = 1
 
         Public Log_Connect As Boolean = False
+        Public Log_Register As Boolean = False
 
         Public Sub LoadSettings()
             Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
@@ -54,6 +54,7 @@ Namespace Settings
             Agent_Max_RegistersPerDay = File.Read("AGENT", "Max_RegistersPerDay", "3")
 
             Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
+            Log_Register = CBool(File.Read("LOG", "Register", "0"))
         End Sub
 
         Public Sub SetToServer()

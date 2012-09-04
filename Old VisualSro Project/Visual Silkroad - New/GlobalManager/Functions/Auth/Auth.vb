@@ -56,7 +56,7 @@ Namespace Auth
             Dim name As String = "GlobalManager"
             writer.Create(ServerOpcodes.LOGIN_SERVER_INFO)
             writer.Word(name.Length)
-            writer.HexString(name)
+            writer.String(name)
 
             If tmp.HandshakeComplete Then
                 If tmp.Type <> cSessionInfo_GlobalManager._ServerTypes.Unknown Then

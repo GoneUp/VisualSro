@@ -66,6 +66,18 @@ Public Class cDatabase
             _autoExecuteQuerys = value
         End Set
     End Property
+
+    Public ReadOnly Property Connected As Boolean
+        Get
+            If _connection IsNot Nothing Then
+                If _connection.State = ConnectionState.Open Then
+                    Return True
+                End If
+            End If
+
+            Return False
+        End Get
+    End Property
 #End Region
 
 #Region "Events"
@@ -87,19 +99,7 @@ Public Class cDatabase
         Try
             _connection = New MySqlConnection(_connectionString)
             _connection.Open()
-            RaiseEvent OnDatabaseConnected()
-        Catch exception As Exception
-            RaiseEvent OnDatabaseError(exception, _connectionString)
-        End Try
-    End Sub
 
-    Public Sub ReConnect()
-        If _connection IsNot Nothing Then
-            _connection.Close()
-        End If
-        Try
-            _connection = New MySqlConnection(_connectionString)
-            _connection.Open()
             RaiseEvent OnDatabaseConnected()
         Catch exception As Exception
             RaiseEvent OnDatabaseError(exception, _connectionString)
@@ -116,6 +116,19 @@ Public Class cDatabase
         End Try
     End Sub
 
+    Public Sub ReConnect()
+        If _connection IsNot Nothing Then
+            _connection.Close()
+        End If
+
+        Try
+            _connection = New MySqlConnection(_connectionString)
+            _connection.Open()
+            RaiseEvent OnDatabaseConnected()
+        Catch exception As Exception
+            RaiseEvent OnDatabaseError(exception, _connectionString)
+        End Try
+    End Sub
 #End Region
 
 #Region "GetData"
@@ -194,10 +207,10 @@ Public Class cDatabase
             Dim tmpCon As New MySqlConnection(_connectionString)
             tmpCon.Open()
 
-            Dim command3 As New MySqlCommand(command, tmpCon)
-            command3.ExecuteNonQuery()
+            Dim command2 As New MySqlCommand(command, tmpCon)
+            command2.ExecuteNonQuery()
 
-            command3.Dispose()
+            command2.Dispose()
             tmpCon.Close()
             tmpCon.Dispose()
 

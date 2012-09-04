@@ -11,7 +11,7 @@ Namespace Functions
                 Dim name As String = "GatewayServer"
                 writer.Create(ServerOpcodes.LOGIN_SERVER_INFO)
                 writer.Word(name.Length)
-                writer.HexString(name)
+                writer.String(name)
                 writer.Byte(0)
                 Server.Send(writer.GetBytes, Index_)
             End If

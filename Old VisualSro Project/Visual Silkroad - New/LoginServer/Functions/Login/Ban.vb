@@ -36,10 +36,5 @@ Namespace Functions
                 Log.WriteSystemLog("[BAN_USER][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
             End Try
         End Sub
-
-
-
-
-
     End Module
 End Namespace

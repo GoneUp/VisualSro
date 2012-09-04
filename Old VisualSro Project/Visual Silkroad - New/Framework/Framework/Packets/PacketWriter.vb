@@ -73,15 +73,6 @@ Public Class PacketWriter
         Return buffer
     End Function
 
-    Public Sub HexString(ByVal data As String)
-        Dim chArray(data.Length - 1) As Char
-        For i As Integer = 0 To data.Length - 1
-            chArray(i) = Convert.ToChar(data.Substring(i, 1))
-            Me.bw.Write(chArray(i))
-        Next i
-        Me.dataLen += data.Length
-    End Sub
-
     Public Sub QWord(ByVal data As ULong)
         Me.bw.Write(data)
         Me.dataLen += &H10

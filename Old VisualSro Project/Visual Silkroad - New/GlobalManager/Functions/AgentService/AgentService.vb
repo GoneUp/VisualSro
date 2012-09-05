@@ -15,11 +15,13 @@ Namespace Agent
             End If
 
 
-            Dim tmp As New _UserAuth
+            Dim tmp As New UserAuth
             tmp.UserIndex = packet.DWord
             tmp.GameServerId = packet.Word
             tmp.UserName = packet.String(packet.Word)
             tmp.UserPw = packet.String(packet.Word)
+            tmp.UserIp = packet.String(packet.Word)
+
             tmp.SessionId = Id_Gen.GetSessionId
             tmp.ExpireTime = Date.Now.AddSeconds(30)
 
@@ -43,6 +45,11 @@ Namespace Agent
                                     'user is banned
                                     writer.Byte(2)
                                     writer.Byte(5)
+
+                                    writer.Byte(1) 'type for the client -- unknown
+                                    writer.Word(user.BannReason.Length)
+                                    writer.String(user.BannReason) 'grund
+                                    writer.Date(user.BannTime) 'zeit
                                 End If
 
                                 'wrong pw
@@ -62,9 +69,23 @@ Namespace Agent
                                 End If
                             End If
                         Else
-                            'user not existis
-                            writer.Byte(2)
-                            writer.Byte(4)
+                            'User not existis!
+                            'Then we should look for autoregister
+                            If Settings.Agent_Auto_Register Then
+                                If UserService.CheckIfUserCanRegister(Server.ClientList.GetIP(Index_)) = True Then
+                                    If UserService.RegisterUser(tmp.UserName, tmp.UserPw, tmp.UserIndex, Index_) Then
+                                        UserService.LoginWriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", tmp.UserName, tmp.UserPw), tmp.UserIndex, Index_)
+                                    End If
+
+                                Else
+                                    UserService.LoginWriteSpecialText(String.Format("You can only register {0} Accounts a day!", Settings.Agent_Max_RegistersPerDay), tmp.UserIndex, Index_)
+                                End If
+
+                            Else
+                                writer.Byte(2)
+                                writer.Byte(4)
+                                writer.Byte(1) 'type = not registered
+                            End If
                         End If
                     Else
                         'gs over capacity
@@ -93,7 +114,7 @@ Namespace Agent
                 End If
             End If
 
-            Dim tmp As New _UserAuth
+            Dim tmp As New UserAuth
             tmp.UserIndex = packet.DWord
             tmp.SessionId = packet.DWord
             tmp.UserName = packet.String(packet.Word)

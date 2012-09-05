@@ -1,6 +1,8 @@
 ﻿Imports System.IO
 
 Public Class PacketWriter
+
+#Region "Propertys/Fileds"
     Private bw As BinaryWriter
     Private dataLen As UInt16
 
@@ -14,6 +16,17 @@ Public Class PacketWriter
         End Set
     End Property
 
+    Public ReadOnly Property Length() As UInt16
+        Get
+            If dataLen = 0 Then
+                Return 0
+            End If
+            Return dataLen / 2
+        End Get
+    End Property
+#End Region
+
+#Region "General Functions"
     Public Sub New()
 
     End Sub
@@ -40,6 +53,18 @@ Public Class PacketWriter
         Me.Word(0)
     End Sub
 
+    Public Function GetBytes() As Byte()
+        Dim buffer(0) As Byte
+        Me.ms.Position = 0
+        Dim num As UShort = (bw.BaseStream.Length - 6)
+        Me.bw.Write(num)
+        Me.bw.Close()
+        buffer = Me.ms.ToArray()
+        Me.ms.Close()
+        Return buffer
+    End Function
+#End Region
+
     Public Sub [Byte](ByVal data As Byte)
         Me.bw.Write(data)
         Me.dataLen += 2
@@ -52,6 +77,11 @@ Public Class PacketWriter
         Next
     End Sub
 
+    Public Sub Word(ByVal data As UShort)
+        Me.bw.Write(data)
+        Me.dataLen += 4
+    End Sub
+
     Public Sub DWord(ByVal data As UInteger)
         Me.bw.Write(data)
         Me.dataLen += 8
@@ -62,20 +92,9 @@ Public Class PacketWriter
         Me.dataLen += 8
     End Sub
 
-    Public Function GetBytes() As Byte()
-        Dim buffer(0) As Byte
-        Me.ms.Position = 0
-        Dim num As UShort = (bw.BaseStream.Length - 6)
-        Me.bw.Write(num)
-        Me.bw.Close()
-        buffer = Me.ms.ToArray()
-        Me.ms.Close()
-        Return buffer
-    End Function
-
     Public Sub QWord(ByVal data As ULong)
         Me.bw.Write(data)
-        Me.dataLen += &H10
+        Me.dataLen += 16
     End Sub
 
     Public Sub [String](ByVal data As String)
@@ -97,19 +116,15 @@ Public Class PacketWriter
         Me.dataLen += data.Length * 4
     End Sub
 
-    Public Sub Word(ByVal data As UShort)
-        Me.bw.Write(data)
-        Me.dataLen += 4
+    Public Sub [Date](data As Date)
+        Me.bw.Write(Convert.ToUInt16(data.Year)) 'jahr
+        Me.bw.Write(Convert.ToUInt16(data.Month)) 'monat
+        Me.bw.Write(Convert.ToUInt16(data.Day)) 'tag
+        Me.bw.Write(Convert.ToUInt16(data.Hour)) 'stunde
+        Me.bw.Write(Convert.ToUInt16(data.Minute)) 'minute
+        Me.bw.Write(Convert.ToUInt16(data.Second)) 'sekunde
+        Me.bw.Write(Convert.ToUInt32(data.Millisecond)) 'tag
+        Me.dataLen += 32
     End Sub
-
-    Public ReadOnly Property Length() As UInt16
-        Get
-            If dataLen = 0 Then
-                Return 0
-            End If
-            Return dataLen / 2
-        End Get
-    End Property
-
 End Class
 

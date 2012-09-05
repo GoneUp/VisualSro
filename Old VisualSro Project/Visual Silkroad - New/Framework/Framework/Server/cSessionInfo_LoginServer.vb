@@ -7,8 +7,8 @@
     Public Locale As Byte = 0
 
     Public LoginTextIndex As UInt32 = 0
-    Public gameserverId As UShort = 0
-    Public userName As String = ""
+    Public GameServerId As UShort = 0
+    Public UserName As String = ""
 
     Public Enum SRConnectionStatus
         HANDSHAKE = 0

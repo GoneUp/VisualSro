@@ -238,6 +238,7 @@
         AGENT_CHECK_USERAUTH = &HC011
         AGENT_SILK = &HC012
         AGENT_USERINFO = &HC013
+        AGENT_LOGIN_MESSAGE = &HC014
     End Enum
 
 

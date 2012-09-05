@@ -262,16 +262,10 @@ Namespace Functions
 
                     writer.Byte(2) 'failed
                     writer.Byte(2) 'gebannt
-                    writer.Byte(1) 'unknown
+                    writer.Byte(1) 'type?
                     writer.Word(LoginDb.Users(userIndex).BannReason.Length)
                     writer.String(LoginDb.Users(userIndex).BannReason) 'grund
-                    writer.Word(LoginDb.Users(userIndex).BannTime.Year) 'jahr
-                    writer.Word(LoginDb.Users(userIndex).BannTime.Month) 'monat
-                    writer.Word(LoginDb.Users(userIndex).BannTime.Day) 'tag
-                    writer.Word(LoginDb.Users(userIndex).BannTime.Hour) 'stunde
-                    writer.Word(LoginDb.Users(userIndex).BannTime.Minute) 'minute
-                    writer.Word(LoginDb.Users(userIndex).BannTime.Second) 'sekunde
-                    writer.DWord(LoginDb.Users(userIndex).BannTime.Millisecond) 'tag
+                    writer.Date(LoginDb.Users(userIndex).BannTime) 'zeit
 
                     Server.Send(writer.GetBytes, Index_)
 
@@ -312,9 +306,9 @@ Namespace Functions
                         Timers.LoginInfoTimer(Index_).Stop()
 
                         'GlobalManager Part:
-                        SessionInfo(Index_).gameserverId = serverID
-                        SessionInfo(Index_).userName = id
-                        GlobalManager.OnSendUserAuth(serverID, id, pw, Index_)
+                        SessionInfo(Index_).GameServerId = serverID
+                        SessionInfo(Index_).UserName = id
+                        GlobalManager.OnSendUserAuth(serverID, id, pw, SessionInfo(Index_).IP, Index_)
 
                         If Settings.Log_Login Then
                             Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.ServerName))
@@ -324,25 +318,18 @@ Namespace Functions
             End If
         End Sub
 
-        Private Function GetKey(ByVal Index_ As Integer) As UInt32
-            Dim split1 As String() = Server.ClientList.GetSocket(Index_).RemoteEndPoint.ToString.Split(":")
-            Dim split2 As String() = split1(0).Split(".")
-            Dim key As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
-            Return key
-        End Function
-
         Public Sub LoginSendUserAuthSucceed(ByVal succeed As Byte, ByVal errortag As Byte, ByVal sessionID As UInteger, ByVal Index_ As Integer)
             'ServerIndex + SessionID + Port + Index
-          
+
             If Server.ClientList.GetSocket(Index_) Is Nothing Then
                 GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! user: " & Index_)
-            ElseIf Shard_Gameservers.ContainsKey(SessionInfo(Index_).gameserverId) = False Then
+            ElseIf Shard_Gameservers.ContainsKey(SessionInfo(Index_).GameServerId) = False Then
                 GlobalManagerCon.Log("GS from GlobalManager dosen't existis! user: " & Index_)
             Else
-                Dim user As String = SessionInfo(Index_).userName
+                Dim user As String = SessionInfo(Index_).UserName
 
                 If succeed = 1 Then
-                    Dim gs As GameServer = Shard_Gameservers(SessionInfo(Index_).gameserverId)
+                    Dim gs As GameServer = Shard_Gameservers(SessionInfo(Index_).GameServerId)
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.LOGIN_AUTH)
                     writer.Byte(1)

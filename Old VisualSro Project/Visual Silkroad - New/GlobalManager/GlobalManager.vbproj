@@ -105,6 +105,7 @@
     <Compile Include="Functions\ShardService\ShardControl.vb" />
     <Compile Include="Functions\ShardService\ShardManager.vb" />
     <Compile Include="Functions\ShardService\ShardService.vb" />
+    <Compile Include="Functions\UserService\UserDb.vb" />
     <Compile Include="Functions\UserService\UserService.vb" />
     <Compile Include="Global\GlobalDef.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

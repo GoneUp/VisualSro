@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{114134D5-E272-4647-924D-D577AE24D7DD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>LoginServer.Program</StartupObject>
+    <StartupObject>Sub Main</StartupObject>
     <RootNamespace>LoginServer</RootNamespace>
     <AssemblyName>LoginServer</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -88,6 +88,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -139,6 +141,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Performance Window\PerfWnd.Designer.vb">
+      <DependentUpon>PerfWnd.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Performance Window\PerfWnd.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -146,6 +154,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Performance Window\PerfWnd.resx">
+      <DependentUpon>PerfWnd.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

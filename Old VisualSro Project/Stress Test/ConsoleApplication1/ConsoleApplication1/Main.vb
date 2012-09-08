@@ -1,7 +1,7 @@
 ﻿Imports System.Net, System.Net.Sockets
 Module Main
 
-    Public s(50) As Socket
+    Public sockets(510) As Socket
     Public Rev(10000) As Threading.Thread
     Public GameServer(10000) As Boolean
     Public Key(10000) As UInt32
@@ -14,13 +14,13 @@ Module Main
     Sub Main()
         Dim b
 
-        LoadTimers(s.Length)
+        LoadTimers(sockets.Length)
 
         Try
-            For b = 0 To s.Length - 1
-                s(b) = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            For b = 0 To sockets.Length - 1
+                sockets(b) = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
                 Rev(b) = New Threading.Thread(AddressOf ReceiveData)
-                s(b).Connect(New IPEndPoint(IPAddress.Parse(ip1), 15779))
+                sockets(b).Connect(New IPEndPoint(IPAddress.Parse(ip1), 15779))
                 Rev(b).Start(b)
                 Pos(b) = New Position
             Next
@@ -60,7 +60,7 @@ Module Main
     End Sub
 
     Sub ReceiveData(ByVal Index_ As Integer)
-        Dim socket As Socket = s(Index_)
+        Dim socket As Socket = sockets(Index_)
         Dim buffer(&H10000 - 1) As Byte
 
 
@@ -97,6 +97,6 @@ Module Main
 
 
     Public Sub Send(ByVal Buff() As Byte, ByVal Index_ As Integer)
-        s(Index_).Send(Buff, Buff.Length, SocketFlags.None)
+        sockets(Index_).Send(Buff, Buff.Length, SocketFlags.None)
     End Sub
 End Module

@@ -33,7 +33,7 @@ Public Class GlobalManagerClient
     Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
     Public Delegate Sub dLog(ByVal message As String)
     Public Delegate Sub dReceive(ByVal packet As PacketReader)
-    Public Delegate Sub dGatewayUserauthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal sessionID As UInteger, ByVal index_ As Integer)
+    Public Delegate Sub dGatewayUserauthReply(packet As PacketReader)
     Public Delegate Sub dGameserverUserauthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
 #End Region
 
@@ -162,8 +162,8 @@ Public Class GlobalManagerClient
     Public Sub ShutdownComplete()
         RaiseEvent OnGlobalManagerShutdown()
     End Sub
-    Public Sub GatewayUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal sessionID As UInteger, ByVal index_ As Integer)
-        RaiseEvent OnGatewayUserauthReply(succeed, errortag, sessionID, index_)
+    Public Sub GatewayUserAuthReply(packet As PacketReader)
+        RaiseEvent OnGatewayUserauthReply(packet)
     End Sub
     Public Sub GameserverUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
         RaiseEvent OnGameserverUserauthReply(succeed, errortag, index_)

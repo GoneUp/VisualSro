@@ -9,7 +9,7 @@
             Case ServerOpcodes.Handshake
                 If GameServer(Index_) = False Then
                     Console.WriteLine("Handshake: " & Index_)
-                    SendLogin(Index_)
+                    SendGateway(Index_)
 
                     PingTimer(Index_).Interval = 5000
                     PingTimer(Index_).Start()
@@ -17,6 +17,12 @@
                     SendAuth(Index_)
                 End If
 
+            Case &H2001
+                SendClientinfo(Index_)
+
+            Case &H600D
+                RequestList(Index_)
+                SendLogin(Index_)
 
             Case &HA102
                 ConnectToGameServer(Index_, Packet)
@@ -38,11 +44,31 @@
 
 
     End Sub
+    Sub SendGateway(ByVal Index_ As Integer)
+        Dim s As String = "SR_Client"
+
+        Dim writer As New PacketWriter
+        writer.Create(&H2001)
+        writer.Word(s.Length)
+        writer.String(s)
+        Send(writer.GetBytes, Index_)
+    End Sub
+
+    Sub SendClientinfo(ByVal Index_ As Integer)
+        Dim s As String = "SR_Client"
+
+        Dim writer As New PacketWriter
+        writer.Create(&H6100)
+        writer.Byte(40)
+        writer.Word(s.Length)
+        writer.String(s)
+        writer.DWord(48)
+        Send(writer.GetBytes, Index_)
+    End Sub
 
     Sub SendLogin(ByVal Index_ As Integer)
-        Dim Rand As New Random
-        Dim name As String = "stress" & Index_
-        Dim pass As String = "stress" & Index_
+        Dim name As String = "stress_test" & Index_
+        Dim pass As String = "stress_test" & Index_
 
         Dim writer As New PacketWriter
         writer.Create(&H6102)
@@ -51,10 +77,15 @@
         writer.String(name)
         writer.Word(pass.Length)
         writer.String(pass)
-        writer.Word(3) '3 = local - 4 = remote
+        writer.Word(30) '3 = local - 4 = remote
         Send(writer.GetBytes, Index_)
     End Sub
 
+    Sub RequestList(ByVal index_ As Integer)
+        Dim writer As New PacketWriter
+        writer.Create(&H6101)
+        Send(writer.GetBytes, index_)
+    End Sub
 
     Public Sub ConnectToGameServer(ByVal index_ As Integer, ByVal packet As PacketReader)
         Dim succ = packet.Byte()
@@ -70,18 +101,18 @@
             'Rev(index_).Abort()
 
             Threading.Thread.Sleep(500)
-            s(index_).Disconnect(False)
-            s(index_) = New Net.Sockets.Socket(Net.Sockets.AddressFamily.InterNetwork, Net.Sockets.SocketType.Stream, Net.Sockets.ProtocolType.Tcp)
+            sockets(index_).Disconnect(False)
+            sockets(index_) = New Net.Sockets.Socket(Net.Sockets.AddressFamily.InterNetwork, Net.Sockets.SocketType.Stream, Net.Sockets.ProtocolType.Tcp)
 
             Threading.Thread.Sleep(500)
-            s(index_).Connect(New Net.IPEndPoint(Net.IPAddress.Parse(ip), port))
+            sockets(index_).Connect(New Net.IPEndPoint(Net.IPAddress.Parse(ip), port))
 
 
             PingTimer(index_).Start()
             Rev(index_) = New Threading.Thread(AddressOf ReceiveData)
             Rev(index_).Start(index_)
         Else
-            Threading.Thread.Sleep(5000)
+            Threading.Thread.Sleep(1000)
             SendLogin(index_)
         End If
     End Sub
@@ -125,8 +156,8 @@
 
         Select Case mode
             Case 1
-                Dim count As Byte = packet.Byte
-                If count = 1 Then
+                Dim tag As Byte = packet.Byte
+                If tag = 1 Then
                     SendListRequest(index_)
                 End If
 
@@ -199,7 +230,7 @@
     End Sub
 
     Public Sub SendPing(ByVal Index_ As Integer)
-        If s(Index_).Connected Then
+        If sockets(Index_).Connected Then
             Dim writer As New PacketWriter
             writer.Create(ClientOpcodes.Ping)
             Send(writer.GetBytes, Index_)

@@ -17,16 +17,7 @@ Namespace GlobalManager
         End Sub
 
         Public Sub OnUserAuthReply(ByVal packet As PacketReader)
-            Dim UserIndex As Integer = packet.DWord
-            Dim succeed As Byte = packet.Byte
-
-            If succeed = 1 Then
-                Dim sessionID As UInteger = packet.DWord
-                GlobalManagerCon.GatewayUserAuthReply(succeed, 0, sessionID, UserIndex)
-            Else
-                Dim errortag As Byte = packet.Byte
-                GlobalManagerCon.GatewayUserAuthReply(succeed, errortag, 0, UserIndex)
-            End If
+            GlobalManagerCon.GatewayUserAuthReply(packet)
         End Sub
     End Module
 End Namespace

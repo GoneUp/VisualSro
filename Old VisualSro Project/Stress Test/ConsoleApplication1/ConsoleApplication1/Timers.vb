@@ -34,7 +34,7 @@ Module Timers
 
             PingTimer(Index).Stop()
 
-            If s(Index).Connected Then
+            If sockets(Index).Connected Then
                 Parser.SendPing(Index)
             End If
 

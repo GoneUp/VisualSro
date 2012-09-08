@@ -1,5 +1,7 @@
 ﻿Module Commands
 
+    Private perfWnd As New PerfWnd
+
     Public Sub CheckCommand(ByVal msg As String)
 
         Select Case msg
@@ -41,7 +43,7 @@
             Case "/end"
                 GlobalManager.OnSendServerShutdown()
 
-           Case "/reinit"
+            Case "/reinit"
                 Log.WriteSystemLog("Ending Server....")
                 For i = 0 To Server.MaxClients - 1
                     If SessionInfo(i) IsNot Nothing Then
@@ -57,16 +59,18 @@
 
                 GlobalManagerCon.UserSidedShutdown = True
                 GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
-                GlobalManagerCon.Disconnect()
+                GlobalManager.OnSendServerShutdown()
 
+            Case "/wnd"
+                perfWnd.Text = "LS: PefWnd"
+                perfWnd.ShowDialog()
 
             Case "/gmre"
                 'GlobalManagerReConnect
                 Log.WriteSystemLog("GMC: Started disconnect...")
                 GlobalManagerCon.UserSidedShutdown = True
                 GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reconnect
-                GlobalManagerCon.Disconnect()
-
+                GlobalManager.OnSendServerShutdown()
 
         End Select
 

@@ -1,6 +1,6 @@
 ﻿Module Commands
 
-    Private perfWnd As PerfWnd
+    Private perfWnd As New PerfWnd
 
     Public Sub CheckCommand(ByVal FullMessage As String)
 
@@ -147,8 +147,8 @@
                 End If
 
             Case "/wnd"
-                perfWnd = New PerfWnd
-                perfWnd.Show()
+                perfWnd.Text = "GS: PefWnd"
+                perfWnd.ShowDialog()
 
             Case "/writeimtable"
                 GameEdit.WriteItemMallTables()

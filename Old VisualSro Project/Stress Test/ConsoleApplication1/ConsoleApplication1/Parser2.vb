@@ -105,11 +105,11 @@
             'Rev(index_).Abort()
 
             Threading.Thread.Sleep(500)
-            s(index_).Disconnect(False)
-            s(index_) = New Net.Sockets.Socket(Net.Sockets.AddressFamily.InterNetwork, Net.Sockets.SocketType.Stream, Net.Sockets.ProtocolType.Tcp)
+            sockets(index_).Disconnect(False)
+            sockets(index_) = New Net.Sockets.Socket(Net.Sockets.AddressFamily.InterNetwork, Net.Sockets.SocketType.Stream, Net.Sockets.ProtocolType.Tcp)
 
             Threading.Thread.Sleep(500)
-            s(index_).Connect(New Net.IPEndPoint(Net.IPAddress.Parse(ip), port))
+            sockets(index_).Connect(New Net.IPEndPoint(Net.IPAddress.Parse(ip), port))
 
 
             PingTimer(index_).Start()
@@ -234,7 +234,7 @@
     End Sub
 
     Public Sub SendPing(ByVal Index_ As Integer)
-        If s(Index_).Connected Then
+        If sockets(Index_).Connected Then
             Dim writer As New PacketWriter
             writer.Create(ClientOpcodes.Ping)
             Send(writer.GetBytes, Index_)

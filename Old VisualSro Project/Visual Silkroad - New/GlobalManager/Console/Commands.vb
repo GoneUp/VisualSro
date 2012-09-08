@@ -1,5 +1,7 @@
 ﻿Module Commands
 
+    Private perfWnd As New PerfWnd
+
     Public Sub CheckCommand(ByVal msg As String)
 
         Select Case msg
@@ -39,6 +41,9 @@
             Case "/clear"
                 Console.Clear()
 
+            Case "/wnd"
+                perfWnd.Text = "GM: PefWnd"
+                perfWnd.ShowDialog()
 
             Case "/end"
                 For i = 0 To SessionInfo.Count - 1

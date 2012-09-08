@@ -211,8 +211,15 @@ Namespace Functions
             Dim pw As String = packet.String(packet.Word).ToLower
             Dim serverID As Integer = packet.Word
 
-            Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.LOGIN_AUTH)
+
+            Timers.LoginInfoTimer(Index_).Stop()
+            SessionInfo(Index_).GameServerId = serverID
+            SessionInfo(Index_).UserName = id
+            GlobalManager.OnSendUserAuth(serverID, id, pw, SessionInfo(Index_).IP, Index_)
+            
+
+            'Dim writer As New PacketWriter
+            'writer.Create(ServerOpcodes.LOGIN_AUTH)
             'writer.Byte(2) 'fail
             'writer.Byte(3) 'already connected
             'writer.Byte(4) 'C5
@@ -235,119 +242,184 @@ Namespace Functions
             'Server.Send(writer.GetBytes, Index_)
             'Exit Sub
 
-            Dim userIndex As Integer = LoginDb.GetUser(id)
-            If userIndex = -1 Then
-                'User exestiert nicht == We register a User
+            'Dim userIndex As Integer = LoginDb.GetUser(id)
+            'If userIndex = -1 Then
+            '    'User exestiert nicht == We register a User
 
-                If Settings.Auto_Register = True Then
-                    If CheckIfUserCanRegister(Server.ClientList.GetIP(Index_)) = True Then
-                        If RegisterUser(id, pw, Index_) Then
-                            LoginWriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", id, pw), Index_)
-                        End If
+            '    If Settings.Auto_Register = True Then
+            '        If CheckIfUserCanRegister(Server.ClientList.GetIP(Index_)) = True Then
+            '            If RegisterUser(id, pw, Index_) Then
+            '                LoginWriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", id, pw), Index_)
+            '            End If
 
-                    Else
-                        LoginWriteSpecialText(String.Format("You can only register {0} Accounts a day!", Settings.Max_RegistersPerDay), Index_)
-                    End If
-
-
-                ElseIf Settings.Auto_Register = False Then
-                    'Normal Fail
-                    LoginWriteSpecialText("User does not existis!", Index_)
-                End If
-
-            Else
-                CheckBannTime(userIndex)
-
-                If LoginDb.Users(userIndex).Banned = True Then
-
-                    writer.Byte(2) 'failed
-                    writer.Byte(2) 'gebannt
-                    writer.Byte(1) 'type?
-                    writer.Word(LoginDb.Users(userIndex).BannReason.Length)
-                    writer.String(LoginDb.Users(userIndex).BannReason) 'grund
-                    writer.Date(LoginDb.Users(userIndex).BannTime) 'zeit
-
-                    Server.Send(writer.GetBytes, Index_)
+            '        Else
+            '            LoginWriteSpecialText(String.Format("You can only register {0} Accounts a day!", Settings.Max_RegistersPerDay), Index_)
+            '        End If
 
 
-                ElseIf LoginDb.Users(userIndex).Pw <> pw Then
-                    'pw falsch
-                    Dim user As cUser = LoginDb.Users(userIndex)
-                    user.FailedLogins += 1
-                    LoginDb.Users(userIndex) = user
+            '    ElseIf Settings.Auto_Register = False Then
+            '        'Normal Fail
+            '        LoginWriteSpecialText("User does not existis!", Index_)
+            '    End If
 
-                    Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
+            'Else
+            '    CheckBannTime(userIndex)
 
-                    writer.Byte(2) 'login failed
-                    writer.Byte(1) 'wrong pw
-                    writer.DWord(user.FailedLogins) 'number of falied logins
-                    writer.DWord(Settings.Max_FailedLogins) 'Max Failed Logins
-                    Server.Send(writer.GetBytes, Index_)
+            '    If LoginDb.Users(userIndex).Banned = True Then
 
-                    If user.FailedLogins >= Settings.Max_FailedLogins Then
-                        user.FailedLogins = 0
-                        LoginDb.Users(userIndex) = user
+            '        writer.Byte(2) 'failed
+            '        writer.Byte(2) 'subcode
+            '        writer.Byte(1) 'ban
+            '        writer.Word(LoginDb.Users(userIndex).BannReason.Length)
+            '        writer.String(LoginDb.Users(userIndex).BannReason) 'grund
+            '        writer.Date(LoginDb.Users(userIndex).BannTime) 'zeit
 
-                        Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
-                        BanUser(Date.Now.AddMinutes(10), userIndex) 'Ban for 10 mins
-                    End If
+            '        Server.Send(writer.GetBytes, Index_)
 
 
+            '    ElseIf LoginDb.Users(userIndex).Pw <> pw Then
+            '        'pw falsch
+            '        Dim user As cUser = LoginDb.Users(userIndex)
+            '        user.FailedLogins += 1
+            '        LoginDb.Users(userIndex) = user
 
-                ElseIf LoginDb.Users(userIndex).Name = id And LoginDb.Users(userIndex).Pw = pw Then
-                    Dim gs As SRFramework.GameServer = Shard_Gameservers(serverID)
+            '        Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '{0}' WHERE id = '{1}'", user.FailedLogins, user.AccountId))
 
-                    If (gs.OnlineClients + 1) >= gs.MaxNormalClients And LoginDb.Users(userIndex).Permission = 0 Then
-                        writer.Byte(4)
-                        writer.Byte(2) 'Server traffic... 
-                        Server.Send(writer.GetBytes, Index_)
+            '        writer.Byte(2) 'login failed
+            '        writer.Byte(1) 'wrong pw
+            '        writer.DWord(user.FailedLogins) 'number of falied logins
+            '        writer.DWord(Settings.Max_FailedLogins) 'Max Failed Logins
+            '        Server.Send(writer.GetBytes, Index_)
 
-                    Else
-                        Timers.LoginInfoTimer(Index_).Stop()
+            '        If user.FailedLogins >= Settings.Max_FailedLogins Then
+            '            user.FailedLogins = 0
+            '            LoginDb.Users(userIndex) = user
 
-                        'GlobalManager Part:
-                        SessionInfo(Index_).GameServerId = serverID
-                        SessionInfo(Index_).UserName = id
-                        GlobalManager.OnSendUserAuth(serverID, id, pw, SessionInfo(Index_).IP, Index_)
+            '            Database.SaveQuery(String.Format("UPDATE users SET failed_logins = '0' WHERE id = '{0}'", user.AccountId))
+            '            BanUser(Date.Now.AddMinutes(10), userIndex) 'Ban for 10 mins
+            '        End If
 
-                        If Settings.Log_Login Then
-                            Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.ServerName))
-                        End If
-                    End If
-                End If
-            End If
+
+
+            '    ElseIf LoginDb.Users(userIndex).Name = id And LoginDb.Users(userIndex).Pw = pw Then
+            '        Dim gs As SRFramework.GameServer = Shard_Gameservers(serverID)
+
+            '        If (gs.OnlineClients + 1) >= gs.MaxNormalClients And LoginDb.Users(userIndex).Permission = 0 Then
+            '            writer.Byte(4)
+            '            writer.Byte(2) 'Server traffic... 
+            '            Server.Send(writer.GetBytes, Index_)
+
+            '        Else
+            '            Timers.LoginInfoTimer(Index_).Stop()
+
+            '            'GlobalManager Part:
+            '            SessionInfo(Index_).GameServerId = serverID
+            '            SessionInfo(Index_).UserName = id
+            '            GlobalManager.OnSendUserAuth(serverID, id, pw, SessionInfo(Index_).IP, Index_)
+
+            '            If Settings.Log_Login Then
+            '                Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Login", "Sucess", String.Format("Name: {0}, Server: {1}", id, gs.ServerName))
+            '            End If
+            '        End If
+            '    End If
+            'End If
         End Sub
 
-        Public Sub LoginSendUserAuthSucceed(ByVal succeed As Byte, ByVal errortag As Byte, ByVal sessionID As UInteger, ByVal Index_ As Integer)
+        Public Sub LoginSendUserAuthSucceed(packet As PacketReader)
             'ServerIndex + SessionID + Port + Index
+            Dim Index_ As Integer = packet.DWord
+            Dim succeed As Byte = packet.Byte
 
             If Server.ClientList.GetSocket(Index_) Is Nothing Then
                 GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! user: " & Index_)
+
             ElseIf Shard_Gameservers.ContainsKey(SessionInfo(Index_).GameServerId) = False Then
                 GlobalManagerCon.Log("GS from GlobalManager dosen't existis! user: " & Index_)
+
             Else
                 Dim user As String = SessionInfo(Index_).UserName
 
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.LOGIN_AUTH)
+
                 If succeed = 1 Then
+                    Dim sessionID As UInteger = packet.DWord
                     Dim gs As GameServer = Shard_Gameservers(SessionInfo(Index_).GameServerId)
-                    Dim writer As New PacketWriter
-                    writer.Create(ServerOpcodes.LOGIN_AUTH)
+
                     writer.Byte(1)
                     writer.DWord(sessionID)
                     writer.Word(gs.IP.Length)
                     writer.String(gs.IP)
                     writer.Word(gs.Port)
-                    Server.Send(writer.GetBytes, Index_)
+
+                    If Settings.Log_Login Then
+                        Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Login", "Sucess", String.Format("Name: {0}, Server: {1}", SessionInfo(Index_).UserName, gs.ServerName))
+                    End If
                 Else
-                    Select Case errortag
+                    Select Case packet.Byte
                         Case 1
                             'GS not exitis
-                            GlobalManagerCon.Log("gmc err: GS from GlobalManager dosen't existis! user: " & user)
+                            If Settings.Server_DebugMode Then
+                                GlobalManagerCon.Log("gmc err: GS from GlobalManager dosen't existis! user: " & user)
+                            End If
+
+                            Server.Disconnect(Index_)
+                            Exit Sub
                         Case 2
                             'GS not online
-                            GlobalManagerCon.Log("gmc err: GS not online! user: " & user)
+                            If Settings.Server_DebugMode Then
+                                GlobalManagerCon.Log("gmc err: GS not online! user: " & user)
+                            End If
+
+                            writer.Byte(2) 'fail
+                            writer.Byte(2) 'fail subcode
+                            writer.Byte(2) 'server in insepction
+                        Case 3
+                            'GS over capacity
+                            If Settings.Server_DebugMode Then
+                                GlobalManagerCon.Log("gmc err: GS over capacity! user: " & user)
+                            End If
+
+                            writer.Byte(4)
+                            writer.Byte(2) 'Server traffic... 
+                        Case 4
+                            'User not existis!
+                            Select Case packet.Byte
+                                Case 1
+                                    'type = not registered
+                                    LoginWriteSpecialText("User does not existis!", Index_)
+                                    Exit Sub
+                                Case 2
+                                    'type = registered
+                                    LoginWriteSpecialText(String.Format("A new Account with the ID: {0} was created. You can login in 60 Secounds.", SessionInfo(Index_).UserName), Index_)
+                                    Exit Sub
+                                Case 3
+                                    'type = register fail, in this case maximal account amout per day
+                                    LoginWriteSpecialText(String.Format("You can only register {0} Accounts a day!", packet.DWord), Index_)
+                                    Exit Sub
+                            End Select
+                        Case 5
+                            'Wrong pw --> failed login
+
+                            writer.Byte(2) 'fail
+                            writer.Byte(1) 'wrong pw
+                            writer.DWord(packet.DWord) 'number of falied logins
+                            writer.DWord(packet.DWord) 'Max Failed Logins
+                        Case 6
+                            'Banned
+                            Dim banreason As String = packet.String(packet.Word)
+                            Dim bantime As Date = packet.Date
+
+                            writer.Byte(2) 'failed
+                            writer.Byte(2) 'subcode
+                            writer.Byte(1) 'ban
+                            writer.Word(banreason.Length)
+                            writer.String(banreason) 'grund
+                            writer.Date(bantime) 'zeit
                     End Select
                 End If
+
+                Server.Send(writer.GetBytes, Index_)
             End If
         End Sub
     End Module

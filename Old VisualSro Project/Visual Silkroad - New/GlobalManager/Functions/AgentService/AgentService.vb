@@ -14,7 +14,6 @@ Namespace Agent
                 End If
             End If
 
-
             Dim tmp As New UserAuth
             tmp.UserIndex = packet.DWord
             tmp.GameServerId = packet.Word
@@ -44,26 +43,27 @@ Namespace Agent
                                 Else
                                     'user is banned
                                     writer.Byte(2)
-                                    writer.Byte(5)
+                                    writer.Byte(6)
 
-                                    writer.Byte(1) 'type for the client -- unknown
                                     writer.Word(user.BannReason.Length)
                                     writer.String(user.BannReason) 'grund
                                     writer.Date(user.BannTime) 'zeit
                                 End If
 
+                            Else
                                 'wrong pw
                                 user.FailedLogins += 1
 
-                                If user.FailedLogins >= Settings.Server_DebugMode Then
+                                writer.Byte(2)
+                                writer.Byte(5)
+                                writer.DWord(user.FailedLogins)
+                                writer.DWord(Settings.Agent_Max_RegistersPerDay)
+
+                                If user.FailedLogins >= Settings.Agent_Max_RegistersPerDay Then
                                     '10 min ban
                                     user.FailedLogins = 0
                                     UserService.BanUserForFailedLogins(Date.Now.AddMinutes(15), user)
                                 Else
-                                    writer.Byte(2)
-                                    writer.Byte(5)
-                                    writer.DWord(user.FailedLogins)
-
                                     DBSave.SaveFailedLogins(user)
                                     GlobalDB.UpdateUser(user)
                                 End If
@@ -72,13 +72,23 @@ Namespace Agent
                             'User not existis!
                             'Then we should look for autoregister
                             If Settings.Agent_Auto_Register Then
-                                If UserService.CheckIfUserCanRegister(Server.ClientList.GetIP(Index_)) = True Then
+                                If UserService.CheckIfUserCanRegister(Server.ClientList.GetIP(Index_)) Then
                                     If UserService.RegisterUser(tmp.UserName, tmp.UserPw, tmp.UserIndex, Index_) Then
-                                        UserService.LoginWriteSpecialText(String.Format("A new Account with the ID: {0} and Password: {1}. You can login in 60 Secounds.", tmp.UserName, tmp.UserPw), tmp.UserIndex, Index_)
+                                        writer.Byte(2)
+                                        writer.Byte(4)
+                                        writer.Byte(2) 'type = registered
+                                    Else
+                                        'name fail
+                                        writer.Byte(2)
+                                        writer.Byte(4)
+                                        writer.Byte(5) 'type = name fail
                                     End If
 
                                 Else
-                                    UserService.LoginWriteSpecialText(String.Format("You can only register {0} Accounts a day!", Settings.Agent_Max_RegistersPerDay), tmp.UserIndex, Index_)
+                                    writer.Byte(2)
+                                    writer.Byte(4)
+                                    writer.Byte(3) 'type = register fail, in this case maximal account amout per day
+                                    writer.DWord(Settings.Agent_Max_RegistersPerDay)
                                 End If
 
                             Else

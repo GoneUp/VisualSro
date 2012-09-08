@@ -6,7 +6,7 @@ Public Class PacketReader
     Private ReadOnly _ms As MemoryStream
     Private ReadOnly _packetData() As Byte
 
-    Public ReadOnly Property Length() As Integer
+    Public ReadOnly Property Length() As UShort
         Get
             Return Me._ms.Length
         End Get
@@ -83,6 +83,25 @@ Public Class PacketReader
     Public Function UString(ByVal len As Integer) As String
         Dim Bytes As Byte() = Me.ByteArray(len * 2)
         Return System.Text.Encoding.Unicode.GetString(Bytes)
+    End Function
+
+    Public Function [Date]() As Date
+        Dim year As UInt16 = Me._br.ReadUInt16()
+        Dim month As UInt16 = Me._br.ReadUInt16()
+        Dim day As UInt16 = Me._br.ReadUInt16()
+        Dim hour As UInt16 = Me._br.ReadUInt16()
+        Dim minute As UInt16 = Me._br.ReadUInt16()
+        Dim second As UInt16 = Me._br.ReadUInt16()
+        Dim milisecond As UInt16 = Me._br.ReadUInt32()
+
+
+        Dim culture = New Globalization.CultureInfo("de-DE", True)
+        Dim timestring As String = String.Format("{0}/{1}/{2} {3}:{4}:{5}", day, month, year, hour, second)
+        Dim myDate As DateTime = _
+                             DateTime.Parse(timestring, _
+                                            culture, _
+                                            Globalization.DateTimeStyles.NoCurrentDateDefault)
+        Return myDate
     End Function
 End Class
 

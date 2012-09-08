@@ -228,11 +228,10 @@ Public Class cServer_Base
             Dim socket As Socket = ClientList.GetSocket(index)
             If socket IsNot Nothing Then
                 socket.Shutdown(SocketShutdown.Both)
+                RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
             End If
 
             ClientList.Delete(index)
-            RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
-
         Catch thread_ex As ThreadAbortException
         Catch ex As Exception
             RaiseEvent OnServerError(ex, -4)

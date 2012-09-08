@@ -59,7 +59,6 @@
 
     End Class
 
-    Private m_IDCounter As cIDGen
     Private m_PacketList As Dictionary(Of UInt64, cByteCounterPacket)
 
     Private m_TotalBytes As UInt64 = 0
@@ -89,11 +88,30 @@
         End Get
     End Property
 
+    '=================Session Id
+    Private lock As New Object
+    Private IDCounter As UInt64 = 1
+    Private Random As New Random(Date.Now.Millisecond * 5)
+
+    Public ReadOnly Property GetID() As UInt64
+        Get
+            SyncLock lock
+                Dim toreturn As ULong = IDCounter
+                If IDCounter < UInt64.MaxValue Then
+                    IDCounter += 1
+                ElseIf IDCounter = UInt64.MaxValue Then
+                    IDCounter = 0
+                End If
+
+                Return toreturn
+            End SyncLock
+        End Get
+    End Property
+
 #End Region
 
 #Region "New"
     Sub New()
-        m_IDCounter = New cIDGen(Convert.ToUInt64(0), 1)
         m_PacketList = New Dictionary(Of UInt64, cByteCounterPacket)
         m_sTimer = New Timers.Timer
 
@@ -113,7 +131,7 @@
         tmp.Bytes = packet.Length
         tmp.Source = source
         tmp.Timestamp = Date.Now
-        m_PacketList.Add(m_IDCounter.GetID, tmp)
+        m_PacketList.Add(GetID, tmp)
 
         AddTotal(tmp.Bytes, 1)
     End Sub
@@ -123,7 +141,7 @@
         tmp.Bytes = packet.Length
         tmp.Source = source
         tmp.Timestamp = Date.Now
-        m_PacketList.Add(m_IDCounter.GetID, tmp)
+        m_PacketList.Add((Random.Next(0, 144444444)), tmp)
 
         AddTotal(tmp.Bytes, 1)
     End Sub
@@ -134,7 +152,7 @@
         tmp.Bytes = bytes
         tmp.Source = source
         tmp.Timestamp = Date.Now
-        m_PacketList.Add(m_IDCounter.GetID, tmp)
+        m_PacketList.Add(GetID, tmp)
 
         AddTotal(tmp.Bytes, 1)
     End Sub
@@ -165,24 +183,31 @@
     Public Sub TimerElapsed()
         m_sTimer.Stop()
 
-        Dim tmpBytesS As UInt64 = 0
-        Dim tmpPacketsS As UInt64 = 0
+        Try
+            Dim tmpBytesS As UInt64 = 0
+            Dim tmpPacketsS As UInt64 = 0
 
-        Dim list = m_PacketList.Keys.ToList
-        For i = 0 To list.Count - 1
-            Dim key As UInt64 = list(i)
-            If m_PacketList.ContainsKey(key) Then
-                tmpBytesS += m_PacketList(key).Bytes
-                tmpPacketsS += 1
-                m_PacketList.Remove(key)
+            Dim List = m_PacketList.Keys.ToList
+            For i = 0 To List.Count - 1
+                Dim key As UInt64 = List(i)
+                If m_PacketList.ContainsKey(key) Then
+                    Try
+                        tmpBytesS += m_PacketList(key).Bytes
+                        tmpPacketsS += 1
+                        'm_PacketList.Remove(key)
+                    Catch ex As Exception
 
-                'It also is possible to add an additional check to search only for the last secound here
-            End If
-        Next
+                    End Try
 
-        m_BytesPerS = tmpBytesS
-        m_PacketsPerS = tmpPacketsS
+                    'It also is possible to add an additional check to search only for the last secound here
+                End If
+            Next
 
+            m_BytesPerS = tmpBytesS
+            m_PacketsPerS = tmpPacketsS
+
+        Catch ex As Exception
+        End Try
 
         StartTimer()
     End Sub

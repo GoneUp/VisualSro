@@ -89,13 +89,14 @@
     End Property
 
     '=================Session Id
-    Private lock As New Object
+    Private m_IdLock As New Object
+    Private m_ListLock As New Object
     Private IDCounter As UInt64 = 1
     Private Random As New Random(Date.Now.Millisecond * 5)
 
     Public ReadOnly Property GetID() As UInt64
         Get
-            SyncLock lock
+            SyncLock m_IdLock
                 Dim toreturn As ULong = IDCounter
                 If IDCounter < UInt64.MaxValue Then
                     IDCounter += 1
@@ -131,9 +132,11 @@
         tmp.Bytes = packet.Length
         tmp.Source = source
         tmp.Timestamp = Date.Now
-        m_PacketList.Add(GetID, tmp)
 
-        AddTotal(tmp.Bytes, 1)
+        SyncLock m_ListLock
+            m_PacketList.Add(GetID, tmp)
+            AddTotal(tmp.Bytes, 1)
+        End SyncLock
     End Sub
 
     Public Sub AddPacket(ByVal packet As PacketReader, ByVal source As PacketSource)
@@ -141,9 +144,11 @@
         tmp.Bytes = packet.Length
         tmp.Source = source
         tmp.Timestamp = Date.Now
-        m_PacketList.Add((Random.Next(0, 144444444)), tmp)
 
-        AddTotal(tmp.Bytes, 1)
+        SyncLock m_ListLock
+            m_PacketList.Add(GetID, tmp)
+            AddTotal(tmp.Bytes, 1)
+        End SyncLock
     End Sub
 
 
@@ -152,9 +157,11 @@
         tmp.Bytes = bytes
         tmp.Source = source
         tmp.Timestamp = Date.Now
-        m_PacketList.Add(GetID, tmp)
 
-        AddTotal(tmp.Bytes, 1)
+        SyncLock m_ListLock
+            m_PacketList.Add(GetID, tmp)
+            AddTotal(tmp.Bytes, 1)
+        End SyncLock
     End Sub
 #End Region
 
@@ -194,7 +201,7 @@
                     Try
                         tmpBytesS += m_PacketList(key).Bytes
                         tmpPacketsS += 1
-                        'm_PacketList.Remove(key)
+                        m_PacketList.Remove(key)
                     Catch ex As Exception
 
                     End Try

@@ -4,6 +4,13 @@ Namespace Functions
     Module Login
 
         Public Sub Gateway(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            If SessionInfo(Index_) IsNot Nothing AndAlso SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.HANDSHAKE Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.WHOAMI
+            Else
+                Server.Disconnect(Index_)
+                Return
+            End If
+
             Dim ClientString As String = packet.String(packet.Word)
 
             If ClientString = "SR_Client" Then
@@ -16,13 +23,16 @@ Namespace Functions
                 Server.Send(writer.GetBytes, Index_)
             End If
 
-            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.HANDSHAKE Then
-                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.WHOAMI
-            Else
-                Server.Disconnect(Index_)
-            End If
+
         End Sub
         Public Sub ClientInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            If SessionInfo(Index_) IsNot Nothing AndAlso SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.WHOAMI Then
+                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO
+            Else
+                Server.Disconnect(Index_)
+                Return
+            End If
+
             SessionInfo(Index_).Locale = packet.Byte
             SessionInfo(Index_).ClientName = packet.String(packet.Word)
             SessionInfo(Index_).Version = packet.DWord
@@ -32,15 +42,14 @@ Namespace Functions
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Client_Connect", "(None)", String.Format("Locale: {0}, Name: {1}, Version: {2}", .Locale, .ClientName, .Version))
                 End With
             End If
-
-            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.WHOAMI Then
-                SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO
-            Else
-                Server.Disconnect(Index_)
-            End If
         End Sub
 
         Public Sub SendPatchInfo(ByVal Index_ As Integer)
+            If SessionInfo(Index_) IsNot Nothing AndAlso (SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO) Then
+                Server.Disconnect(Index_)
+                Return
+            End If
+
             'Note: Patch Info for Rsro
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
@@ -123,11 +132,11 @@ Namespace Functions
         End Sub
 
         Public Sub SendLauncherInfo(ByVal Index_ As Integer)
-            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO Then
+            If SessionInfo(Index_) IsNot Nothing AndAlso SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO Then
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LAUNCHER
             Else
                 Server.Disconnect(Index_)
-                Exit Sub
+                Return
             End If
 
             Dim writer As New PacketWriter
@@ -162,11 +171,12 @@ Namespace Functions
         End Sub
 
         Public Sub SendServerList(ByVal Index_ As Integer)
-            If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO Then
+            If SessionInfo(Index_) IsNot Nothing AndAlso SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO Then
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LOGIN
                 Timers.LoginInfoTimer(Index_).Interval = 1000
                 Timers.LoginInfoTimer(Index_).Start()
-            ElseIf SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
+
+            ElseIf SessionInfo(Index_) IsNot Nothing AndAlso SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If
@@ -201,7 +211,7 @@ Namespace Functions
         End Sub
 
         Public Sub HandleLogin(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            If SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
+            If SessionInfo(Index_) IsNot Nothing AndAlso SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If
@@ -216,7 +226,7 @@ Namespace Functions
             SessionInfo(Index_).GameServerId = serverID
             SessionInfo(Index_).UserName = id
             GlobalManager.OnSendUserAuth(serverID, id, pw, SessionInfo(Index_).IP, Index_)
-            
+
 
             'Dim writer As New PacketWriter
             'writer.Create(ServerOpcodes.LOGIN_AUTH)
@@ -331,10 +341,8 @@ Namespace Functions
             Dim succeed As Byte = packet.Byte
 
             If Server.ClientList.GetSocket(Index_) Is Nothing Then
-                GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! user: " & Index_)
-
-            ElseIf Shard_Gameservers.ContainsKey(SessionInfo(Index_).GameServerId) = False Then
-                GlobalManagerCon.Log("GS from GlobalManager dosen't existis! user: " & Index_)
+                'Check the Index_, maybe it is dced now...
+                GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! index: " & Index_)
 
             Else
                 Dim user As String = SessionInfo(Index_).UserName

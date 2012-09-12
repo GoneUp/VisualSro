@@ -22,7 +22,7 @@
 
             Case &H600D
                 RequestList(Index_)
-                SendLogin(Index_)
+                'SendLogin(Index_)
 
             Case &HA102
                 ConnectToGameServer(Index_, Packet)

@@ -91,7 +91,11 @@ Friend Module Program
         End If
 
         SessionInfo(index) = Nothing
-        Server.OnlineClients -= 1
+
+        If Server.OnlineClients > 0 Then
+            Server.OnlineClients -= 1
+        End If
+
 
         If True Then
             Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))

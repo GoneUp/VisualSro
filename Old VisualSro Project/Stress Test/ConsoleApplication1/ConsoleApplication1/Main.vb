@@ -1,7 +1,7 @@
 ﻿Imports System.Net, System.Net.Sockets
 Module Main
 
-    Public sockets(510) As Socket
+    Public sockets(500) As Socket
     Public Rev(10000) As Threading.Thread
     Public GameServer(10000) As Boolean
     Public Key(10000) As UInt32

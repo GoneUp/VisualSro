@@ -41,7 +41,13 @@
                 Console.Clear()
 
             Case "/end"
-                GlobalManager.OnSendServerShutdown()
+                GlobalManagerCon.UserSidedShutdown = False
+                If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
+                    GlobalManager.OnSendServerShutdown()
+                Else
+                    'No Connection, init the reconnection
+                    GlobalManagerCon.ShutdownComplete()
+                End If
 
             Case "/reinit"
                 Log.WriteSystemLog("Ending Server....")
@@ -59,7 +65,12 @@
 
                 GlobalManagerCon.UserSidedShutdown = True
                 GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
-                GlobalManager.OnSendServerShutdown()
+                If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
+                    GlobalManager.OnSendServerShutdown()
+                Else
+                    'No Connection, init the reconnection
+                    GlobalManagerCon.ShutdownComplete()
+                End If
 
             Case "/wnd"
                 perfWnd.Text = "LS: PefWnd"
@@ -70,7 +81,13 @@
                 Log.WriteSystemLog("GMC: Started disconnect...")
                 GlobalManagerCon.UserSidedShutdown = True
                 GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reconnect
-                GlobalManager.OnSendServerShutdown()
+                If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
+                    GlobalManager.OnSendServerShutdown()
+                Else
+                    'No Connection, init the reconnection
+                    GlobalManagerCon.ShutdownComplete()
+                End If
+
 
         End Select
 

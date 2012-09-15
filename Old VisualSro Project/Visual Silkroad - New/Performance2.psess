@@ -3,7 +3,7 @@
   <Options>
     <Solution>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\VbEmu.sln</Solution>
     <CollectionMethod>Sampling</CollectionMethod>
-    <AllocationMethod>None</AllocationMethod>
+    <AllocationMethod>Allocation</AllocationMethod>
     <LaunchRuntimeControl>true</LaunchRuntimeControl>
     <AddReport>true</AddReport>
     <ResourceBasedAnalysisSelected>false</ResourceBasedAnalysisSelected>
@@ -79,7 +79,22 @@
   </Binaries>
   <Reports>
     <Report>
-      <Path>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\LoginServer120908.vsp</Path>
+      <Path>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\LoginServer120912(2).vsp</Path>
+    </Report>
+    <Report>
+      <Path>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\LoginServer120912(3).vsp</Path>
+    </Report>
+    <Report>
+      <Path>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\LoginServer120912(4).vsp</Path>
+    </Report>
+    <Report>
+      <Path>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\LoginServer120913.vsp</Path>
+    </Report>
+    <Report>
+      <Path>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\LoginServer120914.vsp</Path>
+    </Report>
+    <Report>
+      <Path>I:\Henry\Projekte\Silkroad\Emulator\VisualSro\Old VisualSro Project\Visual Silkroad - New\LoginServer120914(1).vsp</Path>
     </Report>
   </Reports>
   <Launches>

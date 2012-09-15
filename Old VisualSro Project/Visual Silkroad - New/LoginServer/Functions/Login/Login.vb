@@ -45,7 +45,7 @@ Namespace Functions
         End Sub
 
         Public Sub SendPatchInfo(ByVal Index_ As Integer)
-            If SessionInfo(Index_) IsNot Nothing AndAlso (SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO) Then
+            If SessionInfo(Index_) IsNot Nothing AndAlso (SessionInfo(Index_).SRConnectionSetup <> cSessionInfo_LoginServer.SRConnectionStatus.PATCH_INFO) Then
                 Server.Disconnect(Index_)
                 Return
             End If

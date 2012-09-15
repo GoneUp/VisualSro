@@ -22,7 +22,7 @@
 
             Case &H600D
                 RequestList(Index_)
-                'SendLogin(Index_)
+                SendLogin(Index_)
 
             Case &HA102
                 ConnectToGameServer(Index_, Packet)
@@ -78,7 +78,7 @@
         writer.Word(pass.Length)
         writer.String(pass)
         writer.Word(30) '3 = local - 4 = remote
-        Send(writer.GetBytes, Index_)
+        'Send(writer.GetBytes, Index_)
     End Sub
 
     Sub RequestList(ByVal index_ As Integer)

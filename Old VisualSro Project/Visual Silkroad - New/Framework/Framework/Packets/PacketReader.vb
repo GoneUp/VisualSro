@@ -1,4 +1,6 @@
 ﻿Imports System.IO
+Imports System.ComponentModel
+
 Public Class PacketReader
 
 #Region "Fields"
@@ -13,7 +15,7 @@ Public Class PacketReader
     End Property
 #End Region
 
-#Region "Genral Functions"
+#Region "General Functions"
     Public Sub New(ByVal data() As Byte)
         Me._ms = New MemoryStream(data)
         Me._br = New BinaryReader(Me._ms)

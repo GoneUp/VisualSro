@@ -201,7 +201,10 @@
                     Try
                         tmpBytesS += m_PacketList(key).Bytes
                         tmpPacketsS += 1
-                        m_PacketList.Remove(key)
+
+                        SyncLock m_ListLock
+                            m_PacketList.Remove(key)
+                        End SyncLock
                     Catch ex As Exception
 
                     End Try

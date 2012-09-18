@@ -25,14 +25,14 @@ Namespace Functions
 
             Dim UserIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
 
-            If LongName = mallPackage.Package_Name Then
+            If LongName = mallPackage.PackageName Then
                 Dim paymentEntry As MallPaymentEntry = mallPackage.Payments(MallPaymentEntry.PaymentDevices.Mall)
 
                 If (paymentEntry IsNot Nothing) AndAlso (GameDB.Users(UserIndex).Silk - (paymentEntry.Price * amout) >= 0 And GetFreeItemSlot(Index_) <> -1) Then
                     Dim ItemSlots As New List(Of Byte)
 
                     For i = 1 To amout
-                        Dim _Refitem As cRefItem = GetItemByName(mallPackage.Code_Name)
+                        Dim _Refitem As cRefItem = GetItemByName(mallPackage.CodeName)
                         Dim slot As Byte = GetFreeItemSlot(Index_)
                         Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
                         Dim item As New cItem

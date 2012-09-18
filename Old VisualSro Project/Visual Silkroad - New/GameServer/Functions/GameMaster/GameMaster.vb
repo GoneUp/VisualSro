@@ -232,7 +232,7 @@ Namespace Functions
 
             Dim refobject As SilkroadObject = GetObject(objectid)
 
-            Dim selector As String = refobject.TypeName.Substring(0, 3)
+            Dim selector As String = refobject.CodeName.Substring(0, 3)
 
             Select Case selector
                 Case "MOB"
@@ -245,7 +245,7 @@ Namespace Functions
 
             If Settings.Log_GM Then
                 Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Monster_Spawn",
-                                 String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.TypeName,
+                                 String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.CodeName,
                                                count))
             End If
 

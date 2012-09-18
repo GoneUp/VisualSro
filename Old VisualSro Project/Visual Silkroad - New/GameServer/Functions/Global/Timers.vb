@@ -159,7 +159,7 @@ Namespace Functions
                             PlayerData(Index_).UsedItem = UseItemTypes.None
 
                         Case UseItemTypes.Reverse_Scroll_Point
-                            Dim point As ReversePoint_ = GetReversePoint(PlayerData(Index_).UsedItemParameter)
+                            Dim point As ReversePoint = GetReversePoint(PlayerData(Index_).UsedItemParameter)
                             PlayerData(Index_).SetPosition = point.Position
                             GameDB.SavePosition(Index_)
 

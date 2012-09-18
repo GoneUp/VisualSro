@@ -2,28 +2,29 @@
 Imports System.IO
 
 Module SilkroadData
-    Public RefItems As New Dictionary(Of UInteger, cRefItem)
-    Public RefGoldData As New List(Of cGoldData)
-    Public RefLevelData As New List(Of LevelData)
-    Public RefTmpSkills As New Dictionary(Of UInteger, RefSkill.tmpSkill)
-    Public RefSkills As New Dictionary(Of UInteger, RefSkill)
-    Public RefSkillGroups As New Dictionary(Of String, SkillGroup)
-    Public RefObjects As New Dictionary(Of UInteger, SilkroadObject)
-    Public RefPackageItems As New List(Of PackageItem)
-    Public RefReversePoints As New List(Of ReversePoint_)
-    Public RefTeleportPoints As New List(Of TeleportPoint_)
-    Public RefSpecialZones As New List(Of SpecialSector_)
-    Public RefRespawns As New List(Of ReSpawn_)
-    Public RefRespawnsUnique As New List(Of ReSpawnUnique_)
-    Public RefUniques As New List(Of UInteger)
-    Public RefAbuseList As New List(Of String)
-    Public RefCaveTeleporter As New List(Of CaveTeleporter_)
-    Public RefSilkroadNameEntys As New Dictionary(Of String, String)
-    Public RefShops As New Dictionary(Of String, Shop)
-    Public RefShopGroups As New Dictionary(Of String, ShopGroup)
-    Public RefShopTabGroups As New Dictionary(Of String, ShopTabGroup)
+    Private ReadOnly RefItems As New Dictionary(Of UInteger, cRefItem)
+    Private ReadOnly RefGoldData As New List(Of GoldData)
+    Private ReadOnly RefLevelData As New List(Of LevelData)
+    Private ReadOnly RefTmpSkills As New Dictionary(Of UInteger, RefSkill.tmpSkill)
+    Private ReadOnly RefSkills As New Dictionary(Of UInteger, RefSkill)
+    Private ReadOnly RefSkillGroups As New Dictionary(Of String, SkillGroup)
+    Private ReadOnly RefObjects As New Dictionary(Of UInteger, SilkroadObject)
+    Public ReadOnly RefPackageItems As New List(Of PackageItem)
+    Private ReadOnly RefReversePoints As New List(Of ReversePoint)
+    Private ReadOnly RefTeleportPoints As New List(Of TeleportPoint)
+    Private ReadOnly RefSpecialZones As New List(Of SpecialSector)
+    Public ReadOnly RefRespawns As New List(Of ReSpawn_)
+    Public ReadOnly RefRespawnsUnique As New List(Of ReSpawnUnique_)
+    Private ReadOnly RefUniques As New List(Of UInteger)
+    Public ReadOnly RefAbuseList As New List(Of String)
+    Public ReadOnly RefCaveTeleporter As New List(Of CaveTeleporter)
+    Private ReadOnly RefSilkroadNameEntys As New Dictionary(Of String, String)
 
-    Public base_path As String = AppDomain.CurrentDomain.BaseDirectory
+    Private ReadOnly RefShops As New Dictionary(Of String, Shop)
+    Private ReadOnly RefShopGroups As New Dictionary(Of String, ShopGroup)
+    Private ReadOnly RefShopTabGroups As New Dictionary(Of String, ShopTabGroup)
+
+    Private ReadOnly BasePath As String = AppDomain.CurrentDomain.BaseDirectory
 
     Public Sub DumpDataFiles()
 
@@ -34,10 +35,10 @@ Module SilkroadData
             DumpItemFiles()
             Log.WriteSystemLog("Loaded " & RefItems.Count & " Ref-Items.")
 
-            DumpGoldData(base_path & "data\levelgold.txt")
+            DumpGoldData(BasePath & "data\levelgold.txt")
             Log.WriteSystemLog("Loaded " & RefGoldData.Count & " Ref-Goldlevels.")
 
-            DumpLevelData(base_path & "data\leveldata.txt")
+            DumpLevelData(BasePath & "data\leveldata.txt")
             Log.WriteSystemLog("Loaded " & RefLevelData.Count & " Ref-Levels.")
 
             DumpNameFiles()
@@ -46,37 +47,37 @@ Module SilkroadData
             DumpSkillFiles()
             Log.WriteSystemLog("Loaded " & RefSkills.Count & " Ref-Skills.")
 
-            DumpUniqueFile(base_path & "\data\unique_ids.txt")
+            DumpUniqueFile(BasePath & "\data\unique_ids.txt")
             Log.WriteSystemLog("Loaded " & RefUniques.Count & " Unique-Id's.")
 
             DumpObjectFiles()
             Log.WriteSystemLog("Loaded " & RefObjects.Count & " Ref-Objects.")
 
-            DumpReversePoints(base_path & "data\reverse_points.txt")
+            DumpReversePoints(BasePath & "data\reverse_points.txt")
             Log.WriteSystemLog("Loaded " & RefReversePoints.Count & " Reverse-Points.")
 
-            DumpItemMall(base_path & "data\refpackageitem.txt", base_path & "data\refscrapofpackageitem.txt", base_path & "data\refpricepolicyofitem.txt")
+            DumpItemMall(BasePath & "data\refpackageitem.txt", BasePath & "data\refscrapofpackageitem.txt", BasePath & "data\refpricepolicyofitem.txt")
             DumpItemMallNames()
             Log.WriteSystemLog("Loaded " & RefPackageItems.Count & " ItemMall-Items.")
 
-            DumpTeleportBuildings(base_path & "data\teleportbuilding.txt")
-            DumpTeleportData(base_path & "data\teleportdata.txt", base_path & "data\teleportlink.txt")
-            DumpTelportLink(base_path & "data\teleportlink.txt")
+            DumpTeleportBuildings(BasePath & "data\teleportbuilding.txt")
+            DumpTeleportData(BasePath & "data\teleportdata.txt")
+            DumpTelportLink(BasePath & "data\teleportlink.txt")
             Log.WriteSystemLog("Loaded " & RefTeleportPoints.Count & " Teleport-Points.")
 
-            DumpSpecialSectorFile(base_path & "\data\special_sectors.txt")
+            DumpSpecialSectorFile(BasePath & "\data\special_sectors.txt")
             Log.WriteSystemLog("Loaded " & RefSpecialZones.Count & " Special_Sectors.")
 
-            DumpNpcChatFile(base_path & "\data\npcchatid.txt")
+            DumpNpcChatFile(BasePath & "\data\npcchatid.txt")
             Log.WriteSystemLog("Loaded NpcChat data.")
 
-            DumpAbuseListFile(base_path & "\data\abuselist.txt")
+            DumpAbuseListFile(BasePath & "\data\abuselist.txt")
             Log.WriteSystemLog("Loaded " & RefAbuseList.Count & "  Abuselist-Entry's.")
 
             DumpShopDataFile()
             Log.WriteSystemLog("Loaded Shop data.")
 
-            DumpCaveTeleporterFile(base_path & "\data\cave_teleport.txt")
+            DumpCaveTeleporterFile(BasePath & "\data\cave_teleport.txt")
             Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
             'LoadAutoSpawn(base_path & "data\npcpos.txt")
@@ -91,7 +92,8 @@ Module SilkroadData
     End Sub
 
 #Region "Items"
-    Public Sub DumpItemFiles()
+
+    Private Sub DumpItemFiles()
         RefItems.Clear()
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\itemdata.txt")
         For i As Integer = 0 To paths.Length - 1
@@ -99,7 +101,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Sub DumpItemFile(ByVal path As String)
+    Private Sub DumpItemFile(ByVal path As String)
 
 
         Dim lines As String() = File.ReadAllLines(path)
@@ -208,10 +210,10 @@ Module SilkroadData
         Throw New Exception("Item couldn't be found!")
     End Function
 
-    Public Function GetItemByName(ByVal Name As String) As cRefItem
+    Public Function GetItemByName(ByVal name As String) As cRefItem
         For Each key In RefItems.Keys.ToList
             If RefItems.ContainsKey(key) Then
-                If RefItems(key).ITEM_TYPE_NAME = Name Then
+                If RefItems(key).ITEM_TYPE_NAME = name Then
                     Return RefItems(key)
                 End If
             End If
@@ -221,20 +223,20 @@ Module SilkroadData
 #End Region
 
 #Region "Gold"
-    Structure cGoldData
+    Structure GoldData
         Public Level As Byte
         Public MinGold As ULong
         Public MaxGold As ULong
     End Structure
 
 
-    Public Sub DumpGoldData(ByVal path As String)
+    Private Sub DumpGoldData(ByVal path As String)
         RefGoldData.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-            Dim gold As New cGoldData
+            Dim gold As New GoldData
             gold.Level = CByte(tmpString(0))
             gold.MinGold = CULng(tmpString(1))
             gold.MaxGold = CULng(tmpString(2))
@@ -242,7 +244,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Function GetGoldData(ByVal level As Byte) As cGoldData
+    Public Function GetGoldData(ByVal level As Byte) As GoldData
         For i = 0 To RefGoldData.Count - 1
             If RefGoldData(i).Level = level Then
                 Return RefGoldData(i)
@@ -255,13 +257,13 @@ Module SilkroadData
 #Region "LevelData"
     Structure LevelData
         Public Level As Byte
-        Public MobEXP As ULong
+        Public MobExp As ULong
         Public Experience As ULong
         Public SkillPoints As ULong
     End Structure
 
 
-    Public Sub DumpLevelData(ByVal path As String)
+    Private Sub DumpLevelData(ByVal path As String)
         RefLevelData.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
@@ -270,7 +272,7 @@ Module SilkroadData
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
             Dim level As New LevelData
             level.Level = tmpString(0)
-            level.MobEXP = tmpString(1)
+            level.MobExp = tmpString(1)
             level.Experience = tmpString(2)
             If level.Level = 1 Then
                 level.SkillPoints = 0
@@ -288,12 +290,13 @@ Module SilkroadData
                 Return RefLevelData(i)
             End If
         Next
+        Throw New Exception(String.Format("Level {0} not found!", level))
     End Function
 #End Region
 
 #Region "Skill"
     Public Class RefSkill
-        Public Name As String
+        Public CodeName As String
         Public Pk2Id As UInteger
         Public PreviousId As UInteger
         Public NextId As UInteger
@@ -342,33 +345,33 @@ Module SilkroadData
     End Class
 
     Public Class SkillGroup
-        Private m_ID As UInt32 = 0
+        Private m_id As UInt32 = 0
         Public Property ID As UInt32
             Get
-                Return m_ID
+                Return m_id
             End Get
             Set(ByVal value As UInt32)
-                m_ID = value
+                m_id = value
             End Set
         End Property
 
-        Private m_Name As String = ""
+        Private m_name As String = ""
         Public Property Name As String
             Get
-                Return m_Name
+                Return m_name
             End Get
             Set(ByVal value As String)
-                m_Name = value
+                m_name = value
             End Set
         End Property
 
-        Private m_Skills As New Dictionary(Of Byte, UInt32) 'Key = Skill Series Level, Value = SkillID
+        Private m_skills As New Dictionary(Of Byte, UInt32) 'Key = Skill Series Level, Value = SkillID
         Public Property Skills As Dictionary(Of Byte, UInt32)
             Get
-                Return m_Skills
+                Return m_skills
             End Get
             Set(ByVal value As Dictionary(Of Byte, UInt32))
-                m_Skills = value
+                m_skills = value
             End Set
         End Property
     End Class
@@ -404,7 +407,7 @@ Module SilkroadData
         Public Effect_16 As Long
     End Structure
 
-    Public Sub DumpSkillFiles()
+    Private Sub DumpSkillFiles()
         RefSkills.Clear()
         RefTmpSkills.Clear()
 
@@ -415,7 +418,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Sub DumpTmpSkillFile(ByVal path As String)
+    Private Sub DumpTmpSkillFile(ByVal path As String)
 
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
@@ -439,7 +442,7 @@ Module SilkroadData
             Dim tmp As New RefSkill()
             tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
             tmp.SkillGroupID = Convert.ToUInt32(tmpString(2))
-            tmp.Name = tmpString(3)
+            tmp.CodeName = tmpString(3)
             tmp.SkillGroupName = tmpString(5)
             tmp.SkillGroupLevel = Convert.ToByte(tmpString(7))
             tmp.NextId = Convert.ToUInt32(tmpString(9))
@@ -523,7 +526,7 @@ Module SilkroadData
                 If RefSkillGroups(tmp.SkillGroupName).Skills.ContainsKey(tmp.SkillGroupLevel) = False Then
                     RefSkillGroups(tmp.SkillGroupName).Skills.Add(tmp.SkillGroupLevel, tmp.Pk2Id)
                 Else
-                    Debug.Print(0)
+                    'Debug.Print(0)
                 End If
 
             Else
@@ -555,34 +558,34 @@ Module SilkroadData
         Return 1
     End Function
 
-    Private Function GetTmpSkill(ByVal NextId As UInteger) As RefSkill.tmpSkill
-        If RefTmpSkills.ContainsKey(NextId) Then
-            Return RefTmpSkills(NextId)
+    Private Function GetTmpSkill(ByVal nextId As UInteger) As RefSkill.tmpSkill
+        If RefTmpSkills.ContainsKey(nextId) Then
+            Return RefTmpSkills(nextId)
         Else
             Return Nothing
         End If
     End Function
 
-    Private Function GetSkillPreviosId(ByVal pk2id As UInteger) As UInteger
+    Private Function GetSkillPreviosId(ByVal pk2ID As UInteger) As UInteger
         For Each key In RefSkills.Keys.ToList
-            If RefSkills(key).NextId = pk2id Then
+            If RefSkills(key).NextId = pk2ID Then
                 Return RefSkills(key).Pk2Id
             End If
         Next
         Return 0
     End Function
 
-    Public Function GetSkill(ByVal Pk2Id As UInteger) As RefSkill
-        If RefSkills.ContainsKey(Pk2Id) Then
-            Return RefSkills(Pk2Id)
+    Public Function GetSkill(ByVal pk2Id As UInteger) As RefSkill
+        If RefSkills.ContainsKey(pk2Id) Then
+            Return RefSkills(pk2Id)
         Else
             Return Nothing
         End If
     End Function
 
-    Public Function GetSkillGroup(ByVal SkillGroupName As String) As SkillGroup
-        If RefSkillGroups.ContainsKey(SkillGroupName) Then
-            Return RefSkillGroups(SkillGroupName)
+    Public Function GetSkillGroup(ByVal skillGroupName As String) As SkillGroup
+        If RefSkillGroups.ContainsKey(skillGroupName) Then
+            Return RefSkillGroups(skillGroupName)
         End If
         Return Nothing
     End Function
@@ -613,7 +616,7 @@ Module SilkroadData
     Public Class SilkroadObject
         Public Pk2ID As UInteger
 
-        Public TypeName As String
+        Public CodeName As String
         Public InternalName As String
         Public RealName As String
 
@@ -663,7 +666,7 @@ Module SilkroadData
         End Enum
     End Class
 
-    Public Sub DumpObjectFiles()
+    Private Sub DumpObjectFiles()
         RefObjects.Clear()
 
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\characterdata.txt")
@@ -682,7 +685,7 @@ Module SilkroadData
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
             Dim tmp As New SilkroadObject()
             tmp.Pk2ID = Convert.ToUInt32(tmpString(1))
-            tmp.TypeName = tmpString(2)
+            tmp.CodeName = tmpString(2)
             tmp.InternalName = tmpString(5)
             Dim tmpRarity As Int32 = tmpString(15)
             tmp.WalkSpeed = Convert.ToSingle(tmpString(46))
@@ -707,7 +710,7 @@ Module SilkroadData
             tmp.Skill9 = Convert.ToUInt32(tmpString(92))
 
 
-            Dim selector As String() = tmp.TypeName.Split("_")
+            Dim selector As String() = tmp.CodeName.Split("_")
             Select Case selector(0)
                 Case "MOB"
                     If selector(1) = "TQ" Or selector(1) = "DH" Then
@@ -737,7 +740,7 @@ Module SilkroadData
                 Case "TRADE"
                     tmp.Type = SilkroadObject.Type_.Trade
                 Case Else
-                    Log.WriteSystemLog("LOADOBJ::Case Else: " & tmp.TypeName)
+                    Log.WriteSystemLog("LOADOBJ::Case Else: " & tmp.CodeName)
             End Select
 
             RefObjects.Add(tmp.Pk2ID, tmp)
@@ -754,18 +757,18 @@ Module SilkroadData
 #End Region
 
 #Region "Reverse Points"
-    Public Class ReversePoint_
+    Public Class ReversePoint
         Public TeleportID As UInteger
         Public Position As New Position
     End Class
 
-    Public Sub DumpReversePoints(ByVal path As String)
+    Private Sub DumpReversePoints(ByVal path As String)
         RefReversePoints.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-            Dim tmp As New ReversePoint_
+            Dim tmp As New ReversePoint
             tmp.TeleportID = tmpString(0)
             tmp.Position.XSector = tmpString(1)
             tmp.Position.YSector = tmpString(2)
@@ -776,7 +779,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Function GetReversePoint(ByVal id As UInteger) As ReversePoint_
+    Public Function GetReversePoint(ByVal id As UInteger) As ReversePoint
         For i = 0 To RefReversePoints.Count - 1
             If RefReversePoints(i).TeleportID = id Then
                 Return RefReversePoints(i)
@@ -788,17 +791,17 @@ Module SilkroadData
 
 #Region "Mall"
     Public Class PackageItem
-        Public Code_Name As String = ""
-        Public Package_Name As String = ""
+        Public CodeName As String = ""
+        Public PackageName As String = ""
 
-        Public Name_Real_Code As String = ""
-        Public Name_Real As String = ""
-        Public Description_Code As String = ""
+        Public NameRealCode As String = ""
+        Public NameReal As String = ""
+        Public DescriptionCode As String = ""
         Public Description As String = ""
 
         Public Data As UInt32 = 0
         Public Variance As UInt64 = 0
-        Public Payments As New Dictionary(Of UShort, MallPaymentEntry) 'Key = PaymentDevice
+        Public ReadOnly Payments As New Dictionary(Of UShort, MallPaymentEntry) 'Key = PaymentDevice
 
         Public InShop As Boolean = True
         Public Shop As String = ""
@@ -817,16 +820,16 @@ Module SilkroadData
     End Class
 
 
-    Public Sub DumpItemMall(ByVal filePackagePath As String, ByVal fileScrapPath As String, ByVal filePricePath As String)
+    Private Sub DumpItemMall(ByVal filePackagePath As String, ByVal fileScrapPath As String, ByVal filePricePath As String)
         RefPackageItems.Clear()
 
         Dim lines As String() = File.ReadAllLines(filePackagePath)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
             Dim tmp As New PackageItem
-            tmp.Package_Name = tmpString(3)
-            tmp.Name_Real_Code = tmpString(6)
-            tmp.Description_Code = tmpString(7)
+            tmp.PackageName = tmpString(3)
+            tmp.NameRealCode = tmpString(6)
+            tmp.DescriptionCode = tmpString(7)
 
             RefPackageItems.Add(tmp)
         Next
@@ -835,8 +838,8 @@ Module SilkroadData
         For d As Integer = 0 To itemScrapFile.Length - 1
             Dim tmpString As String() = itemScrapFile(d).Split(ControlChars.Tab)
             For i = 0 To RefPackageItems.Count - 1
-                If RefPackageItems(i).Package_Name = tmpString(2) Then
-                    RefPackageItems(i).Code_Name = tmpString(3)
+                If RefPackageItems(i).PackageName = tmpString(2) Then
+                    RefPackageItems(i).CodeName = tmpString(3)
                     RefPackageItems(i).Data = tmpString(6)
                     RefPackageItems(i).Variance = tmpString(8)
                     Exit For
@@ -845,11 +848,11 @@ Module SilkroadData
         Next
 
 
-        Dim ItemPriceFile As String() = File.ReadAllLines(filePricePath)
-        For d As Integer = 0 To ItemPriceFile.Length - 1
-            Dim tmpString As String() = ItemPriceFile(d).Split(ControlChars.Tab)
+        Dim itemPriceFile As String() = File.ReadAllLines(filePricePath)
+        For d As Integer = 0 To itemPriceFile.Length - 1
+            Dim tmpString As String() = itemPriceFile(d).Split(ControlChars.Tab)
             For i = 0 To RefPackageItems.Count - 1
-                If RefPackageItems(i).Package_Name = tmpString(2) Then
+                If RefPackageItems(i).PackageName = tmpString(2) Then
                     Dim tmp As New MallPaymentEntry
                     tmp.PaymentDevice = tmpString(3)
                     tmp.Price = tmpString(5)
@@ -860,21 +863,21 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Sub DumpItemMallNames()
+    Private Sub DumpItemMallNames()
         For i = 0 To RefPackageItems.Count - 1
-            If RefSilkroadNameEntys.ContainsKey(RefPackageItems(i).Name_Real_Code) Then
-                RefPackageItems(i).Name_Real = RefSilkroadNameEntys(RefPackageItems(i).Name_Real_Code)
+            If RefSilkroadNameEntys.ContainsKey(RefPackageItems(i).NameRealCode) Then
+                RefPackageItems(i).NameReal = RefSilkroadNameEntys(RefPackageItems(i).NameRealCode)
             End If
 
-            If RefSilkroadNameEntys.ContainsKey(RefPackageItems(i).Description_Code) Then
-                RefPackageItems(i).Description = RefSilkroadNameEntys(RefPackageItems(i).Description_Code)
+            If RefSilkroadNameEntys.ContainsKey(RefPackageItems(i).DescriptionCode) Then
+                RefPackageItems(i).Description = RefSilkroadNameEntys(RefPackageItems(i).DescriptionCode)
             End If
         Next
     End Sub
 
-    Public Function GetPackageItem(ByVal code_Name As String) As PackageItem
+    Public Function GetPackageItem(ByVal codeName As String) As PackageItem
         For i = 0 To RefPackageItems.Count - 1
-            If RefPackageItems(i).Package_Name = code_Name Then
+            If RefPackageItems(i).PackageName = codeName Then
                 Return RefPackageItems(i)
             End If
         Next
@@ -883,14 +886,15 @@ Module SilkroadData
 #End Region
 
 #Region "Teleport"
-    Public Sub DumpTeleportBuildings(ByVal path As String)
+
+    Private Sub DumpTeleportBuildings(ByVal path As String)
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
             Dim obj As New SilkroadObject
 
             obj.Pk2ID = tmpString(1)
-            obj.TypeName = tmpString(2)
+            obj.CodeName = tmpString(2)
             obj.Type = SilkroadObject.Type_.Teleport
 
             Dim area As Integer = tmpString(41)
@@ -908,22 +912,30 @@ Module SilkroadData
         Next
     End Sub
 
-    Class TeleportPoint_
-        Public TeleportNumber As UInt32
-        Public TypeName As String
-        Public Pk2ID As UInteger
-        Public ToPos As Position
-        Public Links As Dictionary(Of UInt32, TeleportLink)
+    Class TeleportPoint
+        Public TeleportNumber As UInt32 = 0
+        Public TypeName As String = ""
+        Public Pk2ID As UInt32 = 0
+        Public ToPos As New Position
+        Public Links As New Dictionary(Of UInt32, TeleportLink)
     End Class
 
-    Public Sub DumpTeleportData(ByVal Path_Data As String, ByVal Path_Link As String)
+    Class TeleportLink
+        Public FromPoint As UInt32 = 0
+        Public ToPoint As UInt32 = 0
+        Public Cost As UInt32 = 0
+        Public MinLevel As UInt32 = 0
+        Public MaxLevel As UInt32 = 0
+    End Class
+
+    Private Sub DumpTeleportData(ByVal pathData As String)
         RefTeleportPoints.Clear()
 
-        Dim lines As String() = File.ReadAllLines(Path_Data)
+        Dim lines As String() = File.ReadAllLines(pathData)
         Try
             For i As Integer = 0 To lines.Length - 1
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim obj As New TeleportPoint_
+                Dim obj As New TeleportPoint
 
                 obj.TeleportNumber = tmpString(1)
                 obj.TypeName = tmpString(2)
@@ -951,20 +963,12 @@ Module SilkroadData
         End Try
     End Sub
 
-    Structure TeleportLink
-        Public FromPoint As UInt32
-        Public ToPoint As UInt32
-        Public Cost As UInteger
-        Public MinLevel As UInteger
-        Public MaxLevel As UInteger
-    End Structure
-
-    Public Sub DumpTelportLink(ByVal path As String)
+    Private Sub DumpTelportLink(ByVal path As String)
         Dim lines As String() = File.ReadAllLines(path)
         For i = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
 
-            Dim fromPoint As TeleportPoint_ = GetTeleportPointByNumber(tmpString(1))
+            Dim fromPoint As TeleportPoint = GetTeleportPointByNumber(tmpString(1))
 
             If fromPoint IsNot Nothing Then
                 Dim obj As New TeleportLink
@@ -979,7 +983,7 @@ Module SilkroadData
         Next
     End Sub
 
-    Public Function GetTeleportPointByNumber(ByVal number As Integer) As TeleportPoint_
+    Public Function GetTeleportPointByNumber(ByVal number As Integer) As TeleportPoint
         For i = 0 To RefTeleportPoints.Count - 1
             If RefTeleportPoints(i).TeleportNumber = number Then
                 Return RefTeleportPoints(i)
@@ -988,7 +992,7 @@ Module SilkroadData
         Return Nothing
     End Function
 
-    Public Function GetTeleportPoint(ByVal pk2Id As UInteger) As TeleportPoint_
+    Public Function GetTeleportPoint(ByVal pk2Id As UInteger) As TeleportPoint
         For i = 0 To RefTeleportPoints.Count - 1
             If RefTeleportPoints(i).Pk2ID = pk2Id Then
                 Return RefTeleportPoints(i)
@@ -999,25 +1003,26 @@ Module SilkroadData
 #End Region
 
 #Region "SpecialSectors"
-    Public Structure SpecialSector_
+
+    Private Structure SpecialSector
         Public Type As SpecialSector_Types
         Public XSec As Byte
         Public YSec As Byte
     End Structure
 
-    Enum SpecialSector_Types
+    Private Enum SpecialSector_Types
         Safe_Zone = 1
         Cave_Zone = 2
     End Enum
 
-    Public Sub DumpSpecialSectorFile(ByVal path As String)
+    Private Sub DumpSpecialSectorFile(ByVal path As String)
         RefSpecialZones.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim tmp As New SpecialSector_
+                Dim tmp As New SpecialSector
 
                 tmp.XSec = tmpString(0)
                 tmp.YSec = tmpString(1)
@@ -1052,7 +1057,8 @@ Module SilkroadData
 #End Region
 
 #Region "Unique"
-    Public Sub DumpUniqueFile(ByVal path As String)
+
+    Private Sub DumpUniqueFile(ByVal path As String)
         RefUniques.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
@@ -1074,7 +1080,8 @@ Module SilkroadData
 #End Region
 
 #Region "NPC/Shop"
-    Public Sub DumpNpcChatFile(ByVal path As String)
+
+    Private Sub DumpNpcChatFile(ByVal path As String)
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
@@ -1095,8 +1102,7 @@ Module SilkroadData
     End Sub
 
 
-
-    Public Sub DumpShopDataFile()
+    Private Sub DumpShopDataFile()
         RefShops.Clear()
         RefShopGroups.Clear()
         RefShopTabGroups.Clear()
@@ -1105,7 +1111,7 @@ Module SilkroadData
         'refshopgroup --> refmappingshopgroup.txt
 
         '1	19	1976	STORE_CH_SMITH
-        Dim lines As String() = File.ReadAllLines(base_path & "data\refshop.txt")
+        Dim lines As String() = File.ReadAllLines(BasePath & "data\refshop.txt")
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1119,7 +1125,7 @@ Module SilkroadData
 
 
         '1	19	1898	GROUP_STORE_CH_SMITH	NPC_CH_SMITH
-        lines = File.ReadAllLines(base_path & "data\refshopgroup.txt")
+        lines = File.ReadAllLines(BasePath & "data\refshopgroup.txt")
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1136,7 +1142,7 @@ Module SilkroadData
 
         'Map group with Stores
         '1	19	GROUP_STORE_CH_SMITH	STORE_CH_SMITH
-        lines = File.ReadAllLines(base_path & "data\refmappingshopgroup.txt")
+        lines = File.ReadAllLines(BasePath & "data\refmappingshopgroup.txt")
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1154,7 +1160,7 @@ Module SilkroadData
 
         'Loading TabGroups
         '1	19	2063	STORE_CH_SMITH_GROUP1
-        lines = File.ReadAllLines(base_path & "data\refshoptabgroup.txt")
+        lines = File.ReadAllLines(BasePath & "data\refshoptabgroup.txt")
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1170,7 +1176,7 @@ Module SilkroadData
 
         'Loading Tabs
         '1	19	4642	STORE_CH_SMITH_TAB1	STORE_CH_SMITH_GROUP1
-        lines = File.ReadAllLines(base_path & "data\refshoptab.txt")
+        lines = File.ReadAllLines(BasePath & "data\refshoptab.txt")
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1203,7 +1209,7 @@ Module SilkroadData
 
         'Dump Items
         '1	19	STORE_CH_SMITH_TAB1	PACKAGE_ITEM_CH_SWORD_01_A	0
-        lines = File.ReadAllLines(base_path & "data\refshopgoods.txt")
+        lines = File.ReadAllLines(BasePath & "data\refshopgoods.txt")
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1220,7 +1226,7 @@ Module SilkroadData
 
                                 Dim tmpPackage As PackageItem = GetPackageItem(packageName)
                                 For k = 0 To RefPackageItems.Count - 1
-                                    If RefPackageItems(k).Package_Name = packageName Then
+                                    If RefPackageItems(k).PackageName = packageName Then
                                         RefPackageItems(k).InShop = True
                                         RefPackageItems(k).Shop = tabName
                                         Exit For
@@ -1241,7 +1247,7 @@ Module SilkroadData
 
         'Mapping Shop with Tabs
         '1	19	STORE_CH_SMITH	STORE_CH_SMITH_GROUP1
-        lines = File.ReadAllLines(base_path & "data\refmappingshopwithtab.txt")
+        lines = File.ReadAllLines(BasePath & "data\refmappingshopwithtab.txt")
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
@@ -1293,12 +1299,12 @@ Module SilkroadData
         obj.Shop.Tabs(5).TabName = "STORE_KT_ACCESSORY_TAB3"
     End Sub
 
-    Public Function GetNpc(ByVal StoreName As String) As Integer
+    Public Function GetNpc(ByVal storeName As String) As Integer
         Dim tmplist As Array = RefObjects.Keys.ToArray
         For Each key In tmplist
             If RefObjects.ContainsKey(key) Then
                 If RefObjects(key).Shop IsNot Nothing Then
-                    If RefObjects(key).Shop.StoreName = StoreName Then
+                    If RefObjects(key).Shop.StoreName = storeName Then
                         Return key
                     End If
                 End If
@@ -1307,14 +1313,14 @@ Module SilkroadData
         Return -1
     End Function
 
-    Public Function GetNpc2(ByVal TabName As String) As Integer
+    Public Function GetNpc2(ByVal tabName As String) As Integer
         Dim tmplist As Array = RefObjects.Keys.ToArray
         For Each key In tmplist
             If RefObjects.ContainsKey(key) Then
                 If RefObjects(key).Shop IsNot Nothing Then
                     For r = 0 To RefObjects(key).Shop.Tabs.Count - 1
                         If RefObjects(key).Shop.Tabs(r) IsNot Nothing Then
-                            If RefObjects(key).Shop.Tabs(r).TabName = TabName Then
+                            If RefObjects(key).Shop.Tabs(r).TabName = tabName Then
                                 Return key
                             End If
                         End If
@@ -1336,7 +1342,8 @@ Module SilkroadData
 #End Region
 
 #Region "AbuseList"
-    Public Sub DumpAbuseListFile(ByVal path As String)
+
+    Private Sub DumpAbuseListFile(ByVal path As String)
         RefAbuseList.Clear()
 
         Dim lines As String() = File.ReadAllLines(path)
@@ -1349,10 +1356,11 @@ Module SilkroadData
 #End Region
 
 #Region "Caveteleport"
-    Public Class CaveTeleporter_
+
+    Public Class CaveTeleporter
         Public FromPosition As New Position
-        Public Range As Integer
-        Public ToTeleporterID As Integer
+        Public Range As Integer = 0
+        Public ToTeleporterID As Integer = 0
     End Class
 
 
@@ -1364,7 +1372,7 @@ Module SilkroadData
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim tmp As New CaveTeleporter_
+                Dim tmp As New CaveTeleporter
                 tmp.FromPosition.XSector = tmpString(0)
                 tmp.FromPosition.YSector = tmpString(1)
                 tmp.FromPosition.X = tmpString(2)
@@ -1379,30 +1387,26 @@ Module SilkroadData
 #End Region
 
 #Region "NameFiles"
-    Public Class SilkroadNameEntry
-        Public Code_Name As String
-        Public Content As String
-    End Class
 
-    Public Sub DumpNameFiles()
+    Private Sub DumpNameFiles()
         Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\textdataname.txt")
         For i As Integer = 0 To paths.Length - 1
             DumpNameFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
         Next
     End Sub
 
-    Public Sub DumpNameFile(ByVal path As String)
+    Private Sub DumpNameFile(ByVal path As String)
         RefSilkroadNameEntys.Clear()
 
-        Dim LanguageTabIndex As Byte = 8
+        Const languageTabIndex As Byte = 8
         Dim lines As String() = File.ReadAllLines(path)
 
         For i As Integer = 0 To lines.Length - 1
             If lines(i).StartsWith("//") = False And lines(i) <> "" And lines(i).StartsWith("1" & ControlChars.Tab) = True Then
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                If tmpString.Length >= LanguageTabIndex AndAlso tmpString(1).StartsWith("SN") And RefSilkroadNameEntys.ContainsKey(tmpString(1)) = False Then
-                    RefSilkroadNameEntys.Add(tmpString(1), tmpString(LanguageTabIndex))
+                If tmpString.Length >= languageTabIndex AndAlso tmpString(1).StartsWith("SN") And RefSilkroadNameEntys.ContainsKey(tmpString(1)) = False Then
+                    RefSilkroadNameEntys.Add(tmpString(1), tmpString(languageTabIndex))
                 End If
             End If
         Next

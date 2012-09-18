@@ -27,7 +27,7 @@ Namespace Functions
 
             PackageName = RefObj.Shop.Tabs(shopline).Items(itemline).PackageName
             Dim Package As PackageItem = GetPackageItem(PackageName)
-            Dim BuyItem As cRefItem = GetItemByName(Package.Code_Name)
+            Dim BuyItem As cRefItem = GetItemByName(Package.CodeName)
 
             Select Case BuyItem.CLASS_A
                 Case 1

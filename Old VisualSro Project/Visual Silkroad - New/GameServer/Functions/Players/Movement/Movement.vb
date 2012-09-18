@@ -317,7 +317,7 @@ Namespace Functions
                 For i = 0 To RefCaveTeleporter.Count - 1
                     If CalculateDistance(PlayerData(Index_).Position, RefCaveTeleporter(i).FromPosition) <= RefCaveTeleporter(i).Range Then
                         'In Range --> Teleport
-                        Dim point As TeleportPoint_ = GetTeleportPointByNumber(RefCaveTeleporter(i).ToTeleporterID)
+                        Dim point As TeleportPoint = GetTeleportPointByNumber(RefCaveTeleporter(i).ToTeleporterID)
                         '####################### Notice : Dont work
                         Dim link As TeleportLink = point.Links(0)
 

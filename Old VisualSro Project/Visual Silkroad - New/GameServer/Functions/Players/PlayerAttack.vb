@@ -439,7 +439,7 @@ Namespace Functions
             If DamageMax < DamageMin Then
                 Log.WriteSystemLog(
                     String.Format("Ply Max Dmg over Min Dmg. Min {0} Max {1}. Char: {2}, Mob:{3}, Skill:{4}", DamageMin,
-                                  DamageMax, PlayerData(Index_).CharacterName, Mob.TypeName, SkillID))
+                                  DamageMax, PlayerData(Index_).CharacterName, Mob.CodeName, SkillID))
                 DamageMax = DamageMin + 1
             End If
 

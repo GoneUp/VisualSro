@@ -6,7 +6,7 @@ Namespace Functions
         Public Sub Parse(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim length As UInteger = packet.Word
             Dim opcode As UInteger = packet.Word
-            Dim security As UInteger = packet.Word
+            Dim security As UShort = packet.Word
 
             Server.ClientList.LastPingTime(Index_) = Date.Now
 

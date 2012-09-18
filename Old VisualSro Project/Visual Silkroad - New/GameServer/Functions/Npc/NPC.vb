@@ -99,7 +99,7 @@ Namespace Functions
         Public Sub OnNpcChat(ByVal NpcUniqueId As UInteger, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             Dim obj As SilkroadObject = GetObject(NpcList(NpcUniqueId).Pk2ID)
-            Dim name As String() = obj.TypeName.Split("_")
+            Dim name As String() = obj.CodeName.Split("_")
 
             writer.Create(ServerOpcodes.GAME_TARGET)
             writer.Byte(1)
@@ -112,12 +112,12 @@ Namespace Functions
                 Next
             Else
                 'Unsupoorted npc
-                SendNotice("Unsupported NPC, ID: " & obj.Pk2ID & " TypeName: " & obj.TypeName)
+                SendNotice("Unsupported NPC, ID: " & obj.Pk2ID & " TypeName: " & obj.CodeName)
                 Exit Sub
             End If
 
 
-            CheckForTax(obj.TypeName, writer)
+            CheckForTax(obj.CodeName, writer)
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = True
@@ -135,7 +135,7 @@ Namespace Functions
                 writer.Create(ServerOpcodes.GAME_NPC_CHAT)
                 writer.Byte(1)
                 'Sucess
-                If refObj.TypeName <> "NPC_CH_GACHA_MACHINE" Then
+                If refObj.CodeName <> "NPC_CH_GACHA_MACHINE" Then
                     writer.Byte(chatId)
                     'Type
                 Else
@@ -169,7 +169,7 @@ Namespace Functions
             Select Case type
                 Case 2
                     Dim TeleportNumber As Integer = packet.DWord
-                    Dim Point_ As TeleportPoint_ = GetTeleportPointByNumber(TeleportNumber)
+                    Dim Point_ As TeleportPoint = GetTeleportPointByNumber(TeleportNumber)
 
                     If Point_ Is Nothing Then
                         Server.Disconnect(Index_)

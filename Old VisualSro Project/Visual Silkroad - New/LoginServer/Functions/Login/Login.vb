@@ -231,6 +231,7 @@ Namespace Functions
             'Dim writer As New PacketWriter
             'writer.Create(ServerOpcodes.LOGIN_AUTH)
             'writer.Byte(2) 'fail
+
             'writer.Byte(3) 'already connected
             'writer.Byte(4) 'C5
             'writer.Byte(6) 'server full
@@ -244,6 +245,7 @@ Namespace Functions
             '##########
             'writer.Byte(2) 'fail
             'writer.Byte(2) 'fail subcode
+
             'writer.Byte(1) 'block
             'writer.Byte(2) 'server in insepction
             'writer.Byte(3) 'use aggrement

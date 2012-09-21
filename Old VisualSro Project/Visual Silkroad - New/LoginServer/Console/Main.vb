@@ -126,6 +126,8 @@ Friend Module Program
             Server.DownloadCounter.AddPacket(packet, PacketSource.Client)
 
             Functions.Parser.Parse(packet, index_)
+
+            packet.Dispose()
         Loop
     End Sub
 

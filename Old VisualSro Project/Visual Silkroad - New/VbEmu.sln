@@ -20,14 +20,13 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SRFramework", "Framework\SR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC3982C3-3E21-481E-A529-94B4B4ED007A}"
 	ProjectSection(SolutionItems) = preProject
+		LoginServer.psess = LoginServer.psess
 		LoginServer120908.vsp = LoginServer120908.vsp
 		LoginServer120912(1).vsp = LoginServer120912(1).vsp
 		LoginServer120912(2).vsp = LoginServer120912(2).vsp
 		LoginServer120912(3).vsp = LoginServer120912(3).vsp
 		LoginServer120912(4).vsp = LoginServer120912(4).vsp
 		LoginServer120912.vsp = LoginServer120912.vsp
-		Performance1.psess = Performance1.psess
-		Performance2.psess = Performance2.psess
 		VbEmu.vsmdi = VbEmu.vsmdi
 	EndProjectSection
 EndProject

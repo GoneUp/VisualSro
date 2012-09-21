@@ -1,100 +1,88 @@
 ﻿Imports System.IO
-Imports System.ComponentModel
 
-Public Class PacketReader
+Public Class PacketReader : Implements IDisposable
 
 #Region "Fields"
-    Private ReadOnly _br As BinaryReader
-    Private ReadOnly _ms As MemoryStream
-    Private ReadOnly _packetData() As Byte
+    Private m_br As BinaryReader
+    Private m_ms As MemoryStream
 
     Public ReadOnly Property Length() As UShort
         Get
-            Return Me._ms.Length
+            Return Me.m_ms.Length
         End Get
     End Property
 #End Region
 
 #Region "General Functions"
     Public Sub New(ByVal data() As Byte)
-        Me._ms = New MemoryStream(data)
-        Me._br = New BinaryReader(Me._ms)
-        _packetData = data
+        Me.m_ms = New MemoryStream(data)
+        Me.m_br = New BinaryReader(Me.m_ms)
     End Sub
-
-    Public Sub Disponse()
-        Me._br.Close()
-        Me._ms.Close()
-    End Sub
-
-    Public Function GetData() As Byte()
-        Return Me._packetData
-    End Function
 
     Public Sub Skip(ByVal howMany As Integer)
         For i = 1 To (howMany \ 2)
-            Me._br.ReadByte()
+            Me.m_br.ReadByte()
         Next i
     End Sub
 #End Region
 
     Public Function [Boolean]() As Boolean
-        Return Me._br.ReadBoolean()
+        Return Me.m_br.ReadBoolean()
     End Function
 
     Public Function [Byte]() As Byte
-        Return Me._br.ReadByte()
+        Return Me.m_br.ReadByte()
     End Function
 
     Public Function ByteArray(ByVal count As Integer) As Byte()
-        Return Me._br.ReadBytes(count)
+        Return Me.m_br.ReadBytes(count)
     End Function
 
     Public Function Word() As UShort
-        Return Me._br.ReadUInt16()
+        Return Me.m_br.ReadUInt16()
     End Function
 
     Public Function WordInt() As Short
-        Return Me._br.ReadInt16()
+        Return Me.m_br.ReadInt16()
     End Function
 
     Public Function DWord() As UInteger
-        Return Me._br.ReadUInt32()
+        Return Me.m_br.ReadUInt32()
     End Function
 
     Public Function DWordInt() As Integer
-        Return Me._br.ReadInt32()
+        Return Me.m_br.ReadInt32()
     End Function
 
     Public Function Float() As Single
-        Return Me._br.ReadSingle()
+        Return Me.m_br.ReadSingle()
     End Function
 
     Public Function QWord() As ULong
-        Return Me._br.ReadUInt64()
+        Return Me.m_br.ReadUInt64()
     End Function
 
     Public Function [String](ByVal len As Integer) As String
         Dim builder As New Text.StringBuilder()
-        For Each ch As Char In Me._br.ReadChars(len)
+        For Each ch As Char In Me.m_br.ReadChars(len)
             builder.Append(ch.ToString())
         Next ch
         Return builder.ToString()
     End Function
 
     Public Function UString(ByVal len As Integer) As String
-        Dim Bytes As Byte() = Me.ByteArray(len * 2)
-        Return System.Text.Encoding.Unicode.GetString(Bytes)
+        Dim bytes As Byte() = Me.ByteArray(len * 2)
+        Return System.Text.Encoding.Unicode.GetString(bytes)
     End Function
 
     Public Function [Date]() As Date
-        Dim year As UInt16 = Me._br.ReadUInt16()
-        Dim month As UInt16 = Me._br.ReadUInt16()
-        Dim day As UInt16 = Me._br.ReadUInt16()
-        Dim hour As UInt16 = Me._br.ReadUInt16()
-        Dim minute As UInt16 = Me._br.ReadUInt16()
-        Dim second As UInt16 = Me._br.ReadUInt16()
-        Dim milisecond As UInt16 = Me._br.ReadUInt32()
+        Dim year As UInt16 = Me.m_br.ReadUInt16()
+        Dim month As UInt16 = Me.m_br.ReadUInt16()
+        Dim day As UInt16 = Me.m_br.ReadUInt16()
+        Dim hour As UInt16 = Me.m_br.ReadUInt16()
+        Dim minute As UInt16 = Me.m_br.ReadUInt16()
+        Dim second As UInt16 = Me.m_br.ReadUInt16()
+        Dim milisecond As UInt16 = Me.m_br.ReadUInt32()
 
 
         Dim culture = New Globalization.CultureInfo("de-DE", True)
@@ -105,6 +93,23 @@ Public Class PacketReader
                                             Globalization.DateTimeStyles.NoCurrentDateDefault)
         Return myDate
     End Function
+
+#Region "IDisposable"
+    Private m_disponsed As Boolean = False
+    Sub Dispose() Implements IDisposable.Dispose
+        If m_disponsed = False Then
+            Me.m_br.Close()
+            Me.m_ms.Close()
+        End If
+
+        Me.m_br = Nothing
+        Me.m_ms = Nothing
+
+        Console.WriteLine("Cleanup..")
+        GC.SuppressFinalize(Me)
+        m_disponsed = True
+    End Sub
+#End Region
 End Class
 
 

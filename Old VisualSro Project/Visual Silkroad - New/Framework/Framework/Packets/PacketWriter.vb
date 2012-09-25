@@ -54,7 +54,7 @@ Public Class PacketWriter : Implements IDisposable
     Public Function GetBytes() As Byte()
         Dim buffer(0) As Byte
         Me.m_ms.Position = 0
-        Me.m_bw.Write(m_bw.BaseStream.Length - 6)
+        Me.m_bw.Write(Convert.ToUInt16(m_ms.Length - 6))
         buffer = Me.m_ms.ToArray()
 
         Dispose()
@@ -127,7 +127,7 @@ Public Class PacketWriter : Implements IDisposable
         Me.m_bw = Nothing
         Me.m_ms = Nothing
 
-        Console.WriteLine("Cleanup..")
+        'Console.WriteLine("Cleanup..")
         GC.SuppressFinalize(Me)
         m_disponsed = True
     End Sub

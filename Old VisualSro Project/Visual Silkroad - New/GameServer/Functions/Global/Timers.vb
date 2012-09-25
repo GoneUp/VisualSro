@@ -7,18 +7,19 @@ Namespace Functions
         Public PlayerMoveTimer As Timer() = New Timer(1) {}
         Public PlayerBerserkTimer As Timer() = New Timer(1) {}
         Public PlayerExitTimer As Timer() = New Timer(1) {}
-        Public PlayerAutoHeal As New Timer
-        Public WorldCheck As New Timer
-        Public MonsterMovement As New Timer
-        Public MonsterRespawn As New Timer
         Public MonsterAttack As Timer() = New Timer(1) {}
         Public PickUpTimer As Timer() = New Timer(1) {}
         Public UsingItemTimer As Timer() = New Timer(1) {}
         Public SitUpTimer As Timer() = New Timer(1) {}
-        Public GeneralTimer As New Timer
-        Public PingTimer As New Timer
 
-        Public Sub LoadTimers(ByVal timerCount As Integer)
+        Private ReadOnly GeneralTimer As New Timer
+        Private ReadOnly PingTimer As New Timer
+        Private ReadOnly PlayerAutoHeal As New Timer
+        Private ReadOnly WorldCheck As New Timer
+        Private ReadOnly MonsterMovement As New Timer
+        Private ReadOnly MonsterRespawn As New Timer
+
+        Public Function LoadTimers(ByVal timerCount As Integer) As Boolean
             Log.WriteSystemLog("Loading Timers...")
 
             Try
@@ -28,27 +29,27 @@ Namespace Functions
 
                 For i As Integer = 0 To timerCount - 1
                     PlayerAttackTimer(i) = New Timer()
-                    AddHandler PlayerAttackTimer(i).Elapsed, AddressOf AttackTimer_Elapsed
+                    AddHandler PlayerAttackTimer(i).Elapsed, AddressOf AttackTimerElapsed
                     PlayerMoveTimer(i) = New Timer()
-                    AddHandler PlayerMoveTimer(i).Elapsed, AddressOf PlayerMoveTimer_Elapsed
+                    AddHandler PlayerMoveTimer(i).Elapsed, AddressOf PlayerMoveTimerElapsed
                     PlayerBerserkTimer(i) = New Timer()
-                    AddHandler PlayerBerserkTimer(i).Elapsed, AddressOf PlayerBerserkTimer_Elapsed
+                    AddHandler PlayerBerserkTimer(i).Elapsed, AddressOf PlayerBerserkTimerElapsed
                     PlayerExitTimer(i) = New Timer()
-                    AddHandler PlayerExitTimer(i).Elapsed, AddressOf PlayerExitTimer_Elapsed
+                    AddHandler PlayerExitTimer(i).Elapsed, AddressOf PlayerExitTimerElapsed
                     UsingItemTimer(i) = New Timer()
-                    AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimer_Elapsed
+                    AddHandler UsingItemTimer(i).Elapsed, AddressOf UseItemTimerElapsed
                     SitUpTimer(i) = New Timer()
-                    AddHandler SitUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
+                    AddHandler SitUpTimer(i).Elapsed, AddressOf SitUpTimerElapsed
                     PickUpTimer(i) = New Timer()
-                    AddHandler PickUpTimer(i).Elapsed, AddressOf SitUpTimer_Elapsed
+                    AddHandler PickUpTimer(i).Elapsed, AddressOf SitUpTimerElapsed
                 Next
 
-                AddHandler WorldCheck.Elapsed, AddressOf WorldCheck_Elapsed
-                AddHandler MonsterRespawn.Elapsed, AddressOf MonsterRespawn_Elapsed
-                AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovement_Elapsed
-                AddHandler PlayerAutoHeal.Elapsed, AddressOf PlayerAutoHeal_Elapsed
-                AddHandler GeneralTimer.Elapsed, AddressOf GeneralTimer_Elapsed
-                AddHandler PingTimer.Elapsed, AddressOf PingTimer_Elapsed
+                AddHandler WorldCheck.Elapsed, AddressOf WorldCheckElapsed
+                AddHandler MonsterRespawn.Elapsed, AddressOf MonsterRespawnElapsed
+                AddHandler MonsterMovement.Elapsed, AddressOf MonsterMovementElapsed
+                AddHandler PlayerAutoHeal.Elapsed, AddressOf PlayerAutoHealElapsed
+                AddHandler GeneralTimer.Elapsed, AddressOf GeneralTimerElapsed
+                AddHandler PingTimer.Elapsed, AddressOf PingTimerElapsed
 
                 'Start Timers
                 WorldCheck.Interval = 5000
@@ -71,12 +72,15 @@ Namespace Functions
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timers loading failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
+                Return False
             Finally
                 Log.WriteSystemLog("Timers loaded!")
             End Try
-        End Sub
 
-        Public Sub AttackTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            Return True
+        End Function
+
+        Private Sub AttackTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Dim Index_ As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
@@ -116,7 +120,7 @@ Namespace Functions
             End Try
         End Sub
 
-        Public Sub UseItemTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub UseItemTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Dim Index_ As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
@@ -176,7 +180,7 @@ Namespace Functions
             End Try
         End Sub
 
-        Public Sub SitUpTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub SitUpTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Dim Index_ As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
@@ -227,7 +231,7 @@ Namespace Functions
             End Try
         End Sub
 
-        Public Sub WorldCheck_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub WorldCheckElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             WorldCheck.Stop()
 
             Try
@@ -267,7 +271,6 @@ Namespace Functions
                 Debug.Print("WC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & MobList.Count)
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: WC")
-                '
             End Try
 
             WorldCheck.Start()
@@ -275,7 +278,7 @@ Namespace Functions
         End Sub
 
 
-        Public Sub MonsterRespawn_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub MonsterRespawnElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             MonsterRespawn.Stop()
             Try
                 Dim stopwatch As New Stopwatch
@@ -294,7 +297,7 @@ Namespace Functions
             'restart Timer
         End Sub
 
-        Public Sub MonsterMovement_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub MonsterMovementElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             MonsterMovement.Stop()
 
             Try
@@ -311,36 +314,37 @@ Namespace Functions
                                 Mob_.Death = False And
                                 Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And
                                 obj.WalkSpeed > 0 And Mob_.GetsAttacked = False And Mob_.IsAttacking = False Then
-                                Dim Dist_FromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
-                                If Dist_FromSpawn < Settings.Server_Range / 1.25 Then
-                                    Dim ToX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
-                                    Dim ToY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
+                                Dim distFromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
+
+                                If distFromSpawn < Settings.Server_Range / 1.25 Then
+                                    Dim toX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
+                                    Dim toY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
                                     Dim vaildCords As Boolean = False
                                     Dim validCordTrys As Integer = 0
 
                                     Do
-                                        Dim tmpXsec As Int16 = GetXSecFromGameX(ToX)
-                                        Dim tmpYsec As Int16 = GetYSecFromGameY(ToY)
+                                        Dim tmpXsec As Int16 = GetXSecFromGameX(toX)
+                                        Dim tmpYsec As Int16 = GetYSecFromGameY(toY)
                                         If tmpXsec > 0 And tmpXsec < 255 And tmpYsec > 0 And tmpYsec < 255 Then
                                             vaildCords = True
                                         ElseIf validCordTrys > 5 Then
                                             Continue For
                                         Else
-                                            ToX = Mob_.Position.ToGameX + Rand.Next(-15, +15)
-                                            ToY = Mob_.Position.ToGameY + Rand.Next(-15, +15)
+                                            toX = Mob_.Position.ToGameX + Rand.Next(-15, +15)
+                                            toY = Mob_.Position.ToGameY + Rand.Next(-15, +15)
                                             validCordTrys += 1
                                         End If
                                     Loop While vaildCords = False
 
-                                    Dim ToPos As New Position
-                                    ToPos.XSector = GetXSecFromGameX(ToX)
-                                    ToPos.YSector = GetYSecFromGameY(ToY)
-                                    ToPos.X = GetXOffset(ToX)
-                                    ToPos.Z = Mob_.Position.Z
-                                    ToPos.Y = GetYOffset(ToY)
+                                    Dim toPos As New Position
+                                    toPos.XSector = GetXSecFromGameX(toX)
+                                    toPos.YSector = GetYSecFromGameY(toY)
+                                    toPos.X = GetXOffset(toX)
+                                    toPos.Z = Mob_.Position.Z
+                                    toPos.Y = GetYOffset(toY)
 
-                                    MoveMob(Mob_.UniqueID, ToPos)
+                                    MoveMob(Mob_.UniqueID, toPos)
                                 Else
                                     MoveMob(Mob_.UniqueID, Mob_.Position_Spawn)
                                 End If
@@ -360,7 +364,7 @@ Namespace Functions
             MonsterMovement.Start()
         End Sub
 
-        Public Sub PlayerMoveTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub PlayerMoveTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Dim Index_ As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
@@ -399,26 +403,26 @@ Namespace Functions
             End Try
         End Sub
 
-        Public Sub PlayerAutoHeal_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub PlayerAutoHealElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             PlayerAutoHeal.Stop()
 
             Try
                 For i = 0 To PlayerData.Length - 1
                     If PlayerData(i) IsNot Nothing Then
                         If PlayerData(i).Ingame And PlayerData(i).Alive Then
-                            Dim Changed_HPMP As Boolean = False
+                            Dim changedHPMP As Boolean = False
                             Select Case PlayerData(i).ActionFlag
                                 Case 0
                                     'Nomral
                                     If PlayerData(i).CHP < PlayerData(i).HP Then
                                         PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.002, 0,
                                                                         MidpointRounding.AwayFromZero)
-                                        Changed_HPMP = True
+                                        changedHPMP = True
                                     End If
                                     If PlayerData(i).CMP < PlayerData(i).MP Then
                                         PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.002, 0,
                                                                         MidpointRounding.AwayFromZero)
-                                        Changed_HPMP = True
+                                        changedHPMP = True
                                     End If
 
                                 Case 4
@@ -426,12 +430,12 @@ Namespace Functions
                                     If PlayerData(i).CHP < PlayerData(i).HP Then
                                         PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.05, 0,
                                                                         MidpointRounding.AwayFromZero)
-                                        Changed_HPMP = True
+                                        changedHPMP = True
                                     End If
                                     If PlayerData(i).CMP < PlayerData(i).MP Then
                                         PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.05, 0,
                                                                         MidpointRounding.AwayFromZero)
-                                        Changed_HPMP = True
+                                        changedHPMP = True
                                     End If
                             End Select
 
@@ -444,7 +448,7 @@ Namespace Functions
                             End If
 
 
-                            If Changed_HPMP = True Then
+                            If changedHPMP = True Then
                                 UpdateHP_MP(i)
                             End If
                         End If
@@ -460,7 +464,7 @@ Namespace Functions
         End Sub
 
 
-        Public Sub PlayerBerserkTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub PlayerBerserkTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
 
             Dim Index_ As Integer = -1
             Try
@@ -487,7 +491,7 @@ Namespace Functions
             End Try
         End Sub
 
-        Public Sub GeneralTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub GeneralTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             GeneralTimer.Stop()
 
             'For Database Execute Querys, GlobalManager Ping, GlobalManager Update, check other Timers for a Crash
@@ -525,7 +529,8 @@ Namespace Functions
 
             GeneralTimer.Start()
         End Sub
-        Public Sub PingTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+
+        Private Sub PingTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             PingTimer.Stop()
 
             'Excluded from ClientList 
@@ -550,7 +555,7 @@ Namespace Functions
             PingTimer.Start()
         End Sub
 
-        Public Sub PlayerExitTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub PlayerExitTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
 
             Dim Index_ As Integer = -1
             Try

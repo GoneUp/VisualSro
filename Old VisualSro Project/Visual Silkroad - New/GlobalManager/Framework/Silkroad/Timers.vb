@@ -2,32 +2,39 @@
 
 Namespace Timers
     Module Timers
+        Private GenralTimer As New Timer
+        Private CleanUpTimer As New Timer
+        Private PingTimer As New Timer
 
-        Friend QueryTimer As New Timer
-        Friend CleanUpTimer As New Timer
-        Public PingTimer As New Timer
+        Friend Function LoadTimers() As Boolean
+            Try
+                'Handlers
+                AddHandler GenralTimer.Elapsed, AddressOf GeneralTimerElapsed
+                AddHandler CleanUpTimer.Elapsed, AddressOf CleanUpElapsed
+                AddHandler PingTimer.Elapsed, AddressOf PingTimerElapsed
 
-        Friend Sub LoadTimers()
-            'Handlers
+                'Starting
+                GenralTimer.Interval = 10000
+                GenralTimer.Start()
 
-            AddHandler QueryTimer.Elapsed, AddressOf QueryTimer_Elapsed
-            AddHandler CleanUpTimer.Elapsed, AddressOf CleanUp_Elapsed
-            AddHandler PingTimer.Elapsed, AddressOf PingTimer_Elapsed
+                CleanUpTimer.Interval = 2500
+                CleanUpTimer.Start()
 
-            'Starting
-            QueryTimer.Interval = 2500
-            QueryTimer.Start()
+                PingTimer.Interval = 30000
+                PingTimer.Start()
+            Catch ex As Exception
+                Log.WriteSystemLog("Timers loading failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
+                Return False
+            Finally
+                Log.WriteSystemLog("Timers loaded!")
+            End Try
 
-            CleanUpTimer.Interval = 2500
-            CleanUpTimer.Start()
-
-            PingTimer.Interval = 30000
-            PingTimer.Start()
-        End Sub
+            Return True
+        End Function
 
 
-        Friend Sub QueryTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
-            QueryTimer.Stop()
+        Private Sub GeneralTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+            GenralTimer.Stop()
 
             Try
 
@@ -39,11 +46,11 @@ Namespace Timers
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: QT")
             End Try
 
-            QueryTimer.Start()
+            GenralTimer.Start()
         End Sub
 
 
-        Friend Sub CleanUp_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub CleanUpElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             CleanUpTimer.Stop()
 
             Try
@@ -66,13 +73,13 @@ Namespace Timers
             CleanUpTimer.Start()
         End Sub
 
-        Public Sub PingTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub PingTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             PingTimer.Stop()
 
             'Excluded from ClientList 
 
             Try
-                Dim Count As Integer = 0
+                Dim count As Integer = 0
 
                 For i = 0 To Server.MaxClients - 1
                     Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)

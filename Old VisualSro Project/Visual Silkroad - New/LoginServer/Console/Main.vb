@@ -32,8 +32,7 @@ Friend Module Program
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.ParseGlobalManager
         AddHandler GlobalManagerCon.OnGatewayUserauthReply, AddressOf Functions.LoginSendUserAuthSucceed
         AddHandler GMCUserSidedShutdown, AddressOf gmc_OnUserSidedShutdown
-
-
+        
         AddHandler Log.OnDatabaseQuery, AddressOf log_OnDatabaseQuery
 
         'Console
@@ -53,26 +52,36 @@ Friend Module Program
         Database.Connect()
 
         'Load Data, Init GlobalDef
-        Log.WriteSystemLog("Connected Database. Starting Server now.")
-        LoginDb.UpdateData()
-        Timers.LoadTimers(Server.MaxClients)
-        GlobalDef.Initalize(Server.MaxClients)
+        Log.WriteSystemLog("Connected Database. Loading Data.")
 
-        Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
-        Log.WriteSystemLog("Latest Version: " & Settings.Server_CurrectVersion)
-        Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots & "/" & Settings.Server_MaxClients)
+        Dim succeed As Boolean = True
+        succeed = LoginDb.LoadData()
+        succeed = Timers.LoadTimers(Server.MaxClients)
+        succeed = Initalize(Server.MaxClients)
 
-        GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+        If succeed Then
+            Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
+            Log.WriteSystemLog("Latest Version: " & Settings.ServerCurrectVersion)
+            Log.WriteSystemLog("Slotcount: " & Settings.ServerNormalSlots & "/" & Settings.ServerMaxClients)
 
+            GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
+
+        Else
+            'Startup failed
+            Console.ForegroundColor = ConsoleColor.Red
+            Log.WriteSystemLog("Failed to load Refernce Data, check your error log!")
+        End If
+        
         Do While True
             Dim msg As String = Console.ReadLine()
             CheckCommand(msg)
             Threading.Thread.Sleep(10)
         Loop
+
     End Sub
 
     Private Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-        If True Then
+        If Settings.LogConnect Then
             Log.WriteSystemLog(String.Format("Client[{0}/{1}] Connected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
         End If
 
@@ -97,7 +106,7 @@ Friend Module Program
         End If
 
 
-        If True Then
+        If Settings.LogConnect Then
             Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
         End If
     End Sub
@@ -119,7 +128,7 @@ Friend Module Program
 
             Dim packet As New PacketReader(newbuff)
 
-            If Settings.Server_DebugMode Then
+            If Settings.ServerDebugMode Then
                 Log.LogPacket(newbuff, False)
             End If
 
@@ -190,9 +199,9 @@ Friend Module Program
 
     Private Sub gmc_OnGlobalManagerConLost()
         Log.WriteSystemLog("GMC: Lost Connection, Cleanup!")
-        Shard_Gateways.Clear()
-        Shard_Gameservers.Clear()
-        Shard_Downloads.Clear()
+        ShardGateways.Clear()
+        ShardGameservers.Clear()
+        ShardDownloads.Clear()
     End Sub
 
     Private Sub gmc_OnGlobalManagerLog(ByVal message As String)
@@ -210,18 +219,17 @@ Friend Module Program
 
             Case GlobalManagerClient.GMCShutdownReason.Reconnect
                 Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
 
             Case GlobalManagerClient.GMCShutdownReason.Reinit
                 Log.WriteSystemLog("Cleanup Server...")
 
                 GlobalDef.Initalize(Server.MaxClients)
-                LoginDb.InitalLoad = True
-                LoginDb.UpdateData()
+                LoginDb.LoadData()
                 Timers.LoadTimers(Server.MaxClients)
 
                 Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
         End Select
     End Sub
 

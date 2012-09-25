@@ -26,7 +26,7 @@ Module SilkroadData
 
     Private ReadOnly BasePath As String = AppDomain.CurrentDomain.BaseDirectory
 
-    Public Sub DumpDataFiles()
+    Public Function DumpDataFiles() As Boolean
 
         Try
 
@@ -88,8 +88,12 @@ Module SilkroadData
 
         Catch ex As Exception
             Log.WriteSystemLog("Error at Loading Data! Message: " & ex.Message & " Stack: " & ex.StackTrace)
+
+            Return False
         End Try
-    End Sub
+
+        Return True
+    End Function
 
 #Region "Items"
 

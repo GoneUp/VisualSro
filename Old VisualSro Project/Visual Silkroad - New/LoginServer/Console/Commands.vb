@@ -26,11 +26,11 @@
                 Log.WriteSystemLog("/end")
 
             Case "/debug"
-                If Settings.Server_DebugMode Then
-                    Settings.Server_DebugMode = False
+                If Settings.ServerDebugMode Then
+                    Settings.ServerDebugMode = False
                     Log.WriteSystemLog("Turned off DebugMode")
-                ElseIf Settings.Server_DebugMode = False Then
-                    Settings.Server_DebugMode = True
+                ElseIf Settings.ServerDebugMode = False Then
+                    Settings.ServerDebugMode = True
                     Log.WriteSystemLog("Turned on DebugMode")
                 End If
 
@@ -61,10 +61,10 @@
                     Server.Stop()
                 End If
 
-                Database.ExecuteQuerys()
-
+       
                 GlobalManagerCon.UserSidedShutdown = True
                 GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
+
                 If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
                     GlobalManager.OnSendServerShutdown()
                 Else
@@ -81,6 +81,7 @@
                 Log.WriteSystemLog("GMC: Started disconnect...")
                 GlobalManagerCon.UserSidedShutdown = True
                 GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reconnect
+
                 If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
                     GlobalManager.OnSendServerShutdown()
                 Else

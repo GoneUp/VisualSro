@@ -16,14 +16,21 @@
         'Stall
         Public Stalls As New List(Of cStall)
 
-        Public Sub GlobalInit(ByVal slots As UInt32)
-            ReDim PlayerData(slots), Inventorys(slots), CharListing(slots)
+        Public Function GlobalInit(ByVal slots As UInt32) As Boolean
+            Try
+                ReDim PlayerData(slots), Inventorys(slots), CharListing(slots)
 
-            ItemList.Clear()
-            MobList.Clear()
-            NpcList.Clear()
-            ExchangeData.Clear()
-            Stalls.Clear()
-        End Sub
+                ItemList.Clear()
+                MobList.Clear()
+                NpcList.Clear()
+                ExchangeData.Clear()
+                Stalls.Clear()
+            Catch ex As Exception
+                Log.WriteSystemLog("GlobalInit failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
+                Return False
+            End Try
+
+            Return True
+        End Function
     End Module
 End Namespace

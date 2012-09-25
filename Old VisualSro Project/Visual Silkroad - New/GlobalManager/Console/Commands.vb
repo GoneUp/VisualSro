@@ -7,34 +7,34 @@
         Select Case msg
 
             Case "/info"
-                GlobalManager.Log.WriteSystemLog("This Emulator is from GoneUp. ")
-                GlobalManager.Log.WriteSystemLog("Specical Thanks to:")
-                GlobalManager.Log.WriteSystemLog("Drew Benton")
-                GlobalManager.Log.WriteSystemLog("manneke for the great help")
-                GlobalManager.Log.WriteSystemLog("Windrius for the Framework.")
-                GlobalManager.Log.WriteSystemLog("SREmu Team")
-                GlobalManager.Log.WriteSystemLog("Dickernoob for CSREmu")
-                GlobalManager.Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
+                Log.WriteSystemLog("This Emulator is from GoneUp. ")
+                Log.WriteSystemLog("Specical Thanks to:")
+                Log.WriteSystemLog("Drew Benton")
+                Log.WriteSystemLog("manneke for the great help")
+                Log.WriteSystemLog("Windrius for the Framework.")
+                Log.WriteSystemLog("SREmu Team")
+                Log.WriteSystemLog("Dickernoob for CSREmu")
+                Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
             Case "/help"
-                GlobalManager.Log.WriteSystemLog("Commands: ")
-                GlobalManager.Log.WriteSystemLog("/info for the credits")
-                GlobalManager.Log.WriteSystemLog("/packets to enable packetGlobalManager.Log")
-                GlobalManager.Log.WriteSystemLog("/clear")
+                Log.WriteSystemLog("Commands: ")
+                Log.WriteSystemLog("/info for the credits")
+                Log.WriteSystemLog("/packets to enable Log")
+                Log.WriteSystemLog("/clear")
 
             Case "/packets"
 
-                GlobalManager.Settings.Server_DebugMode = True
-                GlobalManager.Log.WriteSystemLog("PacketLog started!")
+                Settings.ServerDebugMode = True
+                Log.WriteSystemLog("PacketLog started!")
 
             Case "/debug"
-                If Settings.Server_DebugMode Then
-                    Settings.Server_DebugMode = False
+                If Settings.ServerDebugMode Then
+                    Settings.ServerDebugMode = False
                     Log.WriteSystemLog("Turned off DebugMode")
 
-                ElseIf Settings.Server_DebugMode = False Then
-                    Settings.Server_DebugMode = True
+                ElseIf Settings.ServerDebugMode = False Then
+                    Settings.ServerDebugMode = True
                     Log.WriteSystemLog("Turned on DebugMode")
                 End If
 

@@ -2,21 +2,21 @@
 Imports System.Net.Sockets
 Imports System.Threading
 
-Public Class cServer_Base
-    Private _Ip As IPAddress = IPAddress.None
-    Private _MaxClients As UShort = 1
-    Private _MaxNormalClients As UShort = 1
-    Private _OnlineClients As UShort = 0
-    Private _ServerPort As UShort = 0
-    Private _Server_DebugMode As Boolean = False
-    Private _ClientList As cClientList
-    Private _Online As Boolean = False
+Public Class ServerBase
+    Private m_ip As IPAddress = IPAddress.None
+    Private m_maxClients As UShort = 1
+    Private m_maxNormalClients As UShort = 1
+    Private m_onlineClients As UShort = 0
+    Private m_serverPort As UShort = 0
+    Private m_serverDebugMode As Boolean = False
+    Private m_clientList As cClientList
+    Private m_online As Boolean = False
 
-    Private _DownloadCounter As New cByteCounter
-    Private _UploadCounter As New cByteCounter
+    Private m_downloadCounter As New cByteCounter
+    Private m_uploadCounter As New cByteCounter
 
-    Private _ServerSocket As Socket
-    Private _RevTheard(1) As Thread
+    Private m_serverSocket As Socket
+    Private m_revTheard(1) As Thread
 
 
 
@@ -43,126 +43,127 @@ Public Class cServer_Base
 #Region "Propertys"
     Public Property Ip() As String
         Get
-            Return _Ip.ToString()
+            Return m_ip.ToString()
         End Get
         Set(ByVal value As String)
-            _Ip = IPAddress.Parse(value)
+            m_ip = IPAddress.Parse(value)
         End Set
     End Property
 
     Public Property MaxClients() As UShort
         Get
-            Return _MaxClients
+            Return m_maxClients
         End Get
         Set(ByVal value As UShort)
-            _MaxClients = value
+            m_maxClients = value
             ClientList.Resize(value)
         End Set
     End Property
 
     Public Property MaxNormalClients() As UShort
         Get
-            Return _MaxNormalClients
+            Return m_maxNormalClients
         End Get
         Set(ByVal value As UShort)
-            _MaxNormalClients = value
+            m_maxNormalClients = value
         End Set
     End Property
 
     Public Property OnlineClients() As UShort
         Get
-            Return _OnlineClients
+            Return m_onlineClients
         End Get
         Set(ByVal value As UShort)
-            _OnlineClients = value
+            m_onlineClients = value
         End Set
     End Property
 
     Public Property Port() As UShort
         Get
-            Return _ServerPort
+            Return m_serverPort
         End Get
         Set(ByVal value As UShort)
-            _ServerPort = value
+            m_serverPort = value
         End Set
     End Property
 
     Public Property Server_DebugMode() As Boolean
         Get
-            Return _Server_DebugMode
+            Return m_serverDebugMode
         End Get
         Set(ByVal value As Boolean)
-            _Server_DebugMode = value
+            m_serverDebugMode = value
         End Set
     End Property
 
     Public Property ClientList() As cClientList
         Get
-            Return _ClientList
+            Return m_clientList
         End Get
         Set(ByVal value As cClientList)
-            _ClientList = value
+            m_clientList = value
         End Set
     End Property
 
     Public Property Online As Boolean
         Get
-            Return _Online
+            Return m_online
         End Get
         Set(ByVal value As Boolean)
-            _Online = value
+            m_online = value
         End Set
     End Property
 
     Public Property DownloadCounter As cByteCounter
         Get
-            Return _DownloadCounter
+            Return m_downloadCounter
         End Get
         Set(ByVal value As cByteCounter)
-            _DownloadCounter = value
+            m_downloadCounter = value
         End Set
     End Property
 
     Public Property UploadCounter As cByteCounter
         Get
-            Return _UploadCounter
+            Return m_uploadCounter
         End Get
         Set(ByVal value As cByteCounter)
-            _UploadCounter = value
+            m_uploadCounter = value
         End Set
     End Property
 #End Region
 
 #Region "New"
     Public Sub New()
-        _ClientList = New cClientList(1)
+        m_clientList = New cClientList(1)
     End Sub
 #End Region
 
 #Region "Start/Stop"
     Public Sub Start()
-        Dim localEP As New IPEndPoint(IPAddress.Any, _ServerPort)
-        _ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+        Dim localEP As New IPEndPoint(IPAddress.Any, m_serverPort)
+        m_serverSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
         Try
-            _ServerSocket.Bind(localEP)
-            _ServerSocket.Listen(5)
-            _ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
+            m_serverSocket.Bind(localEP)
+            m_serverSocket.Listen(5)
+            m_serverSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
-            ReDim _RevTheard(MaxClients + 1)
-        Catch sock_ex As SocketException
-            If sock_ex.ErrorCode = 10048 Then
+            ReDim m_revTheard(MaxClients + 1)
+
+        Catch sockEx As SocketException
+            If sockEx.ErrorCode = 10048 Then
                 'Endpoint already in use
                 RaiseEvent OnServerLog("Cannout bind Server. Port is already in use!!!")
             Else
                 'Other Socket Error
-                RaiseEvent OnServerError(sock_ex, -5)
+                RaiseEvent OnServerError(sockEx, -5)
             End If
 
         Catch ex As Exception
             RaiseEvent OnServerError(ex, -2)
 
         Finally
-            If _ServerSocket IsNot Nothing AndAlso _ServerSocket.IsBound Then
+            If m_serverSocket IsNot Nothing AndAlso m_serverSocket.IsBound Then
                 RaiseEvent OnServerStarted(DateTime.Now.ToString())
                 Online = True
             Else
@@ -174,14 +175,14 @@ Public Class cServer_Base
     Public Sub [Stop]()
 
         Try
-            _ServerSocket.Close(1)
-            _ServerSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-            ReDim _RevTheard(MaxClients + 1)
+            m_serverSocket.Close(1)
+            m_serverSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            ReDim m_revTheard(MaxClients + 1)
 
         Catch ex As Exception
             RaiseEvent OnServerError(ex, -3)
         Finally
-            If _ServerSocket IsNot Nothing AndAlso _ServerSocket.IsBound = False Then
+            If m_serverSocket IsNot Nothing AndAlso m_serverSocket.IsBound = False Then
                 RaiseEvent OnServerStopped(DateTime.Now.ToString())
                 Online = False
             Else
@@ -194,13 +195,13 @@ Public Class cServer_Base
 #Region "Connect/Disconnect"
     Private Sub ClientConnect(ByVal ar As IAsyncResult)
         Try
-            Dim sock As Socket = _ServerSocket.EndAccept(ar)
+            Dim sock As Socket = m_serverSocket.EndAccept(ar)
             If OnlineClients + 1 <= MaxClients Then
                 ClientList.Add(sock)
                 Dim index As Integer = ClientList.FindIndex(sock)
                 RaiseEvent OnClientConnect(sock.RemoteEndPoint.ToString(), index)
-                _RevTheard(index) = New Thread(AddressOf ReceiveData)
-                _RevTheard(index).Start(index)
+                m_revTheard(index) = New Thread(AddressOf ReceiveData)
+                m_revTheard(index).Start(index)
             Else
                 'Absolute maximum capaticy of the server, 
                 'normally shouldn't apperar since there is a buffer zone between MaxNormalClients and the real maxClients variable.
@@ -212,11 +213,11 @@ Public Class cServer_Base
                 RaiseEvent OnServerLog("Socket Stack Full!")
             End If
 
-            _ServerSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
+            m_serverSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
-        Catch argument_ex As ArgumentException
+        Catch argumentEx As ArgumentException
             'Server was stopped?
-        Catch obj_ex As ObjectDisposedException
+        Catch objEx As ObjectDisposedException
             'Server was stopped
         Catch ex As Exception
             RaiseEvent OnServerError(ex, -1)
@@ -232,7 +233,8 @@ Public Class cServer_Base
             End If
 
             ClientList.Delete(index)
-        Catch thread_ex As ThreadAbortException
+
+        Catch threadEx As ThreadAbortException
         Catch ex As Exception
             RaiseEvent OnServerError(ex, -4)
         End Try
@@ -276,15 +278,15 @@ Public Class cServer_Base
                 End If
 
 
-            Catch sock_ex As SocketException
-                If sock_ex.ErrorCode = &H2746 Then
+            Catch sockEx As SocketException
+                If sockEx.ErrorCode = &H2746 Then
                     If ClientList.GetSocket(Index_) IsNot Nothing Then
                         ClientList.Delete(Index_)
                         RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
                     End If
                 End If
                 Exit Do
-            Catch thread_ex As ThreadAbortException
+            Catch threadEx As ThreadAbortException
                 Exit Do
             Catch ex As Exception
                 RaiseEvent OnServerError(ex, Index_)
@@ -313,8 +315,8 @@ Public Class cServer_Base
 
             UploadCounter.AddPacket(buff.Length, PacketSource.Server)
 
-        Catch sock_ex As SocketException
-            If sock_ex.ErrorCode = &H2746 Then
+        Catch sockEx As SocketException
+            If sockEx.ErrorCode = &H2746 Then
                 If ClientList.GetSocket(index) IsNot Nothing Then
                     ClientList.Delete(index)
                     RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
@@ -336,10 +338,10 @@ Public Class cServer_Base
         Next i
     End Sub
 
-    Public Sub SendToAll(ByVal buff() As Byte, ByVal expect_index As Integer)
+    Public Sub SendToAll(ByVal buff() As Byte, ByVal expectIndex As Integer)
         For i As Integer = 0 To MaxClients
             Dim socket As Socket = ClientList.GetSocket(i)
-            If (socket IsNot Nothing) AndAlso (socket.Connected) AndAlso (i <> expect_index) Then
+            If (socket IsNot Nothing) AndAlso (socket.Connected) AndAlso (i <> expectIndex) Then
                 Send(buff, i)
             End If
         Next i

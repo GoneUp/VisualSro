@@ -109,7 +109,7 @@
     <Compile Include="Framework\Database\GameSave.vb" />
     <Compile Include="Framework\Database\GlobalDb.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
-    <Compile Include="Framework\Silkroad\ID_Generator.vb" />
+    <Compile Include="Framework\Silkroad\IDGenerator.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
     <Compile Include="Functions\AdminService\AdminDb.vb" />
     <Compile Include="Functions\AdminService\AdminGlobalService.vb" />

@@ -2,85 +2,77 @@
 Namespace Settings
     Module Settings
         'Loading File
-        Private File As New SRFramework.cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
+        Private ReadOnly File As New SRFramework.cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_login\settings.ini")
 
-        Public Database_IP As String
-        Public Database_Port As UShort
-        Public Database_User As String
-        Public Database_Password As String
-        Public Database_Database As String
+        Private m_databaseIp As String
+        Private m_databasePort As UShort
+        Private m_databaseUser As String
+        Private m_databasePassword As String
+        Private m_databaseDatabase As String
 
-        Public GlobalManger_Ip As String = "0.0.0.0"
-        Public GlobalManger_Port As UShort = 32000
-        Public Const GlobalManager_ProtocolVersion As UInteger = 1
+        Public GlobalMangerIp As String = "0.0.0.0"
+        Public GlobalMangerPort As UShort = 32000
+        Public Const GlobalManagerProtocolVersion As UInteger = 1
 
-        Public Server_Ip As String = "0.0.0.0"
-        Public Server_Port As UShort = 15780
-        Public Server_NormalSlots As UInteger = 100
-        Public Server_MaxClients As UInteger = 105
-        Public Server_Id As UShort = 0
-        Private _Server_DebugMode As Boolean = False
-        Public Property Server_DebugMode 'Only for setting the PingDc on ClientList
+        Public ServerIp As String = "0.0.0.0"
+        Public ServerPort As UShort = 15780
+        Public ServerNormalSlots As UInteger = 100
+        Public ServerMaxClients As UInteger = 105
+        Public ServerId As UShort = 0
+
+        Private m_serverDebugMode As Boolean = False
+        Public Property ServerDebugMode 'Only for setting the PingDc on ClientList
             Get
-                Return _Server_DebugMode
+                Return m_serverDebugMode
             End Get
             Set(ByVal value)
-                _Server_DebugMode = value
+                m_serverDebugMode = value
                 Server.Server_DebugMode = value
             End Set
         End Property
 
 
-        Public Auto_Register As Boolean = False
-        Public Max_FailedLogins As Integer = 5
-        Public Max_RegistersPerDay As Integer = 3
-        Public Server_CurrectVersion As UInteger = 0
-        Public Server_Local As Byte = 0
+        Public ServerCurrectVersion As UInteger = 0
+        Public ServerLocal As Byte = 0
 
-        Public Log_Connect As Boolean = False
-        Public Log_Register As Boolean = False
-        Public Log_Login As Boolean = False
-        Public Log_Packets As Boolean = False
+        Public LogConnect As Boolean = False
+        Public LogLogin As Boolean = False
 
         Public Sub LoadSettings()
-            Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
-            Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
-            Server_NormalSlots = File.Read("SERVER_INTERNAL", "Max_NormalSlots", "1000")
-            Server_MaxClients = File.Read("SERVER_INTERNAL", "Max_Clients", "1050")
-            Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
+            ServerIp = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
+            ServerPort = File.Read("SERVER_INTERNAL", "Port", "15880")
+            ServerNormalSlots = File.Read("SERVER_INTERNAL", "Max_NormalSlots", "1000")
+            ServerMaxClients = File.Read("SERVER_INTERNAL", "Max_Clients", "1050")
+            ServerId = File.Read("SERVER_INTERNAL", "Server_Id", "0")
 
-            Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
-            Database_Port = File.Read("DATABASE", "Port", "3306")
-            Database_Database = File.Read("DATABASE", "Database", "visualsro")
-            Database_User = File.Read("DATABASE", "User", "root")
-            Database_Password = File.Read("DATABASE", "Password", "")
+            m_databaseIp = File.Read("DATABASE", "Ip", "127.0.0.1")
+            m_databasePort = File.Read("DATABASE", "Port", "3306")
+            m_databaseDatabase = File.Read("DATABASE", "Database", "visualsro")
+            m_databaseUser = File.Read("DATABASE", "User", "root")
+            m_databasePassword = File.Read("DATABASE", "Password", "")
 
-            GlobalManger_Ip = File.Read("GLOBALMANAGER", "Ip", "127.0.0.1")
-            GlobalManger_Port = File.Read("GLOBALMANAGER", "Port", "32000")
+            GlobalMangerIp = File.Read("GLOBALMANAGER", "Ip", "127.0.0.1")
+            GlobalMangerPort = File.Read("GLOBALMANAGER", "Port", "32000")
 
-            Auto_Register = CBool(File.Read("SERVER", "Auto_Register", "0"))
-            Max_FailedLogins = File.Read("SERVER", "Max_FailedLogins", "5")
-            Max_RegistersPerDay = File.Read("SERVER", "Max_RegistersPerDay", "3")
-            Server_CurrectVersion = File.Read("SERVER", "Server_CurrectVersion", "0")
-            Server_Local = File.Read("SERVER", "Server_Local", "0")
+            ServerCurrectVersion = File.Read("SERVER", "Server_CurrectVersion", "0")
+            ServerLocal = File.Read("SERVER", "Server_Local", "0")
 
-            Log_Connect = CBool(File.Read("LOG", "Connect", "0"))
-            Log_Login = CBool(File.Read("LOG", "Login", "0"))
-            Log_Register = CBool(File.Read("LOG", "Register", "0"))
+            LogConnect = CBool(File.Read("LOG", "Connect", "0"))
+            LogLogin = CBool(File.Read("LOG", "Login", "0"))
         End Sub
 
         Public Sub SetToServer()
-            Database.DbIp = Database_IP
-            Database.DbPort = Database_Port
-            Database.DbDatabase = Database_Database
-            Database.DbUsername = Database_User
-            Database.DbPassword = Database_Password
+            Database.DbIP = m_databaseIp
+            Database.DbPort = m_databasePort
+            Database.DbDatabase = m_databaseDatabase
+            Database.DbUsername = m_databaseUser
+            Database.DbPassword = m_databasePassword
 
-            Server.Ip = Server_Ip
-            Server.Port = Server_Port
-            Server.MaxNormalClients = Server_NormalSlots
-            Server.MaxClients = Server_MaxClients
-            Server.Server_DebugMode = Server_DebugMode
+            Server.Ip = ServerIp
+            Server.Port = ServerPort
+            Server.MaxNormalClients = ServerNormalSlots
+            Server.MaxClients = ServerMaxClients
+            Server.Server_DebugMode = ServerDebugMode
         End Sub
 
     End Module

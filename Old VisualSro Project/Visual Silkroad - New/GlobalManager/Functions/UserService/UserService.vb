@@ -81,7 +81,7 @@ Namespace UserService
             Try
                 user.Banned = True
                 user.BannTime = expireTime
-                user.BannReason = (String.Format("You got banned for {0} Minutes because of {1} failed Logins.", DateDiff(DateInterval.Minute, Date.Now, expireTime), Settings.Agent_Max_FailedLogins))
+                user.BannReason = (String.Format("You got banned for {0} Minutes because of {1} failed Logins.", DateDiff(DateInterval.Minute, Date.Now, expireTime), Settings.AgentMaxFailedLogins))
 
                 DBSave.SaveUserBan(user)
                 GlobalDB.UpdateUser(user)
@@ -139,7 +139,7 @@ Namespace UserService
             RegisterList.Add(tmp_2)
 
             'Log it
-            If Settings.Log_Register Then
+            If Settings.LogRegister Then
                 Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Register", "(None)", String.Format("Name: {0}, Password: {1}", cDatabase.CheckForInjection(name), cDatabase.CheckForInjection(password)))
             End If
 
@@ -155,7 +155,7 @@ Namespace UserService
                 End If
             Next
 
-            If count >= Settings.Agent_Max_RegistersPerDay Then
+            If count >= Settings.AgentMaxRegistersPerDay Then
                 Return False
             End If
 
@@ -179,7 +179,7 @@ Namespace UserService
         Public Sub OnSilk(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager._ServerTypes.GameServer Then
                 Log.WriteSystemLog("OnGetSilk:: ServerType is wrong!!!")
-                If Settings.Server_DebugMode = False Then
+                If Settings.ServerDebugMode = False Then
                     Server.Disconnect(Index_)
                 End If
             End If

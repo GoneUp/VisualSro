@@ -1,45 +1,58 @@
 ﻿Imports System
 Imports SRFramework
 
-Class Program
+Friend Module Program
+    Friend Sub Main()
+        'Events
+        AddHandler Server.OnClientConnect, AddressOf Server_OnClientConnect
+        AddHandler Server.OnClientDisconnect, AddressOf Server_OnClientDisconnect
+        AddHandler Server.OnReceiveData, AddressOf Server_OnReceiveData
+        AddHandler Server.OnServerError, AddressOf Server_OnServerError
+        AddHandler Server.OnServerStarted, AddressOf Server_OnServerStarted
+        AddHandler Server.OnServerStopped, AddressOf Server_OnServerStopped
+        AddHandler Server.OnServerLog, AddressOf Server_OnServerLog
+        AddHandler Server.OnServerPacketLog, AddressOf Server_OnPacketLog
 
-
-    Shared Sub Main()
-        AddHandler Server.OnClientConnect, AddressOf Program.Server_OnClientConnect
-        AddHandler Server.OnClientDisconnect, AddressOf Program.Server_OnClientDisconnect
-        AddHandler Server.OnReceiveData, AddressOf Program.Server_OnReceiveData
-        AddHandler Server.OnServerError, AddressOf Program.Server_OnServerError
-        AddHandler Server.OnServerStarted, AddressOf Program.Server_OnServerStarted
-        AddHandler Server.OnServerStopped, AddressOf Program.Server_OnServerStopped
-        AddHandler Server.OnServerLog, AddressOf Program.Server_OnServerLog
-        AddHandler Server.OnServerPacketLog, AddressOf Program.Server_OnPacketLog
-
-        AddHandler DataBase.OnDatabaseError, AddressOf Program.db_OnDatabaseError
-        AddHandler Database.OnDatabaseConnected, AddressOf Program.db_OnDatabaseConnected
-        AddHandler Database.OnDatabaseLog, AddressOf Program.db_OnDatabaseLog
+        AddHandler Database.OnDatabaseError, AddressOf db_OnDatabaseError
+        AddHandler Database.OnDatabaseConnected, AddressOf db_OnDatabaseConnected
+        AddHandler Database.OnDatabaseLog, AddressOf db_OnDatabaseLog
 
         AddHandler Log.OnDatabaseQuery, AddressOf log_OnDatabaseQuery
 
+        'Console
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()
-        Console.Title = "GlobalManager ALPHA"
+        Console.Title = "GlobalManager"
         Log.WriteSystemLog("Starting Server")
 
+        'Settings
         Log.WriteSystemLog("Loading Settings.")
         Settings.LoadSettings()
         Settings.SetToServer()
 
         Log.WriteSystemLog("Loaded Settings. Conneting Database.")
-        DataBase.Connect()
+        Database.Connect()
 
+        'Init Data
         Log.WriteSystemLog("Connected Database. Starting Server now.")
-        GlobalDef.Initalize(Server.MaxClients)
-        GlobalDb.UpdateData()
-        Timers.LoadTimers()
 
-        Server.Start()
-        Log.WriteSystemLog("Inital Loading complete!")
+        Dim succeed As Boolean = True
+        succeed = Initalize(Server.MaxClients) 'GlobalDef -> SessionInfo
+        succeed = GlobalDB.LoadData()
+        succeed = Timers.LoadTimers()
+
+        If succeed Then
+            'Ready!
+            Server.Start()
+            Log.WriteSystemLog("Inital Loading complete!")
+
+        Else
+            'Startup failed
+            Console.ForegroundColor = ConsoleColor.Red
+            Log.WriteSystemLog("Failed to load Refernce Data, check your error log!")
+        End If
+
 
 
         Do While True
@@ -48,7 +61,7 @@ Class Program
         Loop
     End Sub
 
-    Private Shared Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
+    Private Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
         Log.WriteSystemLog("Client Connected : " & ip)
         Server.OnlineClients += 1
 
@@ -61,10 +74,13 @@ Class Program
         Server.Send(writer.GetBytes, index)
     End Sub
 
-    Private Shared Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
+    Private Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
         Log.WriteSystemLog("Client Disconnected : " & ip)
 
-        Shard.RemoveServer(SessionInfo(index).ServerId, SessionInfo(index).Type)
+        If SessionInfo(index) IsNot Nothing Then
+            Shard.RemoveServer(SessionInfo(index).ServerId, SessionInfo(index).Type)
+        End If
+
         SessionInfo(index) = Nothing
 
         If Server.OnlineClients > 0 Then
@@ -72,7 +88,7 @@ Class Program
         End If
     End Sub
 
-    Private Shared Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
+    Private Sub Server_OnReceiveData(ByVal buffer() As Byte, ByVal index_ As Integer)
         Dim position As Integer = 0
 
         Do While True
@@ -89,7 +105,7 @@ Class Program
 
             Dim packet As New PacketReader(newbuff)
 
-            If Settings.Server_DebugMode = True Then
+            If Settings.ServerDebugMode = True Then
                 Log.LogPacket(newbuff, False)
             End If
 
@@ -99,41 +115,41 @@ Class Program
         Loop
     End Sub
 
-    Private Shared Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
+    Private Sub Server_OnServerError(ByVal ex As Exception, ByVal index As Integer)
         Log.WriteSystemLog("Server Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index) '-1 = on client connect + -2 = on server start
     End Sub
 
-    Private Shared Sub Server_OnServerStarted(ByVal time As String)
+    Private Sub Server_OnServerStarted(ByVal time As String)
         Log.WriteSystemLog("Server Started: " & time)
     End Sub
 
-    Private Shared Sub Server_OnServerStopped(ByVal time As String)
+    Private Sub Server_OnServerStopped(ByVal time As String)
         Log.WriteSystemLog("Server Stopped: " & time)
     End Sub
 
-    Private Shared Sub Server_OnServerLog(ByVal message As String)
+    Private Sub Server_OnServerLog(ByVal message As String)
         Log.WriteSystemLog("Server Log: " & message)
     End Sub
 
-    Private Shared Sub Server_OnPacketLog(ByVal buff() As Byte, ByVal fromserver As Boolean, ByVal index As Integer)
+    Private Sub Server_OnPacketLog(ByVal buff() As Byte, ByVal fromserver As Boolean, ByVal index As Integer)
         Log.LogPacket(buff, fromserver)
     End Sub
 
-    Private Shared Sub db_OnDatabaseConnected()
+    Private Sub db_OnDatabaseConnected()
         Log.WriteSystemLog("Connected to database at: " & DateTime.Now.ToString())
     End Sub
 
-    Private Shared Sub db_OnDatabaseLog(ByVal message As String)
+    Private Sub db_OnDatabaseLog(ByVal message As String)
         Log.WriteSystemLog("Database Log: " & message)
     End Sub
 
-    Private Shared Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
+    Private Sub db_OnDatabaseError(ByVal ex As Exception, ByVal command As String)
         Log.WriteSystemLog("Database error: " & ex.Message & " Command: " & command)
     End Sub
 
-    Private Shared Sub log_OnDatabaseQuery(ByVal command As String)
+    Private Sub log_OnDatabaseQuery(ByVal command As String)
         Database.SaveQuery(command)
     End Sub
-End Class
+End Module
 
 

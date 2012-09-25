@@ -4,12 +4,12 @@ Namespace GlobalManager
     Module Auth
         Public Sub OnHandshake(ByVal packet As PacketReader)
             If packet.Length = 8 Then
-                Dim BaseKey As UInt16 = packet.Word
-                Dim NewKey = CalculateNewKey(BaseKey)
+                Dim baseKey As UInt16 = packet.Word
+                Dim newKey = CalculateNewKey(baseKey)
 
                 Dim writer As New PacketWriter
                 writer.Create(ClientOpcodes.HANDSHAKE)
-                writer.DWord(NewKey)
+                writer.DWord(newKey)
                 GlobalManagerCon.Send(writer.GetBytes)
 
             ElseIf packet.Length = 7 Then
@@ -25,7 +25,7 @@ Namespace GlobalManager
             End If
         End Sub
 
-        Private Function CalculateNewKey(ByVal BaseKey As UInt16) As UInt32
+        Private Function CalculateNewKey(ByVal baseKey As UInt16) As UInt32
             CalculateNewKey = BaseKey
             CalculateNewKey *= 4
             CalculateNewKey *= Date.Now.DayOfYear
@@ -34,14 +34,14 @@ Namespace GlobalManager
         End Function
 
         Public Sub OnSendAuthInfo()
-            Dim clientstring As String = "GatewayServer"
+            Const clientstring As String = "GatewayServer"
 
             Dim writer As New PacketWriter
             writer.Create(ClientOpcodes.LOGIN_WHO_AM_I)
             writer.Word(clientstring.Length)
             writer.String(clientstring)
-            writer.DWord(Settings.GlobalManager_ProtocolVersion)
-            writer.Word(Settings.Server_Id)
+            writer.DWord(Settings.GlobalManagerProtocolVersion)
+            writer.Word(Settings.ServerId)
 
             GlobalManagerCon.Send(writer.GetBytes)
         End Sub

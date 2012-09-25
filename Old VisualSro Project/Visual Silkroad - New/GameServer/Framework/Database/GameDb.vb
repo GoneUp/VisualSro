@@ -5,41 +5,40 @@ Imports SRFramework
 Namespace GameDB
     Module GameDb
         'Timer
-        Public WithEvents GameDbUpdate As New Timer
+        Private WithEvents m_gameDbUpdate As New Timer
 
         'User
         Public Users() As cUser
 
         'Chars
         Public Chars() As cCharacter
-        Public Hotkeys As New List(Of cHotKey)
+        Public ReadOnly Hotkeys As New List(Of cHotKey)
 
         'Itemcount
-        Public Items As New Dictionary(Of UInt64, cItem)
+        Public ReadOnly Items As New Dictionary(Of UInt64, cItem)
 
-        Public InventoryItems As New List(Of cInventoryItem)
-        Public AvatarInventoryItems As New List(Of cInventoryItem)
-        Public COSInventoryItems As New List(Of cInventoryItem)
+        Public ReadOnly InventoryItems As New List(Of cInventoryItem)
+        Public ReadOnly AvatarInventoryItems As New List(Of cInventoryItem)
+        Public ReadOnly COSInventoryItems As New List(Of cInventoryItem)
 
-        Public StorageItems As New List(Of cInventoryItem)
-        Public GuildStorageItems As New List(Of cInventoryItem)
+        Public ReadOnly StorageItems As New List(Of cInventoryItem)
+        Public ReadOnly GuildStorageItems As New List(Of cInventoryItem)
 
         'Masterys
         Public Masterys() As cMastery
 
         'Skills
         Public Skills() As cSkill
-        Public SkillSets As New Dictionary(Of UInt32, cSkillSet)
+        Public ReadOnly SkillSets As New Dictionary(Of UInt32, cSkillSet)
 
         'Guilds
-        Public Guilds As New List(Of cGuild)
+        Public ReadOnly Guilds As New List(Of cGuild)
 
         Public InitalLoad As Boolean = True
 
-        Public Sub UpdateData() Handles GameDbUpdate.Elapsed
-            GameDbUpdate.Stop()
-            GameDbUpdate.Interval = 20000
-            '20 secs
+        Public Function LoadData() As Boolean Handles m_gameDbUpdate.Elapsed
+            m_gameDbUpdate.Stop()
+            m_gameDbUpdate.Interval = 20000
 
             Try
                 If InitalLoad Then
@@ -74,27 +73,30 @@ Namespace GameDB
 
             Catch ex As Exception
                 Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+                Return False
             End Try
 
-            GameDbUpdate.Start()
-        End Sub
+            m_gameDbUpdate.Start()
+            Return True
+        End Function
 
 #Region "Get from DB"
 
 #Region "Accounts"
-        Public Sub GetUserData()
+
+        Private Sub GetUserData()
 
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
-            Dim UserCount = tmp.Tables(0).Rows.Count
+            Dim userCount = tmp.Tables(0).Rows.Count
 
-            If UserCount = 0 Then
+            If userCount = 0 Then
                 ReDim Users(0)
                 Exit Sub
             End If
 
-            ReDim Users(UserCount - 1)
+            ReDim Users(userCount - 1)
 
-            For i = 0 To UserCount - 1
+            For i = 0 To userCount - 1
                 Users(i) = New cUser
                 Users(i).AccountId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -111,17 +113,18 @@ Namespace GameDB
 #End Region
 
 #Region "Character"
-        Public Sub GetCharData()
+
+        Private Sub GetCharData()
 
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From characters")
-            Dim CharCount = tmp.Tables(0).Rows.Count
+            Dim charCount = tmp.Tables(0).Rows.Count
 
-            If CharCount = 0 Then
+            If charCount = 0 Then
                 ReDim Chars(0)
                 Exit Sub
             End If
 
-            ReDim Chars(CharCount - 1)
+            ReDim Chars(charCount - 1)
 
             For i = 0 To Chars.Length - 1
                 Chars(i) = New cCharacter
@@ -180,14 +183,15 @@ Namespace GameDB
 
 
 #Region "Item Stuff"
-        Public Sub GetItemData()
+
+        Private Sub GetItemData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From items")
-            Dim ItemCount = tmp.Tables(0).Rows.Count
-            Dim InitalID As UInt64 = 2
+            Dim itemCount = tmp.Tables(0).Rows.Count
+            Dim initalID As UInt64 = 2
 
             Items.Clear()
 
-            For i = 0 To (ItemCount - 1)
+            For i = 0 To (itemCount - 1)
                 Dim tmpItem As New cItem
                 tmpItem.ID = Convert.ToUInt64(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpItem.ObjectID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -240,21 +244,21 @@ Namespace GameDB
 
                 Items.Add(tmpItem.ID, tmpItem)
 
-                If tmpItem.ID > InitalID Then
-                    InitalID = tmpItem.ID
+                If tmpItem.ID > initalID Then
+                    initalID = tmpItem.ID
                 End If
             Next
 
-            Id_Gen.SetItemInitalValue(InitalID)
+            Id_Gen.SetItemInitalValue(initalID)
         End Sub
 
-        Public Sub GetInventoryData()
+        Private Sub GetInventoryData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory")
-            Dim ItemCount = tmp.Tables(0).Rows.Count
+            Dim itemCount = tmp.Tables(0).Rows.Count
 
             InventoryItems.Clear()
 
-            For i = 0 To (ItemCount - 1)
+            For i = 0 To (itemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -263,13 +267,13 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Sub GetAvatarInventoryData()
+        Private Sub GetAvatarInventoryData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory_avatar")
-            Dim ItemCount = tmp.Tables(0).Rows.Count
+            Dim itemCount = tmp.Tables(0).Rows.Count
 
             AvatarInventoryItems.Clear()
 
-            For i = 0 To (ItemCount - 1)
+            For i = 0 To (itemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -278,13 +282,13 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Sub GetCOSInventoryData()
+        Private Sub GetCOSInventoryData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From inventory_cos")
-            Dim ItemCount = tmp.Tables(0).Rows.Count
+            Dim itemCount = tmp.Tables(0).Rows.Count
 
             COSInventoryItems.Clear()
 
-            For i = 0 To (ItemCount - 1)
+            For i = 0 To (itemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -293,13 +297,13 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Sub GetStorageData()
+        Private Sub GetStorageData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From storage")
-            Dim ItemCount = tmp.Tables(0).Rows.Count
+            Dim itemCount = tmp.Tables(0).Rows.Count
 
             StorageItems.Clear()
 
-            For i = 0 To (ItemCount - 1)
+            For i = 0 To (itemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -308,13 +312,13 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Sub GetGuildStorageData()
+        Private Sub GetGuildStorageData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From storage_guild")
-            Dim ItemCount = tmp.Tables(0).Rows.Count
+            Dim itemCount = tmp.Tables(0).Rows.Count
 
             GuildStorageItems.Clear()
 
-            For i = 0 To (ItemCount - 1)
+            For i = 0 To (itemCount - 1)
                 Dim tmpItem As New cInventoryItem
                 tmpItem.OwnerID = Convert.ToUInt32(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpItem.Slot = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -325,17 +329,18 @@ Namespace GameDB
 #End Region
 
 #Region "Skills"
-        Public Sub GetMasteryData()
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_mastery")
-            Dim MasteryCount = tmp.Tables(0).Rows.Count
 
-            If MasteryCount = 0 Then
+        Private Sub GetMasteryData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_mastery")
+            Dim masteryCount = tmp.Tables(0).Rows.Count
+
+            If masteryCount = 0 Then
                 ReDim Masterys(0)
             End If
 
-            ReDim Masterys(MasteryCount - 1)
+            ReDim Masterys(masteryCount - 1)
 
-            For i = 0 To MasteryCount - 1
+            For i = 0 To masteryCount - 1
                 Masterys(i) = New cMastery
                 Masterys(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                 Masterys(i).MasteryID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
@@ -343,24 +348,24 @@ Namespace GameDB
             Next
         End Sub
 
-        Public Sub GetSkillData()
+        Private Sub GetSkillData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_skill")
-            Dim Count As Integer = tmp.Tables(0).Rows.Count
+            Dim count As Integer = tmp.Tables(0).Rows.Count
 
-            If Count = 0 Then
+            If count = 0 Then
                 ReDim Skills(0)
             End If
 
-            ReDim Skills(Count - 1)
+            ReDim Skills(count - 1)
 
-            For i = 0 To Count - 1
+            For i = 0 To count - 1
                 Skills(i) = New cSkill
                 Skills(i).OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                 Skills(i).SkillID = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
             Next
         End Sub
 
-        Public Sub GetSkillSetData()
+        Private Sub GetSkillSetData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From skillset_name")
             Dim count As Integer = tmp.Tables(0).Rows.Count
 
@@ -390,14 +395,15 @@ Namespace GameDB
 #End Region
 
 #Region "Character MISC"
-        Public Sub GetPositionData()
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_pos")
-            Dim Count As Integer = tmp.Tables(0).Rows.Count
 
-            For i = 0 To Count - 1
-                Dim CharID As UInteger = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+        Private Sub GetPositionData()
+            Dim tmp As DataSet = Database.GetDataSet("SELECT * From char_pos")
+            Dim count As Integer = tmp.Tables(0).Rows.Count
+
+            For i = 0 To count - 1
+                Dim charID As UInteger = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 For c = 0 To Chars.Count - 1
-                    If Chars(c).CharacterId = CharID Then
+                    If Chars(c).CharacterId = charID Then
                         Chars(c).PositionReturn.XSector = CByte(tmp.Tables(0).Rows(i).ItemArray(1))
                         Chars(c).PositionReturn.YSector = CByte(tmp.Tables(0).Rows(i).ItemArray(2))
                         Chars(c).PositionReturn.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(3))
@@ -415,18 +421,19 @@ Namespace GameDB
                         Chars(c).PositionDead.X = CDbl(tmp.Tables(0).Rows(i).ItemArray(13))
                         Chars(c).PositionDead.Y = CDbl(tmp.Tables(0).Rows(i).ItemArray(14))
                         Chars(c).PositionDead.Z = CDbl(tmp.Tables(0).Rows(i).ItemArray(15))
+                        Exit For
                     End If
                 Next
             Next
         End Sub
 
-        Public Sub GetHotkeyData()
+        Private Sub GetHotkeyData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From hotkeys")
-            Dim Count As Integer = tmp.Tables(0).Rows.Count
+            Dim count As Integer = tmp.Tables(0).Rows.Count
 
             Hotkeys.Clear()
 
-            For i = 0 To Count - 1
+            For i = 0 To count - 1
                 Dim tmp_ As New cHotKey
                 tmp_.OwnerID = CUInt(tmp.Tables(0).Rows(i).ItemArray(1))
                 tmp_.Slot = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))
@@ -439,13 +446,14 @@ Namespace GameDB
 #End Region
 
 #Region "Guild"
-        Public Sub GetGuildData()
+
+        Private Sub GetGuildData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From guild")
-            Dim Count As Integer = tmp.Tables(0).Rows.Count
+            Dim count As Integer = tmp.Tables(0).Rows.Count
 
             Guilds.Clear()
 
-            For i = 0 To Count - 1
+            For i = 0 To count - 1
                 Dim tmp_ As New cGuild
                 tmp_.GuildID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmp_.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -459,9 +467,9 @@ Namespace GameDB
 
 
             tmp = Database.GetDataSet("SELECT * From guild_member")
-            Count = tmp.Tables(0).Rows.Count
+            count = tmp.Tables(0).Rows.Count
 
-            For i = 0 To Count - 1
+            For i = 0 To count - 1
                 Dim tmp_ As New cGuild.GuildMember_
                 tmp_.CharacterID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmp_.GuildID = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
@@ -528,14 +536,12 @@ Namespace GameDB
 
         Public Sub FillCharList(ByVal charArray As cCharListing)
 
-            Dim CharCount As Integer = 0
             charArray.Chars.Clear()
 
             For i = 0 To Chars.Length - 1
                 If Chars(i) IsNot Nothing Then
                     If charArray.LoginInformation.AccountId = Chars(i).AccountID Then
                         charArray.Chars.Add(Chars(i))
-                        CharCount += 1
                     End If
                 End If
             Next
@@ -562,7 +568,7 @@ Namespace GameDB
             Return free
         End Function
 
-        Public Function GetGuild(ByVal GuildID As UInteger) As cGuild
+        Public Function GetGuild(ByVal guildID As UInteger) As cGuild
             For i = 0 To Guilds.Count - 1
                 If Guilds(i).GuildID = GuildID Then
                     Return Guilds(i)
@@ -571,7 +577,7 @@ Namespace GameDB
             Return Nothing
         End Function
 
-        Public Function GetGuild(ByVal GuildName As String) As cGuild
+        Public Function GetGuild(ByVal guildName As String) As cGuild
             For i = 0 To Guilds.Count - 1
                 If Guilds(i).Name = GuildName Then
                     Return Guilds(i)
@@ -580,7 +586,7 @@ Namespace GameDB
             Return Nothing
         End Function
 
-        Public Function GetCharWithCharID(ByVal CharacterID As UInteger) As cCharacter
+        Public Function GetCharWithCharID(ByVal characterID As UInteger) As cCharacter
             For i = 0 To Chars.Length - 1
                 If Chars(i).CharacterId = CharacterID Then
                     Return Chars(i)

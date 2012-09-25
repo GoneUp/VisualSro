@@ -107,7 +107,7 @@
     <Compile Include="Framework\Server\cSessionInfo_GameServer.vb" />
     <Compile Include="Framework\Server\cSessionInfo_LoginServer.vb" />
     <Compile Include="Framework\Server\cSessionInfo_GlobalManager.vb" />
-    <Compile Include="Framework\Server\cServer_Base.vb" />
+    <Compile Include="Framework\Server\ServerBase.vb" />
     <Compile Include="Framework\Server\cSessionInfo_AdminTool.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

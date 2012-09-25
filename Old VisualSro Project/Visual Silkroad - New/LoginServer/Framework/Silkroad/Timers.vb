@@ -3,12 +3,12 @@ Imports SRFramework
 
 Namespace Timers
     Module Timers
-        Public GeneralTimer As New Timer
-        Public PingTimer As New Timer
-        Public LoginInfoTimer(10) As Timer
+        Private ReadOnly GeneralTimer As New Timer
+        Private ReadOnly PingTimer As New Timer
+        Public LoginInfoTimer() As Timer
 
 
-        Public Sub LoadTimers(ByVal timerCount As Integer)
+        Public Function LoadTimers(ByVal timerCount As Integer) As Boolean
             Try
                 'Initalize
                 ReDim LoginInfoTimer(timerCount)
@@ -19,7 +19,7 @@ Namespace Timers
                 Next
 
                 'Handlers
-                AddHandler GeneralTimer.Elapsed, AddressOf GeneralTimer_Elapsed
+                AddHandler GeneralTimer.Elapsed, AddressOf GeneralTimerElapsed
                 AddHandler PingTimer.Elapsed, AddressOf PingTimer_Elapsed
 
                 'Starting
@@ -31,13 +31,16 @@ Namespace Timers
 
             Catch ex As Exception
                 Log.WriteSystemLog("Timers loading failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
+                Return False
             Finally
                 Log.WriteSystemLog("Timers loaded!")
             End Try
-        End Sub
+
+            Return True
+        End Function
 
 
-        Public Sub GeneralTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub GeneralTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             GeneralTimer.Stop()
 
             'For Database Execute Querys, GlobalManager Ping, GlobalManager Update
@@ -64,7 +67,7 @@ Namespace Timers
             GeneralTimer.Start()
         End Sub
 
-        Public Sub LoginInfoTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
+        Private Sub LoginInfoTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Dim index_ As Integer = -1
             Try
                 Dim objB As Timer = DirectCast(sender, Timer)
@@ -82,7 +85,7 @@ Namespace Timers
                             SessionInfo(index_).LoginTextIndex = 0
                         End If
 
-                        Dim tmpMsg As LoginDb.LoginInfoMessage_ = LoginDb.LoginInfoMessages(SessionInfo(index_).LoginTextIndex)
+                        Dim tmpMsg As LoginDb.LoginInfoMessage = LoginDb.LoginInfoMessages(SessionInfo(index_).LoginTextIndex)
                         Functions.LoginWriteSpecialText(tmpMsg.Text, index_)
 
                         If SessionInfo(index_) Is Nothing Then

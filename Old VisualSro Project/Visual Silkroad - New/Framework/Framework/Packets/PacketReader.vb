@@ -105,7 +105,7 @@ Public Class PacketReader : Implements IDisposable
         Me.m_br = Nothing
         Me.m_ms = Nothing
 
-        Console.WriteLine("Cleanup..")
+        'Console.WriteLine("Cleanup..")
         GC.SuppressFinalize(Me)
         m_disponsed = True
     End Sub

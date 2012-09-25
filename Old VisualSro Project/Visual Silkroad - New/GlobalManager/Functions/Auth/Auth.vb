@@ -60,8 +60,8 @@ Namespace Auth
 
             If tmp.HandshakeComplete Then
                 If tmp.Type <> cSessionInfo_GlobalManager._ServerTypes.Unknown Then
-                    If tmp.ProtocolVersion = Settings.Server_ProtocolVersion Then
-                        If GlobalDb.CheckServerCert(tmp.ServerId, tmp.ClientName, Server.ClientList.GetIP(Index_).Split(":")(0)) Then
+                    If tmp.ProtocolVersion = Settings.ServerProtocolVersion Then
+                        If GlobalDB.CheckServerCert(tmp.ServerId, tmp.ClientName, Server.ClientList.GetIP(Index_).Split(":")(0)) Then
                             writer.Byte(1)
                             tmp.Authorized = True
                         Else

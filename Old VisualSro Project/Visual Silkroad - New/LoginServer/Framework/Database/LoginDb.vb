@@ -1,72 +1,53 @@
-﻿Imports SRFramework
-
-Namespace LoginDb
+﻿Namespace LoginDb
     Module LoginDb
 
-        'Timer
-        Public WithEvents LoginDbUpdate As New System.Timers.Timer
-
         'Server
-        Public News As New List(Of News_)
-        Public Users As New List(Of cUser)
-        Public LoginInfoMessages As New List(Of LoginInfoMessage_)
-
-        Public InitalLoad As Boolean = True
-
-        Public Sub UpdateData() Handles LoginDbUpdate.Elapsed
-            LoginDbUpdate.Stop()
-            LoginDbUpdate.Interval = 20000 '20 secs
+        Public ReadOnly News As New List(Of LauncherMessage)
+        Public ReadOnly LoginInfoMessages As New List(Of LoginInfoMessage)
 
 
+        Public Function LoadData() As Boolean
             Try
-                If InitalLoad = True Then
-                    Log.WriteSystemLog("Load Data from Database.")
+                Log.WriteSystemLog("Loading Data from Database.")
 
-                    GetNewsData()
-                    GetUserData()
+                GetNewsData()
 
-                    Log.WriteSystemLog("Loading Completed.")
-                    InitalLoad = False
-
-                Else
-                    GetNewsData()
-                    GetUserData()
-                End If
+                Log.WriteSystemLog("Loading Completed.")
 
             Catch ex As Exception
-                Log.WriteSystemLog("[REFRESH ERROR][" & ex.Message & " Stack: " & ex.StackTrace & "]")
+                Log.WriteSystemLog("Data loading failed! M: " & ex.Message & " Stacktrace: " & ex.StackTrace)
+                Return False
             End Try
 
-            LoginDbUpdate.Start()
-        End Sub
+            Return True
+        End Function
 
-        Structure News_
-            Public NewsNumber As Integer
+        Public Structure LauncherMessage
             Public Title As String
             Public Text As String
             Public Time As Date
         End Structure
 
-        Structure LoginInfoMessage_
+        Structure LoginInfoMessage
             Public Text As String
             Public Delay As Integer
         End Structure
 
-        Public Sub GetNewsData()
+        Private Sub GetNewsData()
             Dim tmp As DataSet = Database.GetDataSet("SELECT * From News")
             News.Clear()
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
                 If CInt(tmp.Tables(0).Rows(i).ItemArray(1)) = 0 Then
                     'Type, 0=Launcher,1=Login Info Messages Subsystem
-                    Dim tmpNews As New News_
+                    Dim tmpNews As New LauncherMessage
                     tmpNews.Title = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
                     tmpNews.Text = CStr(tmp.Tables(0).Rows(i).ItemArray(3))
                     tmpNews.Time = CDate(tmp.Tables(0).Rows(i).ItemArray(4))
 
                     News.Add(tmpNews)
                 ElseIf CInt(tmp.Tables(0).Rows(i).ItemArray(1)) = 1 Then
-                    Dim tmpMsg As New LoginInfoMessage_
+                    Dim tmpMsg As New LoginInfoMessage
                     tmpMsg.Delay = CInt(tmp.Tables(0).Rows(i).ItemArray(2))
                     tmpMsg.Text = CStr(tmp.Tables(0).Rows(i).ItemArray(3))
 
@@ -76,40 +57,5 @@ Namespace LoginDb
 
             Next
         End Sub
-
-        Public Sub GetUserData()
-
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
-            Users.Clear()
-
-            For i = 0 To tmp.Tables(0).Rows.Count - 1
-                Dim tmpUser As New cUser
-                tmpUser.AccountId = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                tmpUser.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                tmpUser.Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                tmpUser.FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
-                tmpUser.Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
-                tmpUser.BannReason = CStr(tmp.Tables(0).Rows(i).ItemArray(5))
-                tmpUser.BannTime = CDate(tmp.Tables(0).Rows(i).ItemArray(6))
-                tmpUser.Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
-                tmpUser.Silk_Bonus = CUInt(tmp.Tables(0).Rows(i).ItemArray(8))
-                tmpUser.Silk_Points = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
-                tmpUser.Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(10))
-                tmpUser.StorageSlots = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(11))
-
-                Users.Add(tmpUser)
-            Next
-        End Sub
-
-
-
-        Public Function GetUser(ByVal id As String) As Integer
-            For i = 0 To (Users.Count - 1)
-                If Users(i).Name = id Then
-                    Return i
-                End If
-            Next
-            Return -1
-        End Function
     End Module
 End Namespace

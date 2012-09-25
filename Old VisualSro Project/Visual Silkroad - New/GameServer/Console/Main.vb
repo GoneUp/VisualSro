@@ -11,6 +11,7 @@ Friend Module Program
 #End Region
 
     Sub Main()
+        'Events
         AddHandler Server.OnClientConnect, AddressOf Server_OnClientConnect
         AddHandler Server.OnClientDisconnect, AddressOf Server_OnClientDisconnect
         AddHandler Server.OnReceiveData, AddressOf Server_OnReceiveData
@@ -35,31 +36,45 @@ Friend Module Program
 
         AddHandler Log.OnDatabaseQuery, AddressOf log_OnDatabaseQuery
 
+        'Console
         Console.BackgroundColor = ConsoleColor.White
         Console.ForegroundColor = ConsoleColor.DarkGreen
         Console.Clear()
         Console.Title = "GAMESERVER ALPHA"
 
+        'Settings
         Log.WriteSystemLog("Loading Settings.")
         Settings.LoadSettings()
         Settings.SetToServer()
 
+        'Database
         Log.WriteSystemLog("Connecting Database.")
         Database.Connect()
+
+        'Init 
         Log.WriteSystemLog("Connected Database. Loading Data now.")
 
-        Functions.GlobalGame.GlobalInit(Server.MaxClients)
-        GlobalDef.Initalize(Server.MaxClients)
-
-        SilkroadData.DumpDataFiles()
-        GameDB.UpdateData()
-        Functions.Timers.LoadTimers(Server.MaxClients)
+        Dim succeed As Boolean = True
+        succeed = Functions.GlobalGame.GlobalInit(Server.MaxClients)
+        succeed = Initalize(Server.MaxClients)
+        succeed = DumpDataFiles()
+        succeed = GameDB.LoadData()
+        succeed = Functions.Timers.LoadTimers(Server.MaxClients)
         GameMod.Damage.OnServerStart(Server.MaxClients)
 
-        Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
-        Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots & "/" & Settings.Server_MaxClients)
+        If succeed And Settings.Server_DebugMode = False Then
+            'Ready...
+            Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
+            Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots & "/" & Settings.Server_MaxClients)
 
-        GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+            GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+
+        Else
+            'Startup failed
+            Console.ForegroundColor = ConsoleColor.Red
+            Log.WriteSystemLog("Failed to load Refernce Data, check your error log!")
+        End If
+
 
         Do While True
             Dim msg As String = Console.ReadLine()
@@ -193,9 +208,9 @@ Friend Module Program
 
     Private Sub gmc_OnGlobalManagerConLost()
         Log.WriteSystemLog("GMC: Lost Connection, Cleanup!")
-        Shard_Gateways.Clear()
-        Shard_Gameservers.Clear()
-        Shard_Downloads.Clear()
+        ShardGateways.Clear()
+        ShardGameservers.Clear()
+        ShardDownloads.Clear()
     End Sub
 
     Private Sub gmc_OnGlobalManagerLog(ByVal message As String)
@@ -222,7 +237,7 @@ Friend Module Program
                 GlobalDef.Initalize(Server.MaxClients)
                 SilkroadData.DumpDataFiles()
                 GameDB.InitalLoad = True
-                GameDB.UpdateData()
+                GameDB.LoadData()
                 Functions.Timers.LoadTimers(Server.MaxClients)
                 GameMod.Damage.OnServerStart(Server.MaxClients)
 

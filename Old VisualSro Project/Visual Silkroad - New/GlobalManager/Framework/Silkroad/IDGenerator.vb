@@ -1,15 +1,15 @@
 ﻿Namespace Id_Gen
-    Module ID_Generator
+    Module IDGenerator
 
         '=================Session Id
-        Private SessionIdCounter As UInteger = 1
+        Private m_sessionIdCounter As UInteger = 1
 
         Public Function GetSessionId() As UInteger
-            Dim toreturn As UInteger = SessionIdCounter
-            If SessionIdCounter < UInteger.MaxValue Then
-                SessionIdCounter += 1
-            ElseIf SessionIdCounter = UInteger.MaxValue Then
-                SessionIdCounter = 0
+            Dim toreturn As UInteger = m_sessionIdCounter
+            If m_sessionIdCounter < UInteger.MaxValue Then
+                m_sessionIdCounter += 1
+            ElseIf m_sessionIdCounter = UInteger.MaxValue Then
+                m_sessionIdCounter = 0
                 Log.WriteSystemLog("Reached SessionId Max")
             End If
 
@@ -18,16 +18,16 @@
 
         '=================Account Id's
         Public Function GetNewAccountId() As UInteger
-            For NewID As UInteger = 1 To UInteger.MaxValue
+            For newID As UInteger = 1 To UInteger.MaxValue
                 Dim free As Boolean = True
                 For c = 0 To GlobalDB.Users.Count - 1
-                    If GlobalDB.Users(c).AccountId = NewID Then
+                    If GlobalDB.Users(c).AccountId = newID Then
                         free = False
                     End If
                 Next
 
                 If free = True Then
-                    Return NewID
+                    Return newID
                 End If
             Next
 

@@ -4,7 +4,7 @@ Imports GameServer.Functions
 
 
 Public Class cServer_Gameserver
-    Inherits cServer_Base
+    Inherits ServerBase
 
     Public Sub SendToAllIngame(ByVal buff() As Byte)
         For i As Integer = 0 To OnlineClients

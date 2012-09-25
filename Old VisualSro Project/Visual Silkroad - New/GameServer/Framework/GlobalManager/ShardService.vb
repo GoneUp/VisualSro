@@ -128,20 +128,20 @@ Namespace GlobalManager
         End Sub
 
         Public Sub UpdateGlobalInfo(ByVal gateways As List(Of GatewayServer), ByVal downloads As List(Of DownloadServer), ByVal gameservers As List(Of SRFramework.GameServer))
-            Shard_Gateways.Clear()
-            Shard_Downloads.Clear()
-            Shard_Gameservers.Clear()
+            ShardGateways.Clear()
+            ShardDownloads.Clear()
+            ShardGameservers.Clear()
 
 
 
             For Each tmp In gateways
-                Shard_Gateways.Add(tmp.ServerId, tmp)
+                ShardGateways.Add(tmp.ServerId, tmp)
             Next
             For Each tmp In downloads
-                Shard_Downloads.Add(tmp.ServerId, tmp)
+                ShardDownloads.Add(tmp.ServerId, tmp)
             Next
             For Each tmp In gameservers
-                Shard_Gameservers.Add(tmp.ServerId, tmp)
+                ShardGameservers.Add(tmp.ServerId, tmp)
             Next
         End Sub
     End Module

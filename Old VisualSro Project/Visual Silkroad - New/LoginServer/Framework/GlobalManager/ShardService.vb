@@ -42,14 +42,14 @@ Namespace GlobalManager
         Public Sub OnSendMyInfo()
             Dim writer As New PacketWriter
             writer.Create(InternalClientOpcodes.SERVER_INFO)
-            writer.Word(Settings.Server_Id)
+            writer.Word(Settings.ServerId)
             writer.Word(Server.OnlineClients)
             writer.Word(Server.MaxNormalClients)
             writer.Word(Server.MaxClients)
 
-            writer.Word(Settings.Server_Ip.Length)
-            writer.String(Settings.Server_Ip)
-            writer.Word(Settings.Server_Port)
+            writer.Word(Settings.ServerIp.Length)
+            writer.String(Settings.ServerIp)
+            writer.Word(Settings.ServerPort)
 
             GlobalManagerCon.Send(writer.GetBytes)
             GlobalManagerCon.LastInfoTime = Date.Now
@@ -115,18 +115,18 @@ Namespace GlobalManager
         End Sub
 
         Public Sub UpdateGlobalInfo(ByVal gateways As List(Of GatewayServer), ByVal downloads As List(Of DownloadServer), ByVal gameservers As List(Of GameServer))
-            Shard_Gateways.Clear()
-            Shard_Downloads.Clear()
-            Shard_Gameservers.Clear()
+            ShardGateways.Clear()
+            ShardDownloads.Clear()
+            ShardGameservers.Clear()
 
             For Each tmp In gateways
-                Shard_Gateways.Add(tmp.ServerId, tmp)
+                ShardGateways.Add(tmp.ServerId, tmp)
             Next
             For Each tmp In downloads
-                Shard_Downloads.Add(tmp.ServerId, tmp)
+                ShardDownloads.Add(tmp.ServerId, tmp)
             Next
             For Each tmp In gameservers
-                Shard_Gameservers.Add(tmp.ServerId, tmp)
+                ShardGameservers.Add(tmp.ServerId, tmp)
             Next
         End Sub
     End Module

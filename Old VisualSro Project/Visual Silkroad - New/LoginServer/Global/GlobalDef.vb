@@ -1,19 +1,30 @@
 ﻿Imports SRFramework
 
 Module GlobalDef
-    Public Database As New SRFramework.cDatabase
-    Public GlobalManagerCon As New SRFramework.GlobalManagerClient
-    Public Server As New cServer_Base
-    Public Log As New cLog
+    Public ReadOnly Database As New cDatabase
+    Public ReadOnly GlobalManagerCon As New GlobalManagerClient
+    Public ReadOnly Server As New ServerBase
+    Public ReadOnly Log As New cLog
 
-    Public Shard_Gateways As New Dictionary(Of UShort, GatewayServer) 'Key=ServerId
-    Public Shard_Downloads As New Dictionary(Of UShort, DownloadServer)
-    Public Shard_Gameservers As New Dictionary(Of UShort, GameServer)
+    Public ReadOnly ShardGateways As New Dictionary(Of UShort, GatewayServer) 'Key=ServerId
+    Public ReadOnly ShardDownloads As New Dictionary(Of UShort, DownloadServer)
+    Public ReadOnly ShardGameservers As New Dictionary(Of UShort, GameServer)
 
     Public SessionInfo(1) As cSessionInfo_LoginServer
 
-    Public Sub Initalize(ByVal maxClients As Integer)
-        ReDim SessionInfo(maxClients)
-    End Sub
+    Public Function Initalize(ByVal maxClients As Integer) As Boolean
+        Try
+            ReDim SessionInfo(maxClients)
+
+            ShardGateways.Clear()
+            ShardDownloads.Clear()
+            ShardGameservers.Clear()
+        Catch ex As Exception
+            Log.WriteSystemLog("GlobalDef Init failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
+            Return False
+        End Try
+
+        Return True
+    End Function
 End Module
 

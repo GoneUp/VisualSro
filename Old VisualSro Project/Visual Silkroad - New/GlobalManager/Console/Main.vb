@@ -42,7 +42,7 @@ Friend Module Program
         succeed = GlobalDB.LoadData()
         succeed = Timers.LoadTimers()
 
-        If succeed Then
+        If succeed And Settings.ServerDebugMode = False Then
             'Ready!
             Server.Start()
             Log.WriteSystemLog("Inital Loading complete!")

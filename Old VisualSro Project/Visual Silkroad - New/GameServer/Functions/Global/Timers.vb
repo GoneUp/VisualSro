@@ -317,7 +317,7 @@ Namespace Functions
 
                                 Dim distFromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
 
-                                If distFromSpawn < Settings.Server_Range / 1.25 Then
+                                If distFromSpawn < Settings.ServerRange / 1.25 Then
                                     Dim toX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
                                     Dim toY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
                                     Dim vaildCords As Boolean = False
@@ -449,7 +449,7 @@ Namespace Functions
 
 
                             If changedHPMP = True Then
-                                UpdateHP_MP(i)
+                                UpdateHPMP(i)
                             End If
                         End If
                     End If
@@ -539,7 +539,7 @@ Namespace Functions
                 For i = 0 To Server.MaxClients - 1
                     Dim socket As Net.Sockets.Socket = Server.ClientList.GetSocket(i)
                     If socket IsNot Nothing AndAlso socket.Connected AndAlso SessionInfo(i) IsNot Nothing Then
-                        If Settings.Server_DebugMode = False AndAlso DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then
+                        If Settings.ServerDebugMode = False AndAlso DateDiff(DateInterval.Second, Server.ClientList.LastPingTime(i), DateTime.Now) > 30 Then
                             Server.Disconnect(i)
                         ElseIf SessionInfo(i).LoginAuthRequired And DateDiff(DateInterval.Second, SessionInfo(i).LoginAuthTimeout, DateTime.Now) > 0 Then
                             'LoginAuth is missing..

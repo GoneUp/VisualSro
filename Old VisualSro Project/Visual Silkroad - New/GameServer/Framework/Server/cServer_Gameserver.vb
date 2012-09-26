@@ -41,7 +41,7 @@ Public Class cServer_Gameserver
             If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
                 Dim distance As Long = CalculateDistance(Position, player.Position)
                 'Calculate Distance
-                If distance < Settings.Server_Range Then
+                If distance < Settings.ServerRange Then
                     'In Rage 
                     If player.Ingame = True Then
                         Send(buff, i)
@@ -61,7 +61,7 @@ Public Class cServer_Gameserver
                 Then
                 Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position)
                 'Calculate Distance
-                If distance < Settings.Server_Range Then
+                If distance < Settings.ServerRange Then
                     'In Rage 
                     If player.Ingame = True Then
                         Send(buff, i)
@@ -71,10 +71,10 @@ Public Class cServer_Gameserver
         Next i
     End Sub
 
-    Public Sub SendIfPlayerIsSpawned(ByVal buff() As Byte, ByVal Index_ As Integer, Optional ByVal expect_me As Boolean = False)
+    Public Sub SendIfPlayerIsSpawned(ByVal buff() As Byte, ByVal Index_ As Integer, Optional ByVal expectMe As Boolean = False)
         For i = 0 To MaxClients - 1
             If PlayerData(i) IsNot Nothing Then
-                If PlayerData(i).SpawnedPlayers.Contains(Index_) Or (Index_ = i And expect_me = False) Then
+                If PlayerData(i).SpawnedPlayers.Contains(Index_) Or (Index_ = i And expectMe = False) Then
                     If PlayerData(i).Ingame = True Then
                         Send(buff, i)
                     End If
@@ -83,7 +83,7 @@ Public Class cServer_Gameserver
         Next
     End Sub
 
-    Public Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal MobUniqueID As Integer)
+    Public Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal mobUniqueID As Integer)
         For i = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As cCharacter = PlayerData(i)
@@ -96,7 +96,7 @@ Public Class cServer_Gameserver
         Next
     End Sub
 
-    Public Sub SendIfItemIsSpawned(ByVal buff() As Byte, ByVal ItemUniqueID As Integer)
+    Public Sub SendIfItemIsSpawned(ByVal buff() As Byte, ByVal itemUniqueID As Integer)
         For i = 0 To MaxClients - 1
             If PlayerData(i) IsNot Nothing Then
                 If PlayerData(i).SpawnedItems.Contains(ItemUniqueID) Then
@@ -107,7 +107,7 @@ Public Class cServer_Gameserver
     End Sub
 
 
-    Public Sub SendToGuild(ByVal buff() As Byte, ByVal GuildID As UInteger)
+    Public Sub SendToGuild(ByVal buff() As Byte, ByVal guildID As UInteger)
         For i = 0 To MaxClients - 1
             If PlayerData(i) IsNot Nothing Then
                 If PlayerData(i).GuildID = GuildID Then
@@ -118,9 +118,9 @@ Public Class cServer_Gameserver
     End Sub
 
 
-    Public Sub SendToStallSession(ByVal buff() As Byte, ByVal StallID As UInteger, ByVal Owner As Boolean)
+    Public Sub SendToStallSession(ByVal buff() As Byte, ByVal stallID As UInteger, ByVal owner As Boolean)
         For i = 0 To Stalls.Count - 1
-            If Stalls(i).StallID = StallID Then
+            If Stalls(i).StallID = stallID Then
                 'Send to Visitors
                 For v = 0 To Stalls(i).Visitors.Count - 1
                     Send(buff, Stalls(i).Visitors(v))

@@ -7,7 +7,7 @@ Namespace Functions
         Public CastingId As UInteger
         Public DurationStart As DateTime
         Public DurationEnd As DateTime
-        Public Type As BuffType_
+        Public Type As BuffType
 
         'If Skill
         Public SkillID As UInteger
@@ -15,30 +15,30 @@ Namespace Functions
         Public ItemID As UInteger
 
         'Timer
-        Public ElaspedTimer As Timer
+        Private ElaspedTimer As Timer
 
         Sub New()
             ElaspedTimer = New Timer
             AddHandler ElaspedTimer.Elapsed, AddressOf ElapsedTimerElapsed
         End Sub
 
-        Public Sub ElaspedTimer_Start(ByVal Interval As Integer)
-            ElaspedTimer.Interval = Interval
+        Public Sub ElaspedTimerStart(ByVal interval As Integer)
+            ElaspedTimer.Interval = interval
             ElaspedTimer.Start()
         End Sub
 
-        Public Sub ElaspedTimer_Stop()
+        Public Sub ElaspedTimerStop()
             ElaspedTimer.Stop()
         End Sub
 
-        Public Sub ElapsedTimerElapsed()
+        Private Sub ElapsedTimerElapsed()
             ElaspedTimer.Stop()
 
             Try
                 For i As Integer = 0 To Server.MaxClients
-                    If Functions.PlayerData(i) IsNot Nothing Then
-                        If Functions.PlayerData(i).UniqueID = OwnerID Then
-                            Functions.PlayerBuff_End(OverID, i)
+                    If PlayerData(i) IsNot Nothing Then
+                        If PlayerData(i).UniqueID = OwnerID Then
+                            PlayerBuff_End(OverID, i)
                         End If
                     End If
                 Next
@@ -55,7 +55,7 @@ Namespace Functions
     End Class
 
 
-    Public Enum BuffType_
+    Public Enum BuffType
         ItemBuff = 0
         SkillBuff = 1
     End Enum

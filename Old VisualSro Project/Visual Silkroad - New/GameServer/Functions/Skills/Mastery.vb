@@ -21,7 +21,7 @@ Namespace Functions
                 End If
             Next
             If PlayerData(index_).Pk2ID >= 1907 And PlayerData(index_).Pk2ID <= 1932 Then  'Chinese Char
-                If masterycount < Settings.Server_MasteryCap Then 'Free mastery
+                If masterycount < Settings.ServerMasteryCap Then 'Free mastery
 
 
                     For i = 0 To GameDB.Masterys.Length - 1
@@ -56,7 +56,7 @@ Namespace Functions
                             Exit For
                         End If
                     Next
-                ElseIf masterycount >= Settings.Server_MasteryCap Then
+                ElseIf masterycount >= Settings.ServerMasteryCap Then
                     writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                     writer.Byte(2)
                     writer.Byte(4)

@@ -81,7 +81,7 @@ Namespace Functions
             tmp.HP_Cur = mob_.Hp
 
             If channelID = UInt32.MaxValue Then
-                tmp.ChannelId = Settings.Server_WorldChannel
+                tmp.ChannelId = Settings.ServerWorldChannel
             Else
                 tmp.ChannelId = channelID
             End If
@@ -150,7 +150,7 @@ Namespace Functions
 
         Public Sub RemoveMob(ByVal UniqueID As Integer)
             Dim _mob As cMonster = MobList(UniqueID)
-            Server.SendIfMobIsSpawned(CreateDespawnPacket(_mob.UniqueID), _mob.UniqueID)
+            Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(_mob.UniqueID), _mob.UniqueID)
             MobList.Remove(UniqueID)
 
             If _mob.SpotID >= 0 Then

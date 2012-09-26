@@ -1,14 +1,14 @@
 ﻿Namespace Functions
     Module Formula
-        Public Function CalculateDistance(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Double
-            Dim distance_x As Double = Pos_1.ToGameX - Pos_2.ToGameX
-            Dim distance_y As Double = Pos_1.ToGameY - Pos_2.ToGameY
-            Return (Math.Sqrt(distance_x * distance_x) + Math.Sqrt(distance_y * distance_y))
+        Public Function CalculateDistance(ByVal pos1 As Position, ByVal pos2 As Position) As Double
+            Dim distanceX As Double = pos1.ToGameX - pos2.ToGameX
+            Dim distanceY As Double = pos1.ToGameY - pos2.ToGameY
+            Return (Math.Sqrt(distanceX * distanceX) + Math.Sqrt(distanceY * distanceY))
         End Function
 
-        Public Function CalculateDamage(ByVal BasicAP As Double, ByVal SkillAP As Double, ByVal AttackPowerInc As Double,
-                                        ByVal EnemyAccAbsorbation As Double, ByVal EnemyDef As Double,
-                                        ByVal Balance As Double, ByVal DamageInc As Double, ByVal SkillAPRate As Double) As Long
+        Public Function CalculateDamage(ByVal basicAP As Double, ByVal skillAP As Double, ByVal attackPowerInc As Double,
+                                        ByVal enemyAccAbsorbation As Double, ByVal enemyDef As Double,
+                                        ByVal balance As Double, ByVal damageInc As Double, ByVal skillAPRate As Double) As Long
             'A = Basic Attack Power
             'B = Skill Attack Power
             'C = Attack Power Increasing rate
@@ -21,56 +21,56 @@
 
             'Damage = ((A + B) * (1 + C) / (1 + D) - E) * F * (1 + G) * H
             Return _
-                ((BasicAP + SkillAP) * (1 + AttackPowerInc) / (1 + EnemyAccAbsorbation) - EnemyDef) * Balance * (1 + DamageInc) *
+                ((basicAP + skillAP) * (1 + attackPowerInc) / (1 + enemyAccAbsorbation) - enemyDef) * balance * (1 + damageInc) *
                 SkillAPRate
         End Function
 
-        Public Function GetRandomPosition(ByVal BasePosition As Position, ByVal Range As Integer) As Position
-            If BasePosition Is Nothing Then
+        Public Function GetRandomPosition(ByVal basePosition As Position, ByVal range As Integer) As Position
+            If basePosition Is Nothing Then
                 Return Nothing
             End If
 
-            Dim tmp_pos As Position = BasePosition
-            Dim tmp_x As Single = BasePosition.ToGameX + Rand.Next(0 - Range, 0 + Range)
-            Dim tmp_y As Single = BasePosition.ToGameY + Rand.Next(0 - Range, 0 + Range)
-            tmp_pos.X = GetXOffset(tmp_x)
-            tmp_pos.Y = GetYOffset(tmp_y)
+            Dim tmpPos As Position = basePosition
+            Dim tmpX As Single = basePosition.ToGameX + Rand.Next(0 - Range, 0 + Range)
+            Dim tmpY As Single = basePosition.ToGameY + Rand.Next(0 - Range, 0 + Range)
+            tmpPos.X = GetXOffset(tmpX)
+            tmpPos.Y = GetYOffset(tmpY)
 
-            Dim tmpXsec As Int16 = GetXSecFromGameX(tmp_x)
-            Dim tmpYsec As Int16 = GetYSecFromGameY(tmp_y)
+            Dim tmpXsec As Int16 = GetXSecFromGameX(tmpX)
+            Dim tmpYsec As Int16 = GetYSecFromGameY(tmpY)
             If tmpXsec > 0 And tmpXsec < 255 And tmpYsec > 0 And tmpYsec < 255 Then
-                tmp_pos.XSector = tmpXsec
-                tmp_pos.YSector = tmpYsec
+                tmpPos.XSector = tmpXsec
+                tmpPos.YSector = tmpYsec
             Else
-                Return BasePosition
+                Return basePosition
             End If
 
-            Return tmp_pos
+            Return tmpPos
         End Function
 
 #Region "Pos Help Functions"
 
-        Public Function ToPacketX(ByVal XSec As Byte, ByVal XPos As Single) As Single
-            Return (XSec - 135) * 192 + XPos / 10
+        Public Function ToPacketX(ByVal xSec As Byte, ByVal xPos As Single) As Single
+            Return (xSec - 135) * 192 + XPos / 10
         End Function
 
-        Public Function ToPacketY(ByVal YSec As Byte, ByVal YPos As Single) As Single
-            Return (YSec - 92) * 192 + YPos / 10
+        Public Function ToPacketY(ByVal ySec As Byte, ByVal yPos As Single) As Single
+            Return (ySec - 92) * 192 + YPos / 10
         End Function
 
-        Public Function GetXSecFromGameX(ByVal X As Single) As Single
+        Public Function GetXSecFromGameX(ByVal x As Single) As Single
             Return CSng(Math.Floor(CDbl(((X / 192.0!) + 135.0!))))
         End Function
 
-        Public Function GetYSecFromGameY(ByVal Y As Single) As Single
+        Public Function GetYSecFromGameY(ByVal y As Single) As Single
             Return CSng(Math.Floor(CDbl(((Y / 192.0!) + 92.0!))))
         End Function
 
-        Public Function GetXOffset(ByVal X As Single) As Double
+        Public Function GetXOffset(ByVal x As Single) As Double
             Return CInt(Math.Round(CDbl((((((X / 192.0!) - GetXSecFromGameX(X)) + 135.0!) * 192.0!) * 10.0!))))
         End Function
 
-        Public Function GetYOffset(ByVal Y As Single) As Double
+        Public Function GetYOffset(ByVal y As Single) As Double
             Return CInt(Math.Round(CDbl((((((Y / 192.0!) - GetYSecFromGameY(Y)) + 92.0!) * 192.0!) * 10.0!))))
         End Function
 
@@ -78,35 +78,36 @@
 
 #Region "Angle"
 
-        Public Function GetAngle(ByVal Pos_From As Position, ByVal Pos_To As Position) As UShort
-            Dim Grad As Single
-            Dim AK As Double = Pos_From.ToGameX - Pos_To.ToGameX
+        Public Function GetAngle(ByVal posFrom As Position, ByVal posTo As Position) As UShort
+            Dim grad As Single
+            Dim ak As Double = posFrom.ToGameX - posTo.ToGameX
             'distance_x
-            Dim GK As Double = Pos_From.ToGameY - Pos_To.ToGameY
+            Dim gk As Double = posFrom.ToGameY - posTo.ToGameY
             'distance_y
 
-            If GK > 0 And AK > 0 Then
-                Grad = Math.Atan(DegreesToRadians(GK / AK))
-            ElseIf GK > 0 And AK < 0 Then
-                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 90
-            ElseIf GK < 0 And AK < 0 Then
-                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 180
-            ElseIf GK < 0 And AK > 0 Then
-                Grad = (Math.Atan(DegreesToRadians(GK / AK))) * -1 + 270
+            If gk > 0 And ak > 0 Then
+                grad = Math.Atan(DegreesToRadians(gk / ak))
+            ElseIf gk > 0 And ak < 0 Then
+                grad = (Math.Atan(DegreesToRadians(gk / ak))) * -1 + 90
+            ElseIf gk < 0 And ak < 0 Then
+                grad = (Math.Atan(DegreesToRadians(gk / ak))) * -1 + 180
+            ElseIf gk < 0 And ak > 0 Then
+                grad = (Math.Atan(DegreesToRadians(gk / ak))) * -1 + 270
             End If
 
 
             'Dim i As Microsoft .
+            Return grad
         End Function
 
         ' convert from degrees to radians
-        Function DegreesToRadians(ByVal degrees As Single) As Single
+        Private Function DegreesToRadians(ByVal degrees As Single) As Single
             DegreesToRadians = degrees * 10
             '/ 57.29578
         End Function
 
         ' convert from radians to degrees
-        Function RadiansToDegrees(ByVal radians As Single) As Single
+        Private Function RadiansToDegrees(ByVal radians As Single) As Single
             RadiansToDegrees = radians * 57.29578
         End Function
 
@@ -146,11 +147,11 @@
         End Function
 
         Public Function GetWeaponMasteryLevel(ByVal Index_ As Integer) As Byte
-            Dim _item As cItem = GameDB.Items(Inventorys(Index_).UserItems(6).ItemID)
-            Dim _refitem As cRefItem = GetItemByID(_item.ObjectID)
+            Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(6).ItemID)
+            Dim refitem As cRefItem = GetItemByID(item.ObjectID)
             '8-11
-            If _refitem.CLASS_A = 1 And _refitem.CLASS_B = 6 Then
-                Select Case _refitem.CLASS_C
+            If refitem.CLASS_A = 1 And refitem.CLASS_B = 6 Then
+                Select Case refitem.CLASS_C
                     '=============CH
                     Case 2 'Sword
                         Return GetMasteryByID(257, Index_).Level
@@ -197,19 +198,14 @@
         End Function
 
 
-        Public Function HexToString(ByVal ToConvert As String) As String
+        Public Function HexToString(ByVal toConvert As String) As String
             Dim tmp As String = ""
-            Try
-                Dim IstGerade As Boolean = (ToConvert.Count / 2 - Math.Truncate(ToConvert.Count / 2)) = 0
-                If ToConvert.Count >= 2 And IstGerade Then
-                    For i = 0 To ToConvert.Count - 1 Step 2
-                        tmp += Chr("&H" & (ToConvert.Substring(i, 2)))
+            Dim istGerade As Boolean = ((toConvert.Count / 2 - Math.Truncate(toConvert.Count / 2)) = 0)
+                If toConvert.Count >= 2 And istGerade Then
+                    For i = 0 To toConvert.Count - 1 Step 2
+                        tmp += Chr("&H" & (toConvert.Substring(i, 2)))
                     Next
                 End If
-            Catch ex As Exception
-
-            End Try
-
             Return tmp
         End Function
     End Module

@@ -42,27 +42,27 @@ Namespace GlobalManager
         Public Sub OnSendMyInfo()
             Dim writer As New PacketWriter
             writer.Create(InternalClientOpcodes.SERVER_INFO)
-            writer.Word(Settings.Server_Id)
+            writer.Word(Settings.ServerId)
             writer.Word(Server.OnlineClients)
             writer.Word(Server.MaxNormalClients)
             writer.Word(Server.MaxClients)
 
-            writer.Word(Settings.Server_Ip.Length)
-            writer.String(Settings.Server_Ip)
-            writer.Word(Settings.Server_Port)
+            writer.Word(Settings.ServerIp.Length)
+            writer.String(Settings.ServerIp)
+            writer.Word(Settings.ServerPort)
 
-            writer.Word(Settings.Server_Name.Length)
-            writer.String(Settings.Server_Name)
+            writer.Word(Settings.ServerName.Length)
+            writer.String(Settings.ServerName)
             writer.DWord(Functions.MobList.Count)
             writer.DWord(Functions.NpcList.Count)
             writer.DWord(Functions.ItemList.Count)
 
-            writer.Word(Settings.Server_XPRate)
-            writer.Word(Settings.Server_SPRate)
-            writer.Word(Settings.Server_GoldRate)
-            writer.Word(Settings.Server_DropRate)
-            writer.Word(Settings.Server_SpawnRate)
-            writer.Byte(Settings.Server_DebugMode)
+            writer.Word(Settings.ServerXPRate)
+            writer.Word(Settings.ServerSPRate)
+            writer.Word(Settings.ServerGoldRate)
+            writer.Word(Settings.ServerDropRate)
+            writer.Word(Settings.ServerSpawnRate)
+            writer.Byte(Settings.ServerDebugMode)
 
             GlobalManagerCon.Send(writer.GetBytes)
             GlobalManagerCon.LastInfoTime = Date.Now
@@ -73,8 +73,8 @@ Namespace GlobalManager
             Dim downloads As New List(Of DownloadServer)
             Dim gameservers As New List(Of SRFramework.GameServer)
 
-            Dim gateway_count As UShort = packet.Word
-            For i = 0 To gateway_count - 1
+            Dim gatewayCount As UShort = packet.Word
+            For i = 0 To gatewayCount - 1
                 Dim tmp As New GatewayServer
                 tmp.ServerId = packet.Word
                 tmp.IP = packet.String(packet.Word)
@@ -86,8 +86,8 @@ Namespace GlobalManager
                 gateways.Add(tmp)
             Next
 
-            Dim downloads_count As UShort = packet.Word
-            For i = 0 To downloads_count - 1
+            Dim downloadsCount As UShort = packet.Word
+            For i = 0 To downloadsCount - 1
                 Dim tmp As New DownloadServer
                 tmp.ServerId = packet.Word
                 tmp.IP = packet.String(packet.Word)
@@ -99,8 +99,8 @@ Namespace GlobalManager
                 downloads.Add(tmp)
             Next
 
-            Dim gameservers_count As UShort = packet.Word
-            For i = 0 To gameservers_count - 1
+            Dim gameserversCount As UShort = packet.Word
+            For i = 0 To gameserversCount - 1
                 Dim tmp As New SRFramework.GameServer
                 tmp.ServerId = packet.Word
                 tmp.IP = packet.String(packet.Word)

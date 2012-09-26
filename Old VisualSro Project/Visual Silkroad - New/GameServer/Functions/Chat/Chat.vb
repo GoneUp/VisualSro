@@ -2,7 +2,7 @@
 
 Namespace Functions
     Module Chat
-        Public Sub OnChat(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim tag As Byte = Packet.Byte
 
 
@@ -30,10 +30,10 @@ Namespace Functions
             End Select
         End Sub
 
-        Public Sub OnPublicChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Private Sub OnPublicChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
 
             Dim counter As Byte = packet.Byte
-            Dim items_linked As Byte = packet.Byte()
+            Dim itemsLinked As Byte = packet.Byte()
             Dim messagelength As UInt16 = packet.Word
             Dim message As String = packet.UString(messagelength)
 
@@ -53,16 +53,16 @@ Namespace Functions
                 writer.UString(message)
                 Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_, True)
 
-                If Settings.Log_Chat Then
+                If Settings.LogChat Then
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Public", "Message: " & message)
                 End If
             End If
         End Sub
 
-        Public Sub OnWhisper(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+        Private Sub OnWhisper(ByVal packet As PacketReader, ByVal Index_ As Integer)
 
             Dim counter As Byte = Packet.Byte
-            Dim items_linked As Byte = Packet.Byte()
+            Dim itemsLinked As Byte = Packet.Byte()
             Dim senderlength As UInt16 = Packet.Word
             Dim receiver As String = Packet.String(senderlength)
             Dim receiverIndex As Integer = -1
@@ -98,12 +98,12 @@ Namespace Functions
 
                 Server.Send(writer.GetBytes, receiverIndex)
 
-                If Settings.Log_Chat Then
+                If Settings.LogChat Then
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Whisper",
                                      String.Format("Sender: {0} Message: {1}", receiver, message))
                 End If
             ElseIf receiver = "[DAMAGE_MOD]" Then
-                GameServer.GameMod.Damage.ParseMessage(Index_, message)
+                GameMod.Damage.ParseMessage(Index_, message)
             ElseIf receiver = "[VAGINA]" And PlayerData(Index_).InStall Then
                 SendNotice("E=MC Vagina", Index_)
                 SendNotice("Easteregg: " & message, Index_)
@@ -120,25 +120,25 @@ Namespace Functions
             End If
         End Sub
 
-        Public Sub SendPm(ByVal Rev_Index As Integer, ByVal Message As String, ByVal SenderName As String)
+        Public Sub SendPm(ByVal revIndex As Integer, ByVal message As String, ByVal senderName As String)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHAT)
             writer.Byte(ChatModes.PmIncome)
             writer.Word(SenderName.Length)
             writer.String(SenderName)
 
-            writer.Word(Message.Length)
-            writer.UString(Message)
+            writer.Word(message.Length)
+            writer.UString(message)
 
-            Server.Send(writer.GetBytes, Rev_Index)
+            Server.Send(writer.GetBytes, revIndex)
         End Sub
 
-        Public Sub OnGameMasterChat(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+        Private Sub OnGameMasterChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If PlayerData(Index_).GM Then
-                Dim counter As Byte = Packet.Byte
-                Packet.Byte()
-                Dim messagelength As UShort = Packet.Word
-                Dim message As String = Packet.UString(messagelength)
+                Dim counter As Byte = packet.Byte
+                packet.Byte()
+                Dim messagelength As UShort = packet.Word
+                Dim message As String = packet.UString(messagelength)
 
                 Dim writer As New PacketWriter
                 'Reply to sender
@@ -157,13 +157,13 @@ Namespace Functions
 
                 GameMod.CheckForCoustum(message, Index_)
 
-                If Settings.Log_Chat Then
+                If Settings.LogChat Then
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "GM", "Message: " & message)
                 End If
             End If
         End Sub
 
-        Public Sub OnNoticeChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Private Sub OnNoticeChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If PlayerData(Index_).GM Then
                 Dim counter As Byte = packet.Byte
                 Dim messagelength As UInt16 = packet.Word
@@ -171,7 +171,7 @@ Namespace Functions
 
                 SendNotice(message)
 
-                If Settings.Log_Chat Then
+                If Settings.LogChat Then
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Notice", "Message: " & message)
                 End If
 
@@ -192,7 +192,7 @@ Namespace Functions
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
 
-        Public Sub OnGlobalChat(ByVal Message As String, ByVal Index_ As Integer)
+        Public Sub OnGlobalChat(ByVal message As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHAT)
             writer.Byte(ChatModes.Globals)
@@ -202,7 +202,7 @@ Namespace Functions
             writer.UString(Message)
             Server.SendToAllIngame(writer.GetBytes)
 
-            If Settings.Log_Chat Then
+            If Settings.LogChat Then
                 Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Chat", "Global", "Message: " & Message)
             End If
         End Sub

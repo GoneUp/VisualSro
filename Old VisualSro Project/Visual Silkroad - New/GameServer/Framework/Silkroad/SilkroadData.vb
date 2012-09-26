@@ -227,11 +227,11 @@ Module SilkroadData
 #End Region
 
 #Region "Gold"
-    Structure GoldData
+    Public Class GoldData
         Public Level As Byte
         Public MinGold As ULong
         Public MaxGold As ULong
-    End Structure
+    End Class
 
 
     Private Sub DumpGoldData(ByVal path As String)
@@ -254,17 +254,18 @@ Module SilkroadData
                 Return RefGoldData(i)
             End If
         Next
-        Throw New Exception("Level couldn't be found!")
+
+        Return Nothing
     End Function
 #End Region
 
 #Region "LevelData"
-    Structure LevelData
+    Public Class LevelData
         Public Level As Byte
         Public MobExp As ULong
         Public Experience As ULong
         Public SkillPoints As ULong
-    End Structure
+    End Class
 
 
     Private Sub DumpLevelData(ByVal path As String)
@@ -294,7 +295,7 @@ Module SilkroadData
                 Return RefLevelData(i)
             End If
         Next
-        Throw New Exception(String.Format("Level {0} not found!", level))
+        Return Nothing
     End Function
 #End Region
 

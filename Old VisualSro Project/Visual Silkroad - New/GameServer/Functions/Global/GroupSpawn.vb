@@ -28,11 +28,12 @@ Namespace Functions
 
                 data.Create(ServerOpcodes.GAME_GROUP_SPAWN_DATA)
                 For Each UniqueID In tmpUniqueIDs.ToArray()
-                    If writtenBytes + 56 > 8192 Then
-                        '56 seems to be the maximum of bytes added in one spawn.
+                    If writtenBytes + 300 > 8192 Then
+                        '300 is a confotable saftey distance to the maximal packet size. We start a new Packet then.
                         Exit For
                     End If
 
+                    'Mobs
                     If MobList.ContainsKey(UniqueID) Then
                         Dim mob As cMonster = MobList(UniqueID)
                         Dim refobject As SilkroadObject = GetObject(mob.Pk2ID)
@@ -50,10 +51,9 @@ Namespace Functions
                         writtenUniqueIds.Add(UniqueID)
                         tmpUniqueIDs.Remove(UniqueID)
                         Continue For
-                    Else
-                        tmpUniqueIDs.Remove(UniqueID)
                     End If
 
+                    'Npcs
                     If NpcList.ContainsKey(UniqueID) Then
                         '47 max
                         Dim byteCount As UInt16 = data.Length
@@ -68,12 +68,11 @@ Namespace Functions
                         writtenUniqueIds.Add(UniqueID)
                         tmpUniqueIDs.Remove(UniqueID)
                         Continue For
-                    Else
-                        tmpUniqueIDs.Remove(UniqueID)
-                    End If
+                  End If
 
-                        If ItemList.ContainsKey(UniqueID) Then
-                            '34 max
+                    'Items
+                    If ItemList.ContainsKey(UniqueID) Then
+                        '34 max
                         Dim byteCount As UInt16 = data.Length
 
                         If mode = GroupSpawnMode.SPAWN Then
@@ -86,26 +85,46 @@ Namespace Functions
                         writtenUniqueIds.Add(UniqueID)
                         tmpUniqueIDs.Remove(UniqueID)
                         Continue For
-                    Else
-                        tmpUniqueIDs.Remove(UniqueID)
                     End If
+
+                    'Players
+                    For refindex As Integer = 0 To Server.MaxClients - 1
+                        Dim othersock As Net.Sockets.Socket = Server.ClientList.GetSocket(refindex)
+                        'Socket checks..
+                        If (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso (othersock.Connected) Then
+                            If PlayerData(refindex).UniqueID = UniqueID Then
+                                Dim byteCount As UInt16 = data.Length
+
+                                If mode = GroupSpawnMode.SPAWN Then
+                                    CreatePlayerSpawnPacket(refindex, data, False)
+                                ElseIf mode = GroupSpawnMode.DESPAWN Then
+                                    data.DWord(UniqueID)
+                                End If
+                                writtenBytes += (data.Length - byteCount)
+
+                                writtenUniqueIds.Add(UniqueID)
+                                tmpUniqueIDs.Remove(UniqueID)
+                            End If
+                        End If
+                    Next
+
                 Next
 
-                If writtenUniqueIds.Count > 0 Then
-                    start.Create(ServerOpcodes.GAME_GROUP_SPAWN_START)
-                    start.Byte(mode)
-                    start.Word(writtenUniqueIds.Count)
+                    If writtenUniqueIds.Count > 0 Then
+                        start.Create(ServerOpcodes.GAME_GROUP_SPAWN_START)
+                        start.Byte(mode)
+                        start.Word(writtenUniqueIds.Count)
 
-                    finsih.Create(ServerOpcodes.GAME_GROUP_SPAWN_END)
+                        finsih.Create(ServerOpcodes.GAME_GROUP_SPAWN_END)
 
-                    packets.Add(start)
-                    packets.Add(data)
-                    packets.Add(finsih)
-                End If
+                        packets.Add(start)
+                        packets.Add(data)
+                        packets.Add(finsih)
+                    End If
 
-                If tmpUniqueIDs.Count = 0 Then
-                    finsihed = True
-                End If
+                    If tmpUniqueIDs.Count = 0 Then
+                        finsihed = True
+                    End If
             Loop While finsihed = False
 
             Return packets.ToArray

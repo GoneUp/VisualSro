@@ -281,7 +281,7 @@ Namespace Functions
                     PlayerData(Index_).Pk2ID = NewModel
                     PlayerData(Index_).Volume = NewVolume
 
-                    GameDB.SaveCharType_Volume(Index_)
+                    GameDB.SaveCharTypeAndVolume(Index_)
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
                 End If
             End If

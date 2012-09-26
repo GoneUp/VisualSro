@@ -14,7 +14,7 @@
         'Exchange
         Public ExchangeData As New Dictionary(Of UInteger, cExchange)
         'Stall
-        Public Stalls As New List(Of cStall)
+        Public Stalls As New List(Of Stall)
 
         Public Function GlobalInit(ByVal slots As UInt32) As Boolean
             Try

@@ -27,7 +27,7 @@
                 Log.WriteSystemLog("/clear")
 
             Case "/packets"
-                Settings.Server_DebugMode = True
+                Settings.ServerDebugMode = True
                 GameServer.Log.WriteSystemLog("Log Packets started!")
 
 
@@ -67,13 +67,13 @@
 
 
             Case "/debug"
-                If Settings.Server_DebugMode Then
-                    Settings.Server_DebugMode = False
+                If Settings.ServerDebugMode Then
+                    Settings.ServerDebugMode = False
                     Log.WriteSystemLog("Turned off DebugMode")
                     Functions.SendNotice("DEBUG Mode off!")
 
-                ElseIf Settings.Server_DebugMode = False Then
-                    Settings.Server_DebugMode = True
+                ElseIf Settings.ServerDebugMode = False Then
+                    Settings.ServerDebugMode = True
                     Log.WriteSystemLog("Turned on DebugMode")
                     Functions.SendNotice("DEBUG Mode on!")
                 End If
@@ -89,7 +89,7 @@
                 Log.WriteSystemLog("Finished!")
 
             Case "/respawnoff"
-                Settings.Server_SpawnRate = 0
+                Settings.ServerSpawnRate = 0
                 Log.WriteSystemLog("Turned off Respawn")
 
             Case "/save"
@@ -128,7 +128,7 @@
                     GlobalManager.OnSendServerShutdown()
                 Else
                     Log.WriteSystemLog("GMC: Already disconnected!")
-                    GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                    GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
                 End If
 
 
@@ -143,7 +143,7 @@
                     GlobalManager.OnSendServerShutdown()
                 Else
                     Log.WriteSystemLog("GMC: Already disconnected!")
-                    GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                    GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
                 End If
 
             Case "/wnd"

@@ -57,7 +57,7 @@ Namespace Functions
                 Server.Send(writer.GetBytes, Index_)
             End If
 
-            'SendGuildLogOn(Index_)
+            SendGuildLogOn(Index_)
         End Sub
 
         Public Sub SendGuildLogOn(ByVal Index_ As Integer)
@@ -91,9 +91,9 @@ Namespace Functions
             End If
         End Sub
 
-        Public Function GetMember(ByVal GuildID As UInteger, ByVal CharID As UInteger) As cGuild.GuildMember_
+        Public Function GetMember(ByVal guildID As UInteger, ByVal charID As UInteger) As cGuild.GuildMember_
             For i = 0 To GameDB.Guilds.Count - 1
-                If GameDB.Guilds(i).GuildID = GuildID Then
+                If GameDB.Guilds(i).GuildID = guildID Then
                     For m = 0 To GameDB.Guilds(i).Member.Count - 1
                         If GameDB.Guilds(i).Member(m).CharacterID = CharID Then
                             Return GameDB.Guilds(i).Member(m)
@@ -101,7 +101,7 @@ Namespace Functions
                     Next
                 End If
             Next
-            Return New cGuild.GuildMember_
+            Return Nothing
         End Function
     End Module
 End Namespace

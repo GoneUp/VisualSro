@@ -3,7 +3,7 @@ Imports SRFramework
 
 Namespace Functions
     Module NPC
-        Public Sub CreateNPCSpawnPacket(ByVal NpcUniqueId As UInteger, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
+        Public Sub CreateNPCSpawnPacket(ByVal npcUniqueId As UInteger, ByVal writer As PacketWriter, ByVal includePacketHeader As Boolean)
             Dim npc As cNPC = NpcList(NpcUniqueId)
             Dim obj As SilkroadObject = GetObject(npc.Pk2ID)
 
@@ -64,7 +64,7 @@ Namespace Functions
             tmp.Angle = Angle
 
             If channelID = UInt32.MaxValue Then
-                tmp.ChannelId = Settings.Server_WorldChannel
+                tmp.ChannelId = Settings.ServerWorldChannel
             Else
                 tmp.ChannelId = channelID
             End If
@@ -232,7 +232,7 @@ Namespace Functions
             Select Case Model_Name
                 Case "NPC_CH_SMITH", "NPC_CH_ARMOR", "NPC_CH_POTION", "NPC_CH_ACCESSORY",
                     "STORE_CH_GATE", "NPC_CH_FERRY", "NPC_CH_FERRY2"
-                    writer.Word(Settings.Server_TaxRate)
+                    writer.Word(Settings.ServerTaxRate)
             End Select
         End Sub
     End Module

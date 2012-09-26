@@ -15,14 +15,14 @@ Namespace GlobalManager
         End Sub
 
         Public Sub OnGameserverUserAuthReply(ByVal packet As PacketReader)
-            Dim UserIndex As Integer = packet.DWord
+            Dim userIndex As Integer = packet.DWord
             Dim succeed As Byte = packet.Byte
 
             If succeed = 1 Then
-                GlobalManagerCon.GameserverUserAuthReply(succeed, 0, UserIndex)
+                GlobalManagerCon.GameserverUserAuthReply(succeed, 0, userIndex)
             ElseIf succeed = 2 Then
                 'Error...
-                GlobalManagerCon.GameserverUserAuthReply(succeed, packet.Byte, UserIndex)
+                GlobalManagerCon.GameserverUserAuthReply(succeed, packet.Byte, userIndex)
             End If
         End Sub
     End Module

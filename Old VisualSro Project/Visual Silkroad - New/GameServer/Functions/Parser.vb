@@ -176,7 +176,7 @@ Namespace Functions
                     End If
                 Else
                     'SessionInfo is nothing
-
+                    'We just jump out, the server will cleaned/disconnected the player
                 End If
 
             Catch ex As Exception

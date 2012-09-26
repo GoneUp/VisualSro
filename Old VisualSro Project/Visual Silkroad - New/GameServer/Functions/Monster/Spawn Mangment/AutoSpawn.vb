@@ -47,12 +47,12 @@ Namespace Functions
                     Select Case obj_.Type
                         Case SilkroadObject.Type_.Mob_Normal
                             RefRespawns.Add(tmp)
-                            For s = 1 To Settings.Server_SpawnRate
+                            For s = 1 To Settings.ServerSpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
                         Case SilkroadObject.Type_.Mob_Cave
                             RefRespawns.Add(tmp)
-                            For s = 1 To Settings.Server_SpawnRate
+                            For s = 1 To Settings.ServerSpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
                         Case SilkroadObject.Type_.Mob_Unique

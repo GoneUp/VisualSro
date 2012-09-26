@@ -2,17 +2,12 @@
 
 Namespace Functions
     Module Players
-        ''' <summary>
-        ''' For Players
-        ''' </summary>
-        ''' <param name="Index"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function CreateSpawnPacket(ByVal Index_ As Integer) As Byte()
-            Dim writer As New PacketWriter
-
+        Public Sub CreatePlayerSpawnPacket(ByVal Index_ As Integer, writer As PacketWriter, includePacketHeader As Boolean)
             With PlayerData(Index_)
-                writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
+                If includePacketHeader Then
+                    writer.Create(ServerOpcodes.GAME_SINGLE_SPAWN)
+                End If
+
                 writer.DWord(.Pk2ID)
                 writer.Byte(.Volume)
                 writer.Byte(0)
@@ -21,18 +16,18 @@ Namespace Functions
 
                 'items
 
-                Dim PlayerItemCount As Integer = 0
+                Dim playerItemCount As Integer = 0
                 For slot = 0 To 9
                     If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
                         Dim item As cItem = GameDB.Items(Inventorys(Index_).UserItems(slot).ItemID)
                         If item.ObjectID <> 62 Then
-                            PlayerItemCount += 1
+                            playerItemCount += 1
                         End If
                     End If
                 Next
 
                 writer.Byte(.MaxInvSlots)
-                writer.Byte(PlayerItemCount)
+                writer.Byte(playerItemCount)
 
                 For slot = 0 To 9
                     If Inventorys(Index_).UserItems(slot).ItemID <> 0 Then
@@ -48,14 +43,14 @@ Namespace Functions
                 writer.Byte(.MaxAvatarSlots) 'Avatar Slots
 
 
-                Dim AvatarItemCount As Integer = 0
+                Dim avatarItemCount As Integer = 0
                 For slot = 0 To .MaxAvatarSlots - 1
                     If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
-                        AvatarItemCount += 1
+                        avatarItemCount += 1
                     End If
                 Next
 
-                writer.Byte(AvatarItemCount)
+                writer.Byte(avatarItemCount)
 
                 For slot = 0 To .MaxAvatarSlots - 1
                     If Inventorys(Index_).AvatarItems(slot).ItemID <> 0 Then
@@ -163,10 +158,10 @@ Namespace Functions
 
 
                 If .InStall = True Then
-                    Dim Stall_Index As Integer = GetStallIndex(.StallID)
+                    Dim stallIndex As Integer = GetStallIndex(.StallID)
 
-                    writer.Word(Stalls(Index_).StallName.Length)
-                    writer.UString(Stalls(Index_).StallName)
+                    writer.Word(Stalls(stallIndex).StallName.Length)
+                    writer.UString(Stalls(stallIndex).StallName)
                     writer.DWord(0) 'Stall Dekoration ID
                 End If
 
@@ -176,28 +171,27 @@ Namespace Functions
                 writer.Byte(3)
 
             End With
-            Return writer.GetBytes
-        End Function
+        End Sub
 
-
-        Public Function CreateDespawnPacket(ByVal UniqueID As Integer) As Byte()
+        Public Function CreateSingleDespawnPacket(ByVal uniqueID As Integer) As Byte()
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_SINGLE_DESPAWN)
-            writer.DWord(UniqueID)
+            writer.DWord(uniqueID)
             Return writer.GetBytes
         End Function
 
         Public Sub DespawnPlayerTeleport(ByVal Index_ As Integer)
 
             For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
-                Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
+                Dim otherIndex As Integer = PlayerData(Index_).SpawnedPlayers(i)
                 If _
-                    PlayerData(Other_Index) IsNot Nothing And
-                    PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
-                    Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueID), Other_Index)
-                    PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
+                    PlayerData(otherIndex) IsNot Nothing AndAlso
+                    PlayerData(otherIndex).SpawnedPlayers.Contains(Index_) = True Then
 
-                    Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueID), Index_)
+                    Server.Send(CreateSingleDespawnPacket(PlayerData(Index_).UniqueID), otherIndex)
+                    PlayerData(otherIndex).SpawnedPlayers.Remove(Index_)
+
+                    Server.Send(CreateSingleDespawnPacket(PlayerData(otherIndex).UniqueID), Index_)
                 End If
             Next
 
@@ -205,7 +199,7 @@ Namespace Functions
                 If NpcList.ContainsKey(key) Then
                     Dim Npc_ As cNPC = NpcList.Item(key)
                     If PlayerData(Index_).SpawnedNPCs.Contains(Npc_.UniqueID) = True Then
-                        Server.Send(CreateDespawnPacket(Npc_.UniqueID), Index_)
+                        Server.Send(CreateSingleDespawnPacket(Npc_.UniqueID), Index_)
                         PlayerData(Index_).SpawnedNPCs.Remove(Npc_.UniqueID)
                     End If
                 End If
@@ -216,7 +210,7 @@ Namespace Functions
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList.Item(key)
                     If PlayerData(Index_).SpawnedMonsters.Contains(Mob_.UniqueID) = True Then
-                        Server.Send(CreateDespawnPacket(Mob_.UniqueID), Index_)
+                        Server.Send(CreateSingleDespawnPacket(Mob_.UniqueID), Index_)
                         PlayerData(Index_).SpawnedMonsters.Remove(Mob_.UniqueID)
                     End If
                 End If
@@ -227,7 +221,7 @@ Namespace Functions
                 If ItemList.ContainsKey(key) Then
                     If PlayerData(Index_).SpawnedItems.Contains(key) = True Then
                         Dim _item As cItemDrop = ItemList(key)
-                        Server.Send(CreateDespawnPacket(_item.UniqueID), Index_)
+                        Server.Send(CreateSingleDespawnPacket(_item.UniqueID), Index_)
                         PlayerData(Index_).SpawnedItems.Remove(_item.UniqueID)
                     End If
                 End If
@@ -238,11 +232,11 @@ Namespace Functions
 
         Public Sub DespawnPlayer(ByVal Index_ As Integer)
             For i = 0 To PlayerData(Index_).SpawnedPlayers.Count - 1
-                Dim Other_Index As Integer = PlayerData(Index_).SpawnedPlayers(i)
-                If PlayerData(Other_Index) IsNot Nothing Then
-                    If PlayerData(Other_Index).SpawnedPlayers.Contains(Index_) = True Then
-                        Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueID), Other_Index)
-                        PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
+                Dim otherIndex As Integer = PlayerData(Index_).SpawnedPlayers(i)
+                If PlayerData(otherIndex) IsNot Nothing Then
+                    If PlayerData(otherIndex).SpawnedPlayers.Contains(Index_) = True Then
+                        Server.Send(CreateSingleDespawnPacket(PlayerData(Index_).UniqueID), otherIndex)
+                        PlayerData(otherIndex).SpawnedPlayers.Remove(Index_)
                     End If
                 End If
 
@@ -287,7 +281,7 @@ Namespace Functions
 
             Dim tmplist As Array = PlayerData(Index_).Buffs.Keys.ToArray
             For Each key In tmplist
-                PlayerData(Index_).Buffs(key).ElaspedTimer_Stop()
+                PlayerData(Index_).Buffs(key).ElaspedTimerStop()
                 PlayerData(Index_).Buffs(key).Disponse()
             Next
             PlayerData(Index_).Buffs.Clear()

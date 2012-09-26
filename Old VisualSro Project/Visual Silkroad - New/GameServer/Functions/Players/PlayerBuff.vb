@@ -2,23 +2,23 @@
 
 Namespace Functions
     Module PlayerBuff
-        Public Sub PlayerBuff_BeginnCasting(ByVal SkillID As UInt32, ByVal Index_ As Integer)
-            Dim RefSkill As RefSkill = GetSkill(SkillID)
-            Dim RefWeapon As New cRefItem
+        Public Sub PlayerBuff_BeginnCasting(ByVal skillID As UInt32, ByVal Index_ As Integer)
+            Dim refSkill As RefSkill = GetSkill(skillID)
+            Dim refWeapon As New cRefItem
 
             If _
-                PlayerData(Index_).Busy Or CheckIfUserOwnSkill(SkillID, Index_) = False Or
+                PlayerData(Index_).Busy Or CheckIfUserOwnSkill(skillID, Index_) = False Or
                 PlayerData(Index_).CastingId <> 0 Then
                 Exit Sub
             End If
 
-            If CInt(PlayerData(Index_).CMP) - RefSkill.RequiredMp < 0 And PlayerData(Index_).Invincible = False Then
+            If CInt(PlayerData(Index_).CMP) - refSkill.RequiredMp < 0 And PlayerData(Index_).Invincible = False Then
                 'Not enough MP
-                Attack_SendNotEnoughMP(Index_)
+                AttackSendNotEnoughMP(Index_)
                 Exit Sub
             Else
                 If PlayerData(Index_).Invincible = False Then
-                    PlayerData(Index_).CMP -= RefSkill.RequiredMp
+                    PlayerData(Index_).CMP -= refSkill.RequiredMp
                     UpdateMP(Index_)
                 End If
             End If
@@ -26,17 +26,17 @@ Namespace Functions
             Dim tmp As New cBuff
             tmp.OverID = Id_Gen.GetSkillOverId
             tmp.CastingId = Id_Gen.GetCastingId
-            tmp.SkillID = SkillID
+            tmp.SkillID = skillID
             tmp.OwnerID = PlayerData(Index_).UniqueID
             tmp.DurationStart = Date.Now
-            tmp.DurationEnd = Date.Now.AddSeconds(RefSkill.UseDuration)
-            tmp.Type = BuffType_.SkillBuff
+            tmp.DurationEnd = Date.Now.AddSeconds(refSkill.UseDuration)
+            tmp.Type = BuffType.SkillBuff
 
             PlayerData(Index_).Busy = True
             PlayerData(Index_).Attacking = False
             PlayerData(Index_).AttackType = AttackTypes.Buff
             PlayerData(Index_).AttackedId = 0
-            PlayerData(Index_).UsingSkillId = SkillID
+            PlayerData(Index_).UsingSkillId = skillID
             PlayerData(Index_).SkillOverId = tmp.OverID
             PlayerData(Index_).CastingId = tmp.CastingId
 
@@ -58,11 +58,11 @@ Namespace Functions
             writer.Byte(0)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
-            AddBuffToList(RefSkill, tmp, Index_)
+            AddBuffToList(refSkill, tmp, Index_)
 
 
-            If RefSkill.CastTime > 0 Then
-                PlayerAttackTimer(Index_).Interval = RefSkill.CastTime
+            If refSkill.CastTime > 0 Then
+                PlayerAttackTimer(Index_).Interval = refSkill.CastTime
                 PlayerAttackTimer(Index_).Start()
             Else
                 PlayerBuff_EndCasting(Index_)
@@ -72,7 +72,7 @@ Namespace Functions
         Public Sub PlayerBuff_EndCasting(ByVal Index_ As Integer)
             PlayerBuff_Info(Index_, 0)
             PlayerBuff_Iconpacket(Index_)
-            Attack_SendAttackEnd(Index_)
+            AttackSendAttackEnd(Index_)
 
 
             'Clean Up
@@ -86,7 +86,7 @@ Namespace Functions
         End Sub
 
 
-        Public Sub PlayerBuff_Info(ByVal Index_ As Integer, ByVal Type As Byte)
+        Public Sub PlayerBuff_Info(ByVal Index_ As Integer, ByVal type As Byte)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_BUFF_INFO)
             writer.Byte(1)
@@ -108,7 +108,7 @@ Namespace Functions
         End Sub
 
 
-        Public Sub PlayerBuff_End(ByVal SkillOverId As UInteger, ByVal Index_ As Integer)
+        Public Sub PlayerBuff_End(ByVal skillOverId As UInteger, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_BUFF_END)
             writer.Byte(1)
@@ -121,7 +121,7 @@ Namespace Functions
 
         Private Sub AddBuffToList(ByVal refskill As RefSkill, ByVal buff As cBuff, ByVal Index_ As Integer)
             PlayerData(Index_).Buffs.Add(buff.OverID, buff)
-            PlayerData(Index_).Buffs(buff.OverID).ElaspedTimer_Start(refskill.UseDuration)
+            PlayerData(Index_).Buffs(buff.OverID).ElaspedTimerStart(refskill.UseDuration)
 
             PlayerData(Index_).SetCharGroundStats()
             PlayerData(Index_).AddItemsToStats(Index_)
@@ -129,7 +129,7 @@ Namespace Functions
             OnStatsPacket(Index_)
         End Sub
 
-        Private Sub RemoveBuffFromList(ByVal SkillOverId As UInteger, ByVal Index_ As Integer)
+        Private Sub RemoveBuffFromList(ByVal skillOverId As UInteger, ByVal Index_ As Integer)
             PlayerData(Index_).Buffs(SkillOverId).Disponse()
             PlayerData(Index_).Buffs.Remove(SkillOverId)
 

@@ -7,7 +7,7 @@ Namespace Functions
 
             If clientString = "SR_Client" Then
                 Dim writer As New PacketWriter
-                Dim name As String = "AgentServer"
+                Const name As String = "AgentServer"
                 writer.Create(ServerOpcodes.LOGIN_SERVER_INFO)
                 writer.Word(name.Length)
                 writer.String(name)
@@ -86,19 +86,19 @@ Namespace Functions
             End If
         End Sub
 
-        Public Sub Check_GlobalManagerUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
-            Dim userIndex As Integer = GameDB.GetUserIndex(SessionInfo(index_).Username)
+        Public Sub CheckGlobalManagerUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal Index_ As Integer)
+            Dim userIndex As Integer = GameDB.GetUserIndex(SessionInfo(Index_).Username)
             Dim user As cUser = GameDB.Users(userIndex)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_AUTH)
             If succeed = 1 Then
                 writer.Byte(1)
-                Server.Send(writer.GetBytes, index_)
-                CharListing(index_) = New cCharListing
-                CharListing(index_).LoginInformation = New cUser
-                CharListing(index_).LoginInformation = user
-                CharListing(index_).LoginInformation.LoggedIn = True
+                Server.Send(writer.GetBytes, Index_)
+                CharListing(Index_) = New cCharListing
+                CharListing(Index_).LoginInformation = New cUser
+                CharListing(Index_).LoginInformation = user
+                CharListing(Index_).LoginInformation.LoggedIn = True
             Else
                 Select Case errortag
                     Case 1
@@ -109,17 +109,9 @@ Namespace Functions
 
                 writer.Byte(2)
                 writer.Byte(2)
-                Server.Send(writer.GetBytes, index_)
-                Server.Disconnect(index_)
+                Server.Send(writer.GetBytes, Index_)
+                Server.Disconnect(Index_)
             End If
         End Sub
-
-
-        Private Function GetKey(ByVal Index_ As Integer) As UInt32
-            Dim split1 As String() = Server.ClientList.GetSocket(Index_).RemoteEndPoint.ToString.Split(":")
-            Dim split2 As String() = split1(0).Split(".")
-            Dim key As UInt32 = CUInt(split2(0)) + CUInt(split2(1)) + CUInt(split2(2)) + CUInt(split2(3))
-            Return key
-        End Function
     End Module
 End Namespace

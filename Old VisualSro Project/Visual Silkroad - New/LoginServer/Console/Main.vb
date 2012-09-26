@@ -59,7 +59,7 @@ Friend Module Program
         succeed = Timers.LoadTimers(Server.MaxClients)
         succeed = Initalize(Server.MaxClients)
 
-        If succeed Then
+        If succeed And Settings.ServerDebugMode = False Then
             Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
             Log.WriteSystemLog("Latest Version: " & Settings.ServerCurrectVersion)
             Log.WriteSystemLog("Slotcount: " & Settings.ServerNormalSlots & "/" & Settings.ServerMaxClients)

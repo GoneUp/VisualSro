@@ -20,12 +20,12 @@ Namespace GlobalManager
                 Server.MaxClients = maxClients
             End If
 
-            Settings.Server_XPRate = serverXPRate
-            Settings.Server_SPRate = serverSPRate
-            Settings.Server_GoldRate = serverGoldRate
-            Settings.Server_DropRate = serverDropRate
-            Settings.Server_SpawnRate = serverSpawnRate
-            Settings.Server_DebugMode = serverDebugMode
+            Settings.ServerXPRate = serverXPRate
+            Settings.ServerSPRate = serverSPRate
+            Settings.ServerGoldRate = serverGoldRate
+            Settings.ServerDropRate = serverDropRate
+            Settings.ServerSpawnRate = serverSpawnRate
+            Settings.ServerDebugMode = serverDebugMode
             GlobalManagerCon.Log("Updated Server Options!")
         End Sub
     End Module

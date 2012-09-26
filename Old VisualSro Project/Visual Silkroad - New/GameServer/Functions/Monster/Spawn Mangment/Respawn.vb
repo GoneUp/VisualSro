@@ -10,7 +10,7 @@
                 Dim Random As New Random
 
                 For SpotIndex = 0 To RefRespawns.Count - 1
-                    If RefRespawns(SpotIndex).SpawnCount < Settings.Server_SpawnRate Then
+                    If RefRespawns(SpotIndex).SpawnCount < Settings.ServerSpawnRate Then
                         If Random.Next(0, 4) = 0 Then
                             ReSpawnMob(SpotIndex)
                         End If

@@ -1,14 +1,14 @@
 ﻿Namespace Id_Gen
-    Module ID_Generator
+    Module IDGenerator
         '====================Unique ID's
-        Private UniqueIdCounter As UInteger = 1
+        Private m_uniqueIdCounter As UInteger = 1
 
         Public Function GetUnqiueId() As UInteger
-            Dim toreturn As UInteger = UniqueIdCounter
-            If UniqueIdCounter < UInteger.MaxValue Then
-                UniqueIdCounter += 1
-            ElseIf UniqueIdCounter = UInteger.MaxValue Then
-                UniqueIdCounter = 0
+            Dim toreturn As UInteger = m_uniqueIdCounter
+            If m_uniqueIdCounter < UInteger.MaxValue Then
+                m_uniqueIdCounter += 1
+            ElseIf m_uniqueIdCounter = UInteger.MaxValue Then
+                m_uniqueIdCounter = 0
                 Log.WriteSystemLog("Reached UniqueId Max")
             End If
 
@@ -17,18 +17,18 @@
 
         '=================Charcater Id's
         Public Function GetNewCharId() As UInteger
-            For NewID As UInteger = 1 To UInteger.MaxValue
+            For newID As UInteger = 1 To UInteger.MaxValue
                 Dim free As Boolean = True
                 For c = 0 To GameDB.Chars.Count - 1
                     If GameDB.Chars(c) IsNot Nothing Then
-                        If GameDB.Chars(c).CharacterId = NewID Then
+                        If GameDB.Chars(c).CharacterId = newID Then
                             free = False
                         End If
                     End If
                 Next
 
                 If free = True Then
-                    Return NewID
+                    Return newID
                 End If
             Next
 
@@ -36,14 +36,14 @@
         End Function
 
         '======================Skill Over ID's
-        Private SkillOverIdCounter As UInteger = 10
+        Private m_skillOverIdCounter As UInteger = 10
 
         Public Function GetSkillOverId() As UInteger
-            Dim toreturn As UInteger = SkillOverIdCounter
-            If SkillOverIdCounter < UInteger.MaxValue Then
-                SkillOverIdCounter += 1
-            ElseIf SkillOverIdCounter = UInteger.MaxValue Then
-                SkillOverIdCounter = 0
+            Dim toreturn As UInteger = m_skillOverIdCounter
+            If m_skillOverIdCounter < UInteger.MaxValue Then
+                m_skillOverIdCounter += 1
+            ElseIf m_skillOverIdCounter = UInteger.MaxValue Then
+                m_skillOverIdCounter = 0
                 Log.WriteSystemLog("Reached SkillOverId Max")
             End If
 
@@ -51,14 +51,14 @@
         End Function
 
         '======================Casting ID's
-        Private CastingIdCounter As UInteger = 10
+        Private m_castingIdCounter As UInteger = 10
 
         Public Function GetCastingId() As UInteger
-            Dim toreturn As UInteger = CastingIdCounter
-            If CastingIdCounter < UInteger.MaxValue Then
-                CastingIdCounter += 1
-            ElseIf CastingIdCounter = UInteger.MaxValue Then
-                CastingIdCounter = 0
+            Dim toreturn As UInteger = m_castingIdCounter
+            If m_castingIdCounter < UInteger.MaxValue Then
+                m_castingIdCounter += 1
+            ElseIf m_castingIdCounter = UInteger.MaxValue Then
+                m_castingIdCounter = 0
                 Log.WriteSystemLog("Reached CastingID Max")
             End If
 
@@ -66,14 +66,14 @@
         End Function
 
         '======================Exchange ID's
-        Private ExchangeIdCounter As UInteger = 10
+        Private m_exchangeIdCounter As UInteger = 10
 
         Public Function GetExchangeId() As UInteger
-            Dim toreturn As UInteger = ExchangeIdCounter
-            If ExchangeIdCounter < UInteger.MaxValue Then
-                ExchangeIdCounter += 1
-            ElseIf ExchangeIdCounter = UInteger.MaxValue Then
-                ExchangeIdCounter = 0
+            Dim toreturn As UInteger = m_exchangeIdCounter
+            If m_exchangeIdCounter < UInteger.MaxValue Then
+                m_exchangeIdCounter += 1
+            ElseIf m_exchangeIdCounter = UInteger.MaxValue Then
+                m_exchangeIdCounter = 0
                 Log.WriteSystemLog("Reached ExcahngeID Max")
             End If
 
@@ -81,14 +81,14 @@
         End Function
 
         '======================Stall ID's
-        Private StallIdCounter As UInteger = 10
+        Private m_stallIdCounter As UInteger = 10
 
         Public Function GetStallId() As UInteger
-            Dim toreturn As UInteger = StallIdCounter
-            If StallIdCounter < UInteger.MaxValue Then
-                StallIdCounter += 1
-            ElseIf StallIdCounter = UInteger.MaxValue Then
-                StallIdCounter = 0
+            Dim toreturn As UInteger = m_stallIdCounter
+            If m_stallIdCounter < UInteger.MaxValue Then
+                m_stallIdCounter += 1
+            ElseIf m_stallIdCounter = UInteger.MaxValue Then
+                m_stallIdCounter = 0
                 Log.WriteSystemLog("Reached StallID Max")
             End If
 
@@ -96,14 +96,14 @@
         End Function
 
         '======================Party ID's
-        Private PartyIdCounter As UInteger = 10
+        Private m_partyIdCounter As UInteger = 10
 
         Public Function GetPartyId() As UInteger
-            Dim toreturn As UInteger = PartyIdCounter
-            If PartyIdCounter < UInteger.MaxValue Then
-                PartyIdCounter += 1
-            ElseIf PartyIdCounter = UInteger.MaxValue Then
-                PartyIdCounter = 0
+            Dim toreturn As UInteger = m_partyIdCounter
+            If m_partyIdCounter < UInteger.MaxValue Then
+                m_partyIdCounter += 1
+            ElseIf m_partyIdCounter = UInteger.MaxValue Then
+                m_partyIdCounter = 0
                 Log.WriteSystemLog("Reached PartyId Max")
             End If
 
@@ -111,14 +111,14 @@
         End Function
 
         '======================Item ID's
-        Private ItemIdCounter As UInt64 = 2
+        Private m_itemIdCounter As UInt64 = 2
 
         Public Function GetItemId() As UInt64
-            Dim toreturn As UInt64 = ItemIdCounter
-            If ItemIdCounter < UInt64.MaxValue Then
-                ItemIdCounter += 1
-            ElseIf ItemIdCounter = UInt64.MaxValue Then
-                ItemIdCounter = 0
+            Dim toreturn As UInt64 = m_itemIdCounter
+            If m_itemIdCounter < UInt64.MaxValue Then
+                m_itemIdCounter += 1
+            ElseIf m_itemIdCounter = UInt64.MaxValue Then
+                m_itemIdCounter = 0
                 Log.WriteSystemLog("Reached ItemID Max!!! FATAL")
                 Server.Stop()
             End If
@@ -126,8 +126,8 @@
             Return toreturn
         End Function
 
-        Public Sub SetItemInitalValue(ByVal ID As UInt64)
-            ItemIdCounter = ID + 1
+        Public Sub SetItemInitalValue(ByVal id As UInt64)
+            m_itemIdCounter = ID + 1
         End Sub
 
         '======================Skillset ID's

@@ -60,39 +60,39 @@ Namespace Functions
             End Select
         End Sub
 
-        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Index_ As Integer)
+        Public Sub UpdateState(ByVal type As Byte, ByVal state As Byte, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ACTION)
             writer.DWord(PlayerData(Index_).UniqueID)
-            writer.Byte(Type)
+            writer.Byte(type)
             writer.Byte(State)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
 
-        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal State2 As Byte, ByVal Index_ As Integer)
+        Public Sub UpdateState(ByVal type As Byte, ByVal state As Byte, ByVal state2 As Byte, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ACTION)
             writer.DWord(PlayerData(Index_).UniqueID)
-            writer.Byte(Type)
-            writer.Byte(State)
+            writer.Byte(type)
+            writer.Byte(state)
             writer.Byte(State2)
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub UpdateState(ByVal Type As Byte, ByVal State As Byte, ByVal Mob_ As cMonster)
+        Public Sub UpdateState(ByVal type As Byte, ByVal state As Byte, ByVal Mob_ As cMonster)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ACTION)
             writer.DWord(Mob_.UniqueID)
-            writer.Byte(Type)
+            writer.Byte(type)
             writer.Byte(State)
             Server.SendIfMobIsSpawned(writer.GetBytes, Mob_.UniqueID)
         End Sub
 
-        Public Sub OnTeleportUser(ByVal Index_ As Integer, ByVal XSec As Byte, ByVal YSec As Byte)
+        Public Sub OnTeleportUser(ByVal Index_ As Integer, ByVal xSec As Byte, ByVal ySec As Byte)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_TELEPORT_ANNONCE)
-            writer.Byte(XSec)
+            writer.Byte(xSec)
             writer.Byte(YSec)
             Server.Send(writer.GetBytes, Index_)
 
@@ -143,8 +143,8 @@ Namespace Functions
         End Sub
 
         Public Sub OnAngleUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim new_angle As UInt16 = packet.Word
-            PlayerData(Index_).Angle = new_angle
+            Dim newAngle As UInt16 = packet.Word
+            PlayerData(Index_).Angle = newAngle
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ANGLE_UPDATE)
@@ -153,28 +153,28 @@ Namespace Functions
             Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub OnEmotion(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Public Sub OnEmotion(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_EMOTION)
-            writer.DWord(PlayerData(index_).UniqueID)
+            writer.DWord(PlayerData(Index_).UniqueID)
             writer.Byte(packet.Byte)
-            Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub OnHelperIcon(ByVal packet As PacketReader, ByVal index_ As Integer)
-            PlayerData(index_).HelperIcon = packet.Byte
+        Public Sub OnHelperIcon(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            PlayerData(Index_).HelperIcon = packet.Byte
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_HELPER_ICON)
-            writer.DWord(PlayerData(index_).UniqueID)
-            writer.Byte(PlayerData(index_).HelperIcon)
-            Server.SendIfPlayerIsSpawned(writer.GetBytes, index_)
+            writer.DWord(PlayerData(Index_).UniqueID)
+            writer.Byte(PlayerData(Index_).HelperIcon)
+            Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
 
             Database.SaveQuery(String.Format("UPDATE characters SET helpericon='{0}' where id='{1}'",
-                                             PlayerData(index_).HelperIcon, PlayerData(index_).CharacterId))
+                                             PlayerData(Index_).HelperIcon, PlayerData(Index_).CharacterId))
         End Sub
 
-        Public Sub OnHotkeyUpdate(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Public Sub OnHotkeyUpdate(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim tag As Byte = packet.Byte
 
             Select Case tag
@@ -182,30 +182,30 @@ Namespace Functions
                     'Hotkey Update 
                     Dim slot As Byte = packet.Byte
                     Dim type As Byte = packet.Byte
-                    Dim IconID As UInteger = packet.DWord
+                    Dim iconID As UInteger = packet.DWord
 
 
                     If slot >= 0 And slot <= 50 Then 'Check Slots
                         Dim tmp_ As New cHotKey
-                        tmp_.OwnerID = PlayerData(index_).CharacterId
+                        tmp_.OwnerID = PlayerData(Index_).CharacterId
                         tmp_.Slot = slot
                         tmp_.Type = type
-                        tmp_.IconID = IconID
+                        tmp_.IconID = iconID
                         UpdateHotkey(tmp_)
                     End If
                 Case 2
-                    PlayerData(index_).PotHp = packet.Word
-                    PlayerData(index_).PotMp = packet.Word
-                    PlayerData(index_).PotAbormal = packet.Word
-                    PlayerData(index_).PotDelay = packet.Word
+                    PlayerData(Index_).PotHp = packet.Word
+                    PlayerData(Index_).PotMp = packet.Word
+                    PlayerData(Index_).PotAbormal = packet.Word
+                    PlayerData(Index_).PotDelay = packet.Word
 
                     Database.SaveQuery(
                         String.Format(
                             "UPDATE characters SET pot_hp='{0}', pot_mp='{1}', pot_abnormal='{2}', pot_delay='{3}' where id='{4}'",
-                            PlayerData(index_).PotHp,
-                            PlayerData(index_).PotMp,
-                            PlayerData(index_).PotAbormal,
-                            PlayerData(index_).PotDelay, PlayerData(index_).CharacterId))
+                            PlayerData(Index_).PotHp,
+                            PlayerData(Index_).PotMp,
+                            PlayerData(Index_).PotAbormal,
+                            PlayerData(Index_).PotDelay, PlayerData(Index_).CharacterId))
             End Select
         End Sub
 
@@ -223,13 +223,13 @@ Namespace Functions
 
 
         Public Sub OnSelectObject(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ObjectID As UInteger = packet.DWord
-            PlayerData(Index_).LastSelected = ObjectID
+            Dim objectID As UInteger = packet.DWord
+            PlayerData(Index_).LastSelected = objectID
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_TARGET)
 
-            If ObjectID = PlayerData(Index_).UniqueID Then
+            If objectID = PlayerData(Index_).UniqueID Then
                 writer.Byte(1)
                 'Sucess
                 writer.DWord(PlayerData(Index_).UniqueID)
@@ -239,7 +239,7 @@ Namespace Functions
 
             For i = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).UniqueID = ObjectID Then
+                    If PlayerData(i).UniqueID = objectID Then
                         writer.Byte(1)
                         'Sucess
                         writer.DWord(PlayerData(i).UniqueID)
@@ -255,9 +255,9 @@ Namespace Functions
                 End If
             Next
 
-            If MobList.ContainsKey(ObjectID) Then
-                Dim Mob_ As cMonster = MobList(ObjectID)
-                If Mob_.UniqueID = ObjectID Then
+            If MobList.ContainsKey(objectID) Then
+                Dim Mob_ As cMonster = MobList(objectID)
+                If Mob_.UniqueID = objectID Then
                     writer.Byte(1)
                     'Sucess
                     writer.DWord(Mob_.UniqueID)
@@ -274,9 +274,9 @@ Namespace Functions
             End If
 
 
-            If NpcList.ContainsKey(ObjectID) Then
-                Dim npc = NpcList(ObjectID)
-                OnNpcChat(ObjectID, Index_)
+            If NpcList.ContainsKey(objectID) Then
+                Dim npc = NpcList(objectID)
+                OnNpcChat(objectID, Index_)
                 Exit Sub
             End If
         End Sub
@@ -305,10 +305,10 @@ Namespace Functions
         Public Sub KillPlayer(ByVal Index_ As Integer)
             UpdateState(8, 0, Index_)
             UpdateState(0, 2, Index_)
-            Player_Die1(Index_)
-            Player_Die2(Index_)
+            PlayerDie1(Index_)
+            PlayerDie2(Index_)
 
-            Attack_SendAttackEnd(Index_)
+            AttackSendAttackEnd(Index_)
             PlayerAttackTimer(Index_).Stop()
             PlayerData(Index_).Attacking = False
             PlayerData(Index_).Busy = True
@@ -325,14 +325,14 @@ Namespace Functions
             GameDB.SaveDeathPosition(Index_)
         End Sub
 
-        Public Sub Player_Die1(ByVal Index_ As Integer)
+        Public Sub PlayerDie1(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_DIE_1)
             writer.Byte(4)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub Player_Die2(ByVal Index_ As Integer)
+        Public Sub PlayerDie2(ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_DIE_2)
             writer.DWord(0)
@@ -343,7 +343,6 @@ Namespace Functions
             If PlayerData(Index_).Alive = True Then
                 Exit Sub
             End If
-
 
             Dim tag As Byte = packet.Byte
 
@@ -358,21 +357,21 @@ Namespace Functions
                     OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
 
                 Case 2 'At present Point
-                    Player_Die2(Index_)
+                    PlayerDie2(Index_)
                     UpdateState(0, 1, Index_)
                     UpdateHP(Index_)
             End Select
         End Sub
 
         Public Sub OnSetReturnPoint(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ObjectId As UInteger = packet.DWord
+            Dim objectId As UInteger = packet.DWord
 
-            If NpcList.ContainsKey(ObjectId) = False Then
+            If NpcList.ContainsKey(objectId) = False Or PlayerData(Index_).SpawnedNPCs.Contains(objectId) = False Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If
 
-            Dim ref As SilkroadObject = GetObject(NpcList(ObjectId).Pk2ID)
+            Dim ref As SilkroadObject = GetObject(NpcList(objectId).Pk2ID)
             PlayerData(Index_).PositionReturn = GetTeleportPoint(ref.Pk2ID).ToPos
 
             Database.SaveQuery(String.Format(
@@ -392,6 +391,7 @@ Namespace Functions
                 If _
                     PlayerData(Index_).Ingame And PlayerData(Index_).Berserk = False And
                     PlayerData(Index_).BerserkBar = 5 Then
+
                     PlayerData(Index_).BerserkBar = 0
                     PlayerData(Index_).Berserk = True
                     PlayerData(Index_).PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Zerking

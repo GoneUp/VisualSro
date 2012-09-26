@@ -11,48 +11,35 @@ Namespace Functions
 
             Dim tag As Byte = packet.Byte
             If tag = 1 Then
-                Dim to_pos As New Position
-                to_pos.XSector = packet.Byte
-                to_pos.YSector = packet.Byte
+                Dim toPos As New Position
+                toPos.XSector = packet.Byte
+                toPos.YSector = packet.Byte
 
-                If IsInCave(to_pos) = False Then
-                    to_pos.X = packet.WordInt
-                    to_pos.Z = packet.WordInt
-                    to_pos.Y = packet.WordInt
-                    Debug.Print("x: " & to_pos.X & " y: " & to_pos.Y)
+                If IsInCave(toPos) = False Then
+                    toPos.X = packet.WordInt
+                    toPos.Z = packet.WordInt
+                    toPos.Y = packet.WordInt
+                    Debug.Print("x: " & toPos.X & " y: " & toPos.Y)
                 Else
                     'In Cave
-                    to_pos.X = packet.DWordInt
-                    to_pos.Z = packet.DWordInt
-                    to_pos.Y = packet.DWordInt
+                    toPos.X = packet.DWordInt
+                    toPos.Z = packet.DWordInt
+                    toPos.Y = packet.DWordInt
                 End If
 
 
-                OnMoveUser(Index_, to_pos)
+                OnMoveUser(Index_, toPos)
             ElseIf tag = 0 Then
                 Dim tag2 As Byte = packet.Byte
-                Dim to_angle As UShort = packet.Word
-                Dim to_grad As Single = (to_angle / 65535) * 360
-                SendPm(Index_, "You are tyring to Angle Move to: " & to_grad, "Debug")
+                Dim toAngle As UShort = packet.Word
+                Dim toGrad As Single = (toAngle / 65535) * 360
+                SendPm(Index_, "You are tyring to Angle Move to: " & toGrad, "Debug")
 
             End If
         End Sub
 
-        Public Sub OnMoveUser(ByVal Index_ As Integer, ByVal ToPos As Position)
+        Public Sub OnMoveUser(ByVal Index_ As Integer, ByVal toPos As Position)
             Try
-                Dim Distance As Single = CalculateDistance(PlayerData(Index_).Position, ToPos)
-                Dim WalkTime As Single
-                Select Case PlayerData(Index_).PosTracker.SpeedMode
-                    Case cPositionTracker.enumSpeedMode.Walking
-                        WalkTime = (Distance / PlayerData(Index_).WalkSpeed) * 10000
-                    Case cPositionTracker.enumSpeedMode.Running
-                        WalkTime = (Distance / PlayerData(Index_).RunSpeed) * 10000
-                    Case cPositionTracker.enumSpeedMode.Zerking
-                        WalkTime = (Distance / PlayerData(Index_).BerserkSpeed) * 10000
-                End Select
-
-                'If Distance < 10000 Then
-
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_MOVEMENT)
                 writer.DWord(PlayerData(Index_).UniqueID)
@@ -98,44 +85,43 @@ Namespace Functions
         ''' Moves a User To a Object Based on the Range
         ''' </summary>
         ''' <param name="Index_"></param>
-        ''' <param name="ObjectPos"></param>
+        ''' <param name="objectPos"></param>
         ''' <param name="Range"></param>
         ''' <returns>The Walktime in ms</returns>
         ''' <remarks></remarks>
-        Public Function MoveUserToObject(ByVal Index_ As Integer, ByVal ObjectPos As Position, ByVal Range As Integer) _
-            As Single
-            Dim ToPos As Position = ObjectPos
+        Public Function MoveUserToObject(ByVal Index_ As Integer, ByVal objectPos As Position, ByVal Range As Integer) As Single
+            Dim toPos As Position = objectPos
 
-            Dim distance_x As Double = PlayerData(Index_).Position.ToGameX - ToPos.ToGameX
-            Dim distance_y As Double = PlayerData(Index_).Position.ToGameY - ToPos.ToGameY
-            Dim distance As Double = Math.Sqrt((distance_x * distance_x) + (distance_y * distance_y))
+            Dim distanceX As Double = PlayerData(Index_).Position.ToGameX - toPos.ToGameX
+            Dim distanceY As Double = PlayerData(Index_).Position.ToGameY - toPos.ToGameY
+            Dim distance As Double = Math.Sqrt((distanceX * distanceX) + (distanceY * distanceY))
 
             If distance > Range Then
-                Dim Cosinus As Double = Math.Cos(distance_x / distance)
-                Dim Sinus As Double = Math.Sin(distance_y / distance)
+                Dim cosinus As Double = Math.Cos(distanceX / distance)
+                Dim sinus As Double = Math.Sin(distanceY / distance)
 
-                Dim distance_x_new As Double = Range * Cosinus
-                Dim distance_y_new As Double = Range * Sinus
+                Dim distanceXNew As Double = Range * cosinus
+                Dim distanceYNew As Double = Range * sinus
 
-                ToPos.X = GetXOffset(ToPos.ToGameX + distance_x_new)
-                ToPos.Y = GetYOffset(ToPos.ToGameY + distance_y_new)
-                ToPos.XSector = GetXSecFromGameX(ToPos.ToGameX)
-                ToPos.YSector = GetYSecFromGameY(ToPos.ToGameY)
-                Debug.Print(ToPos.ToGameX & " Y " & ToPos.ToGameY)
+                toPos.X = GetXOffset(toPos.ToGameX + distanceXNew)
+                toPos.Y = GetYOffset(toPos.ToGameY + distanceYNew)
+                toPos.XSector = GetXSecFromGameX(toPos.ToGameX)
+                toPos.YSector = GetYSecFromGameY(toPos.ToGameY)
+                Debug.Print(toPos.ToGameX & " Y " & toPos.ToGameY)
             End If
 
-            Dim WalkTime As Single
+            Dim walkTime As Single
             Select Case PlayerData(Index_).PosTracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
-                    WalkTime = (distance / PlayerData(Index_).WalkSpeed) * 10000
+                    walkTime = (distance / PlayerData(Index_).WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
-                    WalkTime = (distance / PlayerData(Index_).RunSpeed) * 10000
+                    walkTime = (distance / PlayerData(Index_).RunSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Zerking
-                    WalkTime = (distance / PlayerData(Index_).BerserkSpeed) * 10000
+                    walkTime = (distance / PlayerData(Index_).BerserkSpeed) * 10000
             End Select
 
-            OnMoveUser(Index_, ToPos)
-            Return WalkTime
+            OnMoveUser(Index_, toPos)
+            Return walkTime
         End Function
 
         Public Sub ObjectSpawnCheck(ByVal Index_ As Integer)
@@ -147,21 +133,36 @@ Namespace Functions
                 '=============Players============
                 For refindex As Integer = 0 To Server.MaxClients - 1
                     Dim othersock As Socket = Server.ClientList.GetSocket(refindex)
+                    'Socket checks..
                     If (othersock IsNot Nothing) AndAlso (PlayerData(refindex) IsNot Nothing) AndAlso (othersock.Connected) AndAlso Index_ <> refindex Then
+                        'Player in Range?
                         If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, PlayerData(refindex).Position) Then
+                            'Channel Check..
                             If PlayerData(Index_).ChannelId = PlayerData(refindex).ChannelId Or PlayerData(Index_).AvoidChannels Or PlayerData(refindex).AvoidChannels Then
+                                'Already spawned?
                                 If PlayerData(refindex).SpawnedPlayers.Contains(Index_) = False And PlayerData(Index_).Invisible = False Then
-                                    Server.Send(CreateSpawnPacket(Index_), refindex)
+                                    'To opponent
+                                    Dim writer As New PacketWriter
+                                    CreatePlayerSpawnPacket(Index_, writer, True)
+                                    Server.Send(writer.GetBytes, refindex)
+
                                     PlayerData(refindex).SpawnedPlayers.Add(Index_)
                                 End If
                                 If PlayerData(Index_).SpawnedPlayers.Contains(refindex) = False Then
-                                    Server.Send(CreateSpawnPacket(refindex), Index_)
+                                    'To me
+                                    spawnCollector.AddObject(PlayerData(refindex).UniqueID)
+
                                     PlayerData(Index_).SpawnedPlayers.Add(refindex)
                                 End If
                             End If
                         End If
                     End If
                 Next refindex
+                If spawnCollector.Count > 0 Then
+                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
+                    spawnCollector.Clear()
+                End If
+
                 '===========MOBS===================
 
                 For Each key In MobList.Keys.ToList
@@ -232,27 +233,34 @@ Namespace Functions
         End Sub
 
 
-        Public Sub ObjectDeSpawnCheck(ByVal Index_ As Integer)
+        Private Sub ObjectDeSpawnCheck(ByVal Index_ As Integer)
             Try
                 Dim spawnCollector As New GroupSpawn
 
-                For Other_Index = 0 To Server.MaxClients - 1
-                    If PlayerData(Other_Index) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(Other_Index) Then
+                For otherIndex = 0 To Server.MaxClients - 1
+                    If PlayerData(otherIndex) IsNot Nothing And PlayerData(Index_).SpawnedPlayers.Contains(otherIndex) Then
                         'Despawn if 
                         'a) Player is out of range
-                        'b) Player is not in out Channel anymore (expect if AvoidChannels is set on our or the other Player) 
-                        If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, PlayerData(Other_Index).Position) = False Or _
-                            (PlayerData(Index_).ChannelId <> PlayerData(Other_Index).ChannelId) And _
-                            PlayerData(Index_).AvoidChannels = False And PlayerData(Other_Index).AvoidChannels = False Then
+                        'b) Player is not in out Channel anymore (expect if AvoidChannels is set on our or on the other Player) 
+                        If CheckRange(PlayerData(Index_).PosTracker.GetCurPos, PlayerData(otherIndex).Position) = False Or _
+                            (PlayerData(Index_).ChannelId <> PlayerData(otherIndex).ChannelId) And _
+                            PlayerData(Index_).AvoidChannels = False And PlayerData(otherIndex).AvoidChannels = False Then
 
                             'Despawn for both
-                            Server.Send(CreateDespawnPacket(PlayerData(Index_).UniqueID), Other_Index)
-                            PlayerData(Other_Index).SpawnedPlayers.Remove(Index_)
-                            Server.Send(CreateDespawnPacket(PlayerData(Other_Index).UniqueID), Index_)
-                            PlayerData(Index_).SpawnedPlayers.Remove(Other_Index)
+                            'To oppopnent over an external packet
+                            Server.Send(CreateSingleDespawnPacket(PlayerData(Index_).UniqueID), otherIndex)
+                            PlayerData(otherIndex).SpawnedPlayers.Remove(Index_)
+
+                            'To me over the groupspawn packet
+                            spawnCollector.AddObject(PlayerData(otherIndex).UniqueID)
+                            PlayerData(Index_).SpawnedPlayers.Remove(otherIndex)
                         End If
                     End If
                 Next
+                If spawnCollector.Count > 0 Then
+                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.DESPAWN)
+                    spawnCollector.Clear()
+                End If
 
                 For Each key In MobList.Keys.ToList
                     If MobList.ContainsKey(key) Then
@@ -319,6 +327,7 @@ Namespace Functions
                         'In Range --> Teleport
                         Dim point As TeleportPoint = GetTeleportPointByNumber(RefCaveTeleporter(i).ToTeleporterID)
                         '####################### Notice : Dont work
+                        'TODO: Rework this
                         Dim link As TeleportLink = point.Links(0)
 
                         If PlayerData(Index_).Level < link.MinLevel And link.MinLevel > 0 Then
@@ -349,45 +358,12 @@ Namespace Functions
             End If
         End Sub
 
-        Public Function CheckRange(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-            If CalculateDistance(Pos_1, Pos_2) <= Settings.Server_Range Then
+        Public Function CheckRange(ByVal pos1 As Position, ByVal pos2 As Position) As Boolean
+            If CalculateDistance(pos1, pos2) <= Settings.ServerRange Then
                 Return True
             Else
                 Return False
             End If
-        End Function
-
-        ''' <summary>
-        ''' Is for checking if Mob Spawn is possible
-        ''' </summary>
-        ''' <param name="Pos_1"></param>
-        ''' <param name="Pos_2"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function CheckSectors(ByVal Pos_1 As Position, ByVal Pos_2 As Position) As Boolean
-
-            '############
-            '# 1 # 2 # 3#
-            '# 4 # 5 # 6#
-            '# 7 # 8 # 9#
-            '############
-            Dim PossibleSectors As New List(Of Position)
-            For x = -1 To 1
-                For y = -1 To 1
-                    Dim pos As New Position
-                    pos.XSector = Pos_1.XSector + x
-                    pos.YSector = Pos_1.YSector + y
-                    PossibleSectors.Add(pos)
-                Next
-            Next
-
-            For Each e As Position In PossibleSectors
-                If e.XSector = Pos_2.XSector And e.YSector = Pos_2.YSector Then
-                    Return True
-                End If
-            Next
-
-            Return False
         End Function
     End Module
 End Namespace

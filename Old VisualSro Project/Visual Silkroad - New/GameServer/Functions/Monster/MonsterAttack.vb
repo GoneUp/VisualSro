@@ -67,7 +67,7 @@ Namespace Functions
 
                 For i = 0 To NumberAttack - 1
                     Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Pk2Id)
-                    Dim Crit As Byte = Attack_GetCritical()
+                    Dim Crit As Byte = AttackGetCritical()
                     If Crit = True Then
                         Damage = Damage * 2
                         Crit = 2

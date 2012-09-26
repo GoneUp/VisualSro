@@ -121,7 +121,7 @@
     <Compile Include="Framework\GlobalManager\ShardService.vb" />
     <Compile Include="Framework\Server\cServer_Gameserver.vb" />
     <Compile Include="Framework\Silkroad\Formula.vb" />
-    <Compile Include="Framework\Silkroad\ID_Generator.vb" />
+    <Compile Include="Framework\Silkroad\IDGenerator.vb" />
     <Compile Include="Framework\Silkroad\SilkroadData.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Character\Classes\cHotkey.vb" />
@@ -160,7 +160,7 @@
     <Compile Include="Functions\Skills\Classes\cMastery.vb" />
     <Compile Include="Functions\Chat\Custom_Commands.vb" />
     <Compile Include="Functions\Exchange\Classes\cExchange.vb" />
-    <Compile Include="Functions\Exchange\Exchange.vb" />
+    <Compile Include="Functions\Exchange\ExchangeHandler.vb" />
     <Compile Include="Functions\GameMaster\GameMaster.vb" />
     <Compile Include="Functions\Items\Classes\cInventory.vb" />
     <Compile Include="Functions\Items\Inventory.vb" />
@@ -179,8 +179,8 @@
     <Compile Include="Functions\Skills\Classes\cSkillSet.vb" />
     <Compile Include="Functions\Skills\Mastery.vb" />
     <Compile Include="Functions\Skills\Skillset.vb" />
-    <Compile Include="Functions\Stall\Classes\cStall.vb" />
-    <Compile Include="Functions\Stall\Stall.vb" />
+    <Compile Include="Functions\Stall\Classes\Stall.vb" />
+    <Compile Include="Functions\Stall\StallHandler.vb" />
     <Compile Include="Global\GlobalDef.vb" />
     <Compile Include="Mods\modDamage.vb" />
     <Compile Include="Mods\modGeneral.vb" />

@@ -4,107 +4,109 @@ Imports SRFramework
 Namespace Settings
     Module Settings
         'Loading File
-        Private File As New cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_game\settings.ini")
+        Private ReadOnly File As New cINI(AppDomain.CurrentDomain.BaseDirectory & "settings_game\settings.ini")
 
         'Genral 
-        Public Server_Ip As String = "0.0.0.0"
-        Public Server_Port As UShort = 15580
-        Public Server_NormalSlots As UInteger = 100
-        Public Server_MaxClients As UInteger = 105
-        Public Server_Id As UShort = 0
-        Public Server_Name As String = "UNKNOWN"
+        Public ServerIp As String = "0.0.0.0"
+        Public ServerPort As UShort = 15580
+        Public ServerNormalSlots As UInteger = 100
+        Public ServerMaxClients As UInteger = 105
+        Public ServerId As UShort = 0
+        Public ServerName As String = "UNKNOWN"
 
-        Public Database_IP As String
-        Public Database_Port As UShort
-        Public Database_User As String
-        Public Database_Password As String
-        Public Database_Database As String
+        Public DatabaseIp As String
+        Public DatabasePort As UShort
+        Public DatabaseUser As String
+        Public DatabasePassword As String
+        Public DatabaseDatabase As String
 
-        Public GlobalManger_Ip As String = "0.0.0.0"
-        Public GlobalManger_Port As UShort = 32000
-        Public Const GlobalManager_ProtocolVersion As UInteger = 1
+        Public GlobalMangerIp As String = "0.0.0.0"
+        Public GlobalMangerPort As UShort = 32000
+        Public Const GlobalManagerProtocolVersion As UInteger = 1
 
         'Here is Place for Settings like Xp Rates, etc...
         Public PlayerStartPosCh As New Position
-        Public Player_StartPos_Eu As New Position
-        Public Player_StartReturnPos As New Position
-        Public Player_StartLevel As Byte = 1
-        Public Player_StartGold As ULong = 0
-        Public Player_StartMasteryLevel As Byte = 0
-        Public Player_StartSP As UInteger = 0
-        Public Player_StartGM As Boolean = False
-        Public Player_StartItemsPlusMin As Byte = 0
-        Public Player_StartItemsPlusMax As Byte = 0
+        Public PlayerStartPosEu As New Position
+        Public PlayerStartReturnPos As New Position
 
-        Public Server_XPRate As Long = 1
-        Public Server_SPRate As Long = 1
-        Public Server_GoldRate As Long = 1
-        Public Server_DropRate As Long = 1
-        Private _Server_DebugMode As Boolean = True
-        Public Property Server_DebugMode As Boolean  'Only for setting the PingDc on ClientList
+        Public PlayerStartLevel As Byte = 1
+        Public PlayerStartGold As ULong = 0
+        Public PlayerStartMasteryLevel As Byte = 0
+        Public PlayerStartSP As UInteger = 0
+        Public PlayerStartGM As Boolean = False
+        Public PlayerStartItemsPlusMin As Byte = 0
+        Public PlayerStartItemsPlusMax As Byte = 0
+
+        Public ServerXPRate As Long = 1
+        Public ServerSPRate As Long = 1
+        Public ServerGoldRate As Long = 1
+        Public ServerDropRate As Long = 1
+
+        Private m_serverDebugMode As Boolean = True
+        Public Property ServerDebugMode As Boolean  'Only for setting the PingDc on ClientList
             Get
-                Return _Server_DebugMode
+                Return m_serverDebugMode
             End Get
             Set(ByVal value As Boolean)
-                _Server_DebugMode = value
+                m_serverDebugMode = value
                 Server.Server_DebugMode = value
             End Set
         End Property
 
 
-        Public Server_LevelCap As Byte = 100
-        Public Server_MasteryCap As UInteger = 300
-        Public Server_Range As UInteger = 750
-        Public Server_TaxRate As UInt16 = 0
-        Public Server_SpawnsPerSec As UInteger = 50
-        Public Server_SpawnRate As Integer = 2
+        Public ServerLevelCap As Byte = 100
+        Public ServerMasteryCap As UInteger = 300
+        Public ServerRange As UInteger = 750
+        Public ServerTaxRate As UInt16 = 0
+        Public ServerSpawnsPerSec As UInteger = 50
+        Public ServerSpawnRate As Integer = 2
 
-        Public Server_WorldChannel As UInt32 = 1
+        Public ServerWorldChannel As UInt32 = 1
 
-        Public Log_Detail As Boolean = False
-        Public Log_GM As Boolean = False
-        Public Log_Mall As Boolean = False
-        Public Log_Chat As Boolean = False
+        Public LogDetail As Boolean = False
+        Public LogGM As Boolean = False
+        Public LogMall As Boolean = False
+        Public LogChat As Boolean = False
 
         'Enable or disable Mods
         Public ModGeneral As Boolean = True
         Public ModDamage As Boolean = False
 
         Public Sub LoadSettings()
-            Server_Ip = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
-            Server_Port = File.Read("SERVER_INTERNAL", "Port", "15880")
-            Server_NormalSlots = File.Read("SERVER_INTERNAL", "Max_NormalSlots", "1000")
-            Server_MaxClients = File.Read("SERVER_INTERNAL", "Max_Clients", "1050")
-            Server_Id = File.Read("SERVER_INTERNAL", "Server_Id", "0")
-            Server_Name = File.Read("SERVER_INTERNAL", "Server_Name", "UNKNOWN")
+            ServerIp = File.Read("SERVER_INTERNAL", "Ip", "0.0.0.0")
+            ServerPort = File.Read("SERVER_INTERNAL", "Port", "15880")
+            ServerNormalSlots = File.Read("SERVER_INTERNAL", "Max_NormalSlots", "1000")
+            ServerMaxClients = File.Read("SERVER_INTERNAL", "Max_Clients", "1050")
+            ServerId = File.Read("SERVER_INTERNAL", "Server_Id", "0")
+            ServerName = File.Read("SERVER_INTERNAL", "Server_Name", "UNKNOWN")
 
-            Database_IP = File.Read("DATABASE", "Ip", "127.0.0.1")
-            Database_Port = File.Read("DATABASE", "Port", "3306")
-            Database_Database = File.Read("DATABASE", "Database", "visualsro")
-            Database_User = File.Read("DATABASE", "User", "root")
-            Database_Password = File.Read("DATABASE", "Password", "")
+            DatabaseIp = File.Read("DATABASE", "Ip", "127.0.0.1")
+            DatabasePort = File.Read("DATABASE", "Port", "3306")
+            DatabaseDatabase = File.Read("DATABASE", "Database", "visualsro")
+            DatabaseUser = File.Read("DATABASE", "User", "root")
+            DatabasePassword = File.Read("DATABASE", "Password", "")
 
-            GlobalManger_Ip = File.Read("GLOBALMANAGER", "Ip", "127.0.0.1")
-            GlobalManger_Port = File.Read("GLOBALMANAGER", "Port", "32000")
+            GlobalMangerIp = File.Read("GLOBALMANAGER", "Ip", "127.0.0.1")
+            GlobalMangerPort = File.Read("GLOBALMANAGER", "Port", "32000")
 
-            Server_XPRate = File.Read("SERVER", "XP_Rate", "1")
-            Server_SPRate = File.Read("SERVER", "SP_Rate", "1")
-            Server_GoldRate = File.Read("SERVER", "Gold_Rate", "1")
-            Server_DropRate = File.Read("SERVER", "Drop_Rate", "1")
-            Server_LevelCap = File.Read("SERVER", "Level_Cap", "100")
-            Server_MasteryCap = File.Read("SERVER", "Mastery_Cap", "300")
-            Server_Range = File.Read("SERVER", "Range", "100")
-            Server_TaxRate = File.Read("SERVER", "Tax_Rate", "0")
-            Server_SpawnsPerSec = File.Read("SERVER", "SpawnsPerSec", "50")
-            Server_SpawnRate = File.Read("SERVER", "Spawn_Rate", "1")
+            ServerXPRate = File.Read("SERVER", "XP_Rate", "1")
+            ServerSPRate = File.Read("SERVER", "SP_Rate", "1")
+            ServerGoldRate = File.Read("SERVER", "Gold_Rate", "1")
+            ServerDropRate = File.Read("SERVER", "Drop_Rate", "1")
+            ServerLevelCap = File.Read("SERVER", "Level_Cap", "100")
+            ServerMasteryCap = File.Read("SERVER", "Mastery_Cap", "300")
+            ServerRange = File.Read("SERVER", "Range", "100")
+            ServerTaxRate = File.Read("SERVER", "Tax_Rate", "0")
+            ServerSpawnsPerSec = File.Read("SERVER", "SpawnsPerSec", "50")
+            ServerSpawnRate = File.Read("SERVER", "Spawn_Rate", "1")
 
-            Player_StartGold = File.Read("PLAYER_START", "Gold", "0")
-            Player_StartLevel = File.Read("PLAYER_START", "Level", "0")
-            Player_StartMasteryLevel = File.Read("PLAYER_START", "Mastery_Level", "0")
-            Player_StartSP = File.Read("PLAYER_START", "Sp", "0")
-            Player_StartGM = CBool(File.Read("PLAYER_START", "Gm", "0"))
-            Player_StartItemsPlusMin = File.Read("PLAYER_START", "ItemPlusMin", "0")
-            Player_StartItemsPlusMax = File.Read("PLAYER_START", "ItemPlusMax", "0")
+            PlayerStartGold = File.Read("PLAYER_START", "Gold", "0")
+            PlayerStartLevel = File.Read("PLAYER_START", "Level", "0")
+            PlayerStartMasteryLevel = File.Read("PLAYER_START", "Mastery_Level", "0")
+            PlayerStartSP = File.Read("PLAYER_START", "Sp", "0")
+            PlayerStartGM = CBool(File.Read("PLAYER_START", "Gm", "0"))
+            PlayerStartItemsPlusMin = File.Read("PLAYER_START", "ItemPlusMin", "0")
+            PlayerStartItemsPlusMax = File.Read("PLAYER_START", "ItemPlusMax", "0")
 
             PlayerStartPosCh.XSector = File.Read("PLAYER_START_POS", "Ch_Xsec", "168")
             PlayerStartPosCh.YSector = File.Read("PLAYER_START_POS", "Ch_Ysec", "98")
@@ -112,22 +114,22 @@ Namespace Settings
             PlayerStartPosCh.Z = File.Read("PLAYER_START_POS", "Ch_Z", "0")
             PlayerStartPosCh.Y = File.Read("PLAYER_START_POS", "Ch_Y", "40")
 
-            Player_StartPos_Eu.XSector = File.Read("PLAYER_START_POS", "EU_Xsec", "168")
-            Player_StartPos_Eu.YSector = File.Read("PLAYER_START_POS", "EU_Ysec", "98")
-            Player_StartPos_Eu.X = File.Read("PLAYER_START_POS", "EU_X", "978")
-            Player_StartPos_Eu.Z = File.Read("PLAYER_START_POS", "EU_Z", "0")
-            Player_StartPos_Eu.Y = File.Read("PLAYER_START_POS", "EU_Y", "40")
+            PlayerStartPosEu.XSector = File.Read("PLAYER_START_POS", "EU_Xsec", "168")
+            PlayerStartPosEu.YSector = File.Read("PLAYER_START_POS", "EU_Ysec", "98")
+            PlayerStartPosEu.X = File.Read("PLAYER_START_POS", "EU_X", "978")
+            PlayerStartPosEu.Z = File.Read("PLAYER_START_POS", "EU_Z", "0")
+            PlayerStartPosEu.Y = File.Read("PLAYER_START_POS", "EU_Y", "40")
 
-            Player_StartReturnPos.XSector = File.Read("PLAYER_START_POS", "RETURN_Xsec", "168")
-            Player_StartReturnPos.YSector = File.Read("PLAYER_START_POS", "RETURN_Ysec", "97")
-            Player_StartReturnPos.X = File.Read("PLAYER_START_POS", "RETURN_X", "980")
-            Player_StartReturnPos.Z = File.Read("PLAYER_START_POS", "RETURN_X", "0")
-            Player_StartReturnPos.Y = File.Read("PLAYER_START_POS", "RETURN_X", "40")
+            PlayerStartReturnPos.XSector = File.Read("PLAYER_START_POS", "RETURN_Xsec", "168")
+            PlayerStartReturnPos.YSector = File.Read("PLAYER_START_POS", "RETURN_Ysec", "97")
+            PlayerStartReturnPos.X = File.Read("PLAYER_START_POS", "RETURN_X", "980")
+            PlayerStartReturnPos.Z = File.Read("PLAYER_START_POS", "RETURN_X", "0")
+            PlayerStartReturnPos.Y = File.Read("PLAYER_START_POS", "RETURN_X", "40")
 
-            Log_Chat = CBool(File.Read("LOG", "Chat", "0"))
-            Log_GM = CBool(File.Read("LOG", "Gm", "0"))
-            Log_Mall = CBool(File.Read("LOG", "Mall", "0"))
-            Log_Detail = CBool(File.Read("LOG", "Detail", "0"))
+            LogChat = CBool(File.Read("LOG", "Chat", "0"))
+            LogGM = CBool(File.Read("LOG", "Gm", "0"))
+            LogMall = CBool(File.Read("LOG", "Mall", "0"))
+            LogDetail = CBool(File.Read("LOG", "Detail", "0"))
 
             ModGeneral = CBool(File.Read("MOD", "General", "0"))
             ModDamage = CBool(File.Read("MOD", "Damage", "0"))
@@ -135,17 +137,17 @@ Namespace Settings
 
 
         Public Sub SetToServer()
-            Database.DbIP = Database_IP
-            Database.DbPort = Database_Port
-            Database.DbDatabase = Database_Database
-            Database.DbUsername = Database_User
-            Database.DbPassword = Database_Password
+            Database.DbIP = DatabaseIp
+            Database.DbPort = DatabasePort
+            Database.DbDatabase = DatabaseDatabase
+            Database.DbUsername = DatabaseUser
+            Database.DbPassword = DatabasePassword
 
-            Server.Ip = Server_Ip
-            Server.Port = Server_Port
-            Server.MaxNormalClients = Server_NormalSlots
-            Server.MaxClients = Server_MaxClients
-            Server.Server_DebugMode = Server_DebugMode
+            Server.Ip = ServerIp
+            Server.Port = ServerPort
+            Server.MaxNormalClients = ServerNormalSlots
+            Server.MaxClients = ServerMaxClients
+            Server.Server_DebugMode = ServerDebugMode
         End Sub
     End Module
 End Namespace

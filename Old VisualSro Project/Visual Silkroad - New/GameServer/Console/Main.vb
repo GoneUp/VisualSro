@@ -31,7 +31,7 @@ Friend Module Program
         AddHandler GlobalManagerCon.OnError, AddressOf gmc_OnGlobalManagerError
         AddHandler GlobalManagerCon.OnLog, AddressOf gmc_OnGlobalManagerLog
         AddHandler GlobalManagerCon.OnPacketReceived, AddressOf Functions.Parser.ParseGlobalManager
-        AddHandler GlobalManagerCon.OnGameserverUserauthReply, AddressOf Functions.Check_GlobalManagerUserAuthReply
+        AddHandler GlobalManagerCon.OnGameserverUserauthReply, AddressOf Functions.CheckGlobalManagerUserAuthReply
         AddHandler GMCUserSidedShutdown, AddressOf gmc_OnUserSidedShutdown
 
         AddHandler Log.OnDatabaseQuery, AddressOf log_OnDatabaseQuery
@@ -62,12 +62,12 @@ Friend Module Program
         succeed = Functions.Timers.LoadTimers(Server.MaxClients)
         GameMod.Damage.OnServerStart(Server.MaxClients)
 
-        If succeed And Settings.Server_DebugMode = False Then
+        If succeed And Settings.ServerDebugMode = False Then
             'Ready...
             Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
-            Log.WriteSystemLog("Slotcount: " & Settings.Server_NormalSlots & "/" & Settings.Server_MaxClients)
+            Log.WriteSystemLog("Slotcount: " & Settings.ServerNormalSlots & "/" & Settings.ServerMaxClients)
 
-            GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+            GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
 
         Else
             'Startup failed
@@ -84,7 +84,7 @@ Friend Module Program
     End Sub
 
     Private Sub Server_OnClientConnect(ByVal ip As String, ByVal index As Integer)
-        If Settings.Log_Detail Then
+        If Settings.LogDetail Then
             Log.WriteSystemLog(String.Format("Client[{0}/{1}] Connected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
         End If
 
@@ -109,7 +109,7 @@ Friend Module Program
                 GameDB.UpdateChar(Functions.PlayerData(index))
             End If
 
-            If Settings.Log_Detail Then
+            If Settings.LogDetail Then
                 Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
             End If
         Catch ex As Exception
@@ -138,7 +138,7 @@ Friend Module Program
 
             Dim packet As New PacketReader(newbuff)
 
-            If Settings.Server_DebugMode = True Then
+            If Settings.ServerDebugMode = True Then
                 Log.LogPacket(newbuff, False)
             End If
 
@@ -228,7 +228,7 @@ Friend Module Program
 
             Case GlobalManagerClient.GMCShutdownReason.Reconnect
                 Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
 
             Case GlobalManagerClient.GMCShutdownReason.Reinit
                 Log.WriteSystemLog("Cleanup Server...")
@@ -242,7 +242,7 @@ Friend Module Program
                 GameMod.Damage.OnServerStart(Server.MaxClients)
 
                 Log.WriteSystemLog("Reconnect GlobalManager...")
-                GlobalManagerCon.Connect(Settings.GlobalManger_Ip, Settings.GlobalManger_Port)
+                GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
         End Select
     End Sub
 

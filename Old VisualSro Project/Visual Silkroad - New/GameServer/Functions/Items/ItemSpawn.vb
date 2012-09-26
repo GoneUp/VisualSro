@@ -40,7 +40,7 @@ Namespace Functions
             tmp_.UniqueID = Id_Gen.GetUnqiueId
             tmp_.DroppedBy = InvItem.OwnerID
             tmp_.Position = Position
-            tmp_.ChannelId = Settings.Server_WorldChannel
+            tmp_.ChannelId = Settings.ServerWorldChannel
             tmp_.Item = Item
             tmp_.DespawnTime = Date.Now.AddMinutes(3)
 
@@ -78,7 +78,7 @@ Namespace Functions
 
         Public Sub RemoveItem(ByVal UniqueId As UInteger)
             Dim _item As cItemDrop = ItemList(UniqueId)
-            Server.SendIfItemIsSpawned(CreateDespawnPacket(_item.UniqueID), _item.UniqueID)
+            Server.SendIfItemIsSpawned(CreateSingleDespawnPacket(_item.UniqueID), _item.UniqueID)
             ItemList.Remove(UniqueId)
 
 

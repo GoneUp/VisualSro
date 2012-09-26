@@ -201,7 +201,7 @@ Namespace GameMod
                                     slot, temp_item.ObjectID, temp_item.Data, temp_item.Data,
                                     temp_item.Plus)
 
-                        If Settings.Log_GM Then
+                        If Settings.LogGM Then
                             Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Item_Create",
                                              String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}",
                                                            slot, temp_item.ObjectID, temp_item.Data,
@@ -227,7 +227,7 @@ Namespace GameMod
                         PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
                         PlayerData(Index_).Alive = True
                         PlayerData(Index_).Busy = False
-                        Player_Die2(Index_)
+                        PlayerDie2(Index_)
                         UpdateState(0, 1, Index_)
                         UpdateHP(Index_)
                     End If
@@ -389,7 +389,7 @@ Namespace GameMod
                 Case "\\fill"
                     PlayerData(Index_).CHP = PlayerData(Index_).HP
                     PlayerData(Index_).CMP = PlayerData(Index_).MP
-                    UpdateHP_MP(Index_)
+                    UpdateHPMP(Index_)
             End Select
 
 

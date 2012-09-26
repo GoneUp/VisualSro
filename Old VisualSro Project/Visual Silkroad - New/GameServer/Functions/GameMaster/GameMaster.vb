@@ -2,39 +2,39 @@
 
 Namespace Functions
     Module GameMaster
-        Public Sub OnGM(ByVal Packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnGM(ByVal packet As PacketReader, ByVal Index_ As Integer)
 
-            Dim tag As Byte = Packet.Word
+            Dim tag As Byte = packet.Word
             Debug.Print("[GM][Tag:" & tag & "]")
 
             If PlayerData(Index_).GM = True Then
                 Select Case tag
                     Case GmTypes.MakeMonster
-                        OnCreateObject(Packet, Index_)
+                        OnCreateObject(packet, Index_)
 
                     Case GmTypes.MakeItem ' Create Item
-                        OnGmCreateItem(Packet, Index_)
+                        OnGmCreateItem(packet, Index_)
 
                     Case GmTypes.WayPoints 'Teleport
-                        OnGmTeleport(Packet, Index_)
+                        OnGmTeleport(packet, Index_)
 
                     Case GmTypes.MoveToUser
-                        OnMoveToUser(Packet, Index_)
+                        OnMoveToUser(packet, Index_)
 
                     Case GmTypes.RecallUser
-                        OnRecallUser(Packet, Index_)
+                        OnRecallUser(packet, Index_)
 
                     Case GmTypes.Ban
-                        OnBanUser(Packet, Index_)
+                        OnBanUser(packet, Index_)
 
                     Case GmTypes.GoTown
                         OnGoTown(Index_)
 
                     Case GmTypes.ToTown
-                        OnMoveUserToTown(Index_, Packet)
+                        OnMoveUserToTown(packet, Index_)
 
                     Case GmTypes.KillMob
-                        OnKillObject(Packet, Index_)
+                        OnKillObject(packet, Index_)
 
                     Case GmTypes.Invincible
                         OnInvincible(Index_)
@@ -50,33 +50,32 @@ Namespace Functions
             End If
         End Sub
 
-        Public Sub OnGmCreateItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim pk2id As UInteger = packet.DWord
-            Dim plus As Byte = packet.Byte
-            'Or Count
+        Private Sub OnGmCreateItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim pk2ID As UInteger = packet.DWord
+            Dim plus As Byte = packet.Byte 'Or Count
             Dim slot As Byte = GetFreeItemSlot(Index_)
 
             If slot <> -1 Then
-                Dim temp_item As New cItem
-                temp_item.ObjectID = pk2id
-                temp_item.CreatorName = PlayerData(Index_).CharacterName & "#GM"
+                Dim tempItem As New cItem
+                tempItem.ObjectID = pk2ID
+                tempItem.CreatorName = PlayerData(Index_).CharacterName & "#GM"
 
-                Dim refitem As cRefItem = GetItemByID(pk2id)
+                Dim refitem As cRefItem = GetItemByID(pk2ID)
                 If refitem.CLASS_A = 1 Then
                     'Equip
-                    temp_item.Plus = plus
-                    temp_item.Data = refitem.MAX_DURA
+                    tempItem.Plus = plus
+                    tempItem.Data = refitem.MAX_DURA
                 ElseIf refitem.CLASS_A = 2 Then
                     'Pet
 
                 ElseIf refitem.CLASS_A = 3 Then
                     'Etc
-                    temp_item.Data = plus
+                    tempItem.Data = plus
                 End If
 
 
-                Dim ID As UInt64 = ItemManager.AddItem(temp_item)
-                Inventorys(Index_).UserItems(slot).ItemID = ID
+                Dim id As UInt64 = ItemManager.AddItem(tempItem)
+                Inventorys(Index_).UserItems(slot).ItemID = id
                 ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
 
                 Dim writer As New PacketWriter
@@ -85,65 +84,65 @@ Namespace Functions
                 writer.Byte(6) 'type = new item
                 writer.Byte(slot)
 
-                AddItemDataToPacket(temp_item, writer)
+                AddItemDataToPacket(tempItem, writer)
 
                 Server.Send(writer.GetBytes, Index_)
 
                 Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]", slot,
-                            temp_item.ObjectID, temp_item.Data, temp_item.Data, temp_item.Plus)
+                            tempItem.ObjectID, tempItem.Data, tempItem.Data, tempItem.Plus)
 
-                If Settings.Log_GM Then
+                If Settings.LogGM Then
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Item_Create",
                                      String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}", slot,
-                                                   temp_item.ObjectID, temp_item.Data, temp_item.Data,
-                                                   temp_item.Plus))
+                                                   tempItem.ObjectID, tempItem.Data, tempItem.Data,
+                                                   tempItem.Plus))
                 End If
             End If
         End Sub
 
-        Public Sub OnGmTeleport(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Private Sub OnGmTeleport(ByVal packet As PacketReader, ByVal Index_ As Integer)
 
-            Dim to_pos As New Position
-            to_pos.XSector = packet.Byte
-            to_pos.YSector = packet.Byte
-            to_pos.X = packet.Float
-            to_pos.Z = packet.Float
-            to_pos.Y = packet.Float
-            Dim Angle As UInt16 = packet.Word
-            'Not sure 
+            Dim toPos As New Position
+            toPos.XSector = packet.Byte
+            toPos.YSector = packet.Byte
+            toPos.X = packet.Float
+            toPos.Z = packet.Float
+            toPos.Y = packet.Float
+            Dim angle As UInt16 = packet.Word 'Not sure 
 
-            PlayerData(index_).SetPosition = to_pos
-            PlayerData(index_).TeleportType = TeleportTypes.GM
 
-            GameDB.SavePosition(index_)
+            PlayerData(Index_).SetPosition = toPos
+            PlayerData(Index_).TeleportType = TeleportTypes.GM
+
+            GameDB.SavePosition(Index_)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_TELEPORT_ANNONCE)
-            writer.Byte(PlayerData(index_).Position.XSector)
-            writer.Byte(PlayerData(index_).Position.YSector)
-            Server.Send(writer.GetBytes, index_)
+            writer.Byte(PlayerData(Index_).Position.XSector)
+            writer.Byte(PlayerData(Index_).Position.YSector)
+            Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub OnSetWeather(ByVal Type As Byte, ByVal Strength As Byte)
+        Public Sub OnSetWeather(ByVal type As Byte, ByVal strength As Byte)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_WEATHER)
-            writer.Byte(Type)
+            writer.Byte(type)
             writer.Byte(Strength)
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
 
-        Private Sub OnMoveToUser(ByVal packet As PacketReader, ByVal index_ As Integer)
-            Dim NameLength As Byte = packet.Word
-            Dim Name As String = packet.String(NameLength)
+        Private Sub OnMoveToUser(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nameLength As Byte = packet.Word
+            Dim name As String = packet.String(nameLength)
 
             For i As Integer = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).CharacterName = Name Then
+                    If PlayerData(i).CharacterName = name Then
 
-                        PlayerData(index_).SetPosition = PlayerData(i).Position
-                        GameDB.SavePosition(index_)
+                        PlayerData(Index_).SetPosition = PlayerData(i).Position
+                        GameDB.SavePosition(Index_)
 
-                        OnTeleportUser(index_, PlayerData(index_).Position.XSector, PlayerData(index_).Position.YSector)
+                        OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
 
                         Exit For
                     End If
@@ -151,16 +150,16 @@ Namespace Functions
             Next
         End Sub
 
-        Private Sub OnRecallUser(ByVal packet As PacketReader, ByVal index_ As Integer)
-            Dim NameLength As UInt16 = packet.Word
-            Dim Name As String = packet.String(NameLength)
+        Private Sub OnRecallUser(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nameLength As UInt16 = packet.Word
+            Dim name As String = packet.String(nameLength)
 
             For i As Integer = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).CharacterName = Name Then
+                    If PlayerData(i).CharacterName = name Then
 
-                        PlayerData(i).SetPosition = PlayerData(index_).Position
-                        GameDB.SavePosition(index_)
+                        PlayerData(i).SetPosition = PlayerData(Index_).Position
+                        GameDB.SavePosition(Index_)
 
                         OnTeleportUser(i, PlayerData(i).Position.XSector, PlayerData(i).Position.YSector)
                         Exit For
@@ -169,16 +168,16 @@ Namespace Functions
             Next
         End Sub
 
-        Public Sub OnBanUser(ByVal Packet As PacketReader, ByVal index_ As Integer)
-            Dim NameLength As UInt16 = Packet.Word
-            Dim Name As String = Packet.String(NameLength)
+        Private Sub OnBanUser(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nameLength As UInt16 = packet.Word
+            Dim name As String = packet.String(nameLength)
 
             For i As Integer = 0 To GameDB.Chars.Length - 1
-                If GameDB.Chars(i).CharacterName = Name Then
+                If GameDB.Chars(i).CharacterName = name Then
                     Database.InsertData(
                         String.Format(
                             "UPDATE users SET banned='1', bantime = '3000-01-01 00:00:00', banreason = 'You got banned by: {0}' where id='{1}'",
-                            PlayerData(index_).CharacterName, GameDB.Chars(i).AccountID))
+                            PlayerData(Index_).CharacterName, GameDB.Chars(i).AccountID))
 
                     For U = 0 To GameDB.Users.Count - 1
                         If GameDB.Users(U).AccountId = GameDB.Chars(i).AccountID Then
@@ -186,49 +185,48 @@ Namespace Functions
                         End If
                     Next
 
-                    SendPm(index_, "User got banned.", "[SERVER]")
+                    SendPm(Index_, "User got banned.", "[SERVER]")
                     Exit For
                 End If
             Next
 
             For i As Integer = 0 To Server.OnlineClients
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).CharacterName = Name Then
+                    If PlayerData(i).CharacterName = name Then
                         Server.Disconnect(i)
                     End If
                 End If
             Next i
 
-            If Settings.Log_GM Then
-                Log.WriteGameLog(index_, Server.ClientList.GetIP(index_), "GM", "Ban", String.Format("Banned User:" & Name))
+            If Settings.LogGM Then
+                Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Ban", String.Format("Banned User:" & name))
             End If
         End Sub
 
-        Public Sub OnGoTown(ByVal Index_ As Integer)
+        Private Sub OnGoTown(ByVal Index_ As Integer)
             'Teleport the GM to Town
             PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn   'Set new Pos
             GameDB.SavePosition(Index_)
             OnTeleportUser(Index_, PlayerData(Index_).Position.XSector, PlayerData(Index_).Position.YSector)
         End Sub
 
-        Public Sub OnMoveUserToTown(ByVal Index_ As Integer, ByVal packet As PacketReader)
-
-            Dim NameLength As UInt16 = packet.Word
-            Dim Name As String = packet.String(NameLength)
+        Private Sub OnMoveUserToTown(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nameLength As UInt16 = packet.Word
+            Dim name As String = packet.String(nameLength)
 
             For i As Integer = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).CharacterName = Name Then
+                    If PlayerData(i).CharacterName = name Then
                         OnGoTown(i)
                     End If
                 End If
             Next
         End Sub
 
-        Public Sub OnCreateObject(ByVal Packet As PacketReader, ByVal Index_ As Integer)
-            Dim objectid As UInteger = Packet.DWord
-            Dim count As Byte = Packet.Byte
-            Dim type As Integer = Packet.Byte
+        Private Sub OnCreateObject(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim objectid As UInteger = packet.DWord
+            Dim count As Byte = packet.Byte
+            Dim type As Integer = packet.Byte
 
             Dim refobject As SilkroadObject = GetObject(objectid)
 
@@ -243,7 +241,7 @@ Namespace Functions
                     SpawnNPC(objectid, PlayerData(Index_).Position, 0)
             End Select
 
-            If Settings.Log_GM Then
+            If Settings.LogGM Then
                 Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Monster_Spawn",
                                  String.Format("PK2ID: {0}, Monster_Name: {1} Type: {2}", objectid, refobject.CodeName,
                                                count))
@@ -252,8 +250,8 @@ Namespace Functions
             ObjectSpawnCheck(Index_)
         End Sub
 
-        Public Sub OnKillObject(ByVal Packet As PacketReader, ByVal Index_ As Integer)
-            Dim unique_Id As UInteger = Packet.DWord
+        Private Sub OnKillObject(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim uniqueId As UInteger = Packet.DWord
 
 
             Dim list = MobList.Keys.ToList
@@ -261,7 +259,7 @@ Namespace Functions
                 Dim key As UInt32 = list(i)
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList.Item(key)
-                    If Mob_.UniqueID = unique_Id Then
+                    If Mob_.UniqueID = uniqueId Then
                         MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False)
                         GetEXPFromMob(Mob_)
                         KillMob(Mob_.UniqueID)
@@ -270,7 +268,7 @@ Namespace Functions
             Next
         End Sub
 
-        Public Sub OnInvincible(ByVal Index_ As Integer)
+        Private Sub OnInvincible(ByVal Index_ As Integer)
             If PlayerData(Index_).Invincible = False Then
                 PlayerData(Index_).Invincible = True
             Else
@@ -278,7 +276,7 @@ Namespace Functions
             End If
         End Sub
 
-        Public Sub OnInvisible(ByVal Index_ As Integer)
+        Private Sub OnInvisible(ByVal Index_ As Integer)
             If PlayerData(Index_).Invisible = False Then
                 PlayerData(Index_).Invisible = True
                 DespawnPlayer(Index_)
@@ -295,7 +293,7 @@ Namespace Functions
 
         End Sub
 
-        Enum GmTypes
+        Private Enum GmTypes
             FindUser = 1
             GoTown = 2
             ToTown = 3

@@ -377,11 +377,11 @@
             For Each key In tmplist
                 If Buffs.ContainsKey(key) Then
                     Select Case Buffs(key).Type
-                        Case BuffType_.ItemBuff
+                        Case BuffType.ItemBuff
                             Dim Ref As cRefItem = GetItemByID(Buffs(key).ItemID)
 
 
-                        Case BuffType_.SkillBuff
+                        Case BuffType.SkillBuff
                             Dim Ref As RefSkill = GetSkill(Buffs(key).SkillID)
 
                             Select Case Ref.Effect_0

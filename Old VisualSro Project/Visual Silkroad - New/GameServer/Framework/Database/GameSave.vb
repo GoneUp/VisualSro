@@ -32,19 +32,19 @@ Namespace GameDB
             Database.SaveQuery(String.Format("UPDATE characters SET cur_mp='{0}', mp='{1}' where id='{2}'",PlayerData(Index_).CMP, PlayerData(Index_).MP, PlayerData(Index_).CharacterId))
         End Sub
 
-        Public Sub SaveHP_MP(ByVal Index_ As Integer)
+        Public Sub SaveHPMP(ByVal Index_ As Integer)
             Database.SaveQuery(String.Format("UPDATE characters SET cur_hp='{0}', hp='{1}', cur_mp='{2}', mp='{3}' where id='{4}'",
                               PlayerData(Index_).CHP, PlayerData(Index_).HP,
                               PlayerData(Index_).CMP, PlayerData(Index_).MP,
                               PlayerData(Index_).CharacterId))
         End Sub
 
-        Public Sub SaveNameUpdate(ByVal CharID As Integer, ByVal name As String)
+        Public Sub SaveNameUpdate(ByVal charID As Integer, ByVal name As String)
             Database.SaveQuery(String.Format("UPDATE characters SET name='{0} where id='{1}'", name, CharID))
         End Sub
 
-        Public Sub SaveMastery(ByVal CharID As UInt32, ByVal MasteryID As UInt32, ByVal Level As Byte)
-            Database.SaveQuery(String.Format("UPDATE char_mastery SET level='{0}' where owner='{1}' and mastery='{2}'", Level, CharID, MasteryID))
+        Public Sub SaveMastery(ByVal charID As UInt32, ByVal masteryID As UInt32, ByVal level As Byte)
+            Database.SaveQuery(String.Format("UPDATE char_mastery SET level='{0}' where owner='{1}' and mastery='{2}'", Level, charID, masteryID))
         End Sub
 
         Public Sub SaveGold(ByVal Index_ As Integer)
@@ -78,7 +78,7 @@ Namespace GameDB
             Database.SaveQuery(String.Format("UPDATE users SET silk='{0}', silk_bonus='{1}', silk_points='{2}' where id='{3}'", silk, silk_Bonus, silk_Points, accountID))
         End Sub
 
-        Public Sub SaveCharType_Volume(ByVal Index_ As Integer)
+        Public Sub SaveCharTypeAndVolume(ByVal Index_ As Integer)
             Database.SaveQuery(String.Format("UPDATE characters SET chartype='{0}', volume='{1}' where id='{2}'",
                                                      PlayerData(Index_).Pk2ID, PlayerData(Index_).Volume,
                                                      PlayerData(Index_).CharacterId))

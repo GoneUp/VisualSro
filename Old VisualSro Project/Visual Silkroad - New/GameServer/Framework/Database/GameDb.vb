@@ -12,27 +12,27 @@ Namespace GameDB
 
         'Chars
         Public Chars() As cCharacter
-        Public ReadOnly Hotkeys As New List(Of cHotKey)
+        Public Hotkeys As New List(Of cHotKey)
 
         'Itemcount
-        Public ReadOnly Items As New Dictionary(Of UInt64, cItem)
+        Public Items As New Dictionary(Of UInt64, cItem)
 
-        Public ReadOnly InventoryItems As New List(Of cInventoryItem)
-        Public ReadOnly AvatarInventoryItems As New List(Of cInventoryItem)
-        Public ReadOnly COSInventoryItems As New List(Of cInventoryItem)
+        Public InventoryItems As New List(Of cInventoryItem)
+        Public AvatarInventoryItems As New List(Of cInventoryItem)
+        Public COSInventoryItems As New List(Of cInventoryItem)
 
-        Public ReadOnly StorageItems As New List(Of cInventoryItem)
-        Public ReadOnly GuildStorageItems As New List(Of cInventoryItem)
+        Public StorageItems As New List(Of cInventoryItem)
+        Public GuildStorageItems As New List(Of cInventoryItem)
 
         'Masterys
         Public Masterys() As cMastery
 
         'Skills
         Public Skills() As cSkill
-        Public ReadOnly SkillSets As New Dictionary(Of UInt32, cSkillSet)
+        Public SkillSets As New Dictionary(Of UInt32, cSkillSet)
 
         'Guilds
-        Public ReadOnly Guilds As New List(Of cGuild)
+        Public Guilds As New List(Of cGuild)
 
         Public InitalLoad As Boolean = True
 

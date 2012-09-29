@@ -317,6 +317,11 @@ Namespace Functions
                             writer.Word(banreason.Length)
                             writer.String(banreason) 'grund
                             writer.Date(bantime) 'zeit
+
+                        Case 7
+                            'message
+                            Dim text As String = packet.String(packet.Word)
+                            LoginWriteSpecialText(text, Index_)
                     End Select
                 End If
 
@@ -324,7 +329,7 @@ Namespace Functions
             End If
         End Sub
 
-        Public Sub LoginWriteSpecialText(ByVal Text As String, ByVal Index_ As Integer)
+        Public Sub LoginWriteSpecialText(ByVal text As String, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.LOGIN_AUTH)
             writer.Byte(3) 'failed

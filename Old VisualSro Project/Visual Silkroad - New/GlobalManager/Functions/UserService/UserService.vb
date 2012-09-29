@@ -31,13 +31,13 @@ Namespace UserService
 
                     Case 2 'update
                         Try
-                            Dim new_user As cUser = formatter.Deserialize(writer.BaseStream)
+                            Dim newUser As cUser = formatter.Deserialize(writer.BaseStream)
 
-                            If new_user IsNot Nothing AndAlso user.AccountId = new_user.AccountId Then
+                            If newUser IsNot Nothing AndAlso user.AccountId = newUser.AccountId Then
                                 writer.Byte(1)
 
-                                GlobalDB.UpdateUser(new_user)
-                                DBSave.SaveUser(new_user)
+                                GlobalDB.UpdateUser(newUser)
+                                DBSave.SaveUser(newUser)
                             Else
                                 writer.Byte(2) 'fail
                                 writer.Byte(3) 'object failure
@@ -131,12 +131,12 @@ Namespace UserService
             GlobalDB.Users.Add(tmp)
 
             'Add to RegisterList
-            Dim tmp_2 As New cRegisteredUsed
-            tmp_2.IP = Server.ClientList.GetIP(Index_)
-            tmp_2.Name = name
-            tmp_2.Password = password
-            tmp_2.Time = Date.Now
-            RegisterList.Add(tmp_2)
+            Dim tmp2 As New cRegisteredUsed
+            tmp2.IP = Server.ClientList.GetIP(Index_)
+            tmp2.Name = name
+            tmp2.Password = password
+            tmp2.Time = Date.Now
+            RegisterList.Add(tmp2)
 
             'Log it
             If Settings.LogRegister Then
@@ -146,7 +146,7 @@ Namespace UserService
             Return True
         End Function
 
-        Public Function CheckIfUserCanRegister(ByVal IP As String) As Boolean
+        Public Function CheckIfUserCanRegister(ByVal ip As String) As Boolean
             Dim count As Integer = 0
 
             For i = 0 To RegisterList.Count - 1
@@ -164,10 +164,13 @@ Namespace UserService
 #End Region
 
 #Region "Login Message"
-        Public Sub LoginWriteSpecialText(ByVal text As String, userIndex As Integer, ByVal Index_ As Integer)
+
+        Private Sub LoginWriteSpecialText(ByVal text As String, userIndex As Integer, ByVal Index_ As Integer)
             'Send a special message to a login client, will be displayed instantly
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.LOGIN_AUTH)
+            writer.Create(InternalServerOpcodes.AGENT_SEND_USERAUTH)
+            writer.Byte(2)
+            writer.Byte(7)
             writer.DWord(userIndex)
             writer.Word(text.Length)
             writer.String(text)

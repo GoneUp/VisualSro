@@ -263,7 +263,7 @@ Namespace Functions
                     writer.DWord(Mob_.UniqueID)
                     writer.Byte(1)
                     'unknown
-                    writer.DWord(Mob_.HP_Cur)
+                    writer.DWord(Mob_.HPCur)
                     writer.Byte(1)
                     'unknown
                     writer.Byte(5)

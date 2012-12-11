@@ -24,7 +24,7 @@ Namespace GameMod.Damage
 
             'Send it
             For i = 0 To sort.Count - 1
-                If IsSendingAllowed(dmgList(i).PlayerIndex, mob.Mob_Type) Then
+                If IsSendingAllowed(dmgList(i).PlayerIndex, mob.MobType) Then
                     SendPm(dmgList(i).PlayerIndex, sDmg, "[DAMAGE_MOD]")
                 End If
             Next

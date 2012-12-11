@@ -17,7 +17,7 @@
             Dim item As cItem
             Dim Difference As Long = RefLevel.MaxGold - RefLevel.MinGold
             Dim Gold As Long = (RefLevel.MinGold + (Rand.NextDouble() * Difference)) * Settings.ServerGoldRate *
-                               GetMobExpMultiplier(MobList(MobUniqueId).Mob_Type)
+                               GetMobExpMultiplier(MobList(MobUniqueId).MobType)
             If Gold > UInt32.MaxValue Then
                 Gold = UInt32.MaxValue
             End If

@@ -84,7 +84,7 @@ Namespace Functions
             For Each key In MobList.Keys.ToList
                 If MobList.ContainsKey(key) Then
                     Dim mob As cMonster = MobList.Item(key)
-                    If mob.Mob_Type = 3 Then
+                    If mob.MobType = 3 Then
                         Continue For
                     End If
 

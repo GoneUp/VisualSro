@@ -2,26 +2,26 @@
 
 Namespace Functions
     Module MonsterAction
-        Public Sub KillMob(ByVal UniqueID As Integer)
-            If MobList.ContainsKey(UniqueID) = False Then
+        Public Sub KillMob(ByVal uniqueID As Integer)
+            If MobList.ContainsKey(uniqueID) = False Then
                 Exit Sub
             End If
 
-            MobList(UniqueID).HP_Cur = 0
-            MobList(UniqueID).Death = True
-            MobList(UniqueID).DeathRemoveTime = Date.Now.AddSeconds(5)
-            UpdateState(0, 2, MobList(UniqueID))
+            MobList(uniqueID).HPCur = 0
+            MobList(uniqueID).Death = True
+            MobList(uniqueID).DeathRemoveTime = Date.Now.AddSeconds(5)
+            UpdateState(0, 2, MobList(uniqueID))
 
-            DropMonsterItems(UniqueID)
+            DropMonsterItems(uniqueID)
 
-            Dim tmp_ As Integer = MobGetPlayerWithMostDamage(UniqueID)
+            Dim tmp_ As Integer = MobGetPlayerWithMostDamage(uniqueID)
             If tmp_ >= 0 Then
-                If MobList(UniqueID).Mob_Type = 3 Then
-                    SendUniqueKill(MobList(UniqueID).Pk2ID, PlayerData(tmp_).CharacterName)
+                If MobList(uniqueID).MobType = 3 Then
+                    SendUniqueKill(MobList(uniqueID).Pk2ID, PlayerData(tmp_).CharacterName)
                 End If
 
                 If Settings.ModGeneral And Settings.ModDamage Then
-                    GameMod.Damage.SendDamageInfo(UniqueID)
+                    GameMod.Damage.SendDamageInfo(uniqueID)
                 End If
             End If
         End Sub
@@ -55,50 +55,50 @@ Namespace Functions
             Return MostIndex
         End Function
 
-        Public Sub MoveMob(ByVal UniqueID As Integer, ByVal ToPos As Position)
-            Dim Obj As SilkroadObject = GetObject(MobList(UniqueID).Pk2ID)
+        Public Sub MoveMob(ByVal uniqueID As Integer, ByVal toPos As Position)
+            Dim obj As SilkroadObject = GetObject(MobList(uniqueID).Pk2ID)
 
-            Dim WalkTime As Single
-            Dim distance As Single = CalculateDistance(MobList(UniqueID).Position, ToPos)
-            Select Case MobList(UniqueID).Pos_Tracker.SpeedMode
+            Dim walkTime As Single
+            Dim distance As Single = CalculateDistance(MobList(uniqueID).Position, toPos)
+            Select Case MobList(uniqueID).PosTracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
-                    WalkTime = (distance / Obj.WalkSpeed) * 10000
+                    walkTime = (distance / obj.WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
-                    WalkTime = (distance / Obj.RunSpeed) * 10000
+                    walkTime = (distance / obj.RunSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Zerking
-                    WalkTime = (distance / Obj.BerserkSpeed) * 10000
+                    walkTime = (distance / obj.BerserkSpeed) * 10000
             End Select
 
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_MOVEMENT)
-            writer.DWord(UniqueID)
+            writer.DWord(uniqueID)
             writer.Byte(1)
             'destination
-            writer.Byte(ToPos.XSector)
-            writer.Byte(ToPos.YSector)
+            writer.Byte(toPos.XSector)
+            writer.Byte(toPos.YSector)
 
-            If IsInCave(ToPos) = False Then
-                writer.Byte(BitConverter.GetBytes(CShort(ToPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(ToPos.Y)))
+            If IsInCave(toPos) = False Then
+                writer.Byte(BitConverter.GetBytes(CShort(toPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(toPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(toPos.Y)))
             Else
                 'In Cave
-                writer.Byte(BitConverter.GetBytes(CInt(ToPos.X)))
-                writer.Byte(BitConverter.GetBytes(CInt(ToPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CInt(ToPos.Y)))
+                writer.Byte(BitConverter.GetBytes(CInt(toPos.X)))
+                writer.Byte(BitConverter.GetBytes(CInt(toPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CInt(toPos.Y)))
             End If
 
             writer.Byte(0)
             '1= source
 
-            Server.SendIfMobIsSpawned(writer.GetBytes, MobList(UniqueID).UniqueID)
-            MobList(UniqueID).Pos_Tracker.Move(ToPos)
+            Server.SendIfMobIsSpawned(writer.GetBytes, MobList(uniqueID).UniqueID)
+            MobList(uniqueID).PosTracker.Move(toPos)
 
 
-            If MobList(UniqueID).IsAttacking = True Then
-                If WalkTime > 0 Then
-                    MobList(UniqueID).AttackTimer_Start(WalkTime)
+            If MobList(uniqueID).IsAttacking = True Then
+                If walkTime > 0 Then
+                    MobList(uniqueID).AttackTimer_Start(walkTime)
                 End If
             End If
         End Sub
@@ -126,7 +126,7 @@ Namespace Functions
             End If
 
             Dim WalkTime As Single
-            Select Case MobList(uniqueID).Pos_Tracker.SpeedMode
+            Select Case MobList(uniqueID).PosTracker.SpeedMode
                 Case cPositionTracker.enumSpeedMode.Walking
                     WalkTime = (distance / obj.WalkSpeed) * 10000
                 Case cPositionTracker.enumSpeedMode.Running
@@ -159,7 +159,7 @@ Namespace Functions
             '1= source
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(uniqueID).UniqueID)
-            MobList(uniqueID).Pos_Tracker.Move(toPos)
+            MobList(uniqueID).PosTracker.Move(toPos)
 
 
             If MobList(uniqueID).IsAttacking = True Then
@@ -174,7 +174,7 @@ Namespace Functions
             Dim ref_ As SilkroadObject = GetObject(mob_.Pk2ID)
             For i = 0 To mob_.DamageFromPlayer.Count - 1
                 Dim Index_ As Integer = mob_.DamageFromPlayer(i).PlayerIndex
-                Dim DmgPercent As Double = mob_.DamageFromPlayer(i).Damage / mob_.HP_Max
+                Dim DmgPercent As Double = mob_.DamageFromPlayer(i).Damage / mob_.HPMax
 
                 If PlayerData(Index_) IsNot Nothing Then
                     Dim Balance As Double
@@ -219,7 +219,7 @@ Namespace Functions
                     End If
 
 
-                    Dim EXP As ULong = (((ref_.Exp * GetMobExpMultiplier(mob_.Mob_Type)) * DmgPercent * Balance * GapFactorXP) * Settings.ServerXPRate)
+                    Dim EXP As ULong = (((ref_.Exp * GetMobExpMultiplier(mob_.MobType)) * DmgPercent * Balance * GapFactorXP) * Settings.ServerXPRate)
                     Dim SP As ULong = ((ref_.Exp * DmgPercent * Balance * GapFactorSP) * Settings.ServerSPRate)
 
 

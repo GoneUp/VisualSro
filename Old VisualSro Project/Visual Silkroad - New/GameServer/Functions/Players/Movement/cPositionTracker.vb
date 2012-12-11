@@ -2,84 +2,81 @@
 
 Namespace Functions
     Public Class cPositionTracker
-        WithEvents tmrMovement As Timer
+        WithEvents m_tmrMovement As Timer
 
         'ReadOnly
-        Dim pPosition As Position
-        'Player Position
-        Dim wPosition As Position
-        'Target Position
+        Dim m_pPosition As Position 'Player Position
+        Dim m_wPosition As Position 'Target Position
 
-        Dim pSpeedMode As enumSpeedMode
-        Dim pMoveState As enumMoveState
 
-        Dim Speed_Walk As Single
-        Dim Speed_Run As Single
-        Dim Speed_Zerk As Single
+        Dim m_pSpeedMode As enumSpeedMode
+        Dim m_pMoveState As enumMoveState
 
-        Dim StartWalkTime As DateTime
+        Dim m_speedWalk As Single
+        Dim m_speedRun As Single
+        Dim m_speedZerk As Single
 
-        Public Sub New(ByVal p As Position, ByVal WalkSpeed As Single, ByVal RunSpeed As Single,
-                       ByVal ZerkSpeed As Single)
-            pPosition = p
-            'Character Start Point
-            wPosition = p
-            'Character Walk Point
+        Dim m_startWalkTime As DateTime
 
-            Speed_Walk = WalkSpeed
-            Speed_Run = RunSpeed
-            Speed_Zerk = ZerkSpeed
+        Public Sub New(ByVal p As Position, ByVal walkSpeed As Single, ByVal runSpeed As Single, ByVal zerkSpeed As Single)
 
-            pMoveState = enumMoveState.Standing
-            pSpeedMode = enumSpeedMode.Running
+            m_pPosition = p 'Character Start Point
+            m_wPosition = p 'Character Walk Point
+
+            m_speedWalk = walkSpeed
+            m_speedRun = runSpeed
+            m_speedZerk = zerkSpeed
+
+            m_pMoveState = enumMoveState.Standing
+            m_pSpeedMode = enumSpeedMode.Running
         End Sub
 
         Public Function GetCurPos() As Position
-            Dim ToGoX As Single
-            Dim ToGoY As Single
-            Dim Distance As Double
-            Dim Speed As Double
+            Dim toGoX As Single
+            Dim toGoY As Single
+            Dim distance As Double
+            Dim speed As Double
 
             Try
-                Select Case pMoveState
+                Select Case m_pMoveState
                     Case enumMoveState.Standing
-                        Return pPosition
+                        Return m_pPosition
                     Case enumMoveState.Walking
-                        Dim TimeLeft As Double = Date.Now.Subtract(StartWalkTime).TotalMilliseconds
-                        ToGoX = (pPosition.ToGameX - wPosition.ToGameX)
-                        ToGoY = (pPosition.ToGameY - wPosition.ToGameY)
-                        Distance = Math.Sqrt((ToGoX * ToGoX) + (ToGoY * ToGoY))
-                        Select Case pSpeedMode
+                        Dim timeLeft As Double = Date.Now.Subtract(m_startWalkTime).TotalMilliseconds
+                        toGoX = (m_pPosition.ToGameX - m_wPosition.ToGameX)
+                        toGoY = (m_pPosition.ToGameY - m_wPosition.ToGameY)
+                        distance = Math.Sqrt((toGoX * toGoX) + (toGoY * toGoY))
+                        Select Case m_pSpeedMode
                             Case enumSpeedMode.Walking
-                                Speed = ((Speed_Walk / 10.0!) * TimeLeft) / 1000.0!
+                                speed = ((m_speedWalk / 10.0!) * timeLeft) / 1000.0!
                             Case enumSpeedMode.Running
-                                Speed = ((Speed_Run / 10.0!) * TimeLeft) / 1000.0!
+                                speed = ((m_speedRun / 10.0!) * timeLeft) / 1000.0!
                             Case enumSpeedMode.Zerking
-                                Speed = ((Speed_Zerk / 10.0!) * TimeLeft) / 1000.0!
+                                speed = ((m_speedZerk / 10.0!) * timeLeft) / 1000.0!
                         End Select
 
-                        If Distance = 0.0 Then
+                        If distance = 0.0 Then
                             'Nothing to do more
-                            Return pPosition
+                            Return m_pPosition
                         End If
 
-                        Dim num6 As Single = CSng((((100.0! / Distance) * Speed) * 0.01))
-                        ToGoX *= num6
-                        ToGoY *= num6
+                        Dim num6 As Single = CSng((((100.0! / distance) * speed) * 0.01))
+                        toGoX *= num6
+                        toGoY *= num6
 
 
-                        Dim tmpX As Single = (pPosition.ToGameX)
-                        Dim tmpY As Single = (pPosition.ToGameY)
-                        tmpX -= ToGoX
-                        tmpY -= ToGoY
-                        pPosition.XSector = GetXSecFromGameX(tmpX)
-                        pPosition.YSector = GetYSecFromGameY(tmpY)
-                        pPosition.X = GetXOffset(tmpX)
-                        pPosition.Y = GetYOffset(tmpY)
-                        StartWalkTime = Date.Now
-                        Return pPosition
+                        Dim tmpX As Single = (m_pPosition.ToGameX)
+                        Dim tmpY As Single = (m_pPosition.ToGameY)
+                        tmpX -= toGoX
+                        tmpY -= toGoY
+                        m_pPosition.XSector = GetXSecFromGameX(tmpX)
+                        m_pPosition.YSector = GetYSecFromGameY(tmpY)
+                        m_pPosition.X = GetXOffset(tmpX)
+                        m_pPosition.Y = GetYOffset(tmpY)
+                        m_startWalkTime = Date.Now
+                        Return m_pPosition
                     Case enumMoveState.Spinning
-                        Return pPosition
+                        Return m_pPosition
                 End Select
 
 
@@ -88,72 +85,72 @@ Namespace Functions
             End Try
         End Function
 
-        Public Sub Move(ByVal ToPos As Position)
+        Public Sub Move(ByVal toPos As Position)
             'Navmesh checks later...
-            If pMoveState = enumMoveState.Walking Then
-                pPosition = GetCurPos()
+            If m_pMoveState = enumMoveState.Walking Then
+                m_pPosition = GetCurPos()
             End If
 
-            If Double.IsNaN(pPosition.X) Then 'Error Correction
-                pPosition.X = ToPos.X
+            If Double.IsNaN(m_pPosition.X) Then 'Error Correction
+                m_pPosition.X = toPos.X
             End If
-            If Double.IsNaN(pPosition.Y) Then
-                pPosition.Y = ToPos.Y
+            If Double.IsNaN(m_pPosition.Y) Then
+                m_pPosition.Y = toPos.Y
             End If
 
-            wPosition = ToPos
-            Dim WalkDistance As Double = CalculateDistance(pPosition, ToPos)
-            Dim WalkTime As Integer
-            Select Case pSpeedMode
+            m_wPosition = toPos
+            Dim walkDistance As Double = CalculateDistance(m_pPosition, toPos)
+            Dim walkTime As Integer
+            Select Case m_pSpeedMode
                 Case enumSpeedMode.Walking
-                    WalkTime = (WalkDistance / Speed_Walk) * 10000
+                    walkTime = (walkDistance / m_speedWalk) * 10000
                 Case enumSpeedMode.Running
-                    WalkTime = (WalkDistance / Speed_Run) * 10000
+                    walkTime = (walkDistance / m_speedRun) * 10000
                 Case enumSpeedMode.Zerking
-                    WalkTime = (WalkDistance / Speed_Zerk) * 10000
+                    walkTime = (walkDistance / m_speedZerk) * 10000
             End Select
-            pMoveState = enumMoveState.Walking
-            StartWalkTime = Date.Now
+            m_pMoveState = enumMoveState.Walking
+            m_startWalkTime = Date.Now
             'Move Start Zeit
 
-            If WalkTime = 0 Then
-                WalkTime = 1
+            If walkTime = 0 Then
+                walkTime = 1
             End If
-            If Double.IsInfinity(WalkTime) = False And Double.IsNaN(WalkTime) = False Then
-                tmrMovement = New Timer
-                tmrMovement.Interval = WalkTime
-                tmrMovement.Start()
+            If Double.IsInfinity(walkTime) = False And Double.IsNaN(walkTime) = False Then
+                m_tmrMovement = New Timer
+                m_tmrMovement.Interval = walkTime
+                m_tmrMovement.Start()
             End If
         End Sub
 
-        Private Sub tmrMovement_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs) Handles tmrMovement.Elapsed
-            pPosition = wPosition
+        Private Sub MovementTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs) Handles m_tmrMovement.Elapsed
+            m_pPosition = m_wPosition
             'Neue Character Position merken
-            pMoveState = enumMoveState.Standing
-            tmrMovement.Dispose()
+            m_pMoveState = enumMoveState.Standing
+            m_tmrMovement.Dispose()
         End Sub
 
         Public Sub StopMove()
-            If tmrMovement IsNot Nothing Then
-                tmrMovement.Stop()
-                tmrMovement.Dispose()
+            If m_tmrMovement IsNot Nothing Then
+                m_tmrMovement.Stop()
+                m_tmrMovement.Dispose()
             End If
 
-            pMoveState = enumMoveState.Standing
-            pPosition = GetCurPos()
+            m_pMoveState = enumMoveState.Standing
+            m_pPosition = GetCurPos()
         End Sub
 
         'Properties
         Public Property WalkSpeed() As Single
             Get
-                Return Speed_Walk
+                Return m_speedWalk
             End Get
             Set(ByVal value As Single)
-                pPosition = GetCurPos()
+                m_pPosition = GetCurPos()
                 'Store Old
-                Speed_Walk = value
-                If pMoveState = enumMoveState.Walking Then
-                    Move(wPosition)
+                m_speedWalk = value
+                If m_pMoveState = enumMoveState.Walking Then
+                    Move(m_wPosition)
                     'Recalculate
                 End If
             End Set
@@ -161,14 +158,14 @@ Namespace Functions
 
         Public Property RunSpeed() As Single
             Get
-                Return Speed_Run
+                Return m_speedRun
             End Get
             Set(ByVal value As Single)
-                pPosition = GetCurPos()
+                m_pPosition = GetCurPos()
                 'Store Old
-                Speed_Run = value
-                If pMoveState = enumMoveState.Walking Then
-                    Move(wPosition)
+                m_speedRun = value
+                If m_pMoveState = enumMoveState.Walking Then
+                    Move(m_wPosition)
                     'Recalculate
                 End If
             End Set
@@ -176,14 +173,14 @@ Namespace Functions
 
         Public Property BerserkSpeed() As Single
             Get
-                Return Speed_Zerk
+                Return m_speedZerk
             End Get
             Set(ByVal value As Single)
-                pPosition = GetCurPos()
+                m_pPosition = GetCurPos()
                 'Store Old
-                Speed_Zerk = value
-                If pMoveState = enumMoveState.Walking Then
-                    Move(wPosition)
+                m_speedZerk = value
+                If m_pMoveState = enumMoveState.Walking Then
+                    Move(m_wPosition)
                     'Recalculate
                 End If
             End Set
@@ -191,38 +188,38 @@ Namespace Functions
 
         Public Property LastPos() As Position
             Get
-                Return pPosition
+                Return m_pPosition
             End Get
             Set(ByVal value As Position)
-                If tmrMovement IsNot Nothing Then
+                If m_tmrMovement IsNot Nothing Then
                     'tmrMovement.Dispose()
                 End If
-                pPosition = value
+                m_pPosition = value
             End Set
         End Property
 
         Public ReadOnly Property WalkPos() As Position
             Get
-                Return wPosition
+                Return m_wPosition
             End Get
         End Property
 
         Public ReadOnly Property MoveState() As enumMoveState
             Get
-                Return pMoveState
+                Return m_pMoveState
             End Get
         End Property
 
         Public Property SpeedMode() As enumSpeedMode
             Get
-                Return pSpeedMode
+                Return m_pSpeedMode
             End Get
             Set(ByVal value As enumSpeedMode)
-                pPosition = GetCurPos()
+                m_pPosition = GetCurPos()
                 'Store Old
-                pSpeedMode = value
-                If pMoveState = enumMoveState.Walking Then
-                    Move(wPosition)
+                m_pSpeedMode = value
+                If m_pMoveState = enumMoveState.Walking Then
+                    Move(m_wPosition)
                     'Recalculate
                 End If
             End Set

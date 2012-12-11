@@ -260,7 +260,7 @@ Namespace Functions
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList.Item(key)
                     If Mob_.UniqueID = uniqueId Then
-                        MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, False)
+                        MobAddDamageFromPlayer(Mob_.HPCur, Index_, Mob_.UniqueID, False)
                         GetEXPFromMob(Mob_)
                         KillMob(Mob_.UniqueID)
                     End If

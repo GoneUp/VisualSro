@@ -17,24 +17,24 @@ Namespace Functions
             writer.Float(mob.Position.Y)
 
             writer.Word(mob.Angle)
-            writer.Byte(mob.Pos_Tracker.MoveState)
+            writer.Byte(mob.PosTracker.MoveState)
             'dest
-            If mob.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
+            If mob.PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking Then
                 writer.Byte(0) 'Walking
             Else
                 writer.Byte(1)  'Running + Zerk
             End If
 
-            If mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing Then
+            If mob.PosTracker.MoveState = cPositionTracker.enumMoveState.Standing Then
                 writer.Byte(0)
                 'dest
                 writer.Word(mob.Angle)
-            ElseIf mob.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Walking Then
-                writer.Byte(mob.Pos_Tracker.WalkPos.XSector)
-                writer.Byte(mob.Pos_Tracker.WalkPos.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(mob.Pos_Tracker.WalkPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(mob.Pos_Tracker.WalkPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(mob.Pos_Tracker.WalkPos.Y)))
+            ElseIf mob.PosTracker.MoveState = cPositionTracker.enumMoveState.Walking Then
+                writer.Byte(mob.PosTracker.WalkPos.XSector)
+                writer.Byte(mob.PosTracker.WalkPos.YSector)
+                writer.Byte(BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.Y)))
             End If
 
             Dim alive As Boolean = True
@@ -54,31 +54,32 @@ Namespace Functions
             writer.Byte(2)  'unknwown  
             writer.Byte(1)
             writer.Byte(5) 'mhm
-            writer.Byte(mob.Mob_Type) '
+            writer.Byte(mob.MobType) '
         End Sub
 
         ''' <summary>
         ''' Spawns a new Mob
         ''' </summary>
-        ''' <param name="MobID"></param>
-        ''' <param name="Type"></param>
-        ''' <param name="Position"></param>
-        ''' <param name="Angle"></param>
-        ''' <param name="SpotID"></param>
+        ''' <param name="mobID"></param>
+        ''' <param name="type"></param>
+        ''' <param name="position"></param>
+        ''' <param name="angle"></param>
+        ''' <param name="spotID"></param>
         ''' <returns>The new Mob Unique Id</returns>
         ''' <remarks></remarks>
-        Public Function SpawnMob(ByVal MobID As UInteger, ByVal Type As Byte, ByVal Position As Position,
-                                 ByVal Angle As UInteger, ByVal SpotID As Long, Optional ByVal channelID As UInt32 = UInt32.MaxValue) As UInteger
-            Dim mob_ As SilkroadObject = GetObject(MobID)
+        Public Function SpawnMob(ByVal mobID As UInteger, ByVal type As Byte, ByVal position As Position,
+                                 ByVal angle As UInteger, ByVal spotID As Long, Optional ByVal channelID As UInt32 = UInt32.MaxValue) As UInteger
+            Dim mob_ As SilkroadObject = GetObject(mobID)
+
             Dim tmp As New cMonster
             tmp.UniqueID = Id_Gen.GetUnqiueId
             tmp.Pk2ID = mob_.Pk2ID
-            tmp.Pos_Tracker = New cPositionTracker(Position, mob_.WalkSpeed, mob_.RunSpeed, mob_.BerserkSpeed)
-            tmp.Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
-            tmp.Position_Spawn = Position
+            tmp.PosTracker = New cPositionTracker(position, mob_.WalkSpeed, mob_.RunSpeed, mob_.BerserkSpeed)
+            tmp.PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking
+            tmp.PositionSpawn = position
             tmp.SpotID = SpotID
-            tmp.Mob_Type = Type
-            tmp.HP_Cur = mob_.Hp
+            tmp.MobType = type
+            tmp.HPCur = mob_.Hp
 
             If channelID = UInt32.MaxValue Then
                 tmp.ChannelId = Settings.ServerWorldChannel
@@ -88,38 +89,38 @@ Namespace Functions
 
             Try
                 'Try Catch, due to several spawn errors from gm's
-                Select Case Type
+                Select Case type
                     Case 0
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Normal
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Normal
                     Case 1
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Champion
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Champion
                     Case 3
-                        tmp.HP_Cur = mob_.Hp
+                        tmp.HPCur = mob_.Hp
                     Case 4
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Giant
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Giant
                     Case 5
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Titan
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Titan
                     Case 6
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Elite
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Elite
                     Case 7
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Strong
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Strong
                     Case 16
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Normal
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Party_Normal
                     Case 17
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Champ
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Party_Champ
                     Case 20
-                        tmp.HP_Cur = mob_.Hp * MobMultiplierHP.Party_Giant
+                        tmp.HPCur = mob_.Hp * MobMultiplierHP.Party_Giant
                 End Select
             Catch ex As Exception
-                tmp.HP_Cur = mob_.Hp
+                tmp.HPCur = mob_.Hp
             End Try
 
-            tmp.HP_Max = tmp.HP_Cur
+            tmp.HPMax = tmp.HPCur
             MobList.Add(tmp.UniqueID, tmp)
 
             'Send Unique Spawn..
-            If IsUnique(tmp.Pk2ID) Or tmp.Mob_Type = 3 Then
-                SendUniqueSpawn(MobID)
+            If IsUnique(tmp.Pk2ID) Or tmp.MobType = 3 Then
+                SendUniqueSpawn(mobID)
             End If
 
             'Add it to Respawn...
@@ -148,26 +149,26 @@ Namespace Functions
             Return tmp.UniqueID
         End Function
 
-        Public Sub RemoveMob(ByVal UniqueID As Integer)
-            Dim _mob As cMonster = MobList(UniqueID)
-            Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(_mob.UniqueID), _mob.UniqueID)
+        Public Sub RemoveMob(ByVal uniqueID As Integer)
+            Dim mob As cMonster = MobList(UniqueID)
+            Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(mob.UniqueID), mob.UniqueID)
             MobList.Remove(UniqueID)
 
-            If _mob.SpotID >= 0 Then
-                GetRespawn(_mob.SpotID).SpawnCount -= 1
+            If mob.SpotID >= 0 Then
+                GetRespawn(mob.SpotID).SpawnCount -= 1
             End If
 
-
+            'Better double Check it, normally this is done at despawn
             For i = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).SpawnedMonsters.Contains(_mob.UniqueID) = True Then
-                        PlayerData(i).SpawnedMonsters.Remove(_mob.UniqueID)
+                    If PlayerData(i).SpawnedMonsters.Contains(mob.UniqueID) = True Then
+                        PlayerData(i).SpawnedMonsters.Remove(mob.UniqueID)
                     End If
                 End If
             Next
         End Sub
 
-        Public Sub SendUniqueSpawn(ByVal PK2ID As UInteger)
+        Public Sub SendUniqueSpawn(ByVal pk2ID As UInteger)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_UNIQUE_ANNONCE)
             writer.Byte(5)
@@ -186,13 +187,12 @@ Namespace Functions
             Server.SendToAllIngame(writer.GetBytes)
         End Sub
 
-        Public Sub SendUniqueKill(ByVal PK2ID As UInteger, ByVal KillName As String)
+        Public Sub SendUniqueKill(ByVal pk2ID As UInteger, ByVal killName As String)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_UNIQUE_ANNONCE)
-            writer.Byte(6)
-            'Kill
+            writer.Byte(6)'Kill
             writer.Byte(&HC)
-            writer.DWord(PK2ID)
+            writer.DWord(pk2ID)
             writer.Word(KillName.Length)
             writer.String(KillName)
             Server.SendToAllIngame(writer.GetBytes)

@@ -63,8 +63,7 @@
         Public PositionRecall As New Position
         Public PositionReturn As New Position
         Public PositionDead As New Position
-        Public PosTracker As cPositionTracker
-
+        
         Public SpawnedPlayers As New List(Of UInt32)
         Public SpawnedMonsters As New List(Of UInt32)
         Public SpawnedItems As New List(Of UInt32)
@@ -116,7 +115,7 @@
 
         Public WriteOnly Property SetPosition() As Position
             Set(ByVal value As Position)
-                Me.PosTracker.LastPos = value
+                PosTracker.LastPos = value
             End Set
         End Property
 
@@ -146,8 +145,6 @@
                 PosTracker.BerserkSpeed = value
             End Set
         End Property
-
-
 
         Sub SetCharGroundStats()
             'HP = GetLevelData(Level).MobEXP + (Me.Strength - 20) * 10

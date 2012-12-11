@@ -28,20 +28,19 @@ Namespace Functions
             writer.Float(Item_.Position.Y)
             writer.Word(0)  'angle
 
-            writer.Byte(0)
-            ' writer.DWord(UInt32.MaxValue)
+            writer.Byte(0) ' writer.DWord(UInt32.MaxValue)
             writer.Byte(0)
             writer.Byte(6)
             writer.DWord(Item_.DroppedBy)
         End Sub
 
-        Public Function DropItem(ByVal InvItem As cInventoryItem, ByVal Item As cItem, ByVal Position As Position) As UInteger
+        Public Function DropItem(ByVal invItem As cInventoryItem, ByVal item As cItem, ByVal position As Position) As UInteger
             Dim tmp_ As New cItemDrop
             tmp_.UniqueID = Id_Gen.GetUnqiueId
-            tmp_.DroppedBy = InvItem.OwnerID
+            tmp_.DroppedBy = invItem.OwnerID
             tmp_.Position = Position
             tmp_.ChannelId = Settings.ServerWorldChannel
-            tmp_.Item = Item
+            tmp_.Item = item
             tmp_.DespawnTime = Date.Now.AddMinutes(3)
 
             If tmp_.Item.ObjectID = 1 Then
@@ -76,16 +75,16 @@ Namespace Functions
             Return tmp_.UniqueID
         End Function
 
-        Public Sub RemoveItem(ByVal UniqueId As UInteger)
-            Dim _item As cItemDrop = ItemList(UniqueId)
-            Server.SendIfItemIsSpawned(CreateSingleDespawnPacket(_item.UniqueID), _item.UniqueID)
+        Public Sub RemoveItem(ByVal uniqueId As UInteger)
+            Dim item As cItemDrop = ItemList(UniqueId)
+            Server.SendIfItemIsSpawned(CreateSingleDespawnPacket(item.UniqueID), item.UniqueID)
             ItemList.Remove(UniqueId)
 
 
             For i = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).SpawnedItems.Contains(_item.UniqueID) = True Then
-                        PlayerData(i).SpawnedItems.Remove(_item.UniqueID)
+                    If PlayerData(i).SpawnedItems.Contains(item.UniqueID) = True Then
+                        PlayerData(i).SpawnedItems.Remove(item.UniqueID)
                     End If
                 End If
             Next

@@ -119,7 +119,7 @@
             For Each key In tmplist
                 If MobList.ContainsKey(key) Then
                     Dim Mob_ As cMonster = MobList.Item(key)
-                    If Mob_.Position_Spawn.XSector = Xsec And Mob_.Position_Spawn.YSector = Ysec Then
+                    If Mob_.PositionSpawn.XSector = Xsec And Mob_.PositionSpawn.YSector = Ysec Then
                         Count += 1
                     End If
                 End If

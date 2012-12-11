@@ -201,15 +201,15 @@ Namespace Functions
                         damage = damage * 2
                         crit = 2
                     End If
-                    If CLng(MobList(mobUniqueId).HP_Cur) - damage > 0 Then
-                        MobList(mobUniqueId).HP_Cur -= damage
+                    If CLng(MobList(mobUniqueId).HPCur) - damage > 0 Then
+                        MobList(mobUniqueId).HPCur -= damage
                         MobAddDamageFromPlayer(damage, Index_, mob.UniqueID, True)
-                    ElseIf CLng(MobList(mobUniqueId).HP_Cur) - damage <= 0 Then
+                    ElseIf CLng(MobList(mobUniqueId).HPCur) - damage <= 0 Then
                         'Dead
                         afterstate = &H80
-                        MobAddDamageFromPlayer(mob.HP_Cur, Index_, mob.UniqueID, False)
+                        MobAddDamageFromPlayer(mob.HPCur, Index_, mob.UniqueID, False)
                         'Done the last Damage
-                        MobList(mobUniqueId).HP_Cur = 0
+                        MobList(mobUniqueId).HPCur = 0
                     End If
 
                     writer.Byte(afterstate)
@@ -349,14 +349,14 @@ Namespace Functions
                         crit = 2
                     End If
 
-                    If CLng(Mob_.HP_Cur) - damage > 0 Then
-                        Mob_.HP_Cur -= damage
+                    If CLng(Mob_.HPCur) - damage > 0 Then
+                        Mob_.HPCur -= damage
                         MobAddDamageFromPlayer(damage, Index_, Mob_.UniqueID, True)
-                    ElseIf CLng(Mob_.HP_Cur) - damage <= 0 Then
+                    ElseIf CLng(Mob_.HPCur) - damage <= 0 Then
                         'Dead
                         afterstate = &H80
-                        MobAddDamageFromPlayer(Mob_.HP_Cur, Index_, Mob_.UniqueID, True)
-                        Mob_.HP_Cur = 0
+                        MobAddDamageFromPlayer(Mob_.HPCur, Index_, Mob_.UniqueID, True)
+                        Mob_.HPCur = 0
                     End If
 
                     writer.Byte(afterstate)

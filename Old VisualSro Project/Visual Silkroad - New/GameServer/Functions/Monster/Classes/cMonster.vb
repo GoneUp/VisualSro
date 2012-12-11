@@ -6,37 +6,28 @@ Namespace Functions
 
         Public SpotID As Long
 
-        Public Mob_Type As Byte
+        Public MobType As Byte
         Public Angle As UInt16 = 0
-        Public HP_Cur As UInteger
-        Public HP_Max As UInteger
+        Public HPCur As UInteger
+        Public HPMax As UInteger
 
-        Public Position_Spawn As Position
-        Public Pos_Tracker As cPositionTracker
-
+        Public PositionSpawn As Position
+        
         Public Death As Boolean = False
         Public DeathRemoveTime As Date
 
+        Private m_attackTimer As Timer
         Public DamageFromPlayer As New List(Of cDamageDone)
         Public AttackEndTime As New Date
         Public AttackingId As UInteger
         Public UsingSkillId As UInteger
-        Public AttackTimer As Timer
-
-        Public SpawnedGuard_80 As Boolean
-        Public SpawnedGuard_60 As Boolean
-        Public SpawnedGuard_40 As Boolean
-        Public SpawnedGuard_20 As Boolean
-
-        Public Property Position() As Position
-            Get
-                Return Me.Pos_Tracker.GetCurPos
-            End Get
-            Set(ByVal value As Position)
-                Me.Pos_Tracker.LastPos = value
-            End Set
-        End Property
-
+        
+        Public SpawnedGuard80 As Boolean
+        Public SpawnedGuard60 As Boolean
+        Public SpawnedGuard40 As Boolean
+        Public SpawnedGuard20 As Boolean
+        
+     
         Public Function IsAttacking() As Boolean
             If Date.Compare(Date.Now, Me.AttackEndTime) = -1 Then
                 Return True
@@ -49,21 +40,21 @@ Namespace Functions
 #Region "Timer"
 
         Sub New()
-            AttackTimer = New Timer
-            AddHandler AttackTimer.Elapsed, AddressOf AttackTimer_Elapsed
+            m_attackTimer = New Timer
+            AddHandler m_attackTimer.Elapsed, AddressOf AttackTimer_Elapsed
         End Sub
 
         Public Sub AttackTimer_Start(ByVal Interval As Integer)
-            AttackTimer.Interval = Interval
-            AttackTimer.Start()
+            m_attackTimer.Interval = Interval
+            m_attackTimer.Start()
         End Sub
 
         Public Sub AttackTimer_Stop()
-            AttackTimer.Stop()
+            m_attackTimer.Stop()
         End Sub
 
         Public Sub AttackTimer_Elapsed()
-            AttackTimer.Stop()
+            m_attackTimer.Stop()
 
             Try
                 If Me.Death = True And IsAttacking() Then
@@ -81,7 +72,7 @@ Namespace Functions
                                 CalculateDistance(PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And
                                 sort(i).AttackingAllowed Then
                                 If cPositionTracker.enumSpeedMode.Walking Then
-                                    Pos_Tracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
+                                    PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Running
                                     UpdateState(1, 3, Me)
                                 End If
 
@@ -100,12 +91,12 @@ Namespace Functions
                 '
             End Try
 
-            AttackTimer.Interval = 5000
-            AttackTimer.Start()
+            m_attackTimer.Interval = 5000
+            m_attackTimer.Start()
         End Sub
 
         Public Sub Disponse()
-            AttackTimer.Dispose()
+            m_attackTimer.Dispose()
         End Sub
 
 #End Region

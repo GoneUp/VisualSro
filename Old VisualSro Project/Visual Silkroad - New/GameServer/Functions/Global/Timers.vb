@@ -243,7 +243,7 @@ Namespace Functions
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
 
-                        If Mob_.Death = True Or Mob_.HP_Cur <= 0 Then
+                        If Mob_.Death = True Or Mob_.HPCur <= 0 Then
                             If Date.Compare(Date.Now, Mob_.DeathRemoveTime) = 1 Then
                                 'Abgelaufen
                                 RemoveMob(Mob_.UniqueID)
@@ -312,10 +312,10 @@ Namespace Functions
                         If Rand.Next(0, 3) = 0 Then
                             If _
                                 Mob_.Death = False And
-                                Mob_.Pos_Tracker.MoveState = cPositionTracker.enumMoveState.Standing And
+                                Mob_.PosTracker.MoveState = cPositionTracker.enumMoveState.Standing And
                                 obj.WalkSpeed > 0 And Mob_.GetsAttacked = False And Mob_.IsAttacking = False Then
 
-                                Dim distFromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.Position_Spawn)
+                                Dim distFromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.PositionSpawn)
 
                                 If distFromSpawn < Settings.ServerRange / 1.25 Then
                                     Dim toX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
@@ -346,7 +346,7 @@ Namespace Functions
 
                                     MoveMob(Mob_.UniqueID, toPos)
                                 Else
-                                    MoveMob(Mob_.UniqueID, Mob_.Position_Spawn)
+                                    MoveMob(Mob_.UniqueID, Mob_.PositionSpawn)
                                 End If
                             End If
                         End If

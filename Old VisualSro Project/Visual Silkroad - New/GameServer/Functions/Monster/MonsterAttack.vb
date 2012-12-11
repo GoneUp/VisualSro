@@ -263,27 +263,27 @@ Namespace Functions
             Select Case RefSkill.Effect_0
                 Case "ssou"
                     Dim Spawn_Mobs As Boolean = False
-                    Dim Hp_Percent = ((Mob_.HP_Cur / Mob_.HP_Max) * 100)
+                    Dim Hp_Percent = ((Mob_.HPCur / Mob_.HPMax) * 100)
                     Select Case RefSkill.SpawnPercent
                         Case 80
-                            If Mob_.SpawnedGuard_80 = False And Hp_Percent < 80 And Hp_Percent > 60 Then
+                            If Mob_.SpawnedGuard80 = False And Hp_Percent < 80 And Hp_Percent > 60 Then
                                 Spawn_Mobs = True
-                                Mob_.SpawnedGuard_80 = True
+                                Mob_.SpawnedGuard80 = True
                             End If
                         Case 60
-                            If Mob_.SpawnedGuard_60 = False And Hp_Percent < 60 And Hp_Percent > 40 Then
+                            If Mob_.SpawnedGuard60 = False And Hp_Percent < 60 And Hp_Percent > 40 Then
                                 Spawn_Mobs = True
-                                Mob_.SpawnedGuard_60 = True
+                                Mob_.SpawnedGuard60 = True
                             End If
                         Case 40
-                            If Mob_.SpawnedGuard_40 = False And Hp_Percent < 40 And Hp_Percent > 20 Then
+                            If Mob_.SpawnedGuard40 = False And Hp_Percent < 40 And Hp_Percent > 20 Then
                                 Spawn_Mobs = True
-                                Mob_.SpawnedGuard_40 = True
+                                Mob_.SpawnedGuard40 = True
                             End If
                         Case 0
-                            If Mob_.SpawnedGuard_20 = False And Hp_Percent < 20 And Hp_Percent > 0 Then
+                            If Mob_.SpawnedGuard20 = False And Hp_Percent < 20 And Hp_Percent > 0 Then
                                 Spawn_Mobs = True
-                                Mob_.SpawnedGuard_20 = True
+                                Mob_.SpawnedGuard20 = True
                             End If
                     End Select
 

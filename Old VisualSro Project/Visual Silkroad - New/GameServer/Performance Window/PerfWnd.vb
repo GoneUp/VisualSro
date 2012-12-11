@@ -2,17 +2,17 @@
 
 Public Class PerfWnd
 
-    Dim timer As New Timers.Timer
+    Dim m_timer As New Timers.Timer
 
     Private Sub PerfWnd_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        AddHandler timer.Elapsed, AddressOf TimerElapsed
+        AddHandler m_timer.Elapsed, AddressOf TimerElapsed
 
-        timer.Interval = 1000
-        timer.Start()
+        m_timer.Interval = 1000
+        m_timer.Start()
     End Sub
 
     Private Sub TimerElapsed()
-        timer.Stop()
+        m_timer.Stop()
 
         Me.Invoke(Sub() lblDLMain_TB.Text = cByteCounter.FormatVolume(Server.DownloadCounter.TotalBytes))
         Me.Invoke(Sub() lblDLMain_TP.Text = (Server.DownloadCounter.TotalPackets))
@@ -36,10 +36,10 @@ Public Class PerfWnd
 
         Me.Invoke(Sub() lblTime.Text = Date.Now)
 
-        timer.Start()
+        m_timer.Start()
     End Sub
 
     Private Sub PerfWnd_FormClosed(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles MyBase.FormClosed
-        timer.Dispose()
+        m_timer.Dispose()
     End Sub
 End Class

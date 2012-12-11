@@ -24,6 +24,7 @@ Namespace Agent
             tmp.SessionId = Id_Gen.GetSessionId
             tmp.ExpireTime = Date.Now.AddSeconds(30)
 
+            'Get our reference
             Dim user As cUser = GlobalDB.GetUser(tmp.UserName)
 
             'Checks now 
@@ -35,7 +36,7 @@ Namespace Agent
                 If Shard.Server_Game(tmp.GameServerId).State = GameServer._ServerState.Online Then
                     If Shard.Server_Game(tmp.GameServerId).OnlineClients + 1 < Server.MaxNormalClients Then
                         If user IsNot Nothing Then
-                            If user.Pw = tmp.UserPw Then
+                            If UserService.CheckPasswords(tmp.UserPw, user.Pw, Settings.AgentPasswordHashAlg) Then
                                 If UserService.CheckBannTime(user) = False Then
                                     writer.Byte(1)
                                     writer.DWord(tmp.SessionId)

@@ -157,13 +157,7 @@ Namespace Functions
                 writer.Word(LoginDb.News(i).Text.Length)
                 writer.String(LoginDb.News(i).Text)
 
-                writer.Word(LoginDb.News(i).Time.Year) 'jahr
-                writer.Word(LoginDb.News(i).Time.Month)
-                writer.Word(LoginDb.News(i).Time.Day)
-                writer.Word(LoginDb.News(i).Time.Hour) 'hour
-                writer.Word(LoginDb.News(i).Time.Minute) 'minute
-                writer.Word(LoginDb.News(i).Time.Second) 'secound
-                writer.DWord(LoginDb.News(i).Time.Millisecond) 'millisecond
+                writer.Date(LoginDb.News(i).Time)
             Next
 
 

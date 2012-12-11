@@ -16,7 +16,7 @@ Namespace Settings
         Public ServerNormalSlots As UInteger = 100
         Public ServerMaxClients As UInteger = 105
         Public ServerId As UShort = 0
-
+        
         Private m_serverDebugMode As Boolean = False
         Public Property ServerDebugMode 'Only for setting the PingDc on ClientList
             Get
@@ -31,6 +31,7 @@ Namespace Settings
         Public AgentAutoRegister As Boolean = False
         Public AgentMaxFailedLogins As Integer = 5
         Public AgentMaxRegistersPerDay As Integer = 3
+        Public AgentPasswordHashAlg As String = "none"
 
         Public Const ServerProtocolVersion As UInteger = 1
 
@@ -53,6 +54,7 @@ Namespace Settings
             AgentAutoRegister = CBool(File.Read("AGENT", "Auto_Register", "0"))
             AgentMaxFailedLogins = File.Read("AGENT", "Max_FailedLogins", "5")
             AgentMaxRegistersPerDay = File.Read("AGENT", "Max_RegistersPerDay", "3")
+            AgentPasswordHashAlg = File.Read("AGENT", "PasswordHashAlg", "none").ToLower()
 
             LogConnect = CBool(File.Read("LOG", "Connect", "0"))
             LogRegister = CBool(File.Read("LOG", "Register", "0"))

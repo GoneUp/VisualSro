@@ -21,7 +21,7 @@ Namespace Functions
                 End If
 
                 If Settings.ModGeneral And Settings.ModDamage Then
-                    GameServer.GameMod.Damage.SendDamageInfo(UniqueID)
+                    GameMod.Damage.SendDamageInfo(UniqueID)
                 End If
             End If
         End Sub

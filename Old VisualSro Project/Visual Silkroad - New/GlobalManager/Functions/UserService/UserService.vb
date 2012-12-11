@@ -1,5 +1,9 @@
-﻿Imports SRFramework
+﻿
+Imports SRFramework
 Imports System.Runtime.Serialization
+Imports System.Text
+Imports System.Security.Cryptography
+Imports DevOne.Security.Cryptography.BCrypt
 
 Namespace UserService
     Module UserService
@@ -116,14 +120,17 @@ Namespace UserService
             name = cDatabase.CheckForInjection(name)
             password = cDatabase.CheckForInjection(password)
 
+            'Hash Password
+            Dim hashedPassword As String = HashPassword(password, Settings.AgentPasswordHashAlg)
+
             'Insert the new User
-            Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", name, password))
+            Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", name, hashedPassword))
 
             'Add to GlobalDB
             Dim tmp As New cUser
             tmp.AccountId = Id_Gen.GetNewAccountId
             tmp.Name = name
-            tmp.Pw = password
+            tmp.Pw = hashedPassword
             tmp.FailedLogins = 0
             tmp.Banned = True
             tmp.BannReason = "Please wait for Activation."
@@ -134,7 +141,7 @@ Namespace UserService
             Dim tmp2 As New cRegisteredUsed
             tmp2.IP = Server.ClientList.GetIP(Index_)
             tmp2.Name = name
-            tmp2.Password = password
+            tmp2.Password = hashedPassword
             tmp2.Time = Date.Now
             RegisterList.Add(tmp2)
 
@@ -146,11 +153,12 @@ Namespace UserService
             Return True
         End Function
 
+        
         Public Function CheckIfUserCanRegister(ByVal ip As String) As Boolean
             Dim count As Integer = 0
 
             For i = 0 To RegisterList.Count - 1
-                If RegisterList(i).IP = IP And Date.Now.DayOfYear = RegisterList(i).Time.DayOfYear Then
+                If RegisterList(i).IP = ip And Date.Now.DayOfYear = RegisterList(i).Time.DayOfYear Then
                     count += 1
                 End If
             Next
@@ -161,6 +169,65 @@ Namespace UserService
 
             Return True
         End Function
+
+#Region "Password Hashing"
+        Public Function HashPassword(password As String, mode As String) As String
+            Select Case mode
+                Case "none"
+                    Return password
+                Case "md5"
+                    Return GetMD5Hash(password)
+                Case "bcrypt"
+                    Return GetBCryptHash(password, 5)
+                    'factor 5: ~25ms
+                    'facor 10: ~300ms
+                Case Else
+                    Log.WriteSystemLog("UserService::HashPassword:: Unkown mode!! " & mode)
+                    Return password
+            End Select
+        End Function
+
+        Public Function GetMD5Hash(textToHash As String) As String
+            'Prüfen ob Daten übergeben wurden.
+            If (String.IsNullOrEmpty(textToHash)) Then
+                Return String.Empty
+            End If
+            
+            'MD5 Hash aus dem String berechnen. Dazu muss der string in ein Byte[]
+            'zerlegt werden. Danach muss das Resultat wieder zurück in ein string.
+            Dim md5 As MD5 = New MD5CryptoServiceProvider()
+            Dim buffer() As Byte = Encoding.Default.GetBytes(textToHash)
+            Dim result() As Byte = md5.ComputeHash(buffer)
+
+            Return BitConverter.ToString(result).Replace("-", "").ToLower()
+        End Function
+
+        Public Function GetBCryptHash(password As String, workfactor As Byte)
+            Dim salt As String = BCryptHelper.GenerateSalt(workfactor)
+            Dim hashedPassword As String = BCryptHelper.HashPassword(password, salt)
+            
+            'To Check: BCryptHelper.CheckPassword("password", hashedPassword)
+
+            Return hashedPassword
+        End Function
+
+        Public Function CheckPasswords(userPassword As String, hash As String, mode As String) As Boolean
+            Select Case mode
+                Case "none"
+                    Return (userPassword = hash)
+                Case "md5"
+                    Return (GetMD5Hash(userPassword) = hash)
+                Case "bcrypt"
+                    Return (BCryptHelper.CheckPassword(userPassword, hash))
+                    'factor 5: ~25ms
+                    'facor 10: ~300ms
+                Case Else
+                    Log.WriteSystemLog("UserService::CheckPasswords:: Unkown mode!! " & mode)
+                    Return False
+            End Select
+        End Function
+
+#End Region
 #End Region
 
 #Region "Login Message"

@@ -92,7 +92,7 @@ Namespace Functions
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_AUTH)
-            If succeed = 1 Then
+            If succeed = 1 And user IsNot Nothing Then
                 writer.Byte(1)
                 Server.Send(writer.GetBytes, Index_)
                 CharListing(Index_) = New cCharListing

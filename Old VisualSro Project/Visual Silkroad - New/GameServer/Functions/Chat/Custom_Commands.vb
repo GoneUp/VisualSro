@@ -81,8 +81,8 @@ Namespace GameMod
                         Dim userIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
                         Dim user As cUser = GameDB.GetUser(PlayerData(Index_).AccountID)
                         user.Silk += tmp(1)
-                        GameDB.Users(UserIndex) = user
-                        
+                        GameDB.Users(userIndex) = user
+
                         OnSendSilks(Index_)
                     End If
 
@@ -147,20 +147,20 @@ Namespace GameMod
                     End If
 
                 Case "\\dmakeitem"
-                    Dim pk2id As UInteger = tmp(1)
+                    Dim pk2ID As UInteger = tmp(1)
                     Dim plus As Byte = tmp(2)
                     'Or Count
 
                     Dim slot As Byte = GetFreeItemSlot(Index_)
                     If slot <> -1 AndAlso Inventorys(Index_).UserItems(slot).ItemID = 0 Then
-                        Dim temp_item As New cItem
-                        temp_item.ObjectID = pk2id
+                        Dim tempItem As New cItem
+                        tempItem.ObjectID = pk2ID
 
-                        Dim refitem As cRefItem = GetItemByID(pk2id)
+                        Dim refitem As cRefItem = GetItemByID(pk2ID)
                         If refitem.CLASS_A = 1 Then
                             'Equip
-                            temp_item.Plus = plus
-                            temp_item.Data = refitem.MAX_DURA
+                            tempItem.Plus = plus
+                            tempItem.Data = refitem.MAX_DURA
 
                             Dim whitestats As New cWhitestats
                             whitestats.PerDurability = tmp(3)
@@ -171,21 +171,21 @@ Namespace GameMod
                             whitestats.PerMagAtk = tmp(8)
                             whitestats.PerCritical = tmp(9)
 
-                            temp_item.Variance = whitestats.GetWhiteStats(whitestats.GetItemType(refitem.CLASS_B))
+                            tempItem.Variance = whitestats.GetWhiteStats(whitestats.GetItemType(refitem.CLASS_B))
                         ElseIf refitem.CLASS_A = 2 Then
                             'Pet
 
                         ElseIf refitem.CLASS_A = 3 Then
                             'Etc
-                            temp_item.Data = plus
+                            tempItem.Data = plus
                         End If
 
-                        temp_item.ID = ItemManager.AddItem(temp_item)
+                        tempItem.ID = ItemManager.AddItem(tempItem)
 
                         Dim invItem As New cInventoryItem
                         invItem.OwnerID = PlayerData(Index_).CharacterId
                         invItem.Slot = slot
-                        invItem.ItemID = temp_item.ID
+                        invItem.ItemID = tempItem.ID
                         ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
 
                         writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
@@ -193,19 +193,19 @@ Namespace GameMod
                         writer.Byte(6)  'type = new item
                         writer.Byte(slot)
 
-                        AddItemDataToPacket(temp_item, writer)
+                        AddItemDataToPacket(tempItem, writer)
 
                         Server.Send(writer.GetBytes, Index_)
 
                         Debug.Print("[ITEM CREATE][Info][Slot:{0}][ID:{1}][Dura:{2}][Amout:{3}][Plus:{4}]",
-                                    slot, temp_item.ObjectID, temp_item.Data, temp_item.Data,
-                                    temp_item.Plus)
+                                    slot, tempItem.ObjectID, tempItem.Data, tempItem.Data,
+                                    tempItem.Plus)
 
                         If Settings.LogGM Then
                             Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "GM", "Item_Create",
                                              String.Format("Slot:{0}, ID:{1}, Dura:{2}, Amout:{3}, Plus:{4}",
-                                                           slot, temp_item.ObjectID, temp_item.Data,
-                                                           temp_item.Data, temp_item.Plus))
+                                                           slot, tempItem.ObjectID, tempItem.Data,
+                                                           tempItem.Data, tempItem.Plus))
                         End If
                     End If
 
@@ -377,8 +377,8 @@ Namespace GameMod
                                 KillMob(mon_list(i))
                             Next
 
-                            For i = 0 To Functions.PlayerData.Count - 1
-                                If Functions.PlayerData(i) IsNot Nothing AndAlso Functions.PlayerData(i).GM = False Then
+                            For i = 0 To PlayerData.Count - 1
+                                If PlayerData(i) IsNot Nothing AndAlso PlayerData(i).GM = False Then
                                     KillPlayer(i)
                                 End If
                             Next

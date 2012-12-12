@@ -31,10 +31,17 @@ Namespace Functions
                         Shard.OnShutdownServer(packet, Index_)
                     Case InternalClientOpcodes.SERVER_INFO
                         Shard.OnServerInfo(packet, Index_)
+                    Case InternalClientOpcodes.SERVER_UPDATEREPLY
+
                     Case InternalClientOpcodes.AGENT_USERAUTH
                         Agent.OnUserAuth(packet, Index_)
-                    Case InternalClientOpcodes.AGNET_CHECK_USERAUTH
+                    Case InternalClientOpcodes.AGENT_CHECK_USERAUTH
                         Agent.OnCheckUserAuth(packet, Index_)
+                    Case InternalClientOpcodes.AGENT_SILK
+                        UserService.OnSilk(packet, Index_)
+                    Case InternalClientOpcodes.AGENT_USERINFO
+                        UserService.OnUserHandler(packet, Index_)
+
                 End Select
             End If
         End Sub

@@ -119,6 +119,7 @@
     <Compile Include="Framework\GlobalManager\Auth.vb" />
     <Compile Include="Framework\GlobalManager\ShardControl.vb" />
     <Compile Include="Framework\GlobalManager\ShardService.vb" />
+    <Compile Include="Framework\GlobalManager\UserService.vb" />
     <Compile Include="Framework\Server\cServer_Gameserver.vb" />
     <Compile Include="Framework\Silkroad\Formula.vb" />
     <Compile Include="Framework\Silkroad\IDGenerator.vb" />
@@ -130,7 +131,7 @@
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\Classes\cGameObject.vb" />
     <Compile Include="Functions\Global\GlobalGame.vb" />
-    <Compile Include="Functions\Global\GroupSpawn.vb" />
+    <Compile Include="Functions\Global\Classes\GroupSpawn.vb" />
     <Compile Include="Functions\Global\Timers.vb" />
     <Compile Include="Functions\Guild\Classes\cGuild.vb" />
     <Compile Include="Functions\Guild\Guild.vb" />

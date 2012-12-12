@@ -592,7 +592,6 @@ Namespace Functions
                 Exit Sub
             End If
 
-            '
             SendCharacterIngame(Index_)
         End Sub
 

@@ -4,31 +4,31 @@ Namespace Shard
     Module ShardService
 
         Friend Sub OnInitServer(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ServerId As UInt16 = SessionInfo(Index_).ServerId
+            Dim serverId As UInt16 = SessionInfo(Index_).ServerId
 
             Select Case SessionInfo(Index_).Type
                 Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
-                    If Server_Gateway.ContainsKey(ServerId) = False AndAlso Server_Gateway(ServerId).Online Then
+                    If Server_Gateway.ContainsKey(serverId) = False AndAlso Server_Gateway(serverId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
                         'Init Serverr
-                        Server_Gateway(ServerId).Online = True
+                        Server_Gateway(serverId).Online = True
                         Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.GameServer
-                    If Server_Game.ContainsKey(ServerId) = False AndAlso Server_Game(ServerId).Online Then
+                    If Server_Game.ContainsKey(serverId) = False AndAlso Server_Game(serverId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
                         'Init Server
-                        Server_Game(ServerId).State = GameServer._ServerState.Online
+                        Server_Game(serverId).State = GameServer._ServerState.Online
                         Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                     End If
                 Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
-                    If Server_Download.ContainsKey(ServerId) = False AndAlso Server_Download(ServerId).Online Then
+                    If Server_Download.ContainsKey(serverId) = False AndAlso Server_Download(serverId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
                         'Init Server
-                        Server_Download(ServerId).Online = True
+                        Server_Download(serverId).Online = True
                         Log.WriteSystemLog(String.Format("Downloadserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                     End If
             End Select
@@ -45,8 +45,8 @@ Namespace Shard
         End Sub
 
         Friend Sub OnShutdownServer(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ServerId As UInt16 = SessionInfo(Index_).ServerId
-            RemoveServer(ServerId, SessionInfo(Index_).Type)
+            Dim serverId As UInt16 = SessionInfo(Index_).ServerId
+            RemoveServer(serverId, SessionInfo(Index_).Type)
 
             Select Case SessionInfo(Index_).Type
                 Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
@@ -70,7 +70,7 @@ Namespace Shard
         End Sub
 
         Friend Sub OnServerInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim FirstAnnonce As Boolean = False
+            Dim firstAnnonce As Boolean = False
 
             Dim serverID As UShort = packet.Word
             Dim onlineClients As UShort = packet.Word
@@ -101,7 +101,7 @@ Namespace Shard
                     Else
                         tmp.Online = False
                         Server_Gateway.Add(tmp.ServerId, tmp)
-                        FirstAnnonce = True
+                        firstAnnonce = True
                     End If
 
                 Case cSessionInfo_GlobalManager._ServerTypes.GameServer
@@ -136,7 +136,7 @@ Namespace Shard
                     Else
                         tmp.State = GameServer._ServerState.Check
                         Server_Game.Add(tmp.ServerId, tmp)
-                        FirstAnnonce = True
+                        firstAnnonce = True
                     End If
 
                 Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
@@ -159,12 +159,12 @@ Namespace Shard
                     Else
                         tmp.Online = False
                         Server_Download.Add(tmp.ServerId, tmp)
-                        FirstAnnonce = True
+                        firstAnnonce = True
                     End If
             End Select
 
 
-            SendGlobalInfo(Index_, FirstAnnonce)
+            SendGlobalInfo(Index_, firstAnnonce)
         End Sub
 
         Friend Sub SendGlobalInfo(ByVal Index_ As Integer, ByVal FirstAnnonce As Boolean)

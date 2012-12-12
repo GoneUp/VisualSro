@@ -74,8 +74,6 @@
         GAME_STALL_CLOSE_VISITOR = &H70B5
         GAME_STALL_DATA = &H70BA
 
-        'SR_ADMIN #### Only for comability, remove after globalmanager integration
-        SR_Admin = &HAD01
     End Enum
 
 
@@ -202,8 +200,6 @@
         GAME_EXIT_COUNTDOWN = &HB005
         GAME_EXIT_FINAL = &H300A
 
-        'SR_ADMIN #### Only for comability, remove after globalmanager integration
-        SR_Admin = &HBD01
     End Enum
 
     Enum InternalClientOpcodes As UShort
@@ -218,7 +214,7 @@
         Admin_UpdateInfo = &H1007
 
         AGENT_USERAUTH = &H1010
-        AGNET_CHECK_USERAUTH = &H1011
+        AGENT_CHECK_USERAUTH = &H1011
         AGENT_SILK = &H1012
         AGENT_USERINFO = &H1013
     End Enum

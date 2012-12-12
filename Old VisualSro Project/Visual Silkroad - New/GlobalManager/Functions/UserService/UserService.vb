@@ -9,7 +9,7 @@ Namespace UserService
     Module UserService
 
 #Region "User"
-        Public Sub OnGetUser(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnUserHandler(ByVal packet As PacketReader, ByVal Index_ As Integer)
             'Mode 1 = Get
             'Mode 2 = Update
             Dim mode As UInt32 = packet.Byte

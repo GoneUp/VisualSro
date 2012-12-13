@@ -12,7 +12,7 @@ Namespace Functions
         End Property
 
         Public Overrides Function ToString() As String
-            Dim accountString As String = String.Format("cCharListing; ID: {0}, Name: {1}", LoginInformation.AccountId, LoginInformation.Name)
+            Dim accountString As String = String.Format("cCharListing; ID: {0}, Name: {1}", LoginInformation.AccountID, LoginInformation.Name)
             Dim charString As String = ""
             Dim silkString As String = String.Format("Silk: {0}", LoginInformation.Silk)
 

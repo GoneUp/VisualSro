@@ -1,7 +1,7 @@
 ﻿<Serializable()>
 Public Class cUser
     Private m_AccountId As Integer = 0
-    Public Property AccountId As String
+    Public Property AccountID As String
         Get
             Return m_AccountId
         End Get

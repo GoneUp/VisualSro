@@ -98,7 +98,7 @@ Namespace GameDB
 
             For i = 0 To userCount - 1
                 Users(i) = New cUser
-                Users(i).AccountId = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                Users(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
                 Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
                 Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
@@ -517,7 +517,7 @@ Namespace GameDB
 
         Public Function GetUserIndex(ByVal accountID As UInteger) As Integer
             For i = 0 To Users.Length
-                If Users(i).AccountId = accountID Then
+                If Users(i).AccountID = accountID Then
                     Return i
                 End If
             Next
@@ -526,7 +526,7 @@ Namespace GameDB
 
         Public Function GetUser(ByVal accountID As UInteger) As cUser
             For i = 0 To Users.Length
-                If Users(i).AccountId = accountID Then
+                If Users(i).AccountID = accountID Then
                     Return Users(i)
                 End If
             Next
@@ -540,7 +540,7 @@ Namespace GameDB
 
             For i = 0 To Chars.Length - 1
                 If Chars(i) IsNot Nothing Then
-                    If charArray.LoginInformation.AccountId = Chars(i).AccountID Then
+                    If charArray.LoginInformation.AccountID = Chars(i).AccountID Then
                         charArray.Chars.Add(Chars(i))
                     End If
                 End If

@@ -6,6 +6,15 @@ Public Class PacketReader : Implements IDisposable
     Private m_br As BinaryReader
     Private m_ms As MemoryStream
 
+    Public Property BaseStream As MemoryStream
+        Get
+            Return m_ms
+        End Get
+        Set(ByVal value As MemoryStream)
+            m_ms = value
+        End Set
+    End Property
+
     Public ReadOnly Property Length() As UShort
         Get
             Return Me.m_ms.Length

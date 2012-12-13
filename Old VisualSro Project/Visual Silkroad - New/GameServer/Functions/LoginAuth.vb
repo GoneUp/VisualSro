@@ -47,7 +47,7 @@ Namespace Functions
             'Logged in check
             For i = 0 To Server.MaxClients - 1
                 If CharListing(i) IsNot Nothing Then
-                    If CharListing(i).LoginInformation.AccountId = GameDB.Users(userIndex).AccountId Then
+                    If CharListing(i).LoginInformation.AccountID = GameDB.Users(userIndex).AccountID Then
                         loggedIn = True
                         Exit For
                     End If
@@ -56,7 +56,7 @@ Namespace Functions
 
             For i = 0 To Server.MaxClients - 1
                 If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).AccountID = GameDB.Users(userIndex).AccountId Then
+                    If PlayerData(i).AccountID = GameDB.Users(userIndex).AccountID Then
                         loggedIn = True
                         Exit For
                     End If

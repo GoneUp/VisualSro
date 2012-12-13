@@ -119,7 +119,7 @@
     <Compile Include="Framework\GlobalManager\Auth.vb" />
     <Compile Include="Framework\GlobalManager\ShardControl.vb" />
     <Compile Include="Framework\GlobalManager\ShardService.vb" />
-    <Compile Include="Framework\GlobalManager\UserService.vb" />
+    <Compile Include="Framework\GlobalManager\UserPacketService.vb" />
     <Compile Include="Framework\Server\cServer_Gameserver.vb" />
     <Compile Include="Framework\Silkroad\Formula.vb" />
     <Compile Include="Framework\Silkroad\IDGenerator.vb" />

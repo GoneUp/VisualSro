@@ -83,7 +83,7 @@ Namespace GlobalDB
 
             For i = 0 To tmp.Tables(0).Rows.Count - 1
                 Dim tmpUser As New cUser
-                tmpUser.AccountId = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
+                tmpUser.AccountID = CInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmpUser.Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
                 tmpUser.Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
                 tmpUser.FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
@@ -111,7 +111,7 @@ Namespace GlobalDB
 
         Public Function GetUser(ByVal accountID As UInt32) As cUser
             For i = 0 To (Users.Count - 1)
-                If Users(i).AccountId = accountID Then
+                If Users(i).AccountID = accountID Then
                     Return Users(i)
                 End If
             Next
@@ -120,7 +120,7 @@ Namespace GlobalDB
 
         Public Sub UpdateUser(ByVal user As cUser)
             For i = 0 To (Users.Count - 1)
-                If Users(i).AccountId = user.AccountId Then
+                If Users(i).AccountID = user.AccountID Then
                     Users(i) = user
                 End If
             Next

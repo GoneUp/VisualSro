@@ -16,6 +16,10 @@ Namespace UserService
             Dim accountID As UInt32 = packet.DWord
 
             Dim writer As New PacketWriter
+            writer.Create(InternalServerOpcodes.AGENT_USERINFO)
+            writer.Byte(mode)
+            writer.DWord(accountID)
+
             Dim formatter As IFormatter = New Formatters.Binary.BinaryFormatter()
 
             Dim user As cUser = GlobalDB.GetUser(accountID)
@@ -37,7 +41,7 @@ Namespace UserService
                         Try
                             Dim newUser As cUser = formatter.Deserialize(writer.BaseStream)
 
-                            If newUser IsNot Nothing AndAlso user.AccountId = newUser.AccountId Then
+                            If newUser IsNot Nothing AndAlso user.AccountID = newUser.AccountID Then
                                 writer.Byte(1)
 
                                 GlobalDB.UpdateUser(newUser)
@@ -75,7 +79,7 @@ Namespace UserService
                 End If
 
             Catch ex As Exception
-                Log.WriteSystemLog("[BAN_CHECK][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
+                Log.WriteSystemLog("[BAN_CHECK][ID:" & user.AccountID & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
             End Try
 
             Return False
@@ -90,7 +94,7 @@ Namespace UserService
                 DBSave.SaveUserBan(user)
                 GlobalDB.UpdateUser(user)
             Catch ex As Exception
-                Log.WriteSystemLog("[BAN_USER][ID:" & user.AccountId & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
+                Log.WriteSystemLog("[BAN_USER][ID:" & user.AccountID & "][NAME:" & user.Name & "][TIME:" & user.BannTime.ToLongTimeString & "]")
             End Try
         End Sub
 #End Region
@@ -128,7 +132,7 @@ Namespace UserService
 
             'Add to GlobalDB
             Dim tmp As New cUser
-            tmp.AccountId = Id_Gen.GetNewAccountId
+            tmp.AccountID = Id_Gen.GetNewAccountId
             tmp.Name = name
             tmp.Pw = hashedPassword
             tmp.FailedLogins = 0
@@ -153,7 +157,7 @@ Namespace UserService
             Return True
         End Function
 
-        
+
         Public Function CheckIfUserCanRegister(ByVal ip As String) As Boolean
             Dim count As Integer = 0
 
@@ -192,7 +196,7 @@ Namespace UserService
             If (String.IsNullOrEmpty(textToHash)) Then
                 Return String.Empty
             End If
-            
+
             'MD5 Hash aus dem String berechnen. Dazu muss der string in ein Byte[]
             'zerlegt werden. Danach muss das Resultat wieder zurück in ein string.
             Dim md5 As MD5 = New MD5CryptoServiceProvider()
@@ -205,7 +209,7 @@ Namespace UserService
         Public Function GetBCryptHash(password As String, workfactor As Byte)
             Dim salt As String = BCryptHelper.GenerateSalt(workfactor)
             Dim hashedPassword As String = BCryptHelper.HashPassword(password, salt)
-            
+
             'To Check: BCryptHelper.CheckPassword("password", hashedPassword)
 
             Return hashedPassword

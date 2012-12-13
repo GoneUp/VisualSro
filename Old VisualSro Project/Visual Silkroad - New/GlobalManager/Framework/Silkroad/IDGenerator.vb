@@ -21,7 +21,7 @@
             For newID As UInteger = 1 To UInteger.MaxValue
                 Dim free As Boolean = True
                 For c = 0 To GlobalDB.Users.Count - 1
-                    If GlobalDB.Users(c).AccountId = newID Then
+                    If GlobalDB.Users(c).AccountID = newID Then
                         free = False
                     End If
                 Next

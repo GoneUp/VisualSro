@@ -21,7 +21,7 @@ Namespace Functions
                         Functions.Gateway(packet, Index_)
 
                     Case ClientOpcodes.GAME_AUTH
-                        Functions.CheckLogin(Index_, packet)
+                        Functions.CheckLoginHandler(Index_, packet)
 
                     Case ClientOpcodes.GAME_CHARACTER
                         Functions.HandleCharPacket(Index_, packet)
@@ -207,6 +207,9 @@ Namespace Functions
 
                 Case InternalServerOpcodes.AGENT_CHECK_USERAUTH
                     GlobalManager.OnGameserverUserAuthReply(packet)
+
+                Case InternalServerOpcodes.AGENT_USERINFO
+                    GlobalManagerCon.UserPacketService(packet)
 
                 Case Else
                     Log.WriteSystemLog("gmc opCode: " & opcode) '& " Packet : " & packet.Byte)

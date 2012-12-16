@@ -115,6 +115,7 @@
     <Compile Include="Framework\Database\GameDb.vb" />
     <Compile Include="Framework\Database\GameEdit.vb" />
     <Compile Include="Framework\Database\GameSave.vb" />
+    <Compile Include="Framework\Database\GameUserLoader.vb" />
     <Compile Include="Framework\GlobalManager\AgentService.vb" />
     <Compile Include="Framework\GlobalManager\Auth.vb" />
     <Compile Include="Framework\GlobalManager\ShardControl.vb" />

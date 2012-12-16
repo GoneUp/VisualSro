@@ -18,31 +18,31 @@ Namespace Functions
             Dim type3 As Byte = packet.Byte
             Dim type4 As Byte = packet.Byte
             Dim type5 As Byte = packet.Byte
-            Dim LongName As String = packet.String(packet.Word)
-            Dim mallPackage As PackageItem = GetPackageItem(LongName)
+            Dim longName As String = packet.String(packet.Word)
+            Dim mallPackage As PackageItem = GetPackageItem(longName)
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
             Dim UserIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
 
-            If LongName = mallPackage.PackageName Then
+            If longName = mallPackage.PackageName Then
                 Dim paymentEntry As MallPaymentEntry = mallPackage.Payments(MallPaymentEntry.PaymentDevices.Mall)
 
                 If (paymentEntry IsNot Nothing) AndAlso (GameDB.Users(UserIndex).Silk - (paymentEntry.Price * amout) >= 0 And GetFreeItemSlot(Index_) <> -1) Then
-                    Dim ItemSlots As New List(Of Byte)
+                    Dim itemSlots As New List(Of Byte)
 
                     For i = 1 To amout
-                        Dim _Refitem As cRefItem = GetItemByName(mallPackage.CodeName)
+                        Dim refitem As cRefItem = GetItemByName(mallPackage.CodeName)
                         Dim slot As Byte = GetFreeItemSlot(Index_)
                         Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
                         Dim item As New cItem
 
-                        item.ObjectID = _Refitem.Pk2Id
+                        item.ObjectID = refitem.Pk2Id
                         item.CreatorName = PlayerData(Index_).CharacterName & "#MALL"
 
-                        Select Case _Refitem.CLASS_A
+                        Select Case refitem.CLASS_A
                             Case 1
-                                item.Data = _Refitem.MAX_DURA
+                                item.Data = refitem.MAX_DURA
                                 item.Variance = mallPackage.Variance
                             Case 2
                                 item.Data = 1
@@ -54,7 +54,7 @@ Namespace Functions
                         invItem.ItemID = ID
                         ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
 
-                        ItemSlots.Add(slot)
+                        itemSlots.Add(slot)
 
                         GameDB.Users(UserIndex).Silk -= paymentEntry.Price * amout
                         GameDB.SaveSilk(Index_, GameDB.Users(UserIndex).Silk, GameDB.Users(UserIndex).Silk_Bonus, GameDB.Users(UserIndex).Silk_Points)
@@ -69,15 +69,15 @@ Namespace Functions
                     writer.Byte(type3)
                     writer.Byte(type4)
                     writer.Byte(type5)
-                    writer.Byte(ItemSlots.Count)
-                    For Each slot In ItemSlots
+                    writer.Byte(itemSlots.Count)
+                    For Each slot In itemSlots
                         writer.Byte(slot)
                     Next
                     writer.Word(amout)
                     Server.Send(writer.GetBytes, Index_)
 
                     Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Item_Mall", "Buy",
-                                     String.Format("Item: {0}, Amout {1}, Payed: {2}", LongName, amout, paymentEntry.Price))
+                                     String.Format("Item: {0}, Amout {1}, Payed: {2}", longName, amout, paymentEntry.Price))
                 Else
                     writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                     writer.Byte(2)

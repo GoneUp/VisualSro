@@ -1,6 +1,4 @@
-﻿
-Imports SRFramework
-Imports System.Runtime.Serialization
+﻿Imports SRFramework
 Imports System.Text
 Imports System.Security.Cryptography
 Imports DevOne.Security.Cryptography.BCrypt
@@ -19,9 +17,7 @@ Namespace UserService
             writer.Create(InternalServerOpcodes.AGENT_USERINFO)
             writer.Byte(mode)
             writer.DWord(accountID)
-
-            Dim formatter As IFormatter = New Formatters.Binary.BinaryFormatter()
-
+            
             Dim user As cUser = GlobalDB.GetUser(accountID)
 
             If user Is Nothing Then
@@ -34,12 +30,12 @@ Namespace UserService
                 Select Case mode
                     Case 1 'get
                         writer.Byte(1)
-                        formatter.Serialize(writer.BaseStream, user)
+                        BinFormatter.Serialize(writer.BaseStream, user)
                         writer.Byte(255) 'only for testing
 
                     Case 2 'update
                         Try
-                            Dim newUser As cUser = formatter.Deserialize(writer.BaseStream)
+                            Dim newUser As cUser = BinFormatter.Deserialize(writer.BaseStream)
 
                             If newUser IsNot Nothing AndAlso user.AccountID = newUser.AccountID Then
                                 writer.Byte(1)

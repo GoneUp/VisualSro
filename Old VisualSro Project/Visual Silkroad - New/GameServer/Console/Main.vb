@@ -62,7 +62,7 @@ Friend Module Program
         succeed = Functions.Timers.LoadTimers(Server.MaxClients)
         GameMod.Damage.OnServerStart(Server.MaxClients)
 
-        If succeed And Settings.ServerDebugMode = False Then
+        If succeed Then
             'Ready...
             Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
             Log.WriteSystemLog("Slotcount: " & Settings.ServerNormalSlots & "/" & Settings.ServerMaxClients)

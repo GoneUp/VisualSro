@@ -74,7 +74,7 @@ Module SilkroadData
             DumpAbuseListFile(BasePath & "\data\abuselist.txt")
             Log.WriteSystemLog("Loaded " & RefAbuseList.Count & "  Abuselist-Entry's.")
 
-            DumpShopDataFile()
+            'DumpShopDataFile()
             Log.WriteSystemLog("Loaded Shop data.")
 
             DumpCaveTeleporterFile(BasePath & "\data\cave_teleport.txt")

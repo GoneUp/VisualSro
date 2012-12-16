@@ -1,10 +1,8 @@
 ﻿Imports SRFramework
-Imports System.Runtime.Serialization
-Imports System.Runtime.Serialization.Formatters.Binary
 
 Namespace Agent
     Module AgentService
-
+        
 #Region "UserAuth"
         Public Sub OnUserAuth(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager._ServerTypes.GatewayServer Then
@@ -131,13 +129,26 @@ Namespace Agent
             tmp.UserName = packet.String(packet.Word)
             tmp.UserPw = packet.String(packet.Word)
 
+            'Get our reference
+            Dim user As cUser = GlobalDB.GetUser(tmp.UserName)
+
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.AGENT_CHECK_USERAUTH)
             writer.DWord(tmp.UserIndex)
 
             If UserAuthCache.ContainsKey(tmp.SessionId) Then
                 If UserAuthCache(tmp.SessionId).UserName = tmp.UserName And UserAuthCache(tmp.SessionId).UserPw = tmp.UserPw Then
-                    writer.Byte(1)
+                    If user IsNot Nothing Then
+                        writer.Byte(1)
+
+                        'Add the user Object
+                        BinFormatter.Serialize(writer.BaseStream, user)
+
+                    Else
+                        writer.Byte(2) 'Fail
+                        writer.Byte(3) 'User Object Fail
+
+                    End If
                 Else
                     writer.Byte(2) 'Fail
                     writer.Byte(2) 'Wrong Id/Pw

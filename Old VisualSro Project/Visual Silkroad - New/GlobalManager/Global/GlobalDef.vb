@@ -1,4 +1,5 @@
 ﻿Imports SRFramework
+Imports System.Runtime.Serialization
 
 Module GlobalDef
     Public ReadOnly Database As New cDatabase
@@ -6,6 +7,8 @@ Module GlobalDef
     Public ReadOnly Log As New cLog
 
     Public SessionInfo(1) As cSessionInfo_GlobalManager
+
+    Public BinFormatter As IFormatter = New Formatters.Binary.BinaryFormatter()
 
     Public Function Initalize(ByVal maxClients As Integer) As Boolean
         Try

@@ -16,6 +16,17 @@ Namespace GlobalManager
         Public Delegate Sub dUserUpdateEvent(accountID As UInt32) 'only in case of success
         Public Delegate Sub dUserFailureEvent(accountID As UInt32, failbyte As Byte)
 
+#Region "New/Disponse"
+        Sub New()
+            AddHandler GlobalManagerCon.OnUserPacketService, AddressOf UserReplyHandler
+        End Sub
+
+        Sub Disponse()
+            RemoveHandler GlobalManagerCon.OnUserPacketService, AddressOf UserReplyHandler
+        End Sub
+#End Region
+
+
         Public Sub GetUser(accountID As UInt32)
             Dim writer As New PacketWriter
             writer.Create(InternalClientOpcodes.AGENT_USERINFO)

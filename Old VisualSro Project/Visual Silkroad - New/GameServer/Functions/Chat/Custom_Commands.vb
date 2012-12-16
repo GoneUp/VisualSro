@@ -83,6 +83,8 @@ Namespace GameMod
                         user.Silk += tmp(1)
                         GameDB.Users(userIndex) = user
 
+
+
                         OnSendSilks(Index_)
                     End If
 

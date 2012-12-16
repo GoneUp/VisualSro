@@ -28,13 +28,14 @@ Public Class GlobalManagerClient
     Public Event OnPacketReceived As dReceive
     Public Event OnGatewayUserauthReply As dGatewayUserauthReply
     Public Event OnGameserverUserauthReply As dGameserverUserauthReply
+    Public Event OnUserPacketService As dReceive
 
     Public Delegate Sub dGlobalManagerInit()
     Public Delegate Sub dError(ByVal ex As Exception, ByVal index As Integer)
     Public Delegate Sub dLog(ByVal message As String)
     Public Delegate Sub dReceive(ByVal packet As PacketReader)
     Public Delegate Sub dGatewayUserauthReply(packet As PacketReader)
-    Public Delegate Sub dGameserverUserauthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
+    Public Delegate Sub dGameserverUserauthReply(ByVal succeed As Byte, ByVal errortag As Byte, user As cUser, ByVal Index_ As Integer)
 #End Region
 
 #Region "Connect"
@@ -148,7 +149,7 @@ Public Class GlobalManagerClient
                     UploadCounter.AddPacket(buff.Length, PacketSource.Client)
                 End If
             End If
-        Catch sock_ex As SocketException
+        Catch sockEx As SocketException
         Catch ex As Exception
             RaiseEvent OnError(ex, -5)
         End Try
@@ -165,8 +166,11 @@ Public Class GlobalManagerClient
     Public Sub GatewayUserAuthReply(packet As PacketReader)
         RaiseEvent OnGatewayUserauthReply(packet)
     End Sub
-    Public Sub GameserverUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, ByVal index_ As Integer)
-        RaiseEvent OnGameserverUserauthReply(succeed, errortag, index_)
+    Public Sub GameserverUserAuthReply(ByVal succeed As Byte, ByVal errortag As Byte, user As cUser, ByVal Index_ As Integer)
+        RaiseEvent OnGameserverUserauthReply(succeed, errortag, user, Index_)
+    End Sub
+    Public Sub UserPacketService(packet As PacketReader)
+        RaiseEvent OnUserPacketService(packet)
     End Sub
     Public Sub SendPing()
         Dim writer As New PacketWriter

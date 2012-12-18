@@ -104,14 +104,14 @@ Namespace UserService
         ''' <param name="Index_"></param>
         ''' <returns>True at success, False on fail.</returns>
         ''' <remarks></remarks>
-        Public Function RegisterUser(ByVal name As String, ByVal password As String, userIndex As Integer, ByVal Index_ As Integer)
+        Public Function RegisterUser(ByVal name As String, ByVal password As String, userIndex As Integer, userIP As String, ByVal Index_ As Integer)
             If name.Contains("ä") Or name.Contains("ü") Or name.Contains("ö") Or password.Contains("ä") Or password.Contains("ü") Or password.Contains("ö") Then
                 LoginWriteSpecialText("Please don't enter any Chars like ä, ö, ü.", userIndex, Index_)
                 Return False
-            ElseIf name.Length < 6 Or name.Length < 16 Then
+            ElseIf name.Length < 6 Or name.Length > 16 Then
                 LoginWriteSpecialText("The account name length must be between 6 and 16 characters.", userIndex, Index_)
                 Return False
-            ElseIf password.Length < 6 Or password.Length < 16 Then
+            ElseIf password.Length < 6 Or password.Length > 16 Then
                 LoginWriteSpecialText("The account password length must be between 6 and 16 characters.", userIndex, Index_)
                 Return False
             End If
@@ -124,7 +124,7 @@ Namespace UserService
             Dim hashedPassword As String = HashPassword(password, Settings.AgentPasswordHashAlg)
 
             'Insert the new User
-            Database.SaveQuery(String.Format("INSERT INTO users(username, password) VALUE ('{0}','{1}')", name, hashedPassword))
+            Database.SaveQuery(String.Format("INSERT INTO users(username, password, creationIp) VALUE ('{0}','{1}','{2}')", name, hashedPassword, userIP))
 
             'Add to GlobalDB
             Dim tmp As New cUser
@@ -139,7 +139,7 @@ Namespace UserService
 
             'Add to RegisterList
             Dim tmp2 As New cRegisteredUsed
-            tmp2.IP = Server.ClientList.GetIP(Index_)
+            tmp2.IP = userIP
             tmp2.Name = name
             tmp2.Password = hashedPassword
             tmp2.Time = Date.Now
@@ -147,7 +147,7 @@ Namespace UserService
 
             'Log it
             If Settings.LogRegister Then
-                Log.WriteGameLog(Index_, Server.ClientList.GetIP(Index_), "Register", "(None)", String.Format("Name: {0}, Password: {1}", cDatabase.CheckForInjection(name), cDatabase.CheckForInjection(password)))
+                Log.WriteGameLog(Index_, userIP, "Register", "(None)", String.Format("Name: {0}, Password: {1}", cDatabase.CheckForInjection(name), cDatabase.CheckForInjection(password)))
             End If
 
             Return True
@@ -218,7 +218,13 @@ Namespace UserService
                 Case "md5"
                     Return (GetMD5Hash(userPassword) = hash)
                 Case "bcrypt"
-                    Return (BCryptHelper.CheckPassword(userPassword, hash))
+                    Dim succeed As Boolean = False
+                    Try
+                        succeed = (BCryptHelper.CheckPassword(userPassword, hash))
+                    Catch ex As Exception
+                        'Maybe a invlaid salt/hash....
+                    End Try
+                    Return succeed
                     'factor 5: ~25ms
                     'facor 10: ~300ms
                 Case Else
@@ -231,16 +237,15 @@ Namespace UserService
 #End Region
 
 #Region "Login Message"
-
         Private Sub LoginWriteSpecialText(ByVal text As String, userIndex As Integer, ByVal Index_ As Integer)
             'Send a special message to a login client, will be displayed instantly
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.AGENT_SEND_USERAUTH)
+            writer.DWord(userIndex)
             writer.Byte(2)
             writer.Byte(7)
-            writer.DWord(userIndex)
             writer.Word(text.Length)
-            writer.String(text)
+            writer.UString(text)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 #End Region

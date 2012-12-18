@@ -34,7 +34,7 @@ Namespace Agent
                 If Shard.Server_Game(tmp.GameServerId).State = GameServer._ServerState.Online Then
                     If Shard.Server_Game(tmp.GameServerId).OnlineClients + 1 < Server.MaxNormalClients Then
                         If user IsNot Nothing Then
-                            If UserService.CheckPasswords(tmp.UserPw, user.Pw, Settings.AgentPasswordHashAlg) Then
+                            If UserService.CheckPasswords(tmp.UserPw, user.Pw, Settings.AgentPasswordHashAlg) Or user.Banned Then
                                 If UserService.CheckBannTime(user) = False Then
                                     writer.Byte(1)
                                     writer.DWord(tmp.SessionId)
@@ -56,9 +56,9 @@ Namespace Agent
                                 writer.Byte(2)
                                 writer.Byte(5)
                                 writer.DWord(user.FailedLogins)
-                                writer.DWord(Settings.AgentMaxRegistersPerDay)
+                                writer.DWord(Settings.AgentMaxFailedLogins)
 
-                                If user.FailedLogins >= Settings.AgentMaxRegistersPerDay Then
+                                If user.FailedLogins >= Settings.AgentMaxFailedLogins Then
                                     '10 min ban
                                     user.FailedLogins = 0
                                     UserService.BanUserForFailedLogins(Date.Now.AddMinutes(15), user)
@@ -72,7 +72,7 @@ Namespace Agent
                             'Then we should look for autoregister
                             If Settings.AgentAutoRegister Then
                                 If UserService.CheckIfUserCanRegister(Server.ClientList.GetIP(Index_)) Then
-                                    If UserService.RegisterUser(tmp.UserName, tmp.UserPw, tmp.UserIndex, Index_) Then
+                                    If UserService.RegisterUser(tmp.UserName, tmp.UserPw, tmp.UserIndex, tmp.UserIp, Index_) Then
                                         writer.Byte(2)
                                         writer.Byte(4)
                                         writer.Byte(2) 'type = registered

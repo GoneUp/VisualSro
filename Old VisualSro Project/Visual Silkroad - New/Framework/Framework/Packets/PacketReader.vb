@@ -91,11 +91,11 @@ Public Class PacketReader : Implements IDisposable
         Dim hour As UInt16 = Me.m_br.ReadUInt16()
         Dim minute As UInt16 = Me.m_br.ReadUInt16()
         Dim second As UInt16 = Me.m_br.ReadUInt16()
-        Dim milisecond As UInt16 = Me.m_br.ReadUInt32()
+        Dim milisecond As UInt32 = Me.m_br.ReadUInt32()
 
 
         Dim culture = New Globalization.CultureInfo("de-DE", True)
-        Dim timestring As String = String.Format("{0}/{1}/{2} {3}:{4}:{5}", day, month, year, hour, second)
+        Dim timestring As String = String.Format("{0}/{1}/{2} {3}:{4}:{5}", day, month, year, hour, second, milisecond)
         Dim myDate As DateTime = _
                              DateTime.Parse(timestring, _
                                             culture, _

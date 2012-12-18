@@ -2,7 +2,7 @@
 
 Namespace Functions
     Module Character
-        Public Sub HandleCharPacket(ByVal Index_ As Integer, ByVal pack As PacketReader)
+        Public Sub HandleCharPacket(ByVal pack As PacketReader, ByVal Index_ As Integer)
             If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.AUTH Or SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST Then
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST
             Else
@@ -558,7 +558,7 @@ Namespace Functions
                                              toadd.Slot))
         End Sub
 
-        Public Sub CharLoading(ByVal Index_ As Integer, ByVal pack As PacketReader)
+        Public Sub CharLoading(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If CharListing(Index_) IsNot Nothing And SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST Then
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.GOING_INGAME
             Else
@@ -566,7 +566,7 @@ Namespace Functions
                 Exit Sub
             End If
 
-            Dim selectedNick As String = pack.String(pack.Word)
+            Dim selectedNick As String = packet.String(packet.Word)
             Dim writer As New PacketWriter
 
             writer.Create(ServerOpcodes.GAME_INGAME_REQ_REPLY)

@@ -314,7 +314,7 @@ Namespace Functions
 
                         Case 7
                             'message
-                            Dim text As String = packet.String(packet.Word)
+                            Dim text As String = packet.UString(packet.Word)
                             LoginWriteSpecialText(text, Index_)
                     End Select
                 End If

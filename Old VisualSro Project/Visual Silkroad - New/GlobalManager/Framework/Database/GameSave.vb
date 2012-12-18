@@ -17,7 +17,7 @@ Namespace DBSave
 
         Public Sub SaveUserBan(ByVal user As cUser)
             Dim time As String = String.Format("{0}-{1}-{2} {3}:{4}:{5}", user.BannTime.Year, user.BannTime.Month, user.BannTime.Day, user.BannTime.Hour, user.BannTime.Minute, user.BannTime.Second)
-            Database.SaveQuery(String.Format("UPDATE users SET banned='{0}', bantime = '{1}', banreason = '{2}' where id='{3}'", Convert.ToString(user.Banned), time, user.BannReason, user.AccountID))
+            Database.SaveQuery(String.Format("UPDATE users SET banned='{0}', bantime = '{1}', banreason = '{2}' where id='{3}'", Convert.ToByte(user.Banned), time, user.BannReason, user.AccountID))
         End Sub
 
         Public Sub SaveFailedLogins(ByVal user As cUser)

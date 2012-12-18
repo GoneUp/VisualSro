@@ -27,12 +27,12 @@ Namespace Functions
 
         Public Sub CheckLoginHandler(ByVal Index_ As Integer, ByVal packet As PacketReader)
             Dim userLoader As New GameDB.GameUserLoader(packet, Index_)
-            AddHandler userLoader.GetCallback, AddressOf CheckLogin
+            'AddHandler userLoader.GetCallback, AddressOf CheckLogin
             userLoader.LoadFromGlobal(0)
 
         End Sub
         
-        Public Sub CheckLogin(user As cUser, ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub CheckLogin(ByVal packet As PacketReader, ByVal Index_ As Integer)
             SessionInfo(Index_).LoginAuthRequired = False 'to prevent a dc
 
             If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.WHOAMI Then
@@ -47,7 +47,7 @@ Namespace Functions
             Dim username As String = packet.String(packet.Word)
             Dim password As String = packet.String(packet.Word)
 
-           'GlobalManager Rulez!!! 
+            'GlobalManager Rulez!!! 
             SessionInfo(Index_).Username = username
             GlobalManager.OnGameserverSendUserAuth(sessionID, username, password, Index_)
 

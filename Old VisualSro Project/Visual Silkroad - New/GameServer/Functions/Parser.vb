@@ -21,13 +21,13 @@ Namespace Functions
                         Functions.Gateway(packet, Index_)
 
                     Case ClientOpcodes.GAME_AUTH
-                        Functions.CheckLoginHandler(Index_, packet)
+                        Functions.CheckLogin(packet, Index_)
 
                     Case ClientOpcodes.GAME_CHARACTER
-                        Functions.HandleCharPacket(Index_, packet)
+                        Functions.HandleCharPacket(packet, Index_)
 
                     Case ClientOpcodes.GAME_INGAME_REQ
-                        Functions.CharLoading(Index_, packet)
+                        Functions.CharLoading(packet, Index_)
 
                     Case ClientOpcodes.GAME_JOIN_WORLD_REQ
                         Functions.OnJoinWorldRequest(Index_)

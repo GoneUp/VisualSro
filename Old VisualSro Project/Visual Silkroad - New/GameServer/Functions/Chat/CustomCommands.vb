@@ -2,7 +2,7 @@
 Imports SRFramework
 
 Namespace GameMod
-    Module Costum_Commands
+    Module CostumCommands
         Public Sub CheckForCoustum(ByVal Msg As String, ByVal Index_ As Integer)
             'This Function is for additional Access from a GM
             Dim writer As New PacketWriter
@@ -78,14 +78,12 @@ Namespace GameMod
                     End If
                 Case "\\silk"
                     If IsNumeric(tmp(1)) Then
-                        Dim userIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
-                        Dim user As cUser = GameDB.GetUser(PlayerData(Index_).AccountID)
-                        user.Silk += tmp(1)
-                        GameDB.Users(userIndex) = user
+                        PlayerData(Index_).TmpSilkAddValue = Convert.ToInt64(tmp(1)) 'only for a temp saving of the to add value
 
 
-
-                        OnSendSilks(Index_)
+                        Dim userLoader As New GameDB.GameUserLoader(Index_)
+                        AddHandler userLoader.GetCallback, AddressOf UpdateSilkTempFunction
+                        userLoader.LoadFromGlobal(PlayerData(Index_).AccountID)
                     End If
 
                 Case "\\state"
@@ -396,6 +394,20 @@ Namespace GameMod
 
 
             OnStatsPacket(Index_)
+        End Sub
+
+
+        Private Sub UpdateSilkTempFunction(user As cUser, packet As PacketReader, Index_ As Integer)
+            If user.AccountID = PlayerData(Index_).AccountID And PlayerData(Index_).GM Then
+                user.Silk += PlayerData(Index_).TmpSilkAddValue
+
+                Dim userLoader As New GameDB.GameUserLoader(Index_)
+                userLoader.UpdateGlobal(user)
+
+                OnSendSilksGMCLoader(Index_)
+
+                PlayerData(Index_).TmpSilkAddValue = 0
+            End If
         End Sub
     End Module
 End Namespace

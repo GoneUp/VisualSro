@@ -28,7 +28,7 @@ Namespace Functions
                 Case 13 'Exchange Gold
                     OnExchangeAddGold(packet, index_)
                 Case 24 'Buy From Item Mall
-                    OnBuyItemFromMall(packet, index_)
+                    OnBuyItemFromMallGMCLoader(packet, index_)
                 Case 35 'Unqequip Avatar
                     OnAvatarUnEquip(packet, index_)
                 Case 36 'Equip Avatar 

@@ -25,7 +25,7 @@ Namespace Functions
                         OnRecallUser(packet, Index_)
 
                     Case GmTypes.Ban
-                        OnBanUser(packet, Index_)
+                        OnBanUserGMCLoader(packet, Index_)
 
                     Case GmTypes.GoTown
                         OnGoTown(Index_)
@@ -168,22 +168,24 @@ Namespace Functions
             Next
         End Sub
 
-        Private Sub OnBanUser(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Private Sub OnBanUserGMCLoader(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim userLoader As New GameDB.GameUserLoader(packet, Index_)
+            AddHandler userLoader.GetCallback, AddressOf OnBanUser
+            userLoader.LoadFromGlobal(PlayerData(Index_).AccountID)
+        End Sub
+
+        Private Sub OnBanUser(user As cUser, ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim nameLength As UInt16 = packet.Word
             Dim name As String = packet.String(nameLength)
 
             For i As Integer = 0 To GameDB.Chars.Length - 1
                 If GameDB.Chars(i).CharacterName = name Then
-                    Database.InsertData(
-                        String.Format(
-                            "UPDATE users SET banned='1', bantime = '3000-01-01 00:00:00', banreason = 'You got banned by: {0}' where id='{1}'",
-                            PlayerData(Index_).CharacterName, GameDB.Chars(i).AccountID))
+                    user.Banned = True
+                    user.BannReason = String.Format("You got banned by: {0}'", PlayerData(Index_).CharacterName)
+                    user.BannTime = Date.Now.AddYears(1)
 
-                    For U = 0 To GameDB.Users.Count - 1
-                        If GameDB.Users(U).AccountID = GameDB.Chars(i).AccountID Then
-                            GameDB.Users(U).Banned = True
-                        End If
-                    Next
+                    Dim userLoader As New GameDB.GameUserLoader(Index_)
+                    userLoader.UpdateGlobal(user)
 
                     SendPm(Index_, "User got banned.", "[SERVER]")
                     Exit For

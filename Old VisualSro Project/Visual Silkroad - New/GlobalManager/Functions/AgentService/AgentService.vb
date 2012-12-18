@@ -100,6 +100,8 @@ Namespace Agent
                         'gs over capacity
                         writer.Byte(2)
                         writer.Byte(3)
+
+                        'maybe a queue here later?
                     End If
                 Else
                     'gs not online

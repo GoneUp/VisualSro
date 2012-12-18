@@ -106,6 +106,7 @@
         Public TeleportType As TeleportTypes
         Public ExitType As ExitTypes
         Public BuybackList As New List(Of cItem)
+        Public TmpSilkAddValue As Int64
 
         Public ReadOnly Property Position() As Position
             Get

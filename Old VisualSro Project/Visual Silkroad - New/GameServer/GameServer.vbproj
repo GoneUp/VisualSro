@@ -129,6 +129,7 @@
     <Compile Include="Functions\Character\CharacterInfo.vb" />
     <Compile Include="Functions\Character\Classes\cHotkey.vb" />
     <Compile Include="Functions\Character\Classes\Postion.vb" />
+    <Compile Include="Functions\Chat\CustomCommands.vb" />
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\Classes\cGameObject.vb" />
     <Compile Include="Functions\Global\GlobalGame.vb" />
@@ -161,7 +162,6 @@
     <Compile Include="Functions\Players\PlayerBuff.vb" />
     <Compile Include="Functions\Skills\Classes\cBuff.vb" />
     <Compile Include="Functions\Skills\Classes\cMastery.vb" />
-    <Compile Include="Functions\Chat\Custom_Commands.vb" />
     <Compile Include="Functions\Exchange\Classes\cExchange.vb" />
     <Compile Include="Functions\Exchange\ExchangeHandler.vb" />
     <Compile Include="Functions\GameMaster\GameMaster.vb" />

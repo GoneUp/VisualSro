@@ -613,7 +613,7 @@ Namespace Functions
 
             'UpdateState(4, 2, Index_) 'Untouchable Status
             OnStatsPacket(Index_)
-            OnSendSilks(Index_)
+            OnSendSilksGMCLoader(Index_)
             If PlayerData(Index_).InGuild = True Then
                 SendGuildInfo(Index_, False)
                 LinkPlayerToGuild(Index_)

@@ -25,14 +25,7 @@ Namespace Functions
             End If
         End Sub
 
-        Public Sub CheckLoginHandler(ByVal Index_ As Integer, ByVal packet As PacketReader)
-            Dim userLoader As New GameDB.GameUserLoader(packet, Index_)
-            'AddHandler userLoader.GetCallback, AddressOf CheckLogin
-            userLoader.LoadFromGlobal(0)
-
-        End Sub
-        
-        Public Sub CheckLogin(ByVal packet As PacketReader, ByVal Index_ As Integer)
+    Public Sub CheckLogin(ByVal packet As PacketReader, ByVal Index_ As Integer)
             SessionInfo(Index_).LoginAuthRequired = False 'to prevent a dc
 
             If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.WHOAMI Then

@@ -7,9 +7,6 @@ Namespace GameDB
         'Timer
         Private WithEvents m_gameDbUpdate As New Timer
 
-        'User
-        Public Users() As cUser
-
         'Chars
         Public Chars() As cCharacter
         Public Hotkeys As New List(Of cHotKey)
@@ -43,8 +40,7 @@ Namespace GameDB
             Try
                 If InitalLoad Then
                     Log.WriteSystemLog("Loading Playerdata from DB now.")
-
-                    GetUserData()
+                    
                     GetCharData()
 
                     GetItemData()
@@ -67,7 +63,7 @@ Namespace GameDB
 
                     Log.WriteSystemLog("Inital Playerdata from Database loaded!")
                 Else
-                    GetUserData()
+                    'Any data need to reload?
                 End If
 
 
@@ -81,37 +77,6 @@ Namespace GameDB
         End Function
 
 #Region "Get from DB"
-
-#Region "Accounts"
-
-        Private Sub GetUserData()
-
-            Dim tmp As DataSet = Database.GetDataSet("SELECT * From Users")
-            Dim userCount = tmp.Tables(0).Rows.Count
-
-            If userCount = 0 Then
-                ReDim Users(0)
-                Exit Sub
-            End If
-
-            ReDim Users(userCount - 1)
-
-            For i = 0 To userCount - 1
-                Users(i) = New cUser
-                Users(i).AccountID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
-                Users(i).Name = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
-                Users(i).Pw = CStr(tmp.Tables(0).Rows(i).ItemArray(2))
-                Users(i).FailedLogins = CInt(tmp.Tables(0).Rows(i).ItemArray(3))
-                Users(i).Banned = CBool(tmp.Tables(0).Rows(i).ItemArray(4))
-                Users(i).Silk = CUInt(tmp.Tables(0).Rows(i).ItemArray(7))
-                Users(i).Silk_Bonus = CUInt(tmp.Tables(0).Rows(i).ItemArray(8))
-                Users(i).Silk_Points = CUInt(tmp.Tables(0).Rows(i).ItemArray(9))
-                Users(i).Permission = CBool(tmp.Tables(0).Rows(i).ItemArray(10))
-                Users(i).StorageSlots = Convert.ToByte(tmp.Tables(0).Rows(i).ItemArray(11))
-            Next
-        End Sub
-#End Region
-
 #Region "Character"
 
         Private Sub GetCharData()
@@ -506,34 +471,6 @@ Namespace GameDB
 #End Region
 
 #Region "Get Things from Array"
-        Public Function GetUserIndex(ByVal username As String) As Integer
-            For i = 0 To Users.Length
-                If Users(i).Name = username Then
-                    Return i
-                End If
-            Next
-            Return -1
-        End Function
-
-        Public Function GetUserIndex(ByVal accountID As UInteger) As Integer
-            For i = 0 To Users.Length
-                If Users(i).AccountID = accountID Then
-                    Return i
-                End If
-            Next
-            Return -1
-        End Function
-
-        Public Function GetUser(ByVal accountID As UInteger) As cUser
-            For i = 0 To Users.Length
-                If Users(i).AccountID = accountID Then
-                    Return Users(i)
-                End If
-            Next
-            Return Nothing
-        End Function
-
-
         Public Sub FillCharList(ByVal charArray As cCharListing)
 
             charArray.Chars.Clear()

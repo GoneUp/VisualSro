@@ -2,17 +2,28 @@
 
 Namespace Functions
     Module ItemMall
-        Public Sub OnSendSilks(ByVal Index_ As Integer)
-            Dim userIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
+        Public Sub OnSendSilksGMCLoader(ByVal Index_ As Integer)
+            Dim userLoader As New GameDB.GameUserLoader(Index_)
+            AddHandler userLoader.GetCallback, AddressOf OnSendSilks
+            userLoader.LoadFromGlobal(PlayerData(Index_).AccountID)
+        End Sub
+
+        Public Sub OnSendSilks(user As cUser, packet As PacketReader, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_SILK)
-            writer.DWord(GameDB.Users(userIndex).Silk)
-            writer.DWord(GameDB.Users(userIndex).Silk_Bonus)
-            writer.DWord(GameDB.Users(userIndex).Silk_Points)
+            writer.DWord(user.Silk)
+            writer.DWord(user.Silk_Bonus)
+            writer.DWord(user.Silk_Points)
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Public Sub OnBuyItemFromMall(ByVal packet As PacketReader, ByVal Index_ As Integer)
+        Public Sub OnBuyItemFromMallGMCLoader(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim userLoader As New GameDB.GameUserLoader(packet, Index_)
+            AddHandler userLoader.GetCallback, AddressOf OnBuyItemFromMall
+           userLoader.LoadFromGlobal(PlayerData(Index_).AccountID)
+        End Sub
+
+        Public Sub OnBuyItemFromMall(user As cUser, ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim type1 As Byte = packet.Byte
             Dim type2 As Byte = packet.Byte
             Dim type3 As Byte = packet.Byte
@@ -23,12 +34,11 @@ Namespace Functions
             Dim amout As UShort = packet.Word
             Dim writer As New PacketWriter
 
-            Dim UserIndex As Integer = GameDB.GetUserIndex(PlayerData(Index_).AccountID)
-
+            
             If longName = mallPackage.PackageName Then
                 Dim paymentEntry As MallPaymentEntry = mallPackage.Payments(MallPaymentEntry.PaymentDevices.Mall)
 
-                If (paymentEntry IsNot Nothing) AndAlso (GameDB.Users(UserIndex).Silk - (paymentEntry.Price * amout) >= 0 And GetFreeItemSlot(Index_) <> -1) Then
+                If (paymentEntry IsNot Nothing) AndAlso (user.Silk - (paymentEntry.Price * amout) >= 0 And GetFreeItemSlot(Index_) <> -1) Then
                     Dim itemSlots As New List(Of Byte)
 
                     For i = 1 To amout
@@ -56,9 +66,12 @@ Namespace Functions
 
                         itemSlots.Add(slot)
 
-                        GameDB.Users(UserIndex).Silk -= paymentEntry.Price * amout
-                        GameDB.SaveSilk(Index_, GameDB.Users(UserIndex).Silk, GameDB.Users(UserIndex).Silk_Bonus, GameDB.Users(UserIndex).Silk_Points)
-                        OnSendSilks(Index_)
+                        user.Silk -= paymentEntry.Price * amout
+
+                        Dim userLoader As New GameDB.GameUserLoader(Index_)
+                        userLoader.UpdateGlobal(user)
+
+                        OnSendSilksGMCLoader(Index_)
                     Next
 
                     writer.Create(ServerOpcodes.GAME_ITEM_MOVE)

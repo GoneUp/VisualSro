@@ -102,12 +102,13 @@ Friend Module Program
 
     Private Sub Server_OnClientDisconnect(ByVal ip As String, ByVal index As Integer)
         Try
-            Server.OnlineClients -= 1
             If Functions.PlayerData(index) IsNot Nothing Then
                 Functions.DespawnPlayer(index)
                 Functions.CleanUpPlayerComplete(index)
                 GameDB.UpdateChar(Functions.PlayerData(index))
             End If
+
+            Server.OnlineClients -= 1
 
             If Settings.LogDetail Then
                 Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))

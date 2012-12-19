@@ -23,6 +23,8 @@ Namespace Functions
                     OnCheckNick(pack, Index_)
                 Case 5 'Restore
                     OnRestoreChar(pack, Index_)
+                Case 9 'job selection popup
+                Case 10 'job selection
             End Select
         End Sub
 
@@ -62,8 +64,12 @@ Namespace Functions
                         writer.Word(.Strength)
                         writer.Word(.Intelligence)
                         writer.Word(.Attributes)
+                        writer.DWord(.SkillPoints)
                         writer.DWord(.CHP)
                         writer.DWord(.CMP)
+                        writer.Byte(.Position.XSector)
+                        writer.Byte(.Position.YSector)
+
                         If .Deleted = True Then
                             Dim diff As Long = DateDiff(DateInterval.Minute, DateTime.Now, .DeletionTime)
                             writer.Byte(1) 'to delete
@@ -74,7 +80,7 @@ Namespace Functions
 
                         writer.Word(0) 'Job Alias
                         writer.Byte(0) 'In Academy
-
+                    
                         'Now Items
                         Dim inventory As cInventory = New cInventory(.CharacterId, .MaxInvSlots, .MaxAvatarSlots)
 
@@ -116,9 +122,8 @@ Namespace Functions
                     End With
                 Next
 
-
-                'unknown byte thief - hunterr flag?
-                writer.Byte(0)
+                
+                writer.Byte(0) 'thief hunter flag, hunter = 1, thief = 2
 
                 Server.Send(writer.GetBytes, Index_)
             End If
@@ -622,7 +627,7 @@ Namespace Functions
             ObjectSpawnCheck(Index_)
         End Sub
 
-        Public Sub OnCharacterNamechangeRequest(ByVal Index_ As Integer, ByVal packet As PacketReader)
+        Public Sub OnCharacterNamechangeRequest(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim tag As Byte = packet.Byte
             Dim oldCharname As String = packet.String(packet.Word)
             Dim newCharname As String = packet.String(packet.Word)
@@ -644,8 +649,15 @@ Namespace Functions
                             If GameDB.CheckNick(newCharname) And CheckForAbuse(newCharname) = False Then
                                 'Free ;)
                                 .CharacterName = newCharname
-
+                                
                                 GameDB.SaveNameUpdate(.CharacterId, .CharacterName)
+
+
+                                Dim writer As New PacketWriter(ServerOpcodes.GAME_CHARACTER_NAME_EDIT)
+                                writer.Byte(1)
+                                Server.Send(writer.GetBytes, Index_)
+
+                                Exit For
                             End If
                         End If
                     End If

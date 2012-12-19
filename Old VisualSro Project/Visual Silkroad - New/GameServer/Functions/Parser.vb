@@ -26,6 +26,9 @@ Namespace Functions
                     Case ClientOpcodes.GAME_CHARACTER
                         Functions.HandleCharPacket(packet, Index_)
 
+                    Case ClientOpcodes.GAME_CHARACTER_NAME_EDIT
+                        Functions.OnCharacterNamechangeRequest(packet, Index_)
+
                     Case ClientOpcodes.GAME_INGAME_REQ
                         Functions.CharLoading(packet, Index_)
 

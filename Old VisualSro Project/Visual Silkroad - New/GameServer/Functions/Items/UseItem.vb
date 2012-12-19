@@ -146,11 +146,11 @@ Namespace Functions
 
                     Select Case tag
                         Case 2
-                            PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Recall
+                            PlayerData(Index_).UsedItem = UseItemTypes.ReverseScrollRecall
                         Case 3
-                            PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Dead
+                            PlayerData(Index_).UsedItem = UseItemTypes.ReverseScrollDead
                         Case 7
-                            PlayerData(Index_).UsedItem = UseItemTypes.Reverse_Scroll_Point
+                            PlayerData(Index_).UsedItem = UseItemTypes.ReverseScrollPoint
                             PlayerData(Index_).UsedItemParameter = packet.DWord
                     End Select
 
@@ -193,7 +193,7 @@ Namespace Functions
 
                     UsingItemTimer(Index_).Interval = refitem.USE_TIME_HP
                     UsingItemTimer(Index_).Start()
-                    PlayerData(Index_).UsedItem = UseItemTypes.Return_Scroll
+                    PlayerData(Index_).UsedItem = UseItemTypes.ReturnScroll
                     PlayerData(Index_).Busy = True
                 End If
             End If

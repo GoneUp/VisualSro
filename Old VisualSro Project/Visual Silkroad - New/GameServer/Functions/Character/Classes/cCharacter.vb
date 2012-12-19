@@ -1,5 +1,5 @@
 ﻿Namespace Functions
-    Public Class cCharacter
+    Friend Class cCharacter
         Inherits cGameObject
 
         Public AccountID As UInteger = 0
@@ -63,7 +63,7 @@
         Public PositionRecall As New Position
         Public PositionReturn As New Position
         Public PositionDead As New Position
-        
+
         Public SpawnedPlayers As New List(Of UInt32)
         Public SpawnedMonsters As New List(Of UInt32)
         Public SpawnedItems As New List(Of UInt32)
@@ -91,7 +91,7 @@
         Public Attacking As Boolean = False
         Public AttackedId As UInt32 = 0
         Public UsingSkillId As UInt32 = 0
-        Public AttackType As AttackTypes
+        Public AttackType As Functions.AttackTypes
         Public SkillOverId As UInt32 = 0
         Public CastingId As UInt32 = 0
         Public LastSelected As UInt32 = 0
@@ -392,30 +392,4 @@
             Next
         End Sub
     End Class
-
-    Public Enum UseItemTypes
-        None = 0
-        Pot = 1
-        Return_Scroll = 2
-        Reverse_Scroll_Dead = 3
-        Reverse_Scroll_Recall = 4
-        Reverse_Scroll_Point = 5
-    End Enum
-
-    Public Enum TeleportTypes
-        None = 0
-        Npc = 1
-        GM = 2
-    End Enum
-
-    Public Enum AttackTypes
-        Normal = 0
-        Skill = 1
-        Buff = 2
-    End Enum
-
-    Public Enum ExitTypes
-        Normal_Exit = 0
-        Reconnect = 1
-    End Enum
 End Namespace

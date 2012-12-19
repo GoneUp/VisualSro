@@ -40,7 +40,7 @@ Namespace GameDB
         End Sub
 
         Public Sub SaveNameUpdate(ByVal charID As Integer, ByVal name As String)
-            Database.SaveQuery(String.Format("UPDATE characters SET name='{0} where id='{1}'", name, CharID))
+            Database.SaveQuery(String.Format("UPDATE characters SET name='{0}' where id='{1}'", name, charID))
         End Sub
 
         Public Sub SaveMastery(ByVal charID As UInt32, ByVal masteryID As UInt32, ByVal level As Byte)

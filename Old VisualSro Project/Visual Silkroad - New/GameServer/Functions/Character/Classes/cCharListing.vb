@@ -1,7 +1,7 @@
 ﻿Imports SRFramework
 
 Namespace Functions
-    Public Class cCharListing
+    Friend Class cCharListing
         Public LoginInformation As cUser
         Public Chars As New List(Of cCharacter)
 

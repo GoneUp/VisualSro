@@ -134,7 +134,7 @@ Namespace Functions
                 UsingItemTimer(Index_).Stop()
                 If Index_ <> -1 Then
                     Select Case PlayerData(Index_).UsedItem
-                        Case UseItemTypes.Return_Scroll
+                        Case UseItemTypes.ReturnScroll
                             PlayerData(Index_).PositionRecall = PlayerData(Index_).Position  'Save Pos
                             PlayerData(Index_).SetPosition = PlayerData(Index_).PositionReturn     'Set new Pos
                             'Save to DB
@@ -146,7 +146,7 @@ Namespace Functions
                             PlayerData(Index_).UsedItem = UseItemTypes.None
 
 
-                        Case UseItemTypes.Reverse_Scroll_Recall
+                        Case UseItemTypes.ReverseScrollRecall
                             PlayerData(Index_).SetPosition = PlayerData(Index_).PositionRecall
                             GameDB.SavePosition(Index_)
 
@@ -154,7 +154,7 @@ Namespace Functions
                             PlayerData(Index_).Busy = False
                             PlayerData(Index_).UsedItem = UseItemTypes.None
 
-                        Case UseItemTypes.Reverse_Scroll_Dead
+                        Case UseItemTypes.ReverseScrollDead
                             PlayerData(Index_).SetPosition = PlayerData(Index_).PositionDead
                             GameDB.SavePosition(Index_)
 
@@ -162,7 +162,7 @@ Namespace Functions
                             PlayerData(Index_).Busy = False
                             PlayerData(Index_).UsedItem = UseItemTypes.None
 
-                        Case UseItemTypes.Reverse_Scroll_Point
+                        Case UseItemTypes.ReverseScrollPoint
                             Dim point As ReversePoint = GetReversePoint(PlayerData(Index_).UsedItemParameter)
                             PlayerData(Index_).SetPosition = point.Position
                             GameDB.SavePosition(Index_)

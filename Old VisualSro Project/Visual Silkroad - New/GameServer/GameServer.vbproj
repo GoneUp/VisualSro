@@ -127,6 +127,8 @@
     <Compile Include="Framework\Silkroad\SilkroadData.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Character\CharacterInfo.vb" />
+    <Compile Include="Functions\Character\CharacterJob.vb" />
+    <Compile Include="Functions\Character\Classes\CharacterEnums.vb" />
     <Compile Include="Functions\Character\Classes\cHotkey.vb" />
     <Compile Include="Functions\Character\Classes\Postion.vb" />
     <Compile Include="Functions\Chat\CustomCommands.vb" />

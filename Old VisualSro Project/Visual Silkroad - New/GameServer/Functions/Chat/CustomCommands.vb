@@ -309,7 +309,11 @@ Namespace GameMod
                     End If
 
                 Case "\\skillset"
-                    Dim name As String = tmp(2)
+                    Dim name As String
+                    If tmp.Length > 2 Then
+                        name = tmp(2)
+                    End If
+
 
                     Select Case tmp(1)
                         Case "create"

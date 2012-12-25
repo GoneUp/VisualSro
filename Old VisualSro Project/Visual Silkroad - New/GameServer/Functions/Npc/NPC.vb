@@ -96,28 +96,41 @@ Namespace Functions
             Next refindex
         End Sub
 
-        Public Sub OnNpcChat(ByVal NpcUniqueId As UInteger, ByVal Index_ As Integer)
+        Public Sub OnNpcChat(ByVal npcUniqueId As UInteger, ByVal Index_ As Integer)
             Dim writer As New PacketWriter
             Dim obj As SilkroadObject = GetObject(NpcList(NpcUniqueId).Pk2ID)
-            Dim name As String() = obj.CodeName.Split("_")
-
+           
             writer.Create(ServerOpcodes.GAME_TARGET)
             writer.Byte(1)
             'Sucess
             writer.DWord(NpcList(NpcUniqueId).UniqueID)
 
-            If obj.ChatBytes IsNot Nothing Then
-                For i = 0 To obj.ChatBytes.Length - 1
-                    writer.Byte(obj.ChatBytes(i))
-                Next
+            writer.Byte(0)
+
+            If obj.ItemShop IsNot Nothing Then
+                writer.Byte(1) 'Option Count
+                writer.Byte(1)
             Else
-                'Unsupoorted npc
-                SendNotice("Unsupported NPC, ID: " & obj.Pk2ID & " TypeName: " & obj.CodeName)
-                Exit Sub
+                writer.Byte(1) 'Option Count
+                writer.Byte(1) 'Only Exit
             End If
 
+            writer.Byte(0)
 
-            CheckForTax(obj.CodeName, writer)
+            'If obj.ChatBytes IsNot Nothing Then
+            '    For i = 0 To obj.ChatBytes.Length - 1
+            '        writer.Byte(obj.ChatBytes(i))
+            '    Next
+            'Else
+            '    'Unsupoorted npc
+            '    SendNotice("Unsupported NPC, ID: " & obj.Pk2ID & " TypeName: " & obj.CodeName)
+            '    Exit Sub
+            'End If
+
+            If obj.FortessAssoc <> "" Then
+                writer.Word(Settings.ServerTaxRate)
+            End If
+
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = True
@@ -149,12 +162,11 @@ Namespace Functions
         End Sub
 
         Public Sub OnNpcChatLeft(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ObjectID As UInteger = packet.DWord
+            Dim objectID As UInteger = packet.DWord
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_NPC_CHAT_LEFT)
-            writer.Byte(1)
-            'Sucess
+            writer.Byte(1) 'Sucess
             Server.Send(writer.GetBytes, Index_)
 
             PlayerData(Index_).Busy = False
@@ -162,24 +174,24 @@ Namespace Functions
 
 
         Public Sub OnNpcTeleport(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim ObjectID As UInteger = packet.DWord
+            Dim objectID As UInteger = packet.DWord
             Dim type As Byte = packet.Byte()
             '2=normal teleport; 5=special point; 
 
             Select Case type
                 Case 2
-                    Dim TeleportNumber As Integer = packet.DWord
-                    Dim Point_ As TeleportPoint = GetTeleportPointByNumber(TeleportNumber)
+                    Dim teleportNumber As Integer = packet.DWord
+                    Dim Point_ As TeleportPoint = GetTeleportPointByNumber(teleportNumber)
 
                     If Point_ Is Nothing Then
                         Server.Disconnect(Index_)
                         Exit Sub
-                    ElseIf Point_.Links.ContainsKey(TeleportNumber) = False Then
+                    ElseIf Point_.Links.ContainsKey(teleportNumber) = False Then
                         Server.Disconnect(Index_)
                         Exit Sub
                     End If
 
-                    Dim Link As TeleportLink = Point_.Links(TeleportNumber)
+                    Dim Link As TeleportLink = Point_.Links(teleportNumber)
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_NPC_TELEPORT_CONFIRM)

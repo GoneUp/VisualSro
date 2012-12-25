@@ -22,6 +22,7 @@ Module SilkroadData
 
     Private ReadOnly RefShops As New Dictionary(Of String, Shop)
     Private ReadOnly RefShopGroups As New Dictionary(Of String, ShopGroup)
+    Private ReadOnly RefShopTabs As New Dictionary(Of String, ShopTab)
     Private ReadOnly RefShopTabGroups As New Dictionary(Of String, ShopTabGroup)
 
     Private ReadOnly BasePath As String = AppDomain.CurrentDomain.BaseDirectory
@@ -74,7 +75,7 @@ Module SilkroadData
             DumpAbuseListFile(BasePath & "\data\abuselist.txt")
             Log.WriteSystemLog("Loaded " & RefAbuseList.Count & "  Abuselist-Entry's.")
 
-            'DumpShopDataFile()
+            DumpShopDataFile()
             Log.WriteSystemLog("Loaded Shop data.")
 
             DumpCaveTeleporterFile(BasePath & "\data\cave_teleport.txt")
@@ -632,6 +633,7 @@ Module SilkroadData
         Public Level As Byte
         Public Hp As UInteger
         Public InvSize As Byte
+        Public FortessAssoc As String
 
         Public PhyDef As UShort
         Public MagDef As UShort
@@ -651,7 +653,7 @@ Module SilkroadData
         Public ChatBytes() As Byte
         'For the NPC Chat
 
-        Public Shop As ShopData_
+        Public ItemShop As Shop
 
         'These Fileds are for Teleports
         Public T_Position As Position
@@ -696,6 +698,7 @@ Module SilkroadData
             tmp.WalkSpeed = Convert.ToSingle(tmpString(46))
             tmp.RunSpeed = Convert.ToSingle(tmpString(47))
             tmp.BerserkSpeed = Convert.ToSingle(tmpString(48))
+            tmp.FortessAssoc = tmpString(55)
             tmp.Level = Convert.ToByte(tmpString(57))
             tmp.Hp = Convert.ToUInt32(tmpString(59))
             tmp.InvSize = 0
@@ -808,7 +811,7 @@ Module SilkroadData
         Public Variance As UInt64 = 0
         Public ReadOnly Payments As New Dictionary(Of UShort, MallPaymentEntry) 'Key = PaymentDevice
 
-        Public InShop As Boolean = True
+        Public InShop As Boolean = False
         Public Shop As String = ""
     End Class
 
@@ -819,8 +822,8 @@ Module SilkroadData
         Public Enum PaymentDevices As UShort
             Normal = 1
             Mall = 2
-            Mall_Point = 4
-            Mall_Bonus = 16
+            MallPoint = 4
+            MallBonus = 16
         End Enum
     End Class
 
@@ -829,41 +832,55 @@ Module SilkroadData
         RefPackageItems.Clear()
 
         Dim lines As String() = File.ReadAllLines(filePackagePath)
-        For i As Integer = 0 To lines.Length - 1
-            Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-            Dim tmp As New PackageItem
-            tmp.PackageName = tmpString(3)
-            tmp.NameRealCode = tmpString(6)
-            tmp.DescriptionCode = tmpString(7)
 
-            RefPackageItems.Add(tmp)
+        For i = 0 To lines.Length - 1
+            Dim packageItemFile As String() = File.ReadAllLines(BasePath & "data\" & lines(i))
+
+            For j = 0 To packageItemFile.Length - 1
+                Dim tmpString As String() = packageItemFile(j).Split(ControlChars.Tab)
+
+                Dim tmp As New PackageItem
+                tmp.PackageName = tmpString(3)
+                tmp.NameRealCode = tmpString(6)
+                tmp.DescriptionCode = tmpString(7)
+
+                RefPackageItems.Add(tmp)
+            Next
         Next
 
-        Dim itemScrapFile As String() = File.ReadAllLines(fileScrapPath)
-        For d As Integer = 0 To itemScrapFile.Length - 1
-            Dim tmpString As String() = itemScrapFile(d).Split(ControlChars.Tab)
-            For i = 0 To RefPackageItems.Count - 1
-                If RefPackageItems(i).PackageName = tmpString(2) Then
-                    RefPackageItems(i).CodeName = tmpString(3)
-                    RefPackageItems(i).Data = tmpString(6)
-                    RefPackageItems(i).Variance = tmpString(8)
-                    Exit For
-                End If
+        lines = File.ReadAllLines(fileScrapPath)
+        For i = 0 To lines.Length - 1
+            Dim itemScrapFile As String() = File.ReadAllLines(BasePath & "data\" & lines(i))
+            For j = 0 To itemScrapFile.Length - 1
+                Dim tmpString As String() = itemScrapFile(j).Split(ControlChars.Tab)
+
+                For k = 0 To RefPackageItems.Count - 1
+                    If RefPackageItems(k).PackageName = tmpString(2) Then
+                        RefPackageItems(k).CodeName = tmpString(3)
+                        RefPackageItems(k).Data = tmpString(6)
+                        RefPackageItems(k).Variance = tmpString(8)
+                        Exit For
+                    End If
+                Next
             Next
         Next
 
 
-        Dim itemPriceFile As String() = File.ReadAllLines(filePricePath)
-        For d As Integer = 0 To itemPriceFile.Length - 1
-            Dim tmpString As String() = itemPriceFile(d).Split(ControlChars.Tab)
-            For i = 0 To RefPackageItems.Count - 1
-                If RefPackageItems(i).PackageName = tmpString(2) Then
-                    Dim tmp As New MallPaymentEntry
-                    tmp.PaymentDevice = tmpString(3)
-                    tmp.Price = tmpString(5)
-                    RefPackageItems(i).Payments.Add(tmp.PaymentDevice, tmp)
-                    Exit For
-                End If
+        lines = File.ReadAllLines(filePricePath)
+        For i = 0 To lines.Length - 1
+            Dim itemPriceFile As String() = File.ReadAllLines(BasePath & "data\" & lines(i))
+            For j = 0 To itemPriceFile.Length - 1
+                Dim tmpString As String() = itemPriceFile(j).Split(ControlChars.Tab)
+
+                For k = 0 To RefPackageItems.Count - 1
+                    If RefPackageItems(k).PackageName = tmpString(2) Then
+                        Dim tmp As New MallPaymentEntry
+                        tmp.PaymentDevice = tmpString(3)
+                        tmp.Price = tmpString(5)
+                        RefPackageItems(k).Payments.Add(tmp.PaymentDevice, tmp)
+                        Exit For
+                    End If
+                Next
             Next
         Next
     End Sub
@@ -1074,7 +1091,7 @@ Module SilkroadData
         Next i
     End Sub
 
-    Public Function IsUnique(ByVal Pk2ID As UInteger) As Boolean
+    Public Function IsUnique(ByVal pk2ID As UInteger) As Boolean
         For i = 0 To RefUniques.Count - 1
             If RefUniques(i) = Pk2ID Then
                 Return True
@@ -1089,7 +1106,7 @@ Module SilkroadData
     Private Sub DumpNpcChatFile(ByVal path As String)
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
-            If lines(i).StartsWith("//") = False And lines(i) = "" = False Then
+            If lines(i).StartsWith("//") = False And lines(i) <> "" Then
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
                 Dim obj As SilkroadObject = GetObject(tmpString(1))
@@ -1115,6 +1132,7 @@ Module SilkroadData
         'refshop.txt --> refmappingshopwithtab.txt --> refshoptab.txt --> refshopgoods.txt
         'refshopgroup --> refmappingshopgroup.txt
 
+        'Load Stores
         '1	19	1976	STORE_CH_SMITH
         Dim lines As String() = File.ReadAllLines(BasePath & "data\refshop.txt")
         For i As Integer = 0 To lines.Length - 1
@@ -1129,6 +1147,7 @@ Module SilkroadData
         Log.WriteSystemLog("refshop")
 
 
+        'Map Store Groups with NPCs
         '1	19	1898	GROUP_STORE_CH_SMITH	NPC_CH_SMITH
         lines = File.ReadAllLines(BasePath & "data\refshopgroup.txt")
         For i As Integer = 0 To lines.Length - 1
@@ -1145,7 +1164,7 @@ Module SilkroadData
         Log.WriteSystemLog("refshopgroup")
 
 
-        'Map group with Stores
+        'Map Store Groups with Stores
         '1	19	GROUP_STORE_CH_SMITH	STORE_CH_SMITH
         lines = File.ReadAllLines(BasePath & "data\refmappingshopgroup.txt")
         For i As Integer = 0 To lines.Length - 1
@@ -1178,8 +1197,7 @@ Module SilkroadData
         Next
         Log.WriteSystemLog("refshoptabgroup")
 
-
-        'Loading Tabs
+        'Loading Tabs into StoreGroups
         '1	19	4642	STORE_CH_SMITH_TAB1	STORE_CH_SMITH_GROUP1
         lines = File.ReadAllLines(BasePath & "data\refshoptab.txt")
         For i As Integer = 0 To lines.Length - 1
@@ -1194,7 +1212,7 @@ Module SilkroadData
 
                 If RefShopTabGroups.ContainsKey(tabGroup) Then
                     Try
-                        Dim tabIndex As Byte = GetShopTabIndex(tabName)
+                        Dim tabIndex As Byte = GetShopTabIndex(tabName, tabGroup)
 
                         If tabIndex <> 255 Then
                             RefShopTabGroups(tabGroup).ShopTabs.Add(tabIndex, tmp)
@@ -1212,45 +1230,56 @@ Module SilkroadData
         Log.WriteSystemLog("refshoptabgroup")
 
 
-        'Dump Items
+        'Dump Items into Tabs
         '1	19	STORE_CH_SMITH_TAB1	PACKAGE_ITEM_CH_SWORD_01_A	0
         lines = File.ReadAllLines(BasePath & "data\refshopgoods.txt")
-        For i As Integer = 0 To lines.Length - 1
-            If lines(i).StartsWith("//") = False And lines(i) <> "" Then
-                Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                Dim tabName As String = tmpString(2)
-                Dim packageName As String = tmpString(3)
-                Dim itemLine As Byte = tmpString(4)
+        For i = 0 To lines.Length - 1
+            Dim itemShopFile As String() = File.ReadAllLines(BasePath & "data\" & lines(i))
 
-                Dim list = RefShopTabGroups.Keys.ToList
-                For Each key In list
-                    If RefShopTabGroups.ContainsKey(key) Then
-                        For j = 0 To RefShopTabGroups(key).ShopTabs.Count - 1
-                            If RefShopTabGroups(key).ShopTabs(j).Tab_Name = tabName Then
-                                RefShopTabGroups(key).ShopTabs(j).Items.Add(itemLine, packageName)
+            For j = 0 To itemShopFile.Length - 1
+                If itemShopFile(i).StartsWith("//") = False And itemShopFile(i) <> "" Then
+                    Dim tmpString As String() = itemShopFile(j).Split(ControlChars.Tab)
+                    Dim itemInsertSucceed As Boolean = False
 
-                                Dim tmpPackage As PackageItem = GetPackageItem(packageName)
-                                For k = 0 To RefPackageItems.Count - 1
-                                    If RefPackageItems(k).PackageName = packageName Then
-                                        RefPackageItems(k).InShop = True
-                                        RefPackageItems(k).Shop = tabName
-                                        Exit For
-                                    End If
-                                Next
+                    Dim tabName As String = tmpString(2)
+                    Dim packageName As String = tmpString(3)
+                    Dim itemLine As Byte = tmpString(4)
 
+                    Dim list = RefShopTabGroups.Keys.ToList
+                    For Each key In list
+                        If RefShopTabGroups.ContainsKey(key) Then
+                            For k = 0 To RefShopTabGroups(key).ShopTabs.Count - 1
+                                Dim tmpTab = RefShopTabGroups(key).ShopTabs.ElementAt(k)
+                                If tmpTab.Value.Tab_Name = tabName Then
+                                    RefShopTabGroups(key).ShopTabs(tmpTab.Key).Items.Add(itemLine, packageName)
+
+                                    itemInsertSucceed = True
+
+                                    For m = 0 To RefPackageItems.Count - 1
+                                        If RefPackageItems(m).PackageName = packageName Then
+                                            RefPackageItems(m).InShop = True
+                                            RefPackageItems(m).Shop = tabName
+                                            Exit For
+                                        End If
+                                    Next
+
+                                    Exit For
+                                End If
+                            Next
+
+                            If itemInsertSucceed Then
+                                'For a better performance
                                 Exit For
                             End If
-                        Next
-
-                        Exit For
-                    End If
-                Next
-            End If
+                        End If
+                    Next
+                End If
+            Next
         Next
         Log.WriteSystemLog("refshopgoods")
 
 
-        'Mapping Shop with Tabs
+        'Mapping Shop with Store Groups with prefilled Tabs and Items
         '1	19	STORE_CH_SMITH	STORE_CH_SMITH_GROUP1
         lines = File.ReadAllLines(BasePath & "data\refmappingshopwithtab.txt")
         For i As Integer = 0 To lines.Length - 1
@@ -1262,54 +1291,46 @@ Module SilkroadData
 
                 If RefShops.ContainsKey(storeName) And RefShopTabGroups.ContainsKey(groupName) Then
                     RefShops(storeName).TabGroups.Add(RefShopTabGroups(groupName))
-
-                    For j = 0 To RefShopTabGroups(groupName).ShopTabs.Count - 1
-
-                    Next
                 End If
             End If
         Next
         Log.WriteSystemLog("refmappingshopwithtab")
+
+        'Add Tabs in a corret order
+        Dim shopKeylist = RefShops.Keys.ToList
+        For Each key In shopKeylist
+            If RefShops.ContainsKey(key) Then
+                For Each tabgroup In RefShops(key).TabGroups
+                    For Each tmpTab In tabgroup.ShopTabs
+                        RefShops(key).Tabs.Add(RefShops(key).Tabs.Count, tmpTab.Value)
+                    Next
+                Next
+            End If
+        Next
+
+        'Add ShopData to NPC
+        Dim objectKeylist = RefObjects.Keys.ToList
+        For Each key In objectKeylist
+            If RefObjects.ContainsKey(key) Then
+                For Each shopgroupKey In RefShopGroups.Keys.ToList
+                    If RefShopGroups(shopgroupKey).Object_Code_Name = RefObjects(key).CodeName Then
+                        If RefShops.ContainsKey(RefShopGroups(shopgroupKey).Store_Name) Then
+                            RefObjects(key).ItemShop = RefShops(RefShopGroups(shopgroupKey).Store_Name)
+                            Exit For
+                        End If
+                    End If
+                Next
+            End If
+        Next
+
     End Sub
-
-    Public Sub CorrectHotanData()
-        Dim obj As SilkroadObject = GetObject(2072)
-        obj.Shop.Tabs(0).TabName = "STORE_KT_SMITH_EU_TAB1"
-        obj.Shop.Tabs(1).TabName = "STORE_KT_SMITH_EU_TAB2"
-        obj.Shop.Tabs(2).TabName = "STORE_KT_SMITH_EU_TAB3"
-        obj.Shop.Tabs(3).TabName = "STORE_KT_SMITH_TAB1"
-        obj.Shop.Tabs(4).TabName = "STORE_KT_SMITH_TAB2"
-        obj.Shop.Tabs(5).TabName = "STORE_KT_SMITH_TAB3"
-
-        obj = GetObject(2073)
-        obj.Shop.Tabs(0).TabName = "STORE_KT_ARMOR_EU_TAB1"
-        obj.Shop.Tabs(1).TabName = "STORE_KT_ARMOR_EU_TAB2"
-        obj.Shop.Tabs(2).TabName = "STORE_KT_ARMOR_EU_TAB3"
-        obj.Shop.Tabs(3).TabName = "STORE_KT_ARMOR_EU_TAB4"
-        obj.Shop.Tabs(4).TabName = "STORE_KT_ARMOR_EU_TAB5"
-        obj.Shop.Tabs(5).TabName = "STORE_KT_ARMOR_EU_TAB6"
-        obj.Shop.Tabs(6).TabName = "STORE_KT_ARMOR_TAB1"
-        obj.Shop.Tabs(7).TabName = "STORE_KT_ARMOR_TAB2"
-        obj.Shop.Tabs(8).TabName = "STORE_KT_ARMOR_TAB3"
-        obj.Shop.Tabs(9).TabName = "STORE_KT_ARMOR_TAB4"
-        obj.Shop.Tabs(10).TabName = "STORE_KT_ARMOR_TAB5"
-        obj.Shop.Tabs(11).TabName = "STORE_KT_ARMOR_TAB6"
-
-        obj = GetObject(2075)
-        obj.Shop.Tabs(0).TabName = "STORE_KT_ACCESSORY_EU_TAB1"
-        obj.Shop.Tabs(1).TabName = "STORE_KT_ACCESSORY_EU_TAB2"
-        obj.Shop.Tabs(2).TabName = "STORE_KT_ACCESSORY_EU_TAB3"
-        obj.Shop.Tabs(3).TabName = "STORE_KT_ACCESSORY_TAB1"
-        obj.Shop.Tabs(4).TabName = "STORE_KT_ACCESSORY_TAB2"
-        obj.Shop.Tabs(5).TabName = "STORE_KT_ACCESSORY_TAB3"
-    End Sub
-
+    
     Public Function GetNpc(ByVal storeName As String) As Integer
         Dim tmplist As Array = RefObjects.Keys.ToArray
         For Each key In tmplist
             If RefObjects.ContainsKey(key) Then
-                If RefObjects(key).Shop IsNot Nothing Then
-                    If RefObjects(key).Shop.StoreName = storeName Then
+                If RefObjects(key).ItemShop IsNot Nothing Then
+                    If RefObjects(key).ItemShop.Name = storeName Then
                         Return key
                     End If
                 End If
@@ -1318,30 +1339,18 @@ Module SilkroadData
         Return -1
     End Function
 
-    Public Function GetNpc2(ByVal tabName As String) As Integer
-        Dim tmplist As Array = RefObjects.Keys.ToArray
-        For Each key In tmplist
-            If RefObjects.ContainsKey(key) Then
-                If RefObjects(key).Shop IsNot Nothing Then
-                    For r = 0 To RefObjects(key).Shop.Tabs.Count - 1
-                        If RefObjects(key).Shop.Tabs(r) IsNot Nothing Then
-                            If RefObjects(key).Shop.Tabs(r).TabName = tabName Then
-                                Return key
-                            End If
-                        End If
-                    Next
-                End If
-            End If
-        Next
-        Return -1
-    End Function
+    
+    Private Function GetShopTabIndex(ByVal tabName As String, tabGroup As String) As Byte
+        ''Special Guests
+        'If tabGroup.StartsWith("STORE_NEW_TRADE") Then
+        '    Return 255
 
-    Private Function GetShopTabIndex(ByVal tabName As String) As Byte
-        If tabName.StartsWith("STORE") Then
-            Return tabName.Substring(tabName.Length - 1)
-        End If
+        '    'Default
+        'ElseIf tabName.StartsWith("STORE") Then
+        '    Return tabName.Substring(tabName.Length - 1)
+        'End If
 
-        'If 255 is returned, a continions shoptabindex will be given
+        ''If 255 is returned, a continions shoptabindex will be given
         Return 255
     End Function
 #End Region
@@ -1394,15 +1403,20 @@ Module SilkroadData
 #Region "NameFiles"
 
     Private Sub DumpNameFiles()
-        Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\textdataname.txt")
+        RefSilkroadNameEntys.Clear()
+
+        Dim paths As String() = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\textdata_equip&skill.txt")
+        For i As Integer = 0 To paths.Length - 1
+            DumpNameFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
+        Next
+
+        paths = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory & "data\textdata_object.txt")
         For i As Integer = 0 To paths.Length - 1
             DumpNameFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
         Next
     End Sub
 
     Private Sub DumpNameFile(ByVal path As String)
-        RefSilkroadNameEntys.Clear()
-
         Const languageTabIndex As Byte = 8
         Dim lines As String() = File.ReadAllLines(path)
 
@@ -1410,7 +1424,7 @@ Module SilkroadData
             If lines(i).StartsWith("//") = False And lines(i) <> "" And lines(i).StartsWith("1" & ControlChars.Tab) = True Then
 
                 Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-                If tmpString.Length >= languageTabIndex AndAlso tmpString(1).StartsWith("SN") And RefSilkroadNameEntys.ContainsKey(tmpString(1)) = False Then
+                If tmpString.Length >= languageTabIndex AndAlso tmpString(2).StartsWith("SN") And RefSilkroadNameEntys.ContainsKey(tmpString(1)) = False Then
                     RefSilkroadNameEntys.Add(tmpString(1), tmpString(languageTabIndex))
                 End If
             End If

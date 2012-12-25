@@ -2,7 +2,7 @@
 
 Namespace Functions
     Module Character
-        Public Sub HandleCharPacket(ByVal pack As PacketReader, ByVal Index_ As Integer)
+        Public Sub HandleCharPacket(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.AUTH Or SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST Then
                 SessionInfo(Index_).SRConnectionSetup = cSessionInfo_GameServer.SRConnectionStatus.CHARLIST
             Else
@@ -10,21 +10,23 @@ Namespace Functions
                 Exit Sub
             End If
 
-            Dim tag As Byte = pack.Byte
+            Dim tag As Byte = packet.Byte
 
             Select Case tag
                 Case 1 'Crweate
-                    OnCreateChar(pack, Index_)
+                    OnCreateChar(packet, Index_)
                 Case 2 'Char List
                     OnCharList(Index_)
                 Case 3 'Char delete
-                    OnDeleteChar(pack, Index_)
+                    OnDeleteChar(packet, Index_)
                 Case 4 'Nick Check
-                    OnCheckNick(pack, Index_)
+                    OnCheckNick(packet, Index_)
                 Case 5 'Restore
-                    OnRestoreChar(pack, Index_)
+                    OnRestoreChar(packet, Index_)
                 Case 9 'job selection popup
+                    OnJobSelectionPopup(packet, Index_)
                 Case 10 'job selection
+                    OnJobSelection(packet, Index_)
             End Select
         End Sub
 
@@ -618,7 +620,7 @@ Namespace Functions
 
             'UpdateState(4, 2, Index_) 'Untouchable Status
             OnStatsPacket(Index_)
-            OnSendSilksGMCLoader(Index_)
+            'OnSendSilksGMCLoader(Index_)
             If PlayerData(Index_).InGuild = True Then
                 SendGuildInfo(Index_, False)
                 LinkPlayerToGuild(Index_)
@@ -651,9 +653,10 @@ Namespace Functions
                                 .CharacterName = newCharname
                                 
                                 GameDB.SaveNameUpdate(.CharacterId, .CharacterName)
-
+                                GameDB.UpdateChar(CharListing(Index_).Chars(i))
 
                                 Dim writer As New PacketWriter(ServerOpcodes.GAME_CHARACTER_NAME_EDIT)
+                                writer.Byte(1)
                                 writer.Byte(1)
                                 Server.Send(writer.GetBytes, Index_)
 

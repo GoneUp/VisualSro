@@ -173,7 +173,7 @@ Namespace Functions
 
                             Case Else
                                 Log.WriteSystemLog(
-                                    "opCode_2: " & opcode & " Packet : " &
+                                    "opCode_2: " & Hex(opcode) & " Packet : " &
                                     BitConverter.ToString(packet.ByteArray(length), 0, length))
                         End Select
                     End If

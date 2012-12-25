@@ -11,84 +11,84 @@ Namespace Functions
             Dim shopline As Byte = packet.Byte
             Dim itemline As Byte = packet.Byte
             Dim amout As UShort = packet.Word
-            Dim UniqueID As UInteger = packet.DWord
+            Dim uniqueID As UInteger = packet.DWord
 
-            Dim RefObj As New SilkroadObject
-            Dim Price As UInt32 = 0
-            Dim PackageName As String = ""
+            Dim refObj As New SilkroadObject
+            Dim price As UInt32 = 0
+            Dim packageName As String = ""
 
 
-            If NpcList.ContainsKey(UniqueID) Then
-                RefObj = GetObject(NpcList(UniqueID).Pk2ID)
+            If NpcList.ContainsKey(uniqueID) Then
+                refObj = GetObject(NpcList(uniqueID).Pk2ID)
             Else
                 Server.Disconnect(Index_)
                 Exit Sub
             End If
 
-            PackageName = RefObj.Shop.Tabs(shopline).Items(itemline).PackageName
-            Dim Package As PackageItem = GetPackageItem(PackageName)
-            Dim BuyItem As cRefItem = GetItemByName(Package.CodeName)
+            packageName = refObj.ItemShop.Tabs(shopline).Items(itemline)
+            Dim package As PackageItem = GetPackageItem(packageName)
+            Dim buyItem As cRefItem = GetItemByName(package.CodeName)
 
-            Select Case BuyItem.CLASS_A
+            Select Case buyItem.CLASS_A
                 Case 1
-                    Price = BuyItem.SHOP_PRICE * amout
+                    price = buyItem.SHOP_PRICE * amout
                 Case 2
-                    Price = BuyItem.SHOP_PRICE * amout
+                    price = buyItem.SHOP_PRICE * amout
                 Case 3
-                    Price = BuyItem.SHOP_PRICE * amout
+                    price = buyItem.SHOP_PRICE * amout
             End Select
 
-            If CSng(PlayerData(Index_).Gold) - Price < 0 Then
+            If CSng(PlayerData(Index_).Gold) - price < 0 Then
                 'No Gold
 
             Else
-                Dim ItemSlots As New List(Of Byte)
+                Dim itemSlots As New List(Of Byte)
 
-                If BuyItem.CLASS_A = 1 Then
+                If buyItem.CLASS_A = 1 Then
                     For i = 1 To amout
-                        Dim Slot As Byte = GetFreeItemSlot(Index_)
+                        Dim slot As Byte = GetFreeItemSlot(Index_)
 
-                        If Slot <> -1 Then
-                            Dim temp_item As New cItem
-                            temp_item.ObjectID = BuyItem.Pk2Id
-                            temp_item.CreatorName = PlayerData(Index_).CharacterName & "#SHOP"
+                        If slot <> -1 Then
+                            Dim tempItem As New cItem
+                            tempItem.ObjectID = buyItem.Pk2Id
+                            tempItem.CreatorName = PlayerData(Index_).CharacterName & "#SHOP"
 
 
                             'Equip
-                            temp_item.Plus = 0
-                            temp_item.Data = Package.Data
+                            tempItem.Plus = 0
+                            tempItem.Data = package.Data
 
 
-                            Dim ID As UInt64 = ItemManager.AddItem(temp_item)
-                            Inventorys(Index_).UserItems(Slot).ItemID = ID
-                            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Slot), cInventoryItem.Type.Inventory)
+                            Dim ID As UInt64 = ItemManager.AddItem(tempItem)
+                            Inventorys(Index_).UserItems(slot).ItemID = ID
+                            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
 
                             'SAVE IT
-                            ItemSlots.Add(Slot)
+                            itemSlots.Add(slot)
                         End If
                     Next
 
                 Else
-                    Dim Slot As Byte = GetFreeItemSlot(Index_)
+                    Dim slot As Byte = GetFreeItemSlot(Index_)
 
-                    If Slot <> -1 Then
-                        Dim temp_item As New cItem
-                        temp_item.ObjectID = BuyItem.Pk2Id
-                        temp_item.CreatorName = PlayerData(Index_).CharacterName & "#SHOP"
+                    If slot <> -1 Then
+                        Dim tempItem As New cItem
+                        tempItem.ObjectID = buyItem.Pk2Id
+                        tempItem.CreatorName = PlayerData(Index_).CharacterName & "#SHOP"
 
                         'Equip
-                        temp_item.Data = amout
+                        tempItem.Data = amout
 
-                        Dim ID As UInt64 = ItemManager.AddItem(temp_item)
-                        Inventorys(Index_).UserItems(Slot).ItemID = ID
-                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Slot), cInventoryItem.Type.Inventory)
+                        Dim ID As UInt64 = ItemManager.AddItem(tempItem)
+                        Inventorys(Index_).UserItems(slot).ItemID = ID
+                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
 
                         'SAVE IT
-                        ItemSlots.Add(Slot)
+                        itemSlots.Add(slot)
                     End If
                 End If
 
-                PlayerData(Index_).Gold -= Price
+                PlayerData(Index_).Gold -= price
                 UpdateGold(Index_)
 
 
@@ -98,8 +98,8 @@ Namespace Functions
                 writer.Byte(8)
                 writer.Byte(shopline)
                 writer.Byte(itemline)
-                writer.Byte(ItemSlots.Count)
-                For Each slot In ItemSlots
+                writer.Byte(itemSlots.Count)
+                For Each slot In itemSlots
                     writer.Byte(slot)
                 Next
                 writer.Word(amout)
@@ -118,33 +118,33 @@ Namespace Functions
 
             Dim slot As Byte = packet.Byte
             Dim amout As UShort = packet.Word
-            Dim UniqueID As UInt32 = packet.DWord
-            Dim Gold As ULong = 0
+            Dim uniqueID As UInt32 = packet.DWord
+            Dim gold As ULong = 0
 
             If Inventorys(Index_).UserItems(slot).ItemID = 0 Then
                 Server.Disconnect(Index_)
                 Exit Sub
             End If
 
-            Dim InvItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
-            Dim Item As cItem = GameDB.Items(InvItem.ItemID)
-            Dim RefItem As cRefItem = GetItemByID(Item.ObjectID)
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
+            Dim item As cItem = GameDB.Items(invItem.ItemID)
+            Dim refItem As cRefItem = GetItemByID(item.ObjectID)
 
 
-            Select Case RefItem.CLASS_A
+            Select Case refItem.CLASS_A
                 Case 1
-                    Gold = RefItem.SELL_PRICE
+                    gold = refItem.SELL_PRICE
                 Case 2
-                    Gold = RefItem.SELL_PRICE
+                    gold = refItem.SELL_PRICE
                 Case 3
-                    Gold = RefItem.SELL_PRICE * Item.Data
+                    gold = refItem.SELL_PRICE * item.Data
             End Select
 
-            PlayerData(Index_).BuybackList.Insert(0, Item)
+            PlayerData(Index_).BuybackList.Insert(0, item)
 
-            UpdateAmout(Index_, InvItem.Slot, amout * -1)
+            UpdateAmout(Index_, invItem.Slot, amout * -1)
 
-            PlayerData(Index_).Gold += Gold
+            PlayerData(Index_).Gold += gold
             UpdateGold(Index_)
 
             Dim writer As New PacketWriter
@@ -153,7 +153,7 @@ Namespace Functions
             writer.Byte(9)
             writer.Byte(slot)
             writer.Word(amout)
-            writer.DWord(UniqueID)
+            writer.DWord(uniqueID)
             writer.Byte(1) 'buyback slot
             Server.Send(writer.GetBytes, Index_)
         End Sub
@@ -163,18 +163,6 @@ Namespace Functions
             Dim BuyBackSlot As Byte = packet.Byte
         End Sub
 
-
-        Class ShopData_
-            Public Pk2ID As UInteger
-            Public StoreName As String
-            Public Tabs As New List(Of ShopTab_)
-
-            Class ShopTab_
-                Public TabName As String
-                Public Items(60) As ShopItem
-            End Class
-
-        End Class
 
         Public Class ShopGroup
             Public Group_Name As String = ""
@@ -197,11 +185,6 @@ Namespace Functions
         Public Class ShopTab
             Public Tab_Name As String = ""
             Public Items As New Dictionary(Of Byte, String)
-        End Class
-
-        Class ShopItem
-            Public ItemLine As Byte
-            Public PackageName As String
         End Class
     End Module
 End Namespace

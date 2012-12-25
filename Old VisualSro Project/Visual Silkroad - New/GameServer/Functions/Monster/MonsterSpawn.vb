@@ -168,6 +168,40 @@ Namespace Functions
             Next
         End Sub
 
+
+        Public Sub RemoveMob(ByVal uniqueIDs() As UInteger)
+            Dim spawnCollector As New GroupSpawn
+
+            For i = 0 To Server.MaxClients - 1
+                If PlayerData(i) IsNot Nothing Then
+                    For j = 0 To uniqueIDs.Count - 1
+                        If PlayerData(i).SpawnedMonsters.Contains(uniqueIDs(j)) = True Then
+                            spawnCollector.AddObject(uniqueIDs(j))
+                        End If
+                    Next
+
+                    If spawnCollector.Count > 0 Then
+                        spawnCollector.Send(i, GroupSpawn.GroupSpawnMode.DESPAWN)
+                        spawnCollector.Clear()
+                    End If
+                End If
+            Next
+
+            For i = 0 To uniqueIDs.Count - 1
+                'Single Despawn in case of GroupDespawn Failure
+                Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(uniqueIDs(i)), uniqueIDs(i))
+                MobList.Remove(uniqueIDs(i))
+
+                Dim mob As cMonster = MobList(uniqueIDs(i))
+                If mob.SpotID >= 0 Then
+                    GetRespawn(mob.SpotID).SpawnCount -= 1
+                End If
+            Next
+
+
+        End Sub
+
+
         Public Sub SendUniqueSpawn(ByVal pk2ID As UInteger)
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_UNIQUE_ANNONCE)

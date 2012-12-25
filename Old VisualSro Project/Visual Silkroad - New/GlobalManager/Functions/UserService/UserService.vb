@@ -31,8 +31,7 @@ Namespace UserService
                     Case 1 'get
                         writer.Byte(1)
                         BinFormatter.Serialize(writer.BaseStream, user)
-                        writer.Byte(255) 'only for testing
-
+                        
                     Case 2 'update
                         Try
                             Dim newUser As cUser = BinFormatter.Deserialize(writer.BaseStream)

@@ -2,37 +2,37 @@
 
 Namespace Functions
     Module Inventory
-        Public Sub OnInventory(ByVal packet As PacketReader, ByVal index_ As Integer)
+        Public Sub OnInventory(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim type As Byte = packet.Byte
 
             Select Case type
                 Case 0 'Normal Movement
-                    OnNormalMove(packet, index_)
+                    OnNormalMove(packet, Index_)
                 Case 1 'Storage Move
                 Case 2 'Inventory --> Storage
                 Case 3 'Storage --> Inventory
                 Case 4 'Inventory --> Exchange
-                    OnExchangeAddItem(packet, index_)
+                    OnExchangeAddItem(packet, Index_)
                 Case 5 'Exchange --> Inventory
-                    OnExchangeRemoveItem(packet, index_)
+                    OnExchangeRemoveItem(packet, Index_)
                 Case 7 'drop
-                    OnDropItem(packet, index_)
+                    OnDropItem(packet, Index_)
                 Case 8 'BuyItem
-                    OnBuyItem(packet, index_)
+                    OnBuyItem(packet, Index_)
                 Case 9 'SellItem
-                    OnSellItem(packet, index_)
+                    OnSellItem(packet, Index_)
                 Case 10 'Drop Gold
-                    OnDropGold(packet, index_)
+                    OnDropGold(packet, Index_)
                 Case 11 'Gold to Storage
                 Case 12 'Storage_Gold to Inventory
                 Case 13 'Exchange Gold
-                    OnExchangeAddGold(packet, index_)
+                    OnExchangeAddGold(packet, Index_)
                 Case 24 'Buy From Item Mall
-                    OnBuyItemFromMallGMCLoader(packet, index_)
+                    OnBuyItemFromMallGMCLoader(packet, Index_)
                 Case 35 'Unqequip Avatar
-                    OnAvatarUnEquip(packet, index_)
+                    OnAvatarUnEquip(packet, Index_)
                 Case 36 'Equip Avatar 
-                    OnAvatarEquip(packet, index_)
+                    OnAvatarEquip(packet, Index_)
                 Case Else
 
                     Console.WriteLine("[INVENTORY][TAG: " & type & "]")
@@ -676,10 +676,9 @@ Namespace Functions
 
         Public Sub AddItemDataToPacket(ByVal _item As cItem, ByVal writer As PacketWriter)
             Dim refitem As cRefItem = GetItemByID(_item.ObjectID)
-            writer.DWord(0)
-            'Unknown since TH Legend
-
+            writer.DWord(0) 'Unknown since TH Legend
             writer.DWord(_item.ObjectID)
+
             Debug.Print(refitem.ITEM_TYPE_NAME & " Type1: " & refitem.CLASS_A & " Type2: " & refitem.CLASS_B & " Type3: " & refitem.CLASS_C)
             Select Case refitem.CLASS_A
                 Case 1 'Equipment

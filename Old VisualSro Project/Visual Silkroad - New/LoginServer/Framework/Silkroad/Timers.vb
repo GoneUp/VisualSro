@@ -81,7 +81,7 @@ Namespace Timers
                 LoginInfoTimer(index_).Stop()
                 If index_ <> -1 AndAlso SessionInfo(index_) IsNot Nothing AndAlso SessionInfo(index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
                     If LoginDb.LoginInfoMessages.Count > 0 Then
-                        If SessionInfo(index_).LoginTextIndex > LoginDb.LoginInfoMessages.Count Then
+                        If SessionInfo(index_).LoginTextIndex >= LoginDb.LoginInfoMessages.Count Then
                             SessionInfo(index_).LoginTextIndex = 0
                         End If
 

@@ -123,7 +123,7 @@ Namespace Functions
             End If
         End Sub
 
-        Private Sub MovementTimer_Elapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs) Handles m_tmrMovement.Elapsed
+        Private Sub MovementTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs) Handles m_tmrMovement.Elapsed
             m_pPosition = m_wPosition
             'Neue Character Position merken
             m_pMoveState = enumMoveState.Standing

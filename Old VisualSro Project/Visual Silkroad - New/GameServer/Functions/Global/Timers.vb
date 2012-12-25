@@ -239,6 +239,8 @@ Namespace Functions
                 stopwatch.Start()
 
                 Dim tmplist As Array = MobList.Keys.ToArray
+                Dim monsterRemoveList As List(Of UInt32) = New List(Of UInteger)
+
                 For Each key In tmplist
                     If MobList.ContainsKey(key) Then
                         Dim Mob_ As cMonster = MobList.Item(key)
@@ -246,16 +248,19 @@ Namespace Functions
                         If Mob_.Death = True Or Mob_.HPCur <= 0 Then
                             If Date.Compare(Date.Now, Mob_.DeathRemoveTime) = 1 Then
                                 'Abgelaufen
-                                RemoveMob(Mob_.UniqueID)
+                                monsterRemoveList.Add(Mob_.UniqueID)
                             End If
                         ElseIf IsInSaveZone(Mob_.Position) Then
-                            RemoveMob(Mob_.UniqueID)
+                            monsterRemoveList.Add(Mob_.UniqueID)
                         ElseIf Mob_.GetsAttacked = True Then
                             'Attack back...
                             Mob_.AttackTimer_Start(10)
                         End If
                     End If
                 Next
+
+                'Send Removelist
+                RemoveMob(monsterRemoveList.ToArray)
 
                 tmplist = ItemList.Keys.ToArray
                 For Each key In tmplist

@@ -29,8 +29,8 @@ Namespace Functions
                             GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And
                             GameDB.Masterys(i).MasteryID = MasteryID Then
 
-                            Dim _lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level)
-                            If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
+                            Dim _lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
+                            If _lvldata IsNot Nothing AndAlso PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
                                 GameDB.Masterys(i).Level += 1
 
                                 PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
@@ -73,11 +73,11 @@ Namespace Functions
 
                     For i = 0 To GameDB.Masterys.Length - 1
                         If GameDB.Masterys(i) IsNot Nothing Then
-                            If _
-                                GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And
+                            If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And
                                 GameDB.Masterys(i).MasteryID = MasteryID Then
+
                                 Dim _lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
-                                If PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
+                                If _lvldata IsNot Nothing AndAlso PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
                                     GameDB.Masterys(i).Level += 1
 
                                     PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
@@ -113,25 +113,25 @@ Namespace Functions
             PlayerData(index_).Skilling = False
         End Sub
 
-        Public Sub OnAddSkill(ByVal Packet As PacketReader, ByVal Index_ As Integer)
-            Dim SkillID As UInteger = Packet.DWord
+        Public Sub OnAddSkill(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim skillID As UInteger = packet.DWord
 
             If PlayerData(Index_).Skilling = True Then
                 Exit Sub
             End If
 
             PlayerData(Index_).Skilling = True
-            Dim _skill As RefSkill = GetSkill(SkillID)
+            Dim refSkill As RefSkill = GetSkill(skillID)
 
-            If _skill Is Nothing Then
+            If refSkill Is Nothing Then
                 PlayerData(Index_).Skilling = False
                 Exit Sub
             End If
 
-            Dim _refmastery As cMastery = GetMasteryByID(_skill.MasteryID, Index_)
-            Dim _skillGroup As SkillGroup = GetSkillGroup(_skill.SkillGroupName)
+            Dim refmastery As cMastery = GetMasteryByID(refSkill.MasteryID, Index_)
+            Dim skillGroup As SkillGroup = GetSkillGroup(refSkill.SkillGroupName)
 
-            If _refmastery Is Nothing Then
+            If refmastery Is Nothing Then
                 PlayerData(Index_).Skilling = False
                 Exit Sub
             End If
@@ -140,32 +140,43 @@ Namespace Functions
             'Check the previous skills in the SkillGroup
             Dim requirementsFilled As Boolean = True
 
-            Dim list = _skillGroup.Skills.Keys.ToList
+            Dim list = skillGroup.Skills.Keys.ToList
             For i = 0 To list.Count - 1
                 Dim key As Byte = list(i)
-                If key < _skill.SkillGroupLevel Then
-                    If CheckIfUserOwnSkill(_skillGroup.Skills(key), Index_) = False Then
-                       requirementsFilled = False
+                If key < refSkill.SkillGroupLevel Then
+                    If CheckIfUserOwnSkill(skillGroup.Skills(key), Index_) = False Then
+                        If Settings.ServerDebugMode Then
+                            'Debug the skilltree
+                            Dim skill As New cSkill
+                            skill.OwnerID = PlayerData(Index_).CharacterId
+                            skill.SkillID = skillGroup.Skills(key)
+                            AddSkillToDB(skill)
+
+                        Else
+                            requirementsFilled = False
+                        End If
                     End If
+                Else
+                    Exit For
                 End If
             Next
 
 
-            If PlayerData(Index_).SkillPoints - _skill.RequiredSp >= 0 And CheckIfUserOwnSkill(SkillID, Index_) = False And _refmastery.Level >= _skill.MasteryLevel Then
-                If requirementsFilled And _skillGroup.ID <> 0 Then
+            If PlayerData(Index_).SkillPoints - refSkill.RequiredSp >= 0 And CheckIfUserOwnSkill(skillID, Index_) = False And refmastery.Level >= refSkill.MasteryLevel Then
+                If requirementsFilled And skillGroup.ID <> 0 Then
 
                     Dim skill As New cSkill
                     skill.OwnerID = PlayerData(Index_).CharacterId
-                    skill.SkillID = SkillID
+                    skill.SkillID = skillID
                     AddSkillToDB(skill)
 
-                    PlayerData(Index_).SkillPoints -= _skill.RequiredSp
+                    PlayerData(Index_).SkillPoints -= refSkill.RequiredSp
                     UpdateSP(Index_)
 
                     Dim writer As New PacketWriter
                     writer.Create(ServerOpcodes.GAME_SKILL_UP)
                     writer.Byte(1)
-                    writer.DWord(SkillID)
+                    writer.DWord(skillID)
                     Server.Send(writer.GetBytes, Index_)
 
                 Else
@@ -176,6 +187,7 @@ Namespace Functions
                 End If
             Else
                 'Not enough SP or other Error
+
 
             End If
 

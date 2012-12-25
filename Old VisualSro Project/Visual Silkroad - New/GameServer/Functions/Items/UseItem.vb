@@ -9,8 +9,12 @@ Namespace Functions
             Dim ID2 As Byte = packet.Byte
 
             Debug.Print("[USE_ITEM][ID1:" & Hex(ID1) & "][2:" & ID2 & "]")
-
-            If ID1 = &HEC Then
+            If ID1 = 48 Then
+                Select Case ID2
+                    Case 12 'Special Return Scroll
+                        OnUseReturnScroll(slot, Index_)
+                End Select
+            ElseIf ID1 = 236 Then
                 Select Case ID2
                     Case 8 'HP-Pot
                         OnUseHPPot(slot, Index_)
@@ -24,25 +28,25 @@ Namespace Functions
                         OnUseBerserkScroll(slot, Index_)
                 End Select
 
-            ElseIf ID1 = &HED Then
-                Select Case ID2
-                    Case 8
-                        OnUseHPPot(slot, Index_)
-                    Case 9 'Return Scroll
-                        OnUseReturnScroll(slot, Index_)
-                    Case 14 'Use Ballon
-                    Case 16 'MP-Pot 
-                        OnUseMPPot(slot, Index_)
-                    Case 25 'Reverse
-                        OnUseReverseScroll(slot, Index_, packet)
-                    Case 33 'Add Stall Decoration
-                    Case 41 'Globals
-                        OnUseGlobal(slot, Index_, packet)
-                    Case 70 'Gender Switch Scroll
-                    Case 78 'Skin Change Scroll
-                        OnUseSkinScroll(slot, Index_, packet)
-                    Case 118 'Premium
-                End Select
+            ElseIf ID1 = 237 Then
+            Select Case ID2
+                Case 8
+                    OnUseHPPot(slot, Index_)
+                Case 9 'Return Scroll
+                    OnUseReturnScroll(slot, Index_)
+                Case 14 'Use Ballon
+                Case 16 'MP-Pot 
+                    OnUseMPPot(slot, Index_)
+                Case 25 'Reverse
+                    OnUseReverseScroll(slot, Index_, packet)
+                Case 33 'Add Stall Decoration
+                Case 41 'Globals
+                    OnUseGlobal(slot, Index_, packet)
+                Case 70 'Gender Switch Scroll
+                Case 78 'Skin Change Scroll
+                    OnUseSkinScroll(slot, Index_, packet)
+                Case 118 'Premium
+            End Select
             End If
         End Sub
 

@@ -53,7 +53,7 @@ Namespace Functions
             Dim chari As cCharacter = PlayerData(Index_)
             writer = New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHARACTER_INFO)
-            writer.DWord(3912288588)  '@@@@@@@@@@@@@@@@@
+            writer.DWord(2289569290)  '@@@@@@@@@@@@@@@@@
             writer.DWord(chari.Pk2ID)      ' Character Model
             writer.Byte(chari.Volume)    ' Volume & Height
             writer.Byte(chari.Level)
@@ -73,8 +73,8 @@ Namespace Functions
             writer.Word(0)   ' Total PK
             writer.DWord(0)   ' PK Penalty Point
             writer.Byte(0) ' Rank
-            writer.Byte(0)  ' Unknown
-
+            writer.Byte(0) ' Unknown
+            
             'INVENTORY
             Inventorys(Index_).CalculateItemCount()
             writer.Byte(chari.MaxInvSlots)       ' Max Item Slot (0 Minimum + 13) (4 Seiten x 24 Slots = 96 Maximum + 13 --> 109)
@@ -169,14 +169,16 @@ Namespace Functions
             writer.String(chari.AliasName)
             writer.Word(0)
             writer.Byte(0)            '0=not selected, 1 = hunter
-            writer.Byte(1)
+            writer.Byte(0)
             writer.QWord(0)
             writer.DWord(0)
             writer.Byte(&HFF)    'PVP Flag
 
 
             'Account
-            writer.QWord(0)
+            writer.Word(&HD3)
+            writer.Word(&HA0)
+            writer.DWord(0)
             writer.DWord(chari.AccountID)
             writer.Byte(chari.GM)
             writer.Byte(7)
@@ -216,6 +218,9 @@ Namespace Functions
 
 
             ' Other
+            writer.DWord(0)
+            writer.Word(0)
+            writer.Byte(0)
             writer.Word(1)
             writer.Word(1)
             writer.Byte(0)

@@ -11,8 +11,10 @@
             For i = 0 To GameDB.SkillSets.Keys.Count - 1
                 Dim key As UInt32 = GameDB.SkillSets.Keys(i)
                 If GameDB.SkillSets(key).Name = name Then
-                    GameDB.SkillSets(key).Skills.Add(skill)
-                    GameDB.SaveSkillsetNewSkill(GameDB.SkillSets(key).SetID, skill)
+                    If GameDB.SkillSets(key).Skills.Contains(skill) = False Then
+                        GameDB.SkillSets(key).Skills.Add(skill)
+                        GameDB.SaveSkillsetNewSkill(GameDB.SkillSets(key).SetID, skill)
+                    End If
                     Exit For
                 End If
             Next
@@ -22,8 +24,10 @@
             For i = 0 To GameDB.SkillSets.Keys.Count - 1
                 Dim key As UInt32 = GameDB.SkillSets.Keys(i)
                 If GameDB.SkillSets(key).SetID = setID Then
-                    GameDB.SkillSets(key).Skills.Add(skill)
-                    GameDB.SaveSkillsetNewSkill(GameDB.SkillSets(key).SetID, skill)
+                    If GameDB.SkillSets(key).Skills.Contains(skill) = False Then
+                        GameDB.SkillSets(key).Skills.Add(skill)
+                        GameDB.SaveSkillsetNewSkill(GameDB.SkillSets(key).SetID, skill)
+                    End If
                     Exit For
                 End If
             Next

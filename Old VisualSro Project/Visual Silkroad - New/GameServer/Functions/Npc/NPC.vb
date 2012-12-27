@@ -21,7 +21,7 @@ Namespace Functions
             writer.Word(npc.Angle)
 
             Select Case obj.Type
-                Case SilkroadObject.Type_.Npc
+                Case SilkroadObjectTypes.Npc
                     writer.Byte(0)
                     writer.Byte(1)
                     writer.Byte(0)
@@ -40,7 +40,7 @@ Namespace Functions
                     writer.Word(0)
 
 
-                Case SilkroadObject.Type_.Teleport
+                Case SilkroadObjectTypes.Teleport
                     writer.Byte(1)
                     writer.Byte(0)
                     writer.Byte(0)
@@ -69,9 +69,9 @@ Namespace Functions
                 tmp.ChannelId = channelID
             End If
 
-            If npc_.Type = SilkroadObject.Type_.Npc Then
+            If npc_.Type = SilkroadObjectTypes.Npc Then
                 tmp.Position = Position
-            ElseIf npc_.Type = SilkroadObject.Type_.Teleport Then
+            ElseIf npc_.Type = SilkroadObjectTypes.Teleport Then
                 tmp.Position = npc_.T_Position
             End If
 

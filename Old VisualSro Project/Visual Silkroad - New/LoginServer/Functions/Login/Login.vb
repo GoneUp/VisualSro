@@ -226,13 +226,14 @@ Namespace Functions
             'ServerIndex + SessionID + Port + Index
             Dim Index_ As Integer = packet.DWord
             Dim succeed As Byte = packet.Byte
-
+            
             If Server.ClientList.GetSocket(Index_) Is Nothing Then
                 'Check the Index_, maybe it is dced now...
                 GlobalManagerCon.Log("Index_ from GlobalManager dosen't existis! index: " & Index_)
 
             Else
                 Dim user As String = SessionInfo(Index_).UserName
+                Dim sendPacket As Boolean = True
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.LOGIN_AUTH)
@@ -293,6 +294,8 @@ Namespace Functions
                                     LoginWriteSpecialText(String.Format("You can only register {0} Accounts a day!", packet.DWord), Index_)
                                     Exit Sub
                             End Select
+
+                            sendPacket = False
                         Case 5
                             'Wrong pw --> failed login
 
@@ -316,10 +319,16 @@ Namespace Functions
                             'message
                             Dim text As String = packet.UString(packet.Word)
                             LoginWriteSpecialText(text, Index_)
+
+                            sendPacket = False
+                        Case Else
+                            Log.WriteSystemLog("LoginSendUserAuthSucceed::Case Else")
                     End Select
                 End If
 
-                Server.Send(writer.GetBytes, Index_)
+                If sendPacket Then
+                    Server.Send(writer.GetBytes, Index_)
+                End If
             End If
         End Sub
 

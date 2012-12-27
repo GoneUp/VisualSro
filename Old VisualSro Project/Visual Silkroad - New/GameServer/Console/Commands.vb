@@ -148,8 +148,8 @@
 
             Case "/wnd"
                 perfWnd.Text = "GS: PefWnd"
-                perfWnd.ShowDialog()
-
+                Dim thread As New Threading.Thread(AddressOf perfWnd.ShowDialog)
+                thread.Start()
             Case "/writeimtable"
                 GameEdit.WriteItemMallTables()
         End Select

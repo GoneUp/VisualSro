@@ -1,7 +1,7 @@
 ﻿Imports SRFramework
 
 Namespace Functions
-    Module Exchange
+    Module ExchangeHandler
         Public Sub OnExchangeInvite(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim othersID As UInt32 = packet.DWord
 

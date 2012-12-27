@@ -45,19 +45,19 @@ Namespace Functions
                     tmp.Position = pos
 
                     Select Case obj_.Type
-                        Case SilkroadObject.Type_.Mob_Normal
+                        Case SilkroadObjectTypes.MobNormal
                             RefRespawns.Add(tmp)
                             For s = 1 To Settings.ServerSpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
-                        Case SilkroadObject.Type_.Mob_Cave
+                        Case SilkroadObjectTypes.MobCave
                             RefRespawns.Add(tmp)
                             For s = 1 To Settings.ServerSpawnRate
                                 SpawnMob(Pk2ID, GetRadomMobType, pos, 0, tmp.SpotID)
                             Next
-                        Case SilkroadObject.Type_.Mob_Unique
+                        Case SilkroadObjectTypes.MobUnique
                             AddUnqiueRespawn(tmp)
-                        Case SilkroadObject.Type_.Npc
+                        Case SilkroadObjectTypes.Npc
                             SpawnNPC(Pk2ID, pos, angle)
                     End Select
                 End If

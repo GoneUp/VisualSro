@@ -461,90 +461,105 @@ Namespace Functions
 
 #Region "Avatar"
         Public Sub OnAvatarEquip(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim Old_Slot As Byte = packet.Byte
-            Dim New_Slot As Byte = packet.Byte
-            SendNotice("Old: " & Old_Slot & " New: " & New_Slot)
+            Dim oldSlot As Byte = packet.Byte
+            Dim newSlot As Byte = packet.Byte
+            SendNotice("Old: " & oldSlot & " New: " & newSlot)
 
             If PlayerData(Index_).InExchange Or PlayerData(Index_).InStall Or PlayerData(Index_).Alive = False Then
                 Exit Sub
             End If
 
 
-            If Inventorys(Index_).UserItems(Old_Slot).ItemID <> 0 Then
-                Dim SourceInvItem As cInventoryItem = Inventorys(Index_).UserItems(Old_Slot)
-                Dim SourceItem As cItem = GameDB.Items(SourceInvItem.ItemID)
+            If Inventorys(Index_).UserItems(oldSlot).ItemID <> 0 Then
+                Dim sourceInvItem As cInventoryItem = Inventorys(Index_).UserItems(oldSlot)
+                Dim sourceItem As cItem = GameDB.Items(sourceInvItem.ItemID)
+                Dim sourceRef As cRefItem = GetItemByID(sourceItem.ObjectID)
 
-                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.ObjectID)
-                New_Slot = GetInternalAvatarSlot(_SourceRef)
-                Dim DestItem As cInventoryItem = Inventorys(Index_).AvatarItems(New_Slot)
+                newSlot = GetInternalAvatarSlot(sourceRef)
 
-                If DestItem.ItemID = 0 Then
-                    Inventorys(Index_).AvatarItems(New_Slot).ItemID = SourceInvItem.ItemID
+                Dim destInvItem As cInventoryItem = Inventorys(Index_).AvatarItems(newSlot)
 
-                    Inventorys(Index_).UserItems(Old_Slot).ItemID = 0
-                ElseIf DestItem.ItemID <> 0 Then
+                If destInvItem.ItemID = 0 Then
+                    Inventorys(Index_).AvatarItems(newSlot).ItemID = sourceInvItem.ItemID
 
+                    Inventorys(Index_).UserItems(oldSlot).ItemID = 0
+                ElseIf destInvItem.ItemID <> 0 Then
+                    Inventorys(Index_).AvatarItems(newSlot).ItemID = sourceInvItem.ItemID
+
+                    Inventorys(Index_).UserItems(oldSlot).ItemID = destInvItem.ItemID
                 End If
             End If
 
-            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Old_Slot), cInventoryItem.Type.Inventory)
-            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(New_Slot), cInventoryItem.Type.AvatarInventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(oldSlot), cInventoryItem.Type.Inventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(newSlot), cInventoryItem.Type.AvatarInventory)
 
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1) 'success
             writer.Byte(36) 'type
-            writer.Byte(Old_Slot)
-            writer.Byte(New_Slot)
+            writer.Byte(oldSlot)
+            writer.Byte(newSlot)
             writer.Word(0)
             writer.Byte(0) 'end
             Server.Send(writer.GetBytes, Index_)
 
-            Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot, True), Index_)
+            Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, oldSlot, newSlot, True), Index_)
         End Sub
 
         Public Sub OnAvatarUnEquip(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim Old_Slot As Byte = packet.Byte
-            Dim New_Slot As Byte = packet.Byte
-            SendNotice("UnOld: " & Old_Slot & " New: " & New_Slot)
+            Dim oldSlot As Byte = packet.Byte
+            Dim newSlot As Byte = packet.Byte
+            SendNotice("UnOld: " & oldSlot & " New: " & newSlot)
 
             If PlayerData(Index_).InExchange Or PlayerData(Index_).InStall Or PlayerData(Index_).Alive = False Then
                 Exit Sub
             End If
 
 
-           If Inventorys(Index_).UserItems(Old_Slot).ItemID <> 0 Then
-                Dim SourceInvItem As cInventoryItem = Inventorys(Index_).AvatarItems(Old_Slot)
-                Dim SourceItem As cItem = GameDB.Items(SourceInvItem.ItemID)
-                Dim _SourceRef As cRefItem = GetItemByID(SourceItem.ObjectID)
+            If Inventorys(Index_).UserItems(oldSlot).ItemID <> 0 Then
+                Dim sourceInvItem As cInventoryItem = Inventorys(Index_).AvatarItems(oldSlot)
+                Dim sourceItem As cItem = GameDB.Items(sourceInvItem.ItemID)
+                Dim sourceRef As cRefItem = GetItemByID(sourceItem.ObjectID)
 
-                Dim DestItem As cInventoryItem = Inventorys(Index_).UserItems(New_Slot)
+                Dim destInvItem As cInventoryItem = Inventorys(Index_).UserItems(newSlot)
 
-                If DestItem.ItemID = 0 Then
-                    Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
+                If destInvItem.ItemID = 0 Then
+                    Inventorys(Index_).UserItems(newSlot).ItemID = sourceInvItem.ItemID
 
-                    Inventorys(Index_).AvatarItems(Old_Slot).ItemID = 0
-                ElseIf DestItem.ItemID <> 0 Then
+                    Inventorys(Index_).AvatarItems(oldSlot).ItemID = 0
+                ElseIf destInvItem.ItemID <> 0 Then
+                    Dim destItem As cItem = GameDB.Items(destInvItem.ItemID)
+                    Dim destRef As cRefItem = GetItemByID(destItem.ObjectID)
+
+                    If destRef.CLASS_A = 1 And destRef.CLASS_B = 13 Or destRef.CLASS_B = 14 Then
+                        'Valid Avatar Item to equip
+                        Inventorys(Index_).UserItems(newSlot).ItemID = sourceItem.ID
+
+                        Inventorys(Index_).AvatarItems(oldSlot).ItemID = destItem.ID
+                    Else
+                        'Not a valid avatar item
+                        OnItemMoveError(Index_, &H16, &H18)
+                    End If
 
                 End If
             End If
 
-            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(Old_Slot), cInventoryItem.Type.AvatarInventory)
-            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(New_Slot), cInventoryItem.Type.Inventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(oldSlot), cInventoryItem.Type.AvatarInventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(newSlot), cInventoryItem.Type.Inventory)
 
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
             writer.Byte(1) 'success
             writer.Byte(35) 'type
-            writer.Byte(Old_Slot)
-            writer.Byte(New_Slot)
+            writer.Byte(oldSlot)
+            writer.Byte(newSlot)
             writer.Word(0)
             writer.Byte(0) 'end
             Server.Send(writer.GetBytes, Index_)
 
-            Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, Old_Slot, New_Slot, True), Index_)
+            Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, oldSlot, newSlot, True), Index_)
         End Sub
 
 #End Region
@@ -580,11 +595,11 @@ Namespace Functions
             End If
         End Function
 
-        Private Function GetInternalAvatarSlot(ByVal _Refitem As cRefItem) As Byte
-            If _Refitem.CLASS_A = 1 Then
-                Select Case _Refitem.CLASS_B
+        Private Function GetInternalAvatarSlot(ByVal refitem As cRefItem) As Byte
+            If refitem.CLASS_A = 1 Then
+                Select Case refitem.CLASS_B
                     Case 13
-                        Select Case _Refitem.CLASS_C
+                        Select Case refitem.CLASS_C
                             Case 1
                                 'Hat
                                 Return 0
@@ -595,23 +610,23 @@ Namespace Functions
                                 'Attach
                                 Return 3
                             Case Else
-                                Debug.Print(_Refitem.ITEM_TYPE_NAME)
+                                Debug.Print(refitem.ITEM_TYPE_NAME)
                         End Select
                     Case 14
                         'Nasrun
                         Return 2
                     Case Else
-                        Debug.Print(_Refitem.ITEM_TYPE_NAME)
+                        Debug.Print(refitem.ITEM_TYPE_NAME)
                 End Select
             End If
             Return 255
         End Function
 
-        Friend Function GetExternalAvatarSlot(ByVal _Refitem As cRefItem) As Byte
-            If _Refitem.CLASS_A = 1 Then
-                Select Case _Refitem.CLASS_B
+        Friend Function GetExternalAvatarSlot(ByVal refitem As cRefItem) As Byte
+            If refitem.CLASS_A = 1 Then
+                Select Case refitem.CLASS_B
                     Case 13
-                        Select Case _Refitem.CLASS_C
+                        Select Case refitem.CLASS_C
                             Case 1
                                 'Hat
                                 Return 0

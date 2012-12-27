@@ -25,11 +25,11 @@ Namespace Functions
 
             RefSkill = GetSkill(Mob_.UsingSkillId)
 
-            Do Until RefSkill.Effect_0 = "att"
-                CheckForSkillEffects(MobUniqueID, RefSkill, Index_)
-                Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
-                RefSkill = GetSkill(Mob_.UsingSkillId)
-            Loop
+            'Do Until RefSkill.Effect_0 = "att"
+            '    CheckForSkillEffects(MobUniqueID, RefSkill, Index_)
+            '    Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
+            '    RefSkill = GetSkill(Mob_.UsingSkillId)
+            'Loop
 
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
@@ -257,71 +257,71 @@ Namespace Functions
             Return 0
         End Function
 
-        Public Sub CheckForSkillEffects(ByVal MobUniqueId As UInteger, ByVal RefSkill As RefSkill, ByVal Index_ As Integer)
-            Dim Mob_ As cMonster = MobList(MobUniqueId)
+        'Public Sub CheckForSkillEffects(ByVal mobUniqueId As UInteger, ByVal refSkill As RefSkill, ByVal Index_ As Integer)
+        '    Dim Mob_ As cMonster = MobList(mobUniqueId)
 
-            Select Case RefSkill.Effect_0
-                Case "ssou"
-                    Dim Spawn_Mobs As Boolean = False
-                    Dim Hp_Percent = ((Mob_.HPCur / Mob_.HPMax) * 100)
-                    Select Case RefSkill.SpawnPercent
-                        Case 80
-                            If Mob_.SpawnedGuard80 = False And Hp_Percent < 80 And Hp_Percent > 60 Then
-                                Spawn_Mobs = True
-                                Mob_.SpawnedGuard80 = True
-                            End If
-                        Case 60
-                            If Mob_.SpawnedGuard60 = False And Hp_Percent < 60 And Hp_Percent > 40 Then
-                                Spawn_Mobs = True
-                                Mob_.SpawnedGuard60 = True
-                            End If
-                        Case 40
-                            If Mob_.SpawnedGuard40 = False And Hp_Percent < 40 And Hp_Percent > 20 Then
-                                Spawn_Mobs = True
-                                Mob_.SpawnedGuard40 = True
-                            End If
-                        Case 0
-                            If Mob_.SpawnedGuard20 = False And Hp_Percent < 20 And Hp_Percent > 0 Then
-                                Spawn_Mobs = True
-                                Mob_.SpawnedGuard20 = True
-                            End If
-                    End Select
+        '    Select Case RefSkill.Effect_0
+        '        Case "ssou"
+        '            Dim spawnMobs As Boolean = False
+        '            Dim hpPercent = ((Mob_.HPCur / Mob_.HPMax) * 100)
+        '            Select Case RefSkill.SpawnPercent
+        '                Case 80
+        '                    If Mob_.SpawnedGuard80 = False And hpPercent < 80 And hpPercent > 60 Then
+        '                        spawnMobs = True
+        '                        Mob_.SpawnedGuard80 = True
+        '                    End If
+        '                Case 60
+        '                    If Mob_.SpawnedGuard60 = False And hpPercent < 60 And hpPercent > 40 Then
+        '                        spawnMobs = True
+        '                        Mob_.SpawnedGuard60 = True
+        '                    End If
+        '                Case 40
+        '                    If Mob_.SpawnedGuard40 = False And hpPercent < 40 And hpPercent > 20 Then
+        '                        spawnMobs = True
+        '                        Mob_.SpawnedGuard40 = True
+        '                    End If
+        '                Case 0
+        '                    If Mob_.SpawnedGuard20 = False And hpPercent < 20 And hpPercent > 0 Then
+        '                        spawnMobs = True
+        '                        Mob_.SpawnedGuard20 = True
+        '                    End If
+        '            End Select
 
-                    If Spawn_Mobs = True Then
-                        If RefSkill.Effect_1 <> 0 Then
-                            For i = 1 To RefSkill.Effect_4 'Effect_4 = Count of Mobs, 2 = Type  
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_1, RefSkill.Effect_2,
-                                                                       GetRandomPosition(Mob_.Position, 1), 0, -1)
-                                MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
-                            Next
-                        End If
+        '            If spawnMobs = True Then
+        '                If RefSkill.Effect_1 <> 0 Then
+        '                    For i = 1 To RefSkill.Effect_4 'Effect_4 = Count of Mobs, 2 = Type  
+        '                        Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_1, RefSkill.Effect_2,
+        '                                                               GetRandomPosition(Mob_.Position, 1), 0, -1)
+        '                        MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
+        '                    Next
+        '                End If
 
-                        If RefSkill.Effect_5 <> 0 Then
-                            For i = 1 To RefSkill.Effect_8
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_5, RefSkill.Effect_6,
-                                                                       GetRandomPosition(Mob_.Position, 1), 0, -1)
-                                MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
-                            Next
-                        End If
+        '                If RefSkill.Effect_5 <> 0 Then
+        '                    For i = 1 To RefSkill.Effect_8
+        '                        Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_5, RefSkill.Effect_6,
+        '                                                               GetRandomPosition(Mob_.Position, 1), 0, -1)
+        '                        MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
+        '                    Next
+        '                End If
 
-                        If RefSkill.Effect_9 <> 0 Then
-                            For i = 1 To RefSkill.Effect_12
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_9, RefSkill.Effect_10,
-                                                                       GetRandomPosition(Mob_.Position, 1), 0, -1)
-                                MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
-                            Next
-                        End If
+        '                If RefSkill.Effect_9 <> 0 Then
+        '                    For i = 1 To RefSkill.Effect_12
+        '                        Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_9, RefSkill.Effect_10,
+        '                                                               GetRandomPosition(Mob_.Position, 1), 0, -1)
+        '                        MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
+        '                    Next
+        '                End If
 
-                        If RefSkill.Effect_13 <> 0 Then
-                            For i = 1 To RefSkill.Effect_16
-                                Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_13, RefSkill.Effect_14,
-                                                                       GetRandomPosition(Mob_.Position, 1), 0, -1)
-                                MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
-                            Next
-                        End If
-                    End If
-            End Select
-        End Sub
+        '                If RefSkill.Effect_13 <> 0 Then
+        '                    For i = 1 To RefSkill.Effect_16
+        '                        Dim NewUniqueId As UInteger = SpawnMob(RefSkill.Effect_13, RefSkill.Effect_14,
+        '                                                               GetRandomPosition(Mob_.Position, 1), 0, -1)
+        '                        MobSetAttackingFromPlayer(Index_, NewUniqueId, True)
+        '                    Next
+        '                End If
+        '            End If
+        '    End Select
+        'End Sub
 
         Public Sub MobAddDamageFromPlayer(ByVal Damage As UInt32, ByVal Index_ As Integer, ByVal MobUniqueID As UInteger,
                                           ByVal AttackingAllowed As Boolean)

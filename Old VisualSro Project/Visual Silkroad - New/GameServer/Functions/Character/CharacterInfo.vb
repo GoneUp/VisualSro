@@ -82,9 +82,22 @@ Namespace Functions
 
             For Each item As cInventoryItem In Inventorys(Index_).UserItems
                 If item.ItemID <> 0 Then
-                    writer.Byte(item.Slot)
+                    If GameDB.Items.ContainsKey(item.ItemID) Then
+                        'Send it..  
+                        writer.Byte(item.Slot)
+                        AddItemDataToPacket(GameDB.Items(item.ItemID), writer)
+                    Else
+                        'Item not extistis
+                        Log.WriteSystemLog(String.Format("Character Item not found! Name:{0}, Item:{1}", chari.CharacterName, item.ToString))
+                        If Server.Server_DebugMode Then
+                            Log.WriteSystemLog("Debug: Kill Item ID " & item.ItemID)
 
-                    AddItemDataToPacket(GameDB.Items(item.ItemID), writer)
+                            item.ItemID = 0
+                            ItemManager.UpdateInvItem(item, cInventoryItem.Type.Inventory)
+                        Else
+                            Server.Disconnect(Index_)
+                        End If
+                    End If
                 End If
             Next
 
@@ -96,9 +109,24 @@ Namespace Functions
             For Each avatar As cInventoryItem In Inventorys(Index_).AvatarItems
                 If avatar.ItemID <> 0 Then
                     Dim item As cItem = GameDB.Items(avatar.ItemID)
-                    Dim refitem As cRefItem = GetItemByID(item.ObjectID)
-                    writer.Byte(GetExternalAvatarSlot(refitem))
-                    AddItemDataToPacket(item, writer)
+                    
+                    If item IsNot Nothing Then
+                        Dim refitem As cRefItem = GetItemByID(item.ObjectID)
+                        writer.Byte(GetExternalAvatarSlot(refitem))
+                        AddItemDataToPacket(item, writer)
+
+                    Else
+                        'Item not extistis
+                        Log.WriteSystemLog(String.Format("Character Item not found! Name:{0}, Item:{1}", chari.CharacterName, avatar.ToString))
+                        If Server.Server_DebugMode Then
+                            Log.WriteSystemLog("Debug: Kill Item ID " & avatar.ItemID)
+
+                            avatar.ItemID = 0
+                            ItemManager.UpdateInvItem(avatar, cInventoryItem.Type.AvatarInventory)
+                        Else
+                            Server.Disconnect(Index_)
+                        End If
+                    End If
                 End If
             Next
 

@@ -189,8 +189,8 @@ Namespace Functions
                     writer.Byte(1)
                     writer.Byte(Slot)
                     writer.Word(item.Data)
-                    writer.Byte(&HEC)
-                    writer.Byte(&H9)
+                    writer.Byte(48)
+                    writer.Byte(12)
                     Server.Send(writer.GetBytes, Index_)
 
                     ShowOtherPlayerItemUse(refitem.Pk2Id, Index_)

@@ -30,5 +30,34 @@
             Hunter = 1
             Thief = 2
         End Enum
+
+        Enum SilkroadObjectTypes
+            MobNormal = 0
+            Npc = 1
+            Teleport = 2
+            [Structure] = 3
+            MobCave = 4
+            COS = 5
+            MobUnique = 6
+            MobQuest = 7
+            Character = 8
+            Trade = 9
+            MovePet = 10
+        End Enum
+
+        Enum SkillTypeTable As Byte
+            Phy = &H1
+            Mag = &H2
+            Bicheon = &H3
+            Heuksal = &H4
+            Bow = &H5
+            All = &H6
+        End Enum
+
+        Enum SkilActiveTypes As Byte
+            Active = 3
+            Passive = 4
+        End Enum
+
     End Module
 End Namespace

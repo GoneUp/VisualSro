@@ -38,7 +38,7 @@ Namespace Functions
                 For i As Integer = 0 To Server.MaxClients
                     If PlayerData(i) IsNot Nothing Then
                         If PlayerData(i).UniqueID = OwnerID Then
-                            PlayerBuff_End(OverID, i)
+                            PlayerBuffEnd(OverID, i)
                         End If
                     End If
                 Next

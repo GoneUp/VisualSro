@@ -16,6 +16,7 @@ Public Class ServerBase
     Private m_uploadCounter As New cByteCounter
 
     Private m_serverSocket As Socket
+    Private m_serverSocketV6 As Socket
     Private m_revTheard(1) As Thread
 
 
@@ -142,11 +143,18 @@ Public Class ServerBase
 #Region "Start/Stop"
     Public Sub Start()
         Dim localEP As New IPEndPoint(IPAddress.Any, m_serverPort)
+        Dim localEpv6 As New IPEndPoint(IPAddress.IPv6Any, m_serverPort)
+
         m_serverSocket = New Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+        m_serverSocketV6 = New Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp)
         Try
             m_serverSocket.Bind(localEP)
             m_serverSocket.Listen(5)
             m_serverSocket.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
+
+            m_serverSocketV6.Bind(localEpv6)
+            m_serverSocketV6.Listen(5)
+            m_serverSocketV6.BeginAccept(New AsyncCallback(AddressOf ClientConnect), Nothing)
 
             ReDim m_revTheard(MaxClients + 1)
 

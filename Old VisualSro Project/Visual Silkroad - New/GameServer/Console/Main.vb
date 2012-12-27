@@ -66,6 +66,7 @@ Friend Module Program
             'Ready...
             Log.WriteSystemLog("Inital Loading complete! Waiting for Globalmanager...")
             Log.WriteSystemLog("Slotcount: " & Settings.ServerNormalSlots & "/" & Settings.ServerMaxClients)
+            Log.WriteSystemLog("DebugMode: " & Settings.ServerDebugMode.ToString)
 
             GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
 

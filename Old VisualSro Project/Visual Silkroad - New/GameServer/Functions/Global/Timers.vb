@@ -109,7 +109,7 @@ Namespace Functions
 
                     Else
                         If PlayerData(Index_).AttackType = AttackTypes.Buff Then
-                            PlayerBuff_EndCasting(Index_)
+                            PlayerBuffEndCasting(Index_)
                         End If
                     End If
                 End If
@@ -389,7 +389,7 @@ Namespace Functions
                             ObjectSpawnCheck(Index_)
                             CheckForCaveTeleporter(Index_)
 
-                            SendPm(Index_, "secx" & newPos.XSector & "secy" & newPos.YSector & "X: " & newPos.X & "Y: " & newPos.Y & " X:" & newPos.ToGameX & " Y: " & newPos.ToGameY & " Z: " & newPos.Z, "hh")
+                            'SendPm(Index_, "secx" & newPos.XSector & "secy" & newPos.YSector & "X: " & newPos.X & "Y: " & newPos.Y & " X:" & newPos.ToGameX & " Y: " & newPos.ToGameY & " Z: " & newPos.Z, "hh")
                             PlayerMoveTimer(Index_).Start()
 
                         ElseIf PlayerData(Index_).PosTracker.MoveState = cPositionTracker.enumMoveState.Standing Then

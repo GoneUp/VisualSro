@@ -35,13 +35,13 @@
                 Dim obj_ As SilkroadObject = GetObject(RefRespawns(SpotIndex).Pk2ID)
 
                 Select Case obj_.Type
-                    Case SilkroadObject.Type_.Mob_Normal
+                    Case SilkroadObjectTypes.MobNormal
                         SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0,
                                  re.SpotID)
-                    Case SilkroadObject.Type_.Mob_Cave
+                    Case SilkroadObjectTypes.MobCave
                         SpawnMob(RefRespawns(SpotIndex).Pk2ID, GetRadomMobType, RefRespawns(SpotIndex).Position, 0,
                                  re.SpotID)
-                    Case SilkroadObject.Type_.Npc
+                    Case SilkroadObjectTypes.Npc
                         SpawnNPC(RefRespawns(SpotIndex).Pk2ID, RefRespawns(SpotIndex).Position,
                                  RefRespawns(SpotIndex).Angle)
                 End Select

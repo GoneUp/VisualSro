@@ -376,17 +376,27 @@
                 If Buffs.ContainsKey(key) Then
                     Select Case Buffs(key).Type
                         Case BuffType.ItemBuff
-                            Dim Ref As cRefItem = GetItemByID(Buffs(key).ItemID)
+                            Dim ref As cRefItem = GetItemByID(Buffs(key).ItemID)
 
 
                         Case BuffType.SkillBuff
-                            Dim Ref As RefSkill = GetSkill(Buffs(key).SkillID)
+                            Dim ref As RefSkill = GetSkill(Buffs(key).SkillID)
 
-                            Select Case Ref.Effect_0
-                                Case Else
-                                    SendNotice("Unknown Buff: " & Ref.Effect_0)
-                            End Select
+                            For Each effect In ref.EffectList
+                                Select Case effect.EffectId
+                                    Case "heal"
+                                        If CHP + effect.EffectParams(0) > HP Then
+                                            CHP = HP
+                                        Else
+                                            CHP += effect.EffectParams(0)
+                                        End If
 
+                                    Case Else
+                                        Log.WriteSystemLog("AddBuffsToStats:: Unkown Effect: " & effect.EffectId)
+                                End Select
+                            Next
+
+                          
                     End Select
                 End If
             Next

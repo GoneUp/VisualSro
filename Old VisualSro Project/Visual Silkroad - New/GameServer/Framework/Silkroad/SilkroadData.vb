@@ -22,7 +22,6 @@ Module SilkroadData
 
     Private ReadOnly RefShops As New Dictionary(Of String, Shop)
     Private ReadOnly RefShopGroups As New Dictionary(Of String, ShopGroup)
-    Private ReadOnly RefShopTabs As New Dictionary(Of String, ShopTab)
     Private ReadOnly RefShopTabGroups As New Dictionary(Of String, ShopTabGroup)
 
     Private ReadOnly BasePath As String = AppDomain.CurrentDomain.BaseDirectory
@@ -212,7 +211,7 @@ Module SilkroadData
         If RefItems.ContainsKey(id) Then
             Return RefItems(id)
         End If
-        Throw New Exception("Item couldn't be found!")
+        Return Nothing
     End Function
 
     Public Function GetItemByName(ByVal name As String) As cRefItem
@@ -223,7 +222,7 @@ Module SilkroadData
                 End If
             End If
         Next
-        Throw New Exception("Item couldn't be found!")
+        Return Nothing
     End Function
 #End Region
 
@@ -319,6 +318,7 @@ Module SilkroadData
         Public NumberOfAttacks As Byte
         Public Type As Byte
         Public Type2 As Byte
+        Public Passive As SkilActiveTypes = False
 
         Public SkillGroupID As UInt32
         Public SkillGroupName As String
@@ -326,28 +326,17 @@ Module SilkroadData
 
         Public SpawnPercent As Integer
 
-        Public Effect_0 As String
-        Public Effect_1 As Long
-        Public Effect_2 As Long
-        Public Effect_3 As Long
-        Public Effect_4 As Long
-        Public Effect_5 As Long
-        Public Effect_6 As Long
-        Public Effect_7 As Long
-        Public Effect_8 As Long
-        Public Effect_9 As Long
-        Public Effect_10 As Long
-        Public Effect_11 As Long
-        Public Effect_12 As Long
-        Public Effect_13 As Long
-        Public Effect_14 As Long
-        Public Effect_15 As Long
-        Public Effect_16 As Long
+        Public EffectParams(20) As Long
+        Public EffectList As List(Of SkillEffect)
 
-        Public Structure tmpSkill
+        Public Structure TmpSkill
             Public Pk2Id As UInteger
             Public NextId As UInteger
         End Structure
+
+        Sub New()
+            EffectList = New List(Of SkillEffect)
+        End Sub
     End Class
 
     Public Class SkillGroup
@@ -381,37 +370,12 @@ Module SilkroadData
             End Set
         End Property
     End Class
-
-
-    Public Class SkillTypeTable
-        Public Const Phy As Byte = &H1,
-                     Mag As Byte = &H2,
-                     Bicheon As Byte = &H3,
-                     Heuksal As Byte = &H4,
-                     Bow As Byte = &H5,
-                     All As Byte = &H6
-    End Class
-
-    Public Structure SkillEffect
+    
+    Public Class SkillEffect
         Public EffectId As String
 
-        Public Effect_1 As Long
-        Public Effect_2 As Long
-        Public Effect_3 As Long
-        Public Effect_4 As Long
-        Public Effect_5 As Long
-        Public Effect_6 As Long
-        Public Effect_7 As Long
-        Public Effect_8 As Long
-        Public Effect_9 As Long
-        Public Effect_10 As Long
-        Public Effect_11 As Long
-        Public Effect_12 As Long
-        Public Effect_13 As Long
-        Public Effect_14 As Long
-        Public Effect_15 As Long
-        Public Effect_16 As Long
-    End Structure
+        Public EffectParams(30) As String
+    End Class
 
     Private Sub DumpSkillFiles()
         RefSkills.Clear()
@@ -422,6 +386,12 @@ Module SilkroadData
             DumpTmpSkillFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
             DumpSkillFile(AppDomain.CurrentDomain.BaseDirectory & "data\" & paths(i))
         Next
+
+        For Each key In RefSkills.Keys.ToList
+            If RefSkills.ContainsKey(key) Then
+                RefSkills(key).NumberOfAttacks = GetSkillNumberOfAttacks(GetTmpSkill(RefSkills(key).Pk2Id))
+            End If
+        Next
     End Sub
 
     Private Sub DumpTmpSkillFile(ByVal path As String)
@@ -429,7 +399,7 @@ Module SilkroadData
         Dim lines As String() = File.ReadAllLines(path)
         For i As Integer = 0 To lines.Length - 1
             Dim tmpString As String() = lines(i).Split(ControlChars.Tab)
-            Dim tmp As New RefSkill.tmpSkill()
+            Dim tmp As New RefSkill.TmpSkill()
             tmp.Pk2Id = Convert.ToUInt32(tmpString(1))
             tmp.NextId = Convert.ToUInt32(tmpString(9))
             RefTmpSkills.Add(tmp.Pk2Id, tmp)
@@ -462,28 +432,26 @@ Module SilkroadData
             tmp.PwrPercent = Convert.ToInt32(tmpString(71))
             tmp.PwrMin = Convert.ToInt32(tmpString(72))
             tmp.PwrMax = Convert.ToInt32(tmpString(73))
-            tmp.Effect_0 = HexToString(Hex(tmpString(69)))
-            tmp.Effect_1 = Convert.ToInt32(tmpString(70))
-            tmp.Effect_2 = Convert.ToInt32(tmpString(71))
-            tmp.Effect_3 = Convert.ToInt32(tmpString(72))
-            tmp.Effect_4 = Convert.ToInt32(tmpString(73))
-            tmp.Effect_5 = Convert.ToInt32(tmpString(74))
-            tmp.Effect_6 = Convert.ToInt32(tmpString(75))
-            tmp.Effect_7 = Convert.ToInt32(tmpString(76))
-            tmp.Effect_8 = Convert.ToInt32(tmpString(77))
-            tmp.Effect_9 = Convert.ToInt32(tmpString(78))
-            tmp.Effect_10 = Convert.ToInt32(tmpString(79))
-            tmp.Effect_11 = Convert.ToInt32(tmpString(80))
-            tmp.Effect_12 = Convert.ToInt32(tmpString(81))
-            tmp.Effect_13 = Convert.ToInt32(tmpString(82))
-            tmp.Effect_14 = Convert.ToInt32(tmpString(83))
-            tmp.Effect_15 = Convert.ToInt32(tmpString(84))
-            tmp.Effect_16 = Convert.ToInt32(tmpString(85))
-
-
-            If tmp.Effect_0 = "att" Then
-                tmp.Distance = 21
-            End If
+            tmp.Passive = Convert.ToByte(tmpString(68))
+            tmp.EffectParams(0) = Convert.ToInt64(tmpString(69))
+            tmp.EffectParams(1) = Convert.ToInt64(tmpString(70))
+            tmp.EffectParams(2) = Convert.ToInt64(tmpString(71))
+            tmp.EffectParams(3) = Convert.ToInt64(tmpString(72))
+            tmp.EffectParams(4) = Convert.ToInt64(tmpString(73))
+            tmp.EffectParams(5) = Convert.ToInt64(tmpString(74))
+            tmp.EffectParams(6) = Convert.ToInt64(tmpString(75))
+            tmp.EffectParams(7) = Convert.ToInt64(tmpString(76))
+            tmp.EffectParams(8) = Convert.ToInt64(tmpString(77))
+            tmp.EffectParams(9) = Convert.ToInt64(tmpString(78))
+            tmp.EffectParams(10) = Convert.ToInt64(tmpString(79))
+            tmp.EffectParams(11) = Convert.ToInt64(tmpString(80))
+            tmp.EffectParams(12) = Convert.ToInt64(tmpString(81))
+            tmp.EffectParams(13) = Convert.ToInt64(tmpString(82))
+            tmp.EffectParams(14) = Convert.ToInt64(tmpString(83))
+            tmp.EffectParams(15) = Convert.ToInt64(tmpString(84))
+            tmp.EffectParams(16) = Convert.ToInt64(tmpString(85))
+            tmp.EffectParams(17) = Convert.ToInt64(tmpString(86))
+            tmp.EffectParams(18) = Convert.ToInt64(tmpString(87))
 
             If tmpString(3).Contains("SWORD") Then
                 tmp.Type = SkillTypeTable.Phy
@@ -525,9 +493,19 @@ Module SilkroadData
                 tmp.Type2 = SkillTypeTable.All
             End If
 
+            'SkillEffects
+            Try
+                tmp.EffectList = ParseSkillEffects(tmp.EffectParams)
+            Catch ex As Exception
 
+            End Try
+
+
+            'Final Adding
             RefSkills.Add(tmp.Pk2Id, tmp)
 
+
+            'Skillgroup Shit
             If RefSkillGroups.ContainsKey(tmp.SkillGroupName) Then
                 If RefSkillGroups(tmp.SkillGroupName).Skills.ContainsKey(tmp.SkillGroupLevel) = False Then
                     RefSkillGroups(tmp.SkillGroupName).Skills.Add(tmp.SkillGroupLevel, tmp.Pk2Id)
@@ -544,16 +522,9 @@ Module SilkroadData
                 RefSkillGroups.Add(tmpGroup.Name, tmpGroup)
             End If
         Next
-
-        For Each key In RefSkills.Keys.ToList
-            If RefSkills.ContainsKey(key) Then
-                RefSkills(key).NumberOfAttacks = GetSkillNumberOfAttacks(GetTmpSkill(RefSkills(key).Pk2Id))
-                'RefSkills(key).PreviousId = GetSkillPreviosId(key)
-            End If
-        Next
     End Sub
 
-    Private Function GetSkillNumberOfAttacks(ByVal tmp As RefSkill.tmpSkill) As Byte
+    Private Function GetSkillNumberOfAttacks(ByVal tmp As RefSkill.TmpSkill) As Byte
         For i As Byte = 0 To 9
             If tmp.NextId <> 0 Then
                 tmp = GetTmpSkill(tmp.NextId)
@@ -564,21 +535,12 @@ Module SilkroadData
         Return 1
     End Function
 
-    Private Function GetTmpSkill(ByVal nextId As UInteger) As RefSkill.tmpSkill
+    Private Function GetTmpSkill(ByVal nextId As UInteger) As RefSkill.TmpSkill
         If RefTmpSkills.ContainsKey(nextId) Then
             Return RefTmpSkills(nextId)
         Else
             Return Nothing
         End If
-    End Function
-
-    Private Function GetSkillPreviosId(ByVal pk2ID As UInteger) As UInteger
-        For Each key In RefSkills.Keys.ToList
-            If RefSkills(key).NextId = pk2ID Then
-                Return RefSkills(key).Pk2Id
-            End If
-        Next
-        Return 0
     End Function
 
     Public Function GetSkill(ByVal pk2Id As UInteger) As RefSkill
@@ -606,15 +568,232 @@ Module SilkroadData
         Dim tmpList As New List(Of SkillEffect)
         Dim counter As Integer = 0
 
-        Do While True
+        Do While (counter < tmpEffectList.Count AndAlso tmpEffectList(counter) <> 0)
             Dim tmpEffect As New SkillEffect
             tmpEffect.EffectId = HexToString(Hex(tmpEffectList(counter)))
+            counter += 1
 
             Select Case tmpEffect.EffectId
-                Case "att"
+                '============ General ============
+                Case "dura"
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
 
+                Case "reqi"
+                    'Benötigt zwei dinge
+                    'Type 1
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Type 2
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                Case "reqc"
+                    'Benötigt ein ding
+                    'Type 1
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+
+                    counter += 1
+                    ''============ Attack ============
+                Case "att"
+                    'Distance
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Att %
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Att Min
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+                    'Att Max
+                    tmpEffect.EffectParams(3) = tmpEffectList(counter + 3)
+                    'Att %
+                    tmpEffect.EffectParams(4) = tmpEffectList(counter + 4)
+                    counter += 5
+
+                Case "ko"
+                    'Knockdown
+
+                    'Max Lv
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chance 
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    counter += 2
+
+                Case "da"
+                    'Down-Attack Damage Inc
+                    
+                    'Damage Inc in % over 100, ex. 125 represents 25% more
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+                Case "st"
+                    'Stun a Player
+
+                    'Duration of Stun
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chance 
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Level apart the Player
+                    tmpEffect.EffectParams(3) = tmpEffectList(counter + 2)
+
+                    counter += 3
+
+                Case "kb"
+                    'Knockback
+
+                    'Possibilty
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Max Level to knockback
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    counter += 2
+
+                Case "cr"
+                    'Critical Hit
+
+                    'Increase in %
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+
+                    counter += 1
+
+                Case "ru"
+                    'Attack Range Extension
+
+                    'New Range
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+
+                    counter += 1
+
+                Case "efr"
+                    counter += 6
+
+                Case "ps"
+                    counter += 3
+
+                Case "cnsm"
+                    counter += 3
+
+                Case "tant"
+                    counter += 1
+
+                    '============ Defense ============
+                Case "br"
+                    'Blocking rate Inc
+
+                    'Unknown
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Inc in %
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    counter += 2
+
+                Case "hr"
+                    'Attack Rate Inc 
+                    'Inc in %
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+                Case "defp"
+                    'Def Pwr Inc 
+                    'Phy Inc 
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Mag Inc 
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 2
+
+                Case "er"
+                    'Parry Rate Inc
+                    'Inc 
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+                Case "dru"
+                    'Phy Damage Inc
+                    'Inc 
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+
+                    counter += 1
+                    '============ Effect System ============
+
+                Case "fb"
+                    'Frostbite
+
+                    'Effect ID
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chance
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+                Case "fz"
+                    'Frezzing
+
+                    'Effect ID
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chance
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                    '============ Self Buffs ============
+                Case "heal"
+                    'Heal Value
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+                Case "hpi"
+                    'maximum HP Inc
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+
+                Case "mpi"
+                    'maximum MP Inc
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Count
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    counter += 2
+
+                Case "summ"
+                    'Support COS Summon
+
+                    'Duration
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Hawk Attack Power
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Hawk Attack Wait Time
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+                    'Phy Attack Powr Increase
+                    tmpEffect.EffectParams(3) = tmpEffectList(counter + 3)
+
+                    counter += 4
+
+
+                    '============ Debuffs ============
+
+
+                    '============ Monster Buffs ============
+                Case "mc"
+                    'Monster Attack count
+
+                    'Type, always 2
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 2
+
+                    '============ Unknown ============
+
+                Case "getv"
+                Case "MAAT"
+                Case "RPDU"
+                Case "RPTU"
+                Case "RPBU"
+                Case "%"
+
+                Case Else
+                    Log.WriteSystemLog(tmpEffect.EffectId)
+                    Dim e As String = tmpEffect.EffectId
+                    e += ""
             End Select
+
+            tmpList.Add(tmpEffect)
         Loop
+
+        Return tmpList
     End Function
 #End Region
 
@@ -626,7 +805,7 @@ Module SilkroadData
         Public InternalName As String
         Public RealName As String
 
-        Public Type As Type_
+        Public Type As SilkroadObjectTypes
         Public WalkSpeed As Single
         Public RunSpeed As Single
         Public BerserkSpeed As Single
@@ -657,20 +836,6 @@ Module SilkroadData
 
         'These Fileds are for Teleports
         Public T_Position As Position
-
-        Enum Type_
-            Mob_Normal = 0
-            Npc = 1
-            Teleport = 2
-            [Structure] = 3
-            Mob_Cave = 4
-            COS = 5
-            Mob_Unique = 6
-            Mob_Quest = 7
-            Character = 8
-            Trade = 9
-            MovePet = 10
-        End Enum
     End Class
 
     Private Sub DumpObjectFiles()
@@ -722,31 +887,31 @@ Module SilkroadData
             Select Case selector(0)
                 Case "MOB"
                     If selector(1) = "TQ" Or selector(1) = "DH" Then
-                        tmp.Type = SilkroadObject.Type_.Mob_Cave
+                        tmp.Type = SilkroadObjectTypes.MobCave
 
                     ElseIf selector(1) = "QT" Then
-                        tmp.Type = SilkroadObject.Type_.Mob_Quest
+                        tmp.Type = SilkroadObjectTypes.MobQuest
 
                     ElseIf IsUnique(tmp.Pk2ID) Or tmpRarity = 3 Then
-                        tmp.Type = SilkroadObject.Type_.Mob_Unique
+                        tmp.Type = SilkroadObjectTypes.MobUnique
                     Else
-                        tmp.Type = SilkroadObject.Type_.Mob_Normal
+                        tmp.Type = SilkroadObjectTypes.MobNormal
                     End If
 
                 Case "NPC"
-                    tmp.Type = SilkroadObject.Type_.Npc
+                    tmp.Type = SilkroadObjectTypes.Npc
                 Case "STORE"
-                    tmp.Type = SilkroadObject.Type_.Teleport
+                    tmp.Type = SilkroadObjectTypes.Teleport
                 Case "STRUCTURE"
-                    tmp.Type = SilkroadObject.Type_.Structure
+                    tmp.Type = SilkroadObjectTypes.Structure
                 Case "COS"
-                    tmp.Type = SilkroadObject.Type_.COS
+                    tmp.Type = SilkroadObjectTypes.COS
                 Case "MOV"
-                    tmp.Type = SilkroadObject.Type_.MovePet
+                    tmp.Type = SilkroadObjectTypes.MovePet
                 Case "CHAR"
-                    tmp.Type = SilkroadObject.Type_.Character
+                    tmp.Type = SilkroadObjectTypes.Character
                 Case "TRADE"
-                    tmp.Type = SilkroadObject.Type_.Trade
+                    tmp.Type = SilkroadObjectTypes.Trade
                 Case Else
                     Log.WriteSystemLog("LOADOBJ::Case Else: " & tmp.CodeName)
             End Select
@@ -917,7 +1082,7 @@ Module SilkroadData
 
             obj.Pk2ID = tmpString(1)
             obj.CodeName = tmpString(2)
-            obj.Type = SilkroadObject.Type_.Teleport
+            obj.Type = SilkroadObjectTypes.Teleport
 
             Dim area As Integer = tmpString(41)
             obj.T_Position = New Position
@@ -1093,7 +1258,7 @@ Module SilkroadData
 
     Public Function IsUnique(ByVal pk2ID As UInteger) As Boolean
         For i = 0 To RefUniques.Count - 1
-            If RefUniques(i) = Pk2ID Then
+            If RefUniques(i) = pk2ID Then
                 Return True
             End If
         Next
@@ -1324,7 +1489,7 @@ Module SilkroadData
         Next
 
     End Sub
-    
+
     Public Function GetNpc(ByVal storeName As String) As Integer
         Dim tmplist As Array = RefObjects.Keys.ToArray
         For Each key In tmplist
@@ -1339,7 +1504,7 @@ Module SilkroadData
         Return -1
     End Function
 
-    
+
     Private Function GetShopTabIndex(ByVal tabName As String, tabGroup As String) As Byte
         ''Special Guests
         'If tabGroup.StartsWith("STORE_NEW_TRADE") Then

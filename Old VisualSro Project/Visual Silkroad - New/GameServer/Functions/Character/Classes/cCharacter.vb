@@ -384,12 +384,19 @@
 
                             For Each effect In ref.EffectList
                                 Select Case effect.EffectId
+                                    Case "dura"
                                     Case "heal"
                                         If CHP + effect.EffectParams(0) > HP Then
                                             CHP = HP
                                         Else
                                             CHP += effect.EffectParams(0)
                                         End If
+
+                                    Case "hste"
+                                        PosTracker.WalkSpeed *= (effect.EffectParams(0) / 100)
+                                        PosTracker.RunSpeed *= (effect.EffectParams(0) / 100)
+                                        PosTracker.BerserkSpeed *= (effect.EffectParams(0) / 100)
+                                        
 
                                     Case Else
                                         Log.WriteSystemLog("AddBuffsToStats:: Unkown Effect: " & effect.EffectId)

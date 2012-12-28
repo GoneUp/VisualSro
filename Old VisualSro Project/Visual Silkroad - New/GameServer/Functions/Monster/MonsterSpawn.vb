@@ -150,22 +150,25 @@ Namespace Functions
         End Function
 
         Public Sub RemoveMob(ByVal uniqueID As Integer)
-            Dim mob As cMonster = MobList(UniqueID)
-            Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(mob.UniqueID), mob.UniqueID)
-            MobList.Remove(UniqueID)
+            If MobList.ContainsKey(uniqueID) Then
+                Dim mob As cMonster = MobList(uniqueID)
+                Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(mob.UniqueID), mob.UniqueID)
+                MobList.Remove(uniqueID)
 
-            If mob.SpotID >= 0 Then
-                GetRespawn(mob.SpotID).SpawnCount -= 1
+                If mob.SpotID >= 0 Then
+                    GetRespawn(mob.SpotID).SpawnCount -= 1
+                End If
+
+                'Better double Check it, normally this is done at despawn
+                For i = 0 To Server.MaxClients - 1
+                    If PlayerData(i) IsNot Nothing Then
+                        If PlayerData(i).SpawnedMonsters.Contains(mob.UniqueID) = True Then
+                            PlayerData(i).SpawnedMonsters.Remove(mob.UniqueID)
+                        End If
+                    End If
+                Next
             End If
 
-            'Better double Check it, normally this is done at despawn
-            For i = 0 To Server.MaxClients - 1
-                If PlayerData(i) IsNot Nothing Then
-                    If PlayerData(i).SpawnedMonsters.Contains(mob.UniqueID) = True Then
-                        PlayerData(i).SpawnedMonsters.Remove(mob.UniqueID)
-                    End If
-                End If
-            Next
         End Sub
 
 
@@ -188,13 +191,17 @@ Namespace Functions
             Next
 
             For i = 0 To uniqueIDs.Count - 1
-                'Single Despawn in case of GroupDespawn Failure
-                Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(uniqueIDs(i)), uniqueIDs(i))
-                MobList.Remove(uniqueIDs(i))
+                'Single Despawn in case of GroupDespawn Failure   
+                If MobList.ContainsKey(uniqueIDs(i)) Then
+                    Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(uniqueIDs(i)), uniqueIDs(i))
 
-                Dim mob As cMonster = MobList(uniqueIDs(i))
-                If mob.SpotID >= 0 Then
-                    GetRespawn(mob.SpotID).SpawnCount -= 1
+                    'Adjusting spawn mgmt
+                    Dim mob As cMonster = MobList(uniqueIDs(i))
+                    If mob.SpotID >= 0 Then
+                        GetRespawn(mob.SpotID).SpawnCount -= 1
+                    End If
+
+                    MobList.Remove(uniqueIDs(i))
                 End If
             Next
 

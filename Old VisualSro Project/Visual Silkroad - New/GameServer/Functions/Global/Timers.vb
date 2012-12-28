@@ -238,8 +238,8 @@ Namespace Functions
                 Dim stopwatch As New Stopwatch
                 stopwatch.Start()
 
-                Dim tmplist As Array = MobList.Keys.ToArray
-                Dim monsterRemoveList As List(Of UInt32) = New List(Of UInteger)
+                Dim tmplist = MobList.Keys.ToArray
+                Dim monsterRemoveList As New List(Of UInt32)
 
                 For Each key In tmplist
                     If MobList.ContainsKey(key) Then
@@ -260,7 +260,8 @@ Namespace Functions
                 Next
 
                 'Send Removelist
-                RemoveMob(monsterRemoveList.ToArray)
+                tmplist = monsterRemoveList.ToArray
+                RemoveMob(tmplist)
 
                 tmplist = ItemList.Keys.ToArray
                 For Each key In tmplist

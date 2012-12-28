@@ -80,7 +80,7 @@ Module SilkroadData
             DumpCaveTeleporterFile(BasePath & "\data\cave_teleport.txt")
             Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
-            'LoadAutoSpawn(base_path & "data\npcpos.txt")
+            LoadAutoSpawn(BasePath & "data\npcpos.txt")
             Log.WriteSystemLog("Loaded " & MobList.Count & " Autospawn Monster.")
             Log.WriteSystemLog("Loaded " & NpcList.Count & " Autospawn Npc's.")
 
@@ -374,7 +374,7 @@ Module SilkroadData
     Public Class SkillEffect
         Public EffectId As String
 
-        Public EffectParams(30) As String
+        Public EffectParams(20) As Long
     End Class
 
     Private Sub DumpSkillFiles()
@@ -495,7 +495,7 @@ Module SilkroadData
 
             'SkillEffects
             Try
-                tmp.EffectList = ParseSkillEffects(tmp.EffectParams)
+                tmp.EffectList = ParseSkillEffects(tmp.EffectParams, tmp.CodeName)
             Catch ex As Exception
 
             End Try
@@ -559,7 +559,7 @@ Module SilkroadData
     End Function
 
 
-    Private Function ParseSkillEffects(ByVal tmpEffectList() As Long) As List(Of SkillEffect)
+    Private Function ParseSkillEffects(ByVal tmpEffectList() As Long, codename As String) As List(Of SkillEffect)
         'Note: use the effect system, so any skill can use any effect (more coustumable, not so static)
         'case 1: use teh common system with Effect_1, you not knwo what is behind
         'case 2: create types (or smth similar) that represent each possible (under)effect
@@ -594,6 +594,18 @@ Module SilkroadData
                     tmpEffect.EffectParams(0) = tmpEffectList(counter)
 
                     counter += 1
+
+                Case "zb"
+                    'Unknown on Uniques
+
+                    'Effect ID
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chnace
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+
                     ''============ Attack ============
                 Case "att"
                     'Distance
@@ -619,7 +631,7 @@ Module SilkroadData
 
                 Case "da"
                     'Down-Attack Damage Inc
-                    
+
                     'Damage Inc in % over 100, ex. 125 represents 25% more
                     tmpEffect.EffectParams(0) = tmpEffectList(counter)
                     counter += 1
@@ -662,6 +674,21 @@ Module SilkroadData
                     counter += 1
 
                 Case "efr"
+                    'Attack Transformation
+
+                    'Type?
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Type?
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Distance
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+                    'target Count
+                    tmpEffect.EffectParams(3) = tmpEffectList(counter + 3)
+                    'Unknown
+                    tmpEffect.EffectParams(4) = tmpEffectList(counter + 4)
+                    'Damage Redction to the Attack 
+                    tmpEffect.EffectParams(5) = tmpEffectList(counter + 5)
+
                     counter += 6
 
                 Case "ps"
@@ -704,11 +731,39 @@ Module SilkroadData
                     counter += 1
 
                 Case "dru"
-                    'Phy Damage Inc
-                    'Inc 
+                    'Damage Inc
+                    'Phy Inc 
                     tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Mag Inc 
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
 
-                    counter += 1
+                    counter += 2
+
+                Case "odar"
+                    'Damage Reduce
+
+                    'Phy 
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Mag 
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+
+                Case "pw"
+                    'Crystal Wall COS Effect
+
+                    'Type? 7
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'HP
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'MP
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+                    'Phy Absorb on Player
+                    tmpEffect.EffectParams(3) = tmpEffectList(counter + 3)
+
+                    counter += 4
+
                     '============ Effect System ============
 
                 Case "fb"
@@ -730,11 +785,96 @@ Module SilkroadData
 
                     counter += 2
 
-                    '============ Self Buffs ============
-                Case "heal"
-                    'Heal Value
+                Case "es"
+                    'Electric Shock
+
+                    'Effect ID
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chance
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Unknown
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+
+                    counter += 3
+
+
+                Case "bu"
+                    'Burn
+
+                    'Effect ID
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chance
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Max Level
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+
+                    counter += 3
+
+                Case "bgra"
+                    'Decreased Effect Chance
+
+                    'Unknown
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Effect ID
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Chance
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+
+                    counter += 3
+
+                Case "real"
+                    'Restrict Effect
+
+                    'Unknown
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chanche Reducement
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Level Reducement
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+
+                    counter += 3
+
+                Case "curl"
+                    'Cures incomplete/Weaken it 
+                    
+                    'Unknown
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Chanche Reducement
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Level Reducement
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+
+                    counter += 3
+
+                Case "curt"
+                    'Cures complete
+
+                    'Type
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Effect ID
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                Case "rcur"
+                    'bad Status Cure Count
+
+                    'Count
                     tmpEffect.EffectParams(0) = tmpEffectList(counter)
                     counter += 1
+
+                    '============ Self Buffs ============
+                Case "heal"
+                    'HP Total Value
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'HP Procent Value
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'MP Total Value
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+                    'MP Procent Value
+                    tmpEffect.EffectParams(3) = tmpEffectList(counter + 3)
+
+                    counter += 4
 
                 Case "hpi"
                     'maximum HP Inc
@@ -763,29 +903,182 @@ Module SilkroadData
 
                     counter += 4
 
+                Case "onff"
+                    'Ongoing consumation of MP
+
+                    'Wait Time
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'MP Consumed
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                Case "hste"
+                    'Speed Increase
+
+                    'Increase in %
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+                Case "tele"
+                    'Telport the char
+
+                    'Time?
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Distance
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                Case "resu"
+                    'Resecutes dead People
+
+                    'Max Level
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Lost Exp Point % Restore
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                Case "pola"
+                    'Prevents Attacking in Heal Circle
+
+                    'Min Mob Level
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Max Mob Level
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                Case "irgc"
+                    'Imcreases Regeneration in Circle
+
+                    'HP % Value
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'MP % Value
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
 
                     '============ Debuffs ============
 
+                Case "bbuf"
+                    'Its a debuff
+                    counter += 0
 
-                    '============ Monster Buffs ============
+                Case "tant"
+                    'Apperas on Debuffs, Unknown Function
+                    counter += 1
+                Case "terd"
+                    'Parry Rate Reduce
+
+                    'Value
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+                Case "thrd"
+                    'Attack Rate Reduce
+
+                    'Value
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+                    '============ Item Buffs ============
+
+                Case "cbuf"
+      
+
+                    '============ Monster Buffs, ETC ============
                 Case "mc"
                     'Monster Attack count
 
                     'Type, always 2
                     tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Count
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
+                    counter += 2
+
+                Case "dn"
+                    'Gun Powder, Range Attack?
+
+                    'Duration
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Distance
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+                    'Phy Min Atk
+                    tmpEffect.EffectParams(2) = tmpEffectList(counter + 2)
+                    'Phy Max Atk
+                    tmpEffect.EffectParams(3) = tmpEffectList(counter + 3)
+
+
+                    counter += 4
+
+                Case "ck"
+                    'Automob
+                    
+                    'HP Reduce Value
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    counter += 1
+
+
+                Case "pmhp"
+                    'Automob
+                    counter += 4
+
+                Case "ssou"
+                    'Unique Monster Mob Summon
+                    '0: ID1
+                    '1: Type1
+                    '2: Range1
+                    '3: Count1
+                    Array.ConstrainedCopy(tmpEffectList, counter, tmpEffect.EffectParams, 0, 16)
+                    counter += 16
+
+                Case "bl"
+                    'ROC
+
+                    'Duration?
+                    tmpEffect.EffectParams(0) = tmpEffectList(counter)
+                    'Effect ID?
+                    tmpEffect.EffectParams(1) = tmpEffectList(counter + 1)
+
                     counter += 2
 
                     '============ Unknown ============
-
+                Case ""
                 Case "getv"
+                    counter += 0
+                Case "setv"
                 Case "MAAT"
                 Case "RPDU"
                 Case "RPTU"
                 Case "RPBU"
+                Case "BLAT"
+                Case "LIAT"
+                Case "WIMD"
+                Case "WIRU"
+                Case "FIAT"
+                Case "EAAT"
+                Case "BSHP"
+                Case "BDMP"
+                Case "BDMD"
+                Case "SAAP"
+                Case "MUER"
+                Case "DSER"
+                Case "HLAT"
+                Case "HLMI"
+                Case "E2AA"
+                Case "CBAT"
+                Case "CBRA"
+                Case "STDU"
+                Case "STSP"
+                Case "DGAT"
+                Case "DGHR"
                 Case "%"
 
                 Case Else
-                    Log.WriteSystemLog(tmpEffect.EffectId)
+                    'Log.WriteSystemLog(tmpEffect.EffectId)
                     Dim e As String = tmpEffect.EffectId
                     e += ""
             End Select

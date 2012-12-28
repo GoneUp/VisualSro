@@ -7,7 +7,7 @@ Namespace Functions
         Public Sub LoadAutoSpawn(ByVal path As String)
             Dim lines As String() = File.ReadAllLines(path)
             For i As Integer = 0 To lines.Length - 1
-                If lines(i).StartsWith("//") = False Then
+                If lines(i).StartsWith("//") = False And lines(i) <> "" Then
                     Dim pos As New Position
                     Dim tmp As New ReSpawn_
                     Dim angle As UShort = 0

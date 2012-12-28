@@ -127,6 +127,7 @@ Namespace Functions
             PlayerData(Index_).AddItemsToStats(Index_)
             PlayerData(Index_).AddBuffsToStats()
             OnStatsPacket(Index_)
+            UpdateSpeeds(Index_)
         End Sub
 
         Private Sub RemoveBuffFromList(ByVal skillOverId As UInteger, ByVal Index_ As Integer)
@@ -137,6 +138,7 @@ Namespace Functions
             PlayerData(Index_).AddItemsToStats(Index_)
             PlayerData(Index_).AddBuffsToStats()
             OnStatsPacket(Index_)
+            UpdateSpeeds(Index_)
         End Sub
     End Module
 End Namespace

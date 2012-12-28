@@ -15,7 +15,7 @@ Namespace Functions
         Public Sub OnCharacterIntialize(ByVal Index_ As Integer)
             'Prepare
             CleanUpPlayerComplete(Index_)
-            PlayerCheckDeath(Index_, True)
+            PlayerCheckDeath(Index_, False)
             GameMod.Damage.OnPlayerLogon(Index_)
 
             'Stats

@@ -108,11 +108,12 @@ Namespace Functions
             writer.Byte(0)
 
             If obj.ItemShop IsNot Nothing Then
-                writer.Byte(1) 'Option Count
+                writer.Byte(2) 'Option Count
                 writer.Byte(1)
+                writer.Byte(4)
             Else
                 writer.Byte(1) 'Option Count
-                writer.Byte(1) 'Only Exit
+                writer.Byte(4) 'Only Exit
             End If
 
             writer.Byte(0)

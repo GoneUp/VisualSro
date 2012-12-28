@@ -673,6 +673,8 @@ Namespace Functions
                 PlayerData(Index_).Alive = True
                 PlayerData(Index_).CHP = PlayerData(Index_).HP / 2
                 GameDB.SaveHP(Index_)
+
+                setPosToTown = True
             End If
 
             If setPosToTown Then

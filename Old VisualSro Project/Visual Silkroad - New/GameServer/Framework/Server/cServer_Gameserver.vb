@@ -85,10 +85,7 @@ Public Class cServer_Gameserver
 
     Public Sub SendIfMobIsSpawned(ByVal buff() As Byte, ByVal mobUniqueID As Integer)
         For i = 0 To MaxClients - 1
-            Dim socket As Socket = ClientList.GetSocket(i)
-            Dim player As cCharacter = PlayerData(i)
-            'Check if Player is ingame
-            If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected Then
+            If PlayerData(i) IsNot Nothing Then
                 If PlayerData(i).SpawnedMonsters.Contains(MobUniqueID) Then
                     Send(buff, i)
                 End If

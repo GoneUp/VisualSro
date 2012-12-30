@@ -3,7 +3,7 @@
 Namespace Functions
     Module Chat
         Public Sub OnChat(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            Dim tag As Byte = Packet.Byte
+            Dim tag As ChatModes = packet.Byte
 
 
             Select Case tag
@@ -222,17 +222,4 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
         End Sub
     End Module
-
-    Enum ChatModes
-        AllChat = &H1
-        PmIncome = &H2
-        GameMaster = &H3
-        Party = &H4
-        Guild = &H5
-        Globals = &H6
-        Notice = &H7
-        Stall = &H9
-        Union = &HB
-        Academy = &H10
-    End Enum
 End Namespace

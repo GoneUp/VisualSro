@@ -55,6 +55,12 @@ Namespace Functions
                             Case ClientOpcodes.GAME_CHAT
                                 Functions.OnChat(packet, Index_)
 
+                            Case ClientOpcodes.GAME_CHAT_ITEM_LINK_ADD
+                                Functions.OnAddItemLink(packet, Index_)
+
+                            Case ClientOpcodes.GAME_CHAT_ITEM_LINK
+                                Functions.OnItemLinkInfo(packet, Index_)
+
                             Case ClientOpcodes.GAME_GAMEMASTER
                                 Functions.OnGM(packet, Index_)
 

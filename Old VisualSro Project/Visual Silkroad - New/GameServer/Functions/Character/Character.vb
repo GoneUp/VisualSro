@@ -139,7 +139,7 @@ Namespace Functions
             writer.Byte(4)
             'nick check
 
-            If GameDB.CheckNick(nick) And CheckForAbuse(nick) = False Then
+            If GameDB.CheckNick(nick) And CheckForNameAbuse(nick) = False Then
                 writer.Byte(1)
             Else
                 writer.Byte(2)
@@ -160,7 +160,7 @@ Namespace Functions
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
-        Private Function CheckForAbuse(ByVal nick As String) As Boolean
+        Public Function CheckForNameAbuse(ByVal nick As String) As Boolean
             Dim tmp As String = nick.ToLowerInvariant
             For i = 0 To RefAbuseList.Count - 1
                 If tmp.Contains(RefAbuseList(i)) = True Then
@@ -208,15 +208,15 @@ Namespace Functions
             Next
         End Sub
 
-        Private Sub OnCreateChar(ByVal pack As PacketReader, ByVal Index_ As Integer)
-            Dim nick As String = pack.String(pack.Word)
-            Dim model As UInt32 = pack.DWord
-            Dim volume As Byte = pack.Byte
+        Private Sub OnCreateChar(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim nick As String = packet.String(packet.Word)
+            Dim model As UInt32 = packet.DWord
+            Dim volume As Byte = packet.Byte
             Dim items(4) As UInt32
-            items(1) = pack.DWord
-            items(2) = pack.DWord
-            items(3) = pack.DWord
-            items(4) = pack.DWord
+            items(1) = packet.DWord
+            items(2) = packet.DWord
+            items(3) = packet.DWord
+            items(4) = packet.DWord
 
             'Check it
 
@@ -250,7 +250,7 @@ Namespace Functions
             'create
 
 
-            If GameDB.CheckNick(nick) And CheckForAbuse(nick) = True Then
+            If GameDB.CheckNick(nick) And CheckForNameAbuse(nick) = True Then
                 writer.Byte(2)
                 writer.Word(216)
                 Server.Send(writer.GetBytes, Index_)
@@ -648,10 +648,10 @@ Namespace Functions
                         'Found the Char, Change is only possible when it contains a @
                         If .CharacterName.Contains("@") Then
                             'Check the New Name
-                            If GameDB.CheckNick(newCharname) And CheckForAbuse(newCharname) = False Then
+                            If GameDB.CheckNick(newCharname) And CheckForNameAbuse(newCharname) = False Then
                                 'Free ;)
                                 .CharacterName = newCharname
-                                
+
                                 GameDB.SaveNameUpdate(.CharacterId, .CharacterName)
                                 GameDB.UpdateChar(CharListing(Index_).Chars(i))
 

@@ -9,13 +9,13 @@
             ReverseScrollPoint = 5
         End Enum
 
-        Public Enum TeleportTypes
+        Public Enum TeleportTypes As Byte
             None = 0
             Npc = 1
             GM = 2
         End Enum
 
-        Public Enum AttackTypes
+        Public Enum AttackTypes As Byte
             Normal = 0
             Skill = 1
             Buff = 2
@@ -31,7 +31,7 @@
             Thief = 2
         End Enum
 
-        Enum SilkroadObjectTypes
+        Enum SilkroadObjectTypes As Byte
             MobNormal = 0
             Npc = 1
             Teleport = 2
@@ -59,5 +59,17 @@
             Passive = 4
         End Enum
 
+        Enum ChatModes As Byte
+            AllChat = &H1
+            PmIncome = &H2
+            GameMaster = &H3
+            Party = &H4
+            Guild = &H5
+            Globals = &H6
+            Notice = &H7
+            Stall = &H9
+            Union = &HB
+            Academy = &H10
+        End Enum
     End Module
 End Namespace

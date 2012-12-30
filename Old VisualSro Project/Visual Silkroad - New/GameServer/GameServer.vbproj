@@ -130,12 +130,13 @@
     <Compile Include="Functions\Character\CharacterJob.vb" />
     <Compile Include="Functions\Character\Classes\cHotkey.vb" />
     <Compile Include="Functions\Character\Classes\Postion.vb" />
-    <Compile Include="Functions\Character\Classes\StaticEnums.vb" />
+    <Compile Include="Functions\Chat\ChatItemLink.vb" />
     <Compile Include="Functions\Chat\CustomCommands.vb" />
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\Classes\cGameObject.vb" />
     <Compile Include="Functions\Global\GlobalGame.vb" />
     <Compile Include="Functions\Global\Classes\GroupSpawn.vb" />
+    <Compile Include="Functions\Global\StaticEnums.vb" />
     <Compile Include="Functions\Global\Timers.vb" />
     <Compile Include="Functions\Guild\Classes\cGuild.vb" />
     <Compile Include="Functions\Guild\Guild.vb" />

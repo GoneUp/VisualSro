@@ -8,6 +8,10 @@ Namespace Functions
             Dim ID1 As Byte = packet.Byte
             Dim ID2 As Byte = packet.Byte
 
+            Dim invItem As cInventoryItem = Inventorys(Index_).UserItems(slot)
+            Dim item As cItem = GameDB.Items(invItem.ItemID)
+            Dim refitem As cRefItem = GetItemByID(item.ObjectID)
+
             Debug.Print("[USE_ITEM][ID1:" & Hex(ID1) & "][2:" & ID2 & "]")
             If ID1 = 48 Then
                 Select Case ID2

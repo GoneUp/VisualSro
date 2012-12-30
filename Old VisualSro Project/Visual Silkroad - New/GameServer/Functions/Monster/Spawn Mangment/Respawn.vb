@@ -19,7 +19,7 @@
 
 
                 For SpotIndex = 0 To RefRespawnsUnique.Count - 1
-                    If IsUniqueSpawned(RefRespawnsUnique(SpotIndex).Pk2ID) = False Then
+                    If IsUniqueSpawned(RefRespawnsUnique(SpotIndex).Pk2ID) = False And Settings.ServerSpawnRate > 0 Then
                         ReSpawnUnique(SpotIndex)
                     End If
                 Next

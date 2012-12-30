@@ -38,7 +38,9 @@ Namespace Functions
                     End If
                 Next refindex
                 If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.SPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 
@@ -58,8 +60,10 @@ Namespace Functions
                         End If
                     End If
                 Next
-                If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
+               If spawnCollector.Count > 0 Then
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.SPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 
@@ -79,7 +83,9 @@ Namespace Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.SPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 
@@ -102,7 +108,9 @@ Namespace Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.SPAWN)
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.SPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 
@@ -137,7 +145,9 @@ Namespace Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.DESPAWN)
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.DESPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 
@@ -154,7 +164,9 @@ Namespace Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.DESPAWN)
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.DESPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 
@@ -172,7 +184,9 @@ Namespace Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.DESPAWN)
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.DESPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 
@@ -190,7 +204,9 @@ Namespace Functions
                     End If
                 Next
                 If spawnCollector.Count > 0 Then
-                    spawnCollector.Send(Index_, GroupSpawn.GroupSpawnMode.DESPAWN)
+                    For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.DESPAWN)
+                        PlayerData(Index_).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                    Next
                     spawnCollector.Clear()
                 End If
 

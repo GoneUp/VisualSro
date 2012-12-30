@@ -4,6 +4,7 @@
         Public CharListing(1) As cCharListing
         'Players
         Public PlayerData(1) As cCharacter
+        Public PlayerGroupSpawnSender As GroupSpawnSender
         'Items
         Public Inventorys(1) As cInventory
         Public ItemList As New Dictionary(Of UInteger, cItemDrop)
@@ -28,6 +29,9 @@
                 NpcList.Clear()
                 ExchangeData.Clear()
                 Stalls.Clear()
+
+                PlayerGroupSpawnSender = New GroupSpawnSender
+                PlayerGroupSpawnSender.StartThread()
             Catch ex As Exception
                 Log.WriteSystemLog("GlobalInit failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
                 Return False

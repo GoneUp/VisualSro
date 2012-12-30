@@ -55,11 +55,11 @@ Friend Module Program
         Log.WriteSystemLog("Connected Database. Loading Data now.")
 
         Dim succeed As Boolean = True
-        succeed = Functions.GlobalGame.GlobalInit(Server.MaxClients)
         succeed = Initalize(Server.MaxClients)
+        succeed = Functions.GlobalInit(Server.MaxClients)
         succeed = DumpDataFiles()
         succeed = GameDB.LoadData()
-        succeed = Functions.Timers.LoadTimers(Server.MaxClients)
+        succeed = Functions.LoadTimers(Server.MaxClients)
         GameMod.Damage.OnServerStart(Server.MaxClients)
 
         If succeed Then
@@ -114,6 +114,9 @@ Friend Module Program
             If Settings.LogDetail Then
                 Log.WriteSystemLog(String.Format("Client[{0}/{1}] Disconnected: {2}", Server.OnlineClients, Server.MaxNormalClients, ip))
             End If
+
+        Catch ovEx As OverflowException
+            'Happens sometimes at Server.OnlineClients - 1, dont worry
         Catch ex As Exception
             Log.WriteSystemLog("Client disconnect error! " & ex.Message & " Stack: " & ex.StackTrace & " Index: " & index)
         Finally
@@ -235,9 +238,9 @@ Friend Module Program
             Case GlobalManagerClient.GMCShutdownReason.Reinit
                 Log.WriteSystemLog("Cleanup Server...")
 
+                Initalize(Server.MaxClients)
                 Functions.GlobalGame.GlobalInit(Server.MaxClients)
-                GlobalDef.Initalize(Server.MaxClients)
-                SilkroadData.DumpDataFiles()
+                DumpDataFiles()
                 GameDB.InitalLoad = True
                 GameDB.LoadData()
                 Functions.Timers.LoadTimers(Server.MaxClients)

@@ -1,6 +1,6 @@
 ﻿Public Class cLog
 
-    Private FileQueryList As New List(Of String)
+    Private m_fileQueryList As New List(Of String)
 
 #Region "Events"
     Public Event OnDatabaseQuery As dOnDatabaseQuery
@@ -8,11 +8,14 @@
 #End Region
 
 #Region "Packetlog"
-    Public Sub LogPacket(ByVal buffer As Byte(), ByVal FromServer As Boolean)
+    Public Sub LogPacket(ByVal buffer As Byte(), ByVal fromServer As Boolean)
         Try
             Dim length As UInteger = BitConverter.ToUInt16(buffer, 0)
             Dim op As String = Hex(BitConverter.ToUInt16(buffer, 2))
 
+            If op = "2002" Then
+                Exit Sub
+            End If
 
             If FromServer = False Then
                 If length > 0 Then
@@ -39,7 +42,7 @@
     Public Sub WriteSystemLog(ByVal Message As String)
         Try
             Console.WriteLine(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
-            FileQueryList.Add(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
+            m_fileQueryList.Add(String.Format("[{0}]       {1}", Date.Now.ToString, Message))
         Catch ex As Exception
         End Try
     End Sub
@@ -48,8 +51,8 @@
         Dim writer As IO.StreamWriter
         Try
             writer = New IO.StreamWriter(System.AppDomain.CurrentDomain.BaseDirectory & (String.Format("{0}-{1}-{2}_Log.txt", Date.Now.Day, Date.Now.Month, Date.Now.Year)), True)
-            For i = 0 To FileQueryList.Count - 1
-                writer.WriteLine(FileQueryList(i))
+            For i = 0 To m_fileQueryList.Count - 1
+                writer.WriteLine(m_fileQueryList(i))
             Next
         Catch ex As Exception
         Finally
@@ -59,7 +62,7 @@
                 writer.Dispose()
             End If
 
-            FileQueryList.Clear()
+            m_fileQueryList.Clear()
         End Try
     End Sub
 #End Region

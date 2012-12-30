@@ -1513,7 +1513,7 @@ Module SilkroadData
         Next i
     End Sub
 
-    Public Function IsInSaveZone(ByVal Pos As Position) As Boolean
+    Public Function IsInSaveZone(ByVal pos As Position) As Boolean
         For i = 0 To RefSpecialZones.Count - 1
             If _
                 RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And
@@ -1524,7 +1524,7 @@ Module SilkroadData
         Return False
     End Function
 
-    Public Function IsInCave(ByVal Pos As Position) As Boolean
+    Public Function IsInCave(ByVal pos As Position) As Boolean
         For i = 0 To RefSpecialZones.Count - 1
             If _
                 RefSpecialZones(i).XSec = Pos.XSector And RefSpecialZones(i).YSec = Pos.YSector And

@@ -65,7 +65,7 @@ Namespace Functions
                         If PlayerData(refindex).SpawnedItems.Contains(tmp_.UniqueID) = False Then
                             Dim tmpSpawn As New GroupSpawn
                             tmpSpawn.AddObject(tmp_.UniqueID)
-                            Server.Send(tmpSpawn.GetBytes(GroupSpawn.GroupSpawnMode.SPAWN), refindex)
+                            Server.Send(tmpSpawn.GetBytes(GroupSpawnMode.SPAWN), refindex)
                             PlayerData(refindex).SpawnedItems.Add(tmp_.UniqueID)
                         End If
                     End If

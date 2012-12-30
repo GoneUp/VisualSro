@@ -3,12 +3,13 @@
 Namespace Functions
     Public Class GroupSpawn
 
-        Private m_UniqueIDs As New List(Of UInt32)
+        Private m_uniqueIDs As New List(Of UInt32)
 
-        Public Enum GroupSpawnMode
-            SPAWN = 1
-            DESPAWN = 2
-        End Enum
+        Public ReadOnly Property Count() As Integer
+            Get
+                Return m_UniqueIDs.Count
+            End Get
+        End Property
 
         Public Sub AddObject(ByVal id As UInt32)
             m_UniqueIDs.Add(id)
@@ -149,19 +150,14 @@ Namespace Functions
             Return bytes
         End Function
 
-        Public Sub Send(ByVal index_ As Integer, ByVal mode As GroupSpawnMode)
+        Public Sub Send(ByVal Index_ As Integer, ByVal mode As GroupSpawnMode)
             Dim packets() As PacketWriter = GetPackets(mode)
             For Each writer As PacketWriter In packets
-                Server.Send(writer.GetBytes, index_)
+                Server.Send(writer.GetBytes, Index_)
             Next
         End Sub
+        
 
-
-        Public ReadOnly Property Count() As Integer
-            Get
-                Return m_UniqueIDs.Count
-            End Get
-        End Property
 
         Public Sub Clear()
             m_UniqueIDs.Clear()

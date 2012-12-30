@@ -238,10 +238,9 @@ Public Class ServerBase
             If socket IsNot Nothing Then
                 socket.Shutdown(SocketShutdown.Both)
                 RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), index)
+                
+                ClientList.Delete(index)
             End If
-
-            ClientList.Delete(index)
-
         Catch threadEx As ThreadAbortException
         Catch ex As Exception
             RaiseEvent OnServerError(ex, -4)
@@ -272,8 +271,7 @@ Public Class ServerBase
                         socket = ClientList.GetSocket(Index_)
                         If socket IsNot Nothing Then
                             'Connection closed by the User.
-                            ClientList.Delete(Index_)
-                            RaiseEvent OnClientDisconnect(socket.RemoteEndPoint.ToString(), Index_)
+                            Disconnect(Index_)
                         Else
                             'Already Disconnected! 
                             'Connection Closed by us

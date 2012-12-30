@@ -1,5 +1,5 @@
 ﻿Namespace Functions
-    Module StaticEnums
+    Public Module StaticEnums
         Public Enum UseItemTypes
             None = 0
             Pot = 1
@@ -78,6 +78,11 @@
             Stall = &H9
             Union = &HB
             Academy = &H10
+        End Enum
+
+        Public Enum GroupSpawnMode
+            SPAWN = 1
+            DESPAWN = 2
         End Enum
     End Module
 End Namespace

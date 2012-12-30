@@ -3,6 +3,37 @@ Imports SRFramework
 
 Namespace Functions
     Module Movement
+
+        Public Sub SendMoveObject(writer As PacketWriter, uniqueID As UInt32, ByVal toPos As Position, curPos As Position, sendSource As Boolean)
+            writer.Create(ServerOpcodes.GAME_MOVEMENT)
+            writer.DWord(uniqueID)
+            writer.Byte(1)
+            'destination
+            writer.Byte(toPos.XSector)
+            writer.Byte(toPos.YSector)
+
+            If IsInCave(toPos) = False Then
+                writer.Byte(BitConverter.GetBytes(CShort(toPos.X)))
+                writer.Byte(BitConverter.GetBytes(CShort(toPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CShort(toPos.Y)))
+            Else
+                'In Cave
+                writer.Byte(BitConverter.GetBytes(CInt(toPos.X)))
+                writer.Byte(BitConverter.GetBytes(CInt(toPos.Z)))
+                writer.Byte(BitConverter.GetBytes(CInt(toPos.Y)))
+            End If
+
+            writer.Byte(Convert.ToByte(sendSource)) '1= source
+
+            If sendSource Then
+                writer.Byte(curPos.XSector)
+                writer.Byte(curPos.YSector)
+                writer.Byte(BitConverter.GetBytes(CShort(curPos.X / 100)))
+                writer.Float(curPos.Z)
+                writer.Byte(BitConverter.GetBytes(CShort(curPos.Y / 100)))
+            End If
+        End Sub
+
         Public Sub OnPlayerMovement(ByVal Index_ As Integer, ByVal packet As PacketReader)
             If PlayerData(Index_).Busy = True Or PlayerData(Index_).Attacking = True Then
                 Exit Sub
@@ -35,51 +66,6 @@ Namespace Functions
                 SendPm(Index_, "You are tyring to Angle Move to: " & toGrad, "Debug")
 
             End If
-        End Sub
-
-        Public Sub MoveUser(ByVal Index_ As Integer, ByVal toPos As Position)
-            Try
-                Dim writer As New PacketWriter
-                SendMoveObject(writer, PlayerData(Index_).UniqueID, toPos, PlayerData(Index_).Position, True)
-                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
-
-                PlayerData(Index_).PosTracker.Move(ToPos)
-                PlayerMoveTimer(Index_).Interval = 50
-                PlayerMoveTimer(Index_).Start()
-                ' End If
-
-            Catch ex As Exception
-                Console.WriteLine("OnMoveUser::error...")
-                Debug.Write(ex)
-            End Try
-        End Sub
-
-        Public Sub SendMoveObject(writer As PacketWriter, uniqueID As UInt32, ByVal toPos As Position, curPos As Position, sendSource As Boolean)
-            writer.Create(ServerOpcodes.GAME_MOVEMENT)
-            writer.DWord(uniqueID)
-            writer.Byte(1)
-            'destination
-            writer.Byte(toPos.XSector)
-            writer.Byte(toPos.YSector)
-
-            If IsInCave(toPos) = False Then
-                writer.Byte(BitConverter.GetBytes(CShort(toPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(toPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(toPos.Y)))
-            Else
-                'In Cave
-                writer.Byte(BitConverter.GetBytes(CInt(toPos.X)))
-                writer.Byte(BitConverter.GetBytes(CInt(toPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CInt(toPos.Y)))
-            End If
-
-            writer.Byte(1) '1= source
-
-            writer.Byte(curPos.XSector)
-            writer.Byte(curPos.YSector)
-            writer.Byte(BitConverter.GetBytes(CShort(curPos.X * -1)))
-            writer.Byte(BitConverter.GetBytes(curPos.Z))
-            writer.Byte(BitConverter.GetBytes(CShort(curPos.Y * -1)))
         End Sub
 
         ''' <summary>
@@ -124,7 +110,25 @@ Namespace Functions
             MoveUser(Index_, toPos)
             Return walkTime
         End Function
+
+        Public Sub MoveUser(ByVal Index_ As Integer, ByVal toPos As Position)
+            Try
+                Dim writer As New PacketWriter
+                SendMoveObject(writer, PlayerData(Index_).UniqueID, toPos, PlayerData(Index_).Position, False)
+                Server.SendIfPlayerIsSpawned(writer.GetBytes, Index_)
+
+                PlayerData(Index_).PosTracker.Move(toPos)
+                PlayerMoveTimer(Index_).Interval = 400
+                PlayerMoveTimer(Index_).Start()
+                ' End If
+
+            Catch ex As Exception
+                Console.WriteLine("OnMoveUser::error...")
+                Debug.Write(ex)
+            End Try
+        End Sub
         
+
         Public Sub CheckForCaveTeleporter(ByVal Index_ As Integer)
             If PlayerData(Index_) IsNot Nothing Then
                 For i = 0 To RefCaveTeleporter.Count - 1
@@ -135,6 +139,11 @@ Namespace Functions
                         'TODO: Rework this
                         Dim link As TeleportLink = point.Links(0)
 
+                        If point.Links.Count > 1 Then
+                            Log.WriteSystemLog("MEHEHEHEH")
+                        End If
+
+                    
                         If PlayerData(Index_).Level < link.MinLevel And link.MinLevel > 0 Then
                             'Level too low
                             Dim writer As New PacketWriter

@@ -60,7 +60,7 @@ Namespace Settings
         Public ServerTaxRate As UInt16 = 0
         Public ServerSpawnsPerSec As UInteger = 50
         Public ServerSpawnRate As Integer = 2
-
+ 
         Public ServerWorldChannel As UInt32 = 1
 
         Public LogDetail As Boolean = False

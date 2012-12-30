@@ -219,7 +219,17 @@ Namespace Functions
             Timers.LoginInfoTimer(Index_).Stop()
             SessionInfo(Index_).GameServerId = serverID
             SessionInfo(Index_).UserName = id
-            GlobalManager.OnSendUserAuth(serverID, id, pw, SessionInfo(Index_).IP, Index_)
+
+            If GlobalManagerCon.ManagerSocket.Connected Then
+                GlobalManager.OnSendUserAuth(serverID, id, pw, SessionInfo(Index_).IP, Index_)
+            Else
+                Dim writer As New PacketWriter
+                writer.Create(ServerOpcodes.LOGIN_AUTH)
+                writer.Byte(2) 'fail
+                writer.Byte(2) 'fail subcode
+                writer.Byte(2) 'server in insepction
+                Server.Send(writer.GetBytes, Index_)
+            End If
         End Sub
 
         Public Sub LoginSendUserAuthSucceed(packet As PacketReader)

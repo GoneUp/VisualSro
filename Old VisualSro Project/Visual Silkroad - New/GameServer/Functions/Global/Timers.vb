@@ -263,6 +263,7 @@ Namespace Functions
                 tmplist = monsterRemoveList.ToArray
                 RemoveMob(tmplist)
 
+                'Check ItemList
                 tmplist = ItemList.Keys.ToArray
                 For Each key In tmplist
                     If ItemList.ContainsKey(key) Then
@@ -272,9 +273,22 @@ Namespace Functions
                     End If
                 Next
 
+                'Check ChatItemLinks for invalid Items, 2 Minutes should be enough
+                Dim tmpKeyList = ChatLinkItemList.Keys.ToArray
+                For Each key In tmpKeyList
+                    If ChatLinkItemList.ContainsKey(key) Then
+                        If DateDiff(DateInterval.Second, ChatLinkItemList(key).CreationDate, Date.Now) > 120 Then
+                            ChatLinkItemList.Remove(key)
+                        End If
+                    End If
+                Next
+
 
                 stopwatch.Stop()
                 Debug.Print("WC: " & stopwatch.ElapsedMilliseconds & "ms. Count:" & MobList.Count)
+
+            Catch argEx As ArgumentException
+                'Happens sometimes on MobList.Keys.ToArray, dont worry
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: WC")
             End Try
@@ -373,6 +387,8 @@ Namespace Functions
                 stopwatch.Stop()
                 Debug.Print("MM: " & stopwatch.ElapsedMilliseconds & "ms")
 
+            Catch argEx As ArgumentException
+                'Happens sometimes on MobList.Keys.ToArray, dont worry
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MM")
                 '
@@ -403,7 +419,7 @@ Namespace Functions
                             ObjectSpawnCheck(Index_)
                             CheckForCaveTeleporter(Index_)
 
-                            'SendPm(Index_, "secx" & newPos.XSector & "secy" & newPos.YSector & "X: " & newPos.X & "Y: " & newPos.Y & " X:" & newPos.ToGameX & " Y: " & newPos.ToGameY & " Z: " & newPos.Z, "hh")
+                            SendPm(Index_, "secx" & newPos.XSector & "secy" & newPos.YSector & "X: " & newPos.X & "Y: " & newPos.Y & " X:" & newPos.ToGameX & " Y: " & newPos.ToGameY & " Z: " & newPos.Z, "hh")
                             PlayerMoveTimer(Index_).Start()
 
                         ElseIf PlayerData(Index_).PosTracker.MoveState = cPositionTracker.enumMoveState.Standing Then

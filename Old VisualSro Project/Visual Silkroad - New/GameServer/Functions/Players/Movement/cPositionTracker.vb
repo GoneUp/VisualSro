@@ -18,7 +18,6 @@ Namespace Functions
         Dim m_startWalkTime As DateTime
 
         Public Sub New(ByVal p As Position, ByVal walkSpeed As Single, ByVal runSpeed As Single, ByVal zerkSpeed As Single)
-
             m_pPosition = p 'Character Start Point
             m_wPosition = p 'Character Walk Point
 
@@ -28,6 +27,8 @@ Namespace Functions
 
             m_pMoveState = enumMoveState.Standing
             m_pSpeedMode = enumSpeedMode.Running
+
+            TmrMovement = New Timer
         End Sub
 
         Public Function GetCurPos() As Position
@@ -56,6 +57,7 @@ Namespace Functions
 
                         If distance = 0.0 Then
                             'Nothing to do more
+                            m_startWalkTime = Date.Now
                             Return m_pPosition
                         End If
 
@@ -72,6 +74,7 @@ Namespace Functions
                         m_pPosition.YSector = GetYSecFromGameY(tmpY)
                         m_pPosition.X = GetXOffset(tmpX)
                         m_pPosition.Y = GetYOffset(tmpY)
+
                         m_startWalkTime = Date.Now
                         Return m_pPosition
                     Case enumMoveState.Spinning
@@ -116,7 +119,6 @@ Namespace Functions
                 walkTime = 1
             End If
             If Double.IsInfinity(walkTime) = False And Double.IsNaN(walkTime) = False Then
-                TmrMovement = New Timer
                 TmrMovement.Interval = walkTime
                 TmrMovement.Start()
             End If
@@ -126,13 +128,11 @@ Namespace Functions
             m_pPosition = m_wPosition
             'Neue Character Position merken
             m_pMoveState = enumMoveState.Standing
-            TmrMovement.Dispose()
-        End Sub
+     End Sub
 
         Public Sub StopMove()
             If TmrMovement IsNot Nothing Then
                 TmrMovement.Stop()
-                TmrMovement.Dispose()
             End If
 
             m_pMoveState = enumMoveState.Standing
@@ -190,9 +190,6 @@ Namespace Functions
                 Return m_pPosition
             End Get
             Set(ByVal value As Position)
-                If TmrMovement IsNot Nothing Then
-                    'tmrMovement.Dispose()
-                End If
                 m_pPosition = value
             End Set
         End Property

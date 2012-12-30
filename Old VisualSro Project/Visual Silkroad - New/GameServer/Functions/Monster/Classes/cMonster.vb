@@ -27,6 +27,20 @@ Namespace Functions
         Public SpawnedGuard40 As Boolean
         Public SpawnedGuard20 As Boolean
 
+        Public Property PosTracker As cPositionTracker
+            Get
+                Return m_posTracker
+            End Get
+            Set(value As cPositionTracker)
+                If m_posTracker IsNot Nothing Then
+                    m_posTracker = value
+                Else
+                    m_posTracker = value
+                    AddHandler m_posTracker.TmrMovement.Elapsed, AddressOf AttackTimerElapsed
+                End If
+            End Set
+        End Property
+
 
         Public Function IsAttacking() As Boolean
             If Date.Compare(Date.Now, Me.AttackEndTime) = -1 Then
@@ -45,11 +59,11 @@ Namespace Functions
             Return False
         End Function
 
+   
 #Region "Timer"
         Sub New()
             m_attackTimer = New Timer
             AddHandler m_attackTimer.Elapsed, AddressOf AttackTimerElapsed
-            AddHandler PosTracker.TmrMovement.Elapsed, AddressOf AttackTimerElapsed
         End Sub
 
         Public Sub AttackTimerStart(ByVal interval As Integer)

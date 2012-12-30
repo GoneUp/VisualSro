@@ -57,7 +57,7 @@ Namespace Functions
 
         Public Sub MoveMob(ByVal uniqueID As Integer, ByVal toPos As Position)
             Dim writer As New PacketWriter
-            SendMoveObject(writer, uniqueID, toPos, MobList(uniqueID).Position, True)
+            SendMoveObject(writer, uniqueID, toPos, MobList(uniqueID).Position, False)
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(uniqueID).UniqueID)
             MobList(uniqueID).PosTracker.Move(toPos)
@@ -84,26 +84,7 @@ Namespace Functions
             End If
 
             Dim writer As New PacketWriter
-            writer.Create(ServerOpcodes.GAME_MOVEMENT)
-            writer.DWord(uniqueID)
-            writer.Byte(1)
-            'destination
-            writer.Byte(toPos.XSector)
-            writer.Byte(toPos.YSector)
-
-            If IsInCave(toPos) = False Then
-                writer.Byte(BitConverter.GetBytes(CShort(toPos.X)))
-                writer.Byte(BitConverter.GetBytes(CShort(toPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(toPos.Y)))
-            Else
-                'In Cave
-                writer.Byte(BitConverter.GetBytes(CInt(toPos.X)))
-                writer.Byte(BitConverter.GetBytes(CInt(toPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CInt(toPos.Y)))
-            End If
-
-            writer.Byte(0)
-            '1= source
+            SendMoveObject(writer, uniqueID, toPos, MobList(uniqueID).Position, True)
 
             Server.SendIfMobIsSpawned(writer.GetBytes, MobList(uniqueID).UniqueID)
             MobList(uniqueID).PosTracker.Move(toPos)

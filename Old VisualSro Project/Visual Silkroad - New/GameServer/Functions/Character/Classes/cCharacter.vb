@@ -1,4 +1,6 @@
-﻿Namespace Functions
+﻿Imports SRFramework
+
+Namespace Functions
     Friend Class cCharacter
         Inherits cGameObject
 
@@ -56,7 +58,7 @@
         Public Busy As Boolean = False
         Public Alive As Boolean = True
         Public Skilling As Boolean = False
-
+        Public GroupSpawnPacketsToSend As New Queue(Of PacketWriter)
         Public UsedItem As UseItemTypes
         Public UsedItemParameter As Integer = 0
 
@@ -396,14 +398,14 @@
                                         PosTracker.WalkSpeed *= (effect.EffectParams(0) / 100)
                                         PosTracker.RunSpeed *= (effect.EffectParams(0) / 100)
                                         PosTracker.BerserkSpeed *= (effect.EffectParams(0) / 100)
-                                        
+
 
                                     Case Else
                                         Log.WriteSystemLog("AddBuffsToStats:: Unkown Effect: " & effect.EffectId)
                                 End Select
                             Next
 
-                          
+
                     End Select
                 End If
             Next

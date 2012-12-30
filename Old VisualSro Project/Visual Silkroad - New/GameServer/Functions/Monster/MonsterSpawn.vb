@@ -138,7 +138,7 @@ Namespace Functions
             '                Dim tmpSpawn As New GroupSpawn
             '                tmpSpawn.AddObject(tmp.UniqueID)
             '                SendNotice(tmp.UniqueID & " type: " & mob_.TypeName)
-            '                tmpSpawn.Send(refindex, GroupSpawn.GroupSpawnMode.SPAWN)
+            '                tmpSpawn.Send(refindex, GroupSpawnMode.SPAWN)
             '                PlayerData(refindex).SpawnedMonsters.Add(tmp.UniqueID)
             '            End If
             '        End If
@@ -184,7 +184,9 @@ Namespace Functions
                     Next
 
                     If spawnCollector.Count > 0 Then
-                        spawnCollector.Send(i, GroupSpawn.GroupSpawnMode.DESPAWN)
+                        For Each tmpPacket In spawnCollector.GetPackets(GroupSpawnMode.DESPAWN)
+                            PlayerData(i).GroupSpawnPacketsToSend.Enqueue(tmpPacket)
+                        Next
                         spawnCollector.Clear()
                     End If
                 End If

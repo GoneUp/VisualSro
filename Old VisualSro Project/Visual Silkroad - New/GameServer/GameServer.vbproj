@@ -136,6 +136,7 @@
     <Compile Include="Functions\Global\Classes\cGameObject.vb" />
     <Compile Include="Functions\Global\GlobalGame.vb" />
     <Compile Include="Functions\Global\Classes\GroupSpawn.vb" />
+    <Compile Include="Functions\Global\Classes\GroupSpawnSender.vb" />
     <Compile Include="Functions\Global\ObjectSpawn.vb" />
     <Compile Include="Functions\Global\StaticEnums.vb" />
     <Compile Include="Functions\Global\Timers.vb" />

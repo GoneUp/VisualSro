@@ -7,7 +7,7 @@ Public Class cServer_Gameserver
     Inherits ServerBase
 
     Public Sub SendToAllIngame(ByVal buff() As Byte)
-        For i As Integer = 0 To OnlineClients
+        For i As Integer = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
@@ -33,8 +33,8 @@ Public Class cServer_Gameserver
         Next i
     End Sub
 
-    Public Sub SendToAllInRange(ByVal buff() As Byte, ByVal Position As Position)
-        For i As Integer = 0 To OnlineClients
+    Public Sub SendToAllInRange(ByVal buff() As Byte, ByVal position As Position)
+        For i As Integer = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
@@ -51,15 +51,14 @@ Public Class cServer_Gameserver
         Next i
     End Sub
 
-    Public Sub SendToAllInRangeExpectMe(ByVal buff() As Byte, ByVal Index As Integer)
-
-        For i As Integer = 0 To OnlineClients
+    Public Sub SendToAllInRangeExpectMe(ByVal buff() As Byte, ByVal Index_ As Integer)
+        For i As Integer = 0 To MaxClients - 1
             Dim socket As Socket = ClientList.GetSocket(i)
             Dim player As cCharacter = PlayerData(i)
             'Check if Player is ingame
-            If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index) _
+            If (socket IsNot Nothing) AndAlso (player IsNot Nothing) AndAlso socket.Connected AndAlso (i <> Index_) _
                 Then
-                Dim distance As Long = CalculateDistance(PlayerData(Index).Position, player.Position)
+                Dim distance As Long = CalculateDistance(PlayerData(Index_).Position, player.Position)
                 'Calculate Distance
                 If distance < Settings.ServerRange Then
                     'In Rage 

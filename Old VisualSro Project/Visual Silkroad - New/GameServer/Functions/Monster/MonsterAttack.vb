@@ -101,7 +101,7 @@ Namespace Functions
                 MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, False)
             Else
                 UpdateHP(Index_)
-                Mob_.AttackTimer_Start(RefSkill.UseDuration * 250)
+                Mob_.AttackTimerStart(RefSkill.UseDuration * 250)
                 Mob_.AttackEndTime = Date.Now.AddMilliseconds(RefSkill.UseDuration * 250)
             End If
         End Sub

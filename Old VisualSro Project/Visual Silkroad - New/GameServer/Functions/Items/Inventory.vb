@@ -150,7 +150,7 @@ Namespace Functions
                                 DestItem.Data += amout
                                 ItemManager.UpdateItem(DestItem)
 
-                                UpdateAmout(Index_, SourceInvItem.Slot, amout * -1)
+                                UpdateItemAmout(Index_, SourceInvItem.Slot, amout * -1)
 
                             ElseIf DestItem.ObjectID = SourceItem.ObjectID And DestItem.Data + amout > _SourceRef.MAX_STACK Then
                                 'Only stack a part of the item
@@ -158,7 +158,7 @@ Namespace Functions
                                 DestItem.Data += tostack
                                 ItemManager.UpdateItem(DestItem)
 
-                                UpdateAmout(Index_, SourceInvItem.Slot, tostack * -1)
+                                UpdateItemAmout(Index_, SourceInvItem.Slot, tostack * -1)
                             End If
                         Else
                             Inventorys(Index_).UserItems(New_Slot).ItemID = SourceInvItem.ItemID
@@ -173,8 +173,8 @@ Namespace Functions
                 End If
 
 
-                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Old_Slot), cInventoryItem.Type.Inventory)
-                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(New_Slot), cInventoryItem.Type.Inventory)
+                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(Old_Slot), InvItemTypes.Inventory)
+                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(New_Slot), InvItemTypes.Inventory)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
@@ -221,7 +221,7 @@ Namespace Functions
             Dim item_uniqueid As UInteger = DropItem(invItem, item, PlayerData(index_).Position)
 
             invItem.ItemID = 0
-            ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
+            ItemManager.UpdateInvItem(invItem, InvItemTypes.Inventory)
 
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_ITEM_DELETE)
@@ -307,7 +307,7 @@ Namespace Functions
                     If slot <> -1 Then
                         Dim ref As cRefItem = GetItemByID(_item.Item.ObjectID)
                         Inventorys(Index_).UserItems(slot).ItemID = _item.Item.ID
-                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), InvItemTypes.Inventory)
 
                         writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)
@@ -490,8 +490,8 @@ Namespace Functions
                 End If
             End If
 
-            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(oldSlot), cInventoryItem.Type.Inventory)
-            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(newSlot), cInventoryItem.Type.AvatarInventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(oldSlot), InvItemTypes.Inventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(newSlot), InvItemTypes.AvatarInventory)
 
 
             Dim writer As New PacketWriter
@@ -545,8 +545,8 @@ Namespace Functions
                 End If
             End If
 
-            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(oldSlot), cInventoryItem.Type.AvatarInventory)
-            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(newSlot), cInventoryItem.Type.Inventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).AvatarItems(oldSlot), InvItemTypes.AvatarInventory)
+            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(newSlot), InvItemTypes.Inventory)
 
 
             Dim writer As New PacketWriter

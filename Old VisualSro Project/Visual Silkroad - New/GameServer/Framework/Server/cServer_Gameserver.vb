@@ -115,17 +115,21 @@ Public Class cServer_Gameserver
     End Sub
 
 
-    Public Sub SendToStallSession(ByVal buff() As Byte, ByVal stallID As UInteger, ByVal owner As Boolean)
+    Public Sub SendToStallSession(ByVal buff() As Byte, ByVal stallID As UInteger, ByVal owner As Boolean, Index_ As Integer, Optional ByVal expectMe As Boolean = False)
         For i = 0 To Stalls.Count - 1
             If Stalls(i).StallID = stallID Then
                 'Send to Visitors
-                For v = 0 To Stalls(i).Visitors.Count - 1
-                    Send(buff, Stalls(i).Visitors(v))
+                For j = 0 To Stalls(i).Visitors.Count - 1
+                    If Index_ <> Stalls(i).Visitors(j) Or (Index_ = Stalls(i).Visitors(j) And expectMe = False) Then
+                        Send(buff, Stalls(i).Visitors(j))
+                    End If
                 Next
 
                 'Send To Owner
-                If Owner Then
-                    Send(buff, Stalls(i).OwnerIndex)
+                If owner Then
+                    If Index_ <> Stalls(i).OwnerIndex Or (Index_ = Stalls(i).OwnerIndex And expectMe = False) Then
+                        Send(buff, Stalls(i).OwnerIndex)
+                    End If
                 End If
 
                 Exit For

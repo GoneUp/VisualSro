@@ -62,7 +62,7 @@ Namespace Functions
 
                         Dim ID As UInt64 = ItemManager.AddItem(item)
                         invItem.ItemID = ID
-                        ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(invItem, InvItemTypes.Inventory)
 
                         itemSlots.Add(slot)
 

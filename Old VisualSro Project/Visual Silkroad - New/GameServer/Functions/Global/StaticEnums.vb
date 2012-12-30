@@ -9,6 +9,14 @@
             ReverseScrollPoint = 5
         End Enum
 
+        Public Enum InvItemTypes
+            Inventory
+            AvatarInventory
+            COSInventory
+            Storage
+            GuildStorage
+        End Enum
+
         Public Enum TeleportTypes As Byte
             None = 0
             Npc = 1

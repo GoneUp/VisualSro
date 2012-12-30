@@ -273,7 +273,7 @@ Namespace Functions
             PlayerData(Index_).InExchangeWith = 0
 
             If PlayerData(Index_).InStall Then
-                Stall_Close_Own(Index_)
+                OnStallCloseOwn(Index_)
             End If
 
             PlayerData(Index_).InStall = False
@@ -294,7 +294,7 @@ Namespace Functions
         Public Sub CheckStall(ByVal Index_ As Integer)
             For i = 0 To Stalls.Count - 1
                 If Stalls(i).OwnerID = PlayerData(Index_).UniqueID Then
-                    Stall_Close_Own(Index_)
+                    OnStallCloseOwn(Index_)
                 End If
             Next
         End Sub

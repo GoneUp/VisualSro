@@ -157,9 +157,9 @@
             Parry = Math.Round(Me.Level + 10)
 
             '=================Really unsure of these Formulas=============
-            WalkSpeed = 15
-            RunSpeed = Level + 49
-            BerserkSpeed = RunSpeed * 2
+            PosTracker.WalkSpeed = 15
+            PosTracker.RunSpeed = Level + 49
+            PosTracker.BerserkSpeed = RunSpeed * 2
 
             'Set default.
             MinPhy = 0

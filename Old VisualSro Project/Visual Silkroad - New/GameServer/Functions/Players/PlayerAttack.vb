@@ -244,7 +244,7 @@ Namespace Functions
                 End If
 
                 'Monster Attack back
-                mob.AttackTimer_Start(5)
+                mob.AttackTimerStart(5)
             End If
         End Sub
 
@@ -389,7 +389,7 @@ Namespace Functions
                 End If
 
                 'Monster Attack back
-                Mob_.AttackTimer_Start(5)
+                Mob_.AttackTimerStart(5)
             End If
         End Sub
 

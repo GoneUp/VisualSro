@@ -76,7 +76,7 @@ Namespace Functions
 
                 Dim id As UInt64 = ItemManager.AddItem(tempItem)
                 Inventorys(Index_).UserItems(slot).ItemID = id
-                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
+                ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), InvItemTypes.Inventory)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_ITEM_MOVE)

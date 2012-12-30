@@ -438,7 +438,7 @@ Namespace Functions
                         tmpItem.OwnerID = .CharacterId
                         tmpItem.Slot = slot
                         tmpItem.ItemID = 0
-                        ItemManager.AddInvItem(tmpItem, cInventoryItem.Type.Inventory)
+                        ItemManager.AddInvItem(tmpItem, InvItemTypes.Inventory)
                     Next
                     'Avatar
                     For slot = 0 To .MaxAvatarSlots
@@ -446,7 +446,7 @@ Namespace Functions
                         tmpItem.OwnerID = .CharacterId
                         tmpItem.Slot = slot
                         tmpItem.ItemID = 0
-                        ItemManager.AddInvItem(tmpItem, cInventoryItem.Type.AvatarInventory)
+                        ItemManager.AddInvItem(tmpItem, InvItemTypes.AvatarInventory)
                     Next
                     'Storage
                     For slot = 0 To 255
@@ -454,7 +454,7 @@ Namespace Functions
                         tmpItem.OwnerID = .CharacterId
                         tmpItem.Slot = slot
                         tmpItem.ItemID = 0
-                        ItemManager.AddInvItem(tmpItem, cInventoryItem.Type.Storage)
+                        ItemManager.AddInvItem(tmpItem, InvItemTypes.Storage)
                     Next
 
 
@@ -470,7 +470,7 @@ Namespace Functions
                     item.Data = refitems(1).MAX_DURA
                     item.CreatorName = .CharacterName & "#START"
                     id = ItemManager.AddItem(item)
-                    ItemManager.UpdateInvItem(.CharacterId, 1, id, cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(.CharacterId, 1, id, InvItemTypes.Inventory)
 
                     item = New cItem 'legs
                     item.ObjectID = items(2)
@@ -478,7 +478,7 @@ Namespace Functions
                     item.Data = refitems(2).MAX_DURA
                     item.CreatorName = .CharacterName & "#START"
                     id = ItemManager.AddItem(item)
-                    ItemManager.UpdateInvItem(.CharacterId, 4, id, cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(.CharacterId, 4, id, InvItemTypes.Inventory)
 
                     item = New cItem 'Foot
                     item.ObjectID = items(3)
@@ -486,7 +486,7 @@ Namespace Functions
                     item.Data = refitems(3).MAX_DURA
                     item.CreatorName = .CharacterName & "#START"
                     id = ItemManager.AddItem(item)
-                    ItemManager.UpdateInvItem(.CharacterId, 5, id, cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(.CharacterId, 5, id, InvItemTypes.Inventory)
 
                     item = New cItem 'Weapon
                     item.ObjectID = items(4)
@@ -494,7 +494,7 @@ Namespace Functions
                     item.Data = refitems(4).MAX_DURA
                     item.CreatorName = .CharacterName & "#START"
                     id = ItemManager.AddItem(item)
-                    ItemManager.UpdateInvItem(.CharacterId, 6, id, cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(.CharacterId, 6, id, InvItemTypes.Inventory)
 
                     If items(4) = 3632 Or items(4) = 3633 Then 'Sword or Blade need a Shield
                         item = New cItem
@@ -503,7 +503,7 @@ Namespace Functions
                         item.Data = GetItemByID(251).MAX_DURA
                         item.CreatorName = .CharacterName & "#START"
                         id = ItemManager.AddItem(item)
-                        ItemManager.UpdateInvItem(.CharacterId, 7, id, cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(.CharacterId, 7, id, InvItemTypes.Inventory)
 
 
                     ElseIf items(4) = 3636 Then 'Bow --> Give some Arrows
@@ -512,7 +512,7 @@ Namespace Functions
                         item.Data = 100
                         item.CreatorName = .CharacterName & "#START"
                         id = ItemManager.AddItem(item)
-                        ItemManager.UpdateInvItem(.CharacterId, 7, id, cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(.CharacterId, 7, id, InvItemTypes.Inventory)
 
                     ElseIf items(4) = 10730 Or items(4) = 10734 Or items(4) = 10737 Then 'EU Weapons who need a shield
                         item = New cItem
@@ -521,7 +521,7 @@ Namespace Functions
                         item.Data = GetItemByID(251).MAX_DURA
                         item.CreatorName = .CharacterName & "#START"
                         id = ItemManager.AddItem(item)
-                        ItemManager.UpdateInvItem(.CharacterId, 7, id, cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(.CharacterId, 7, id, InvItemTypes.Inventory)
 
                     ElseIf items(4) = 10733 Then 'Armbrust --> Bolt
                         item = New cItem
@@ -529,7 +529,7 @@ Namespace Functions
                         item.Data = 100
                         item.CreatorName = .CharacterName & "#START"
                         id = ItemManager.AddItem(item)
-                        ItemManager.UpdateInvItem(.CharacterId, 7, id, cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(.CharacterId, 7, id, InvItemTypes.Inventory)
                     End If
 
                     'Hotkeys

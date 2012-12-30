@@ -61,7 +61,7 @@ Namespace Functions
 
                             Dim ID As UInt64 = ItemManager.AddItem(tempItem)
                             Inventorys(Index_).UserItems(slot).ItemID = ID
-                            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
+                            ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), InvItemTypes.Inventory)
 
                             'SAVE IT
                             itemSlots.Add(slot)
@@ -81,7 +81,7 @@ Namespace Functions
 
                         Dim ID As UInt64 = ItemManager.AddItem(tempItem)
                         Inventorys(Index_).UserItems(slot).ItemID = ID
-                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(Inventorys(Index_).UserItems(slot), InvItemTypes.Inventory)
 
                         'SAVE IT
                         itemSlots.Add(slot)
@@ -103,9 +103,14 @@ Namespace Functions
                     writer.Byte(slot)
                 Next
                 writer.Word(amout)
-                For i = 1 To amout
+                If buyItem.CLASS_A = 1 Then
+                    For i = 1 To amout
+                        writer.DWord(0)
+                    Next
+                Else
                     writer.DWord(0)
-                Next
+                End If
+
                 Server.Send(writer.GetBytes, Index_)
             End If
         End Sub
@@ -142,7 +147,13 @@ Namespace Functions
 
             PlayerData(Index_).BuybackList.Insert(0, item)
 
-            UpdateAmout(Index_, invItem.Slot, amout * -1)
+            If refItem.CLASS_A = 1 Then
+                invItem.ItemID = 0
+                ItemManager.UpdateInvItem(invItem, InvItemTypes.Inventory)
+                ItemManager.RemoveItem(item.ID)
+            Else
+                UpdateItemAmout(Index_, invItem.Slot, amout * -1)
+            End If
 
             PlayerData(Index_).Gold += gold
             UpdateGold(Index_)

@@ -2,12 +2,11 @@
 
 Namespace Functions
     Public Class cPositionTracker
-        WithEvents m_tmrMovement As Timer
+        Public WithEvents TmrMovement As Timer
 
         'ReadOnly
         Dim m_pPosition As Position 'Player Position
         Dim m_wPosition As Position 'Target Position
-
 
         Dim m_pSpeedMode As enumSpeedMode
         Dim m_pMoveState As enumMoveState
@@ -117,23 +116,23 @@ Namespace Functions
                 walkTime = 1
             End If
             If Double.IsInfinity(walkTime) = False And Double.IsNaN(walkTime) = False Then
-                m_tmrMovement = New Timer
-                m_tmrMovement.Interval = walkTime
-                m_tmrMovement.Start()
+                TmrMovement = New Timer
+                TmrMovement.Interval = walkTime
+                TmrMovement.Start()
             End If
         End Sub
 
-        Private Sub MovementTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs) Handles m_tmrMovement.Elapsed
+        Private Sub MovementTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs) Handles TmrMovement.Elapsed
             m_pPosition = m_wPosition
             'Neue Character Position merken
             m_pMoveState = enumMoveState.Standing
-            m_tmrMovement.Dispose()
+            TmrMovement.Dispose()
         End Sub
 
         Public Sub StopMove()
-            If m_tmrMovement IsNot Nothing Then
-                m_tmrMovement.Stop()
-                m_tmrMovement.Dispose()
+            If TmrMovement IsNot Nothing Then
+                TmrMovement.Stop()
+                TmrMovement.Dispose()
             End If
 
             m_pMoveState = enumMoveState.Standing
@@ -191,7 +190,7 @@ Namespace Functions
                 Return m_pPosition
             End Get
             Set(ByVal value As Position)
-                If m_tmrMovement IsNot Nothing Then
+                If TmrMovement IsNot Nothing Then
                     'tmrMovement.Dispose()
                 End If
                 m_pPosition = value

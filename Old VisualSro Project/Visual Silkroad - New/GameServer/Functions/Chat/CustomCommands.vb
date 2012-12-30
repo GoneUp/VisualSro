@@ -186,7 +186,7 @@ Namespace GameMod
                         invItem.OwnerID = PlayerData(Index_).CharacterId
                         invItem.Slot = slot
                         invItem.ItemID = tempItem.ID
-                        ItemManager.UpdateInvItem(invItem, cInventoryItem.Type.Inventory)
+                        ItemManager.UpdateInvItem(invItem, InvItemTypes.Inventory)
 
                         writer.Create(ServerOpcodes.GAME_ITEM_MOVE)
                         writer.Byte(1)

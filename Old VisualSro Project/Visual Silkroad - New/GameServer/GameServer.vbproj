@@ -136,6 +136,7 @@
     <Compile Include="Functions\Global\Classes\cGameObject.vb" />
     <Compile Include="Functions\Global\GlobalGame.vb" />
     <Compile Include="Functions\Global\Classes\GroupSpawn.vb" />
+    <Compile Include="Functions\Global\ObjectSpawn.vb" />
     <Compile Include="Functions\Global\StaticEnums.vb" />
     <Compile Include="Functions\Global\Timers.vb" />
     <Compile Include="Functions\Guild\Classes\cGuild.vb" />
@@ -151,6 +152,9 @@
     <Compile Include="Functions\Items\ItemManager.vb" />
     <Compile Include="Functions\Items\ItemSpawn.vb" />
     <Compile Include="Functions\Items\ItemShop.vb" />
+    <Compile Include="Functions\Items\UseItemGeneral.vb" />
+    <Compile Include="Functions\Items\UseItemMall.vb" />
+    <Compile Include="Functions\Items\UseItemScroll.vb" />
     <Compile Include="Functions\LoginAuth.vb" />
     <Compile Include="Functions\Character\Classes\cCharListing.vb" />
     <Compile Include="Functions\Character\Classes\cCharacter.vb" />
@@ -171,7 +175,6 @@
     <Compile Include="Functions\GameMaster\GameMaster.vb" />
     <Compile Include="Functions\Items\Classes\cInventory.vb" />
     <Compile Include="Functions\Items\Inventory.vb" />
-    <Compile Include="Functions\Items\UseItem.vb" />
     <Compile Include="Functions\Monster\Classes\cMonster.vb" />
     <Compile Include="Functions\Monster\MonsterSpawn.vb" />
     <Compile Include="Functions\Npc\Classes\cNPC.vb" />

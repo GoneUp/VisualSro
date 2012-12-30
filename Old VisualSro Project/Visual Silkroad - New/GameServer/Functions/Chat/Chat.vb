@@ -22,7 +22,7 @@ Namespace Functions
                     OnNoticeChat(Packet, Index_)
 
                 Case ChatModes.Stall
-                    OnStall_Chat(Packet, Index_)
+                    OnStallChat(packet, Index_)
 
                 Case ChatModes.Union
                 Case ChatModes.Academy

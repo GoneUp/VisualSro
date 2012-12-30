@@ -254,7 +254,7 @@ Namespace Functions
                             monsterRemoveList.Add(Mob_.UniqueID)
                         ElseIf Mob_.GetsAttacked = True Then
                             'Attack back...
-                            Mob_.AttackTimer_Start(10)
+                            Mob_.AttackTimerStart(10)
                         End If
                     End If
                 Next
@@ -324,8 +324,8 @@ Namespace Functions
                                 Dim distFromSpawn As Single = CalculateDistance(Mob_.Position, Mob_.PositionSpawn)
 
                                 If distFromSpawn < Settings.ServerRange / 1.25 Then
-                                    Dim toX As Single = Mob_.Position.ToGameX + Rand.Next(-15, +15)
-                                    Dim toY As Single = Mob_.Position.ToGameY + Rand.Next(-15, +15)
+                                    Dim toX As Single = Mob_.Position.ToGameX + Rand.Next(-30, +30)
+                                    Dim toY As Single = Mob_.Position.ToGameY + Rand.Next(-30, +30)
                                     Dim vaildCords As Boolean = False
                                     Dim validCordTrys As Integer = 0
 
@@ -342,7 +342,7 @@ Namespace Functions
                                             validCordTrys += 1
                                         End If
                                     Loop While vaildCords = False
-
+                                    
                                     Dim toPos As New Position
                                     toPos.XSector = GetXSecFromGameX(toX)
                                     toPos.YSector = GetYSecFromGameY(toY)
@@ -350,8 +350,19 @@ Namespace Functions
                                     toPos.Z = Mob_.Position.Z
                                     toPos.Y = GetYOffset(toY)
 
+                                    If Mob_.PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Walking And Rand.Next(0, 2) = 2 Then
+                                        'Chance to get into run mode 1/3
+                                        SetMobRunning(Mob_.UniqueID)
+
+                                    ElseIf Mob_.PosTracker.SpeedMode = cPositionTracker.enumSpeedMode.Running And Rand.Next(0, 1) = 1 Then
+                                        'Chanche to get out 1/2
+                                        SetMobWalking(Mob_.UniqueID)
+                                    End If
+
                                     MoveMob(Mob_.UniqueID, toPos)
                                 Else
+                                    SetMobRunning(Mob_.UniqueID)
+
                                     MoveMob(Mob_.UniqueID, Mob_.PositionSpawn)
                                 End If
                             End If
@@ -369,6 +380,8 @@ Namespace Functions
 
             MonsterMovement.Start()
         End Sub
+
+
 
         Private Sub PlayerMoveTimerElapsed(ByVal sender As Object, ByVal e As ElapsedEventArgs)
             Dim Index_ As Integer = -1
@@ -421,12 +434,12 @@ Namespace Functions
                                 Case 0
                                     'Nomral
                                     If PlayerData(i).CHP < PlayerData(i).HP Then
-                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.002, 0,
+                                        PlayerData(i).CHP += Math.Round(PlayerData(i).HP * 0.01, 0,
                                                                         MidpointRounding.AwayFromZero)
                                         changedHPMP = True
                                     End If
                                     If PlayerData(i).CMP < PlayerData(i).MP Then
-                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.002, 0,
+                                        PlayerData(i).CMP += Math.Round(PlayerData(i).MP * 0.01, 0,
                                                                         MidpointRounding.AwayFromZero)
                                         changedHPMP = True
                                     End If

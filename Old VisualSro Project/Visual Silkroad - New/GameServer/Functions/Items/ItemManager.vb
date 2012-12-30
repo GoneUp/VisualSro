@@ -12,34 +12,34 @@
             Return ID
         End Function
 
-        Public Sub AddInvItem(ByVal item As cInventoryItem, ByVal type As cInventoryItem.Type)
+        Public Sub AddInvItem(ByVal item As cInventoryItem, ByVal type As InvItemTypes)
             If GameDB.Items.ContainsKey(item.ItemID) Or item.ItemID = 0 Then
                 Select Case type
-                    Case cInventoryItem.Type.Inventory
+                    Case InvItemTypes.Inventory
                         GameDB.InventoryItems.Add(item)
 
                         Database.SaveQuery(String.Format("INSERT INTO inventory(CharID, Slot, ItemID) VALUES ('{0}', '{1}', '{2}')", _
                                                          item.OwnerID, item.Slot, item.ItemID))
 
-                    Case cInventoryItem.Type.AvatarInventory
+                    Case InvItemTypes.AvatarInventory
                         GameDB.AvatarInventoryItems.Add(item)
 
                         Database.SaveQuery(String.Format("INSERT INTO inventory_avatar(CharID, Slot, ItemID) VALUES ('{0}', '{1}', '{2}')", _
                                                          item.OwnerID, item.Slot, item.ItemID))
 
-                    Case cInventoryItem.Type.COSInventory
+                    Case InvItemTypes.COSInventory
                         GameDB.COSInventoryItems.Add(item)
 
                         Database.SaveQuery(String.Format("INSERT INTO inventory_cos(COSID, Slot, ItemID) VALUES ('{0}', '{1}', '{2}')", _
                                                          item.OwnerID, item.Slot, item.ItemID))
 
-                    Case cInventoryItem.Type.Storage
+                    Case InvItemTypes.Storage
                         GameDB.StorageItems.Add(item)
 
                         Database.SaveQuery(String.Format("INSERT INTO storage(AccountID, Slot, ItemID) VALUES ('{0}', '{1}', '{2}')", _
                                                          item.OwnerID, item.Slot, item.ItemID))
 
-                    Case cInventoryItem.Type.GuildStorage
+                    Case InvItemTypes.GuildStorage
                         GameDB.GuildStorageItems.Add(item)
 
                         Database.SaveQuery(String.Format("INSERT INTO storage_guild(GuildID, Slot, ItemID) VALUES ('{0}', '{1}', '{2}')", _
@@ -62,9 +62,9 @@
             End If
         End Sub
 
-        Public Sub UpdateInvItem(ByVal item As cInventoryItem, ByVal type As cInventoryItem.Type)
+        Public Sub UpdateInvItem(ByVal item As cInventoryItem, ByVal type As InvItemTypes)
             Select Case type
-                Case cInventoryItem.Type.Inventory
+                Case InvItemTypes.Inventory
                     For i = 0 To GameDB.InventoryItems.Count - 1
                         If GameDB.InventoryItems(i).OwnerID = item.OwnerID And GameDB.InventoryItems(i).Slot = item.Slot Then
                             GameDB.InventoryItems(i) = item
@@ -74,7 +74,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.AvatarInventory
+                Case InvItemTypes.AvatarInventory
                     For i = 0 To GameDB.AvatarInventoryItems.Count - 1
                         If GameDB.AvatarInventoryItems(i).OwnerID = item.OwnerID And GameDB.AvatarInventoryItems(i).Slot = item.Slot Then
                             GameDB.AvatarInventoryItems(i) = item
@@ -84,7 +84,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.COSInventory
+                Case InvItemTypes.COSInventory
                     For i = 0 To GameDB.COSInventoryItems.Count - 1
                         If GameDB.COSInventoryItems(i).OwnerID = item.OwnerID And GameDB.COSInventoryItems(i).Slot = item.Slot Then
                             GameDB.COSInventoryItems(i) = item
@@ -94,7 +94,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.Storage
+                Case InvItemTypes.Storage
                     For i = 0 To GameDB.StorageItems.Count - 1
                         If GameDB.StorageItems(i).OwnerID = item.OwnerID And GameDB.StorageItems(i).Slot = item.Slot Then
                             GameDB.StorageItems(i) = item
@@ -104,7 +104,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.GuildStorage
+                Case InvItemTypes.GuildStorage
                     For i = 0 To GameDB.GuildStorageItems.Count - 1
                         If GameDB.GuildStorageItems(i).OwnerID = item.OwnerID And GameDB.GuildStorageItems(i).Slot = item.Slot Then
                             GameDB.GuildStorageItems(i) = item
@@ -117,9 +117,9 @@
             End Select
         End Sub
 
-        Public Sub UpdateInvItem(ByVal ownerID As UInt32, ByVal slot As Byte, ByVal itemID As UInt64, ByVal type As cInventoryItem.Type)
+        Public Sub UpdateInvItem(ByVal ownerID As UInt32, ByVal slot As Byte, ByVal itemID As UInt64, ByVal type As InvItemTypes)
             Select Case type
-                Case cInventoryItem.Type.Inventory
+                Case InvItemTypes.Inventory
                     For i = 0 To GameDB.InventoryItems.Count - 1
                         If GameDB.InventoryItems(i).OwnerID = ownerID And GameDB.InventoryItems(i).Slot = slot Then
                             GameDB.InventoryItems(i).ItemID = itemID
@@ -129,7 +129,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.AvatarInventory
+                Case InvItemTypes.AvatarInventory
                     For i = 0 To GameDB.AvatarInventoryItems.Count - 1
                         If GameDB.AvatarInventoryItems(i).OwnerID = ownerID And GameDB.AvatarInventoryItems(i).Slot = slot Then
                             GameDB.AvatarInventoryItems(i).ItemID = itemID
@@ -139,7 +139,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.COSInventory
+                Case InvItemTypes.COSInventory
                     For i = 0 To GameDB.COSInventoryItems.Count - 1
                         If GameDB.COSInventoryItems(i).OwnerID = ownerID And GameDB.COSInventoryItems(i).Slot = slot Then
                             GameDB.COSInventoryItems(i).ItemID = itemID
@@ -149,7 +149,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.Storage
+                Case InvItemTypes.Storage
                     For i = 0 To GameDB.StorageItems.Count - 1
                         If GameDB.StorageItems(i).OwnerID = ownerID And GameDB.StorageItems(i).Slot = slot Then
                             GameDB.StorageItems(i).ItemID = itemID
@@ -159,7 +159,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.GuildStorage
+                Case InvItemTypes.GuildStorage
                     For i = 0 To GameDB.GuildStorageItems.Count - 1
                         If GameDB.GuildStorageItems(i).OwnerID = ownerID And GameDB.GuildStorageItems(i).Slot = slot Then
                             GameDB.GuildStorageItems(i).ItemID = itemID
@@ -181,33 +181,33 @@
             End If
         End Sub
 
-        Public Sub RemoveInvItem(ByVal item As cInventoryItem, ByVal type As cInventoryItem.Type)
+        Public Sub RemoveInvItem(ByVal item As cInventoryItem, ByVal type As InvItemTypes)
             Select Case type
-                Case cInventoryItem.Type.Inventory
+                Case InvItemTypes.Inventory
                     If GameDB.InventoryItems.Contains(item) Then
                         GameDB.InventoryItems.Remove(item)
                         Database.SaveQuery(String.Format("DELETE FROM inventory where CharID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
-                Case cInventoryItem.Type.AvatarInventory
+                Case InvItemTypes.AvatarInventory
                     If GameDB.AvatarInventoryItems.Contains(item) Then
                         GameDB.AvatarInventoryItems.Remove(item)
                         Database.SaveQuery(String.Format("DELETE FROM inventory_avatar where CharID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
-                Case cInventoryItem.Type.COSInventory
+                Case InvItemTypes.COSInventory
                     If GameDB.COSInventoryItems.Contains(item) Then
                         GameDB.COSInventoryItems.Remove(item)
                         Database.SaveQuery(String.Format("DELETE FROM inventory_cos where COSID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
-                Case cInventoryItem.Type.Storage
+                Case InvItemTypes.Storage
                     If GameDB.StorageItems.Contains(item) Then
                         GameDB.StorageItems.Remove(item)
                         Database.SaveQuery(String.Format("DELETE FROM storage where AccountID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
                     End If
 
-                Case cInventoryItem.Type.GuildStorage
+                Case InvItemTypes.GuildStorage
                     If GameDB.GuildStorageItems.Contains(item) Then
                         GameDB.GuildStorageItems.Remove(item)
                         Database.SaveQuery(String.Format("DELETE FROM storage_guild where GuildID='{0}' AND Slot='{1}'", item.OwnerID, item.Slot))
@@ -216,9 +216,9 @@
             End Select
         End Sub
 
-        Public Sub RemoveInvItem(ByVal ownerID As UInt32, ByVal slot As Byte, ByVal type As cInventoryItem.Type)
-            Select Case Type
-                Case cInventoryItem.Type.Inventory
+        Public Sub RemoveInvItem(ByVal ownerID As UInt32, ByVal slot As Byte, ByVal type As InvItemTypes)
+            Select Case type
+                Case InvItemTypes.Inventory
                     For i = 0 To GameDB.InventoryItems.Count - 1
                         If GameDB.InventoryItems(i).OwnerID = ownerID And GameDB.InventoryItems(i).Slot = slot Then
                             GameDB.InventoryItems.Remove(GameDB.InventoryItems(i))
@@ -227,7 +227,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.AvatarInventory
+                Case InvItemTypes.AvatarInventory
                     For i = 0 To GameDB.AvatarInventoryItems.Count - 1
                         If GameDB.AvatarInventoryItems(i).OwnerID = ownerID And GameDB.AvatarInventoryItems(i).Slot = slot Then
                             GameDB.AvatarInventoryItems.Remove(GameDB.AvatarInventoryItems(i))
@@ -236,7 +236,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.COSInventory
+                Case InvItemTypes.COSInventory
                     For i = 0 To GameDB.COSInventoryItems.Count - 1
                         If GameDB.COSInventoryItems(i).OwnerID = ownerID And GameDB.COSInventoryItems(i).Slot = slot Then
                             GameDB.COSInventoryItems.Remove(GameDB.COSInventoryItems(i))
@@ -245,7 +245,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.Storage
+                Case InvItemTypes.Storage
                     For i = 0 To GameDB.StorageItems.Count - 1
                         If GameDB.StorageItems(i).OwnerID = ownerID And GameDB.StorageItems(i).Slot = slot Then
                             GameDB.StorageItems.Remove(GameDB.StorageItems(i))
@@ -254,7 +254,7 @@
                         End If
                     Next
 
-                Case cInventoryItem.Type.GuildStorage
+                Case InvItemTypes.GuildStorage
                     For i = 0 To GameDB.GuildStorageItems.Count - 1
                         If GameDB.GuildStorageItems(i).OwnerID = ownerID And GameDB.GuildStorageItems(i).Slot = slot Then
                             GameDB.GuildStorageItems.Remove(GameDB.GuildStorageItems(i))

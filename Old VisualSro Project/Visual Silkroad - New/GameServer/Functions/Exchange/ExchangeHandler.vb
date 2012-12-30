@@ -242,11 +242,11 @@ Namespace Functions
 
                     'Add to new...
                     Inventorys(tmpEx.Player2Index).UserItems(toSlot).ItemID = fromItem.ItemID
-                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player2Index).UserItems(toSlot), cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player2Index).UserItems(toSlot), InvItemTypes.Inventory)
 
                     'Remove...
                     Inventorys(tmpEx.Player1Index).UserItems(tmpEx.Items1(i)).ItemID = 0
-                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player1Index).UserItems(tmpEx.Items1(i)), cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player1Index).UserItems(tmpEx.Items1(i)), InvItemTypes.Inventory)
                 End If
             Next
             PlayerData(tmpEx.Player1Index).Gold += tmpEx.Player2Gold
@@ -263,11 +263,11 @@ Namespace Functions
 
                     'Add to Player 1's invenotry
                     Inventorys(tmpEx.Player1Index).UserItems(toItem.Slot).ItemID = fromItem.ItemID
-                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player1Index).UserItems(toItem.Slot), cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player1Index).UserItems(toItem.Slot), InvItemTypes.Inventory)
 
                     'Remove...
                     Inventorys(tmpEx.Player2Index).UserItems(tmpEx.Items2(i)).ItemID = 0
-                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player2Index).UserItems(tmpEx.Items2(i)), cInventoryItem.Type.Inventory)
+                    ItemManager.UpdateInvItem(Inventorys(tmpEx.Player2Index).UserItems(tmpEx.Items2(i)), InvItemTypes.Inventory)
 
                 End If
             Next

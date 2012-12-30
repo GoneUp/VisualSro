@@ -124,7 +124,7 @@ Namespace Functions
                                 Functions.OnUseItem(packet, Index_)
 
                             Case ClientOpcodes.GAME_SCROLL_CANCEL
-                                Functions.OnReturnScroll_Cancel(Index_)
+                                Functions.OnReturnScrollCancel(Index_)
 
                                 '========STR+INT UP=====
 
@@ -160,22 +160,22 @@ Namespace Functions
 
                                 '========STALL==========
                             Case ClientOpcodes.GAME_STALL_OPEN
-                                Functions.Stall_Open_Own(packet, Index_)
+                                Functions.OnStallOpenOwn(packet, Index_)
 
                             Case ClientOpcodes.GAME_STALL_SELECT
-                                Functions.Stall_Open_Other(packet, Index_)
+                                Functions.OnStallOpenOther(packet, Index_)
 
                             Case ClientOpcodes.GAME_STALL_DATA
-                                Functions.Stall_Data(packet, Index_)
+                                Functions.OnStallData(packet, Index_)
 
                             Case ClientOpcodes.GAME_STALL_BUY
-                                Functions.Stall_Buy(packet, Index_)
+                                Functions.OnStallBuy(packet, Index_)
 
                             Case ClientOpcodes.GAME_STALL_CLOSE_OWN
-                                Functions.Stall_Close_Own(Index_)
+                                Functions.OnStallCloseOwn(Index_)
 
                             Case ClientOpcodes.GAME_STALL_CLOSE_VISITOR
-                                Functions.Stall_Close_Other(Index_)
+                                Functions.OnStallCloseOther(Index_)
 
                             Case Else
                                 Log.WriteSystemLog(

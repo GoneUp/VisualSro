@@ -93,7 +93,7 @@ Namespace Functions
                             Log.WriteSystemLog("Debug: Kill Item ID " & item.ItemID)
 
                             item.ItemID = 0
-                            ItemManager.UpdateInvItem(item, cInventoryItem.Type.Inventory)
+                            ItemManager.UpdateInvItem(item, InvItemTypes.Inventory)
                         Else
                             Server.Disconnect(Index_)
                         End If
@@ -109,7 +109,7 @@ Namespace Functions
             For Each avatar As cInventoryItem In Inventorys(Index_).AvatarItems
                 If avatar.ItemID <> 0 Then
                     Dim item As cItem = GameDB.Items(avatar.ItemID)
-                    
+
                     If item IsNot Nothing Then
                         Dim refitem As cRefItem = GetItemByID(item.ObjectID)
                         writer.Byte(GetExternalAvatarSlot(refitem))
@@ -122,7 +122,7 @@ Namespace Functions
                             Log.WriteSystemLog("Debug: Kill Item ID " & avatar.ItemID)
 
                             avatar.ItemID = 0
-                            ItemManager.UpdateInvItem(avatar, cInventoryItem.Type.AvatarInventory)
+                            ItemManager.UpdateInvItem(avatar, InvItemTypes.AvatarInventory)
                         Else
                             Server.Disconnect(Index_)
                         End If

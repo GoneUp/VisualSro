@@ -180,6 +180,7 @@ Namespace Functions
                     For j = 0 To uniqueIDs.Count - 1
                         If PlayerData(i).SpawnedMonsters.Contains(uniqueIDs(j)) = True Then
                             spawnCollector.AddObject(uniqueIDs(j))
+                            PlayerData(i).SpawnedMonsters.Remove(uniqueIDs(j))
                         End If
                     Next
 
@@ -193,8 +194,6 @@ Namespace Functions
             For i = 0 To uniqueIDs.Count - 1
                 'Single Despawn in case of GroupDespawn Failure   
                 If MobList.ContainsKey(uniqueIDs(i)) Then
-                    Server.SendIfMobIsSpawned(CreateSingleDespawnPacket(uniqueIDs(i)), uniqueIDs(i))
-
                     'Adjusting spawn mgmt
                     Dim mob As cMonster = MobList(uniqueIDs(i))
                     If mob.SpotID >= 0 Then

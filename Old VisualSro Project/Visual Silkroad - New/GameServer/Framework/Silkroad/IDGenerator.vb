@@ -144,5 +144,23 @@
         End Function
 
 
+        '======================ChatItemLink ID's
+        Private m_chatLinkIdCounter As UInt64 = 2
+
+        Public Function GetChatLinkID() As UInt64
+            Dim toreturn As UInt64 = m_chatLinkIdCounter
+            If m_chatLinkIdCounter < UInt64.MaxValue Then
+                m_itemIdCounter += 1
+            ElseIf m_chatLinkIdCounter = UInt64.MaxValue Then
+                m_chatLinkIdCounter = 0
+                Log.WriteSystemLog("Reached ChatLinkID Max!!!")
+            End If
+
+            Return toreturn
+        End Function
+
+
+
+
     End Module
 End Namespace

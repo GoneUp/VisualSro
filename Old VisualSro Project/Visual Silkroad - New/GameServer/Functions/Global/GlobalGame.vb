@@ -7,6 +7,7 @@
         'Items
         Public Inventorys(1) As cInventory
         Public ItemList As New Dictionary(Of UInteger, cItemDrop)
+        Public ChatLinkItemList As New Dictionary(Of UInt64, cChatLinkItem)
         'Monster
         Public MobList As New Dictionary(Of UInteger, cMonster)
         'NPC
@@ -16,11 +17,13 @@
         'Stall
         Public Stalls As New List(Of Stall)
 
+
         Public Function GlobalInit(ByVal slots As UInt32) As Boolean
             Try
                 ReDim PlayerData(slots), Inventorys(slots), CharListing(slots)
 
                 ItemList.Clear()
+                ChatLinkItemList.Clear()
                 MobList.Clear()
                 NpcList.Clear()
                 ExchangeData.Clear()

@@ -1,5 +1,5 @@
 ﻿Namespace Functions
-    Module CharacterEnums
+    Module StaticEnums
         Public Enum UseItemTypes
             None = 0
             Pot = 1

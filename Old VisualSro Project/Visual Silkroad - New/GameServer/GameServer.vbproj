@@ -128,9 +128,9 @@
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Functions\Character\CharacterInfo.vb" />
     <Compile Include="Functions\Character\CharacterJob.vb" />
-    <Compile Include="Functions\Character\Classes\CharacterEnums.vb" />
     <Compile Include="Functions\Character\Classes\cHotkey.vb" />
     <Compile Include="Functions\Character\Classes\Postion.vb" />
+    <Compile Include="Functions\Character\Classes\StaticEnums.vb" />
     <Compile Include="Functions\Chat\CustomCommands.vb" />
     <Compile Include="Functions\Global\Capatcha.vb" />
     <Compile Include="Functions\Global\Classes\cGameObject.vb" />
@@ -140,6 +140,7 @@
     <Compile Include="Functions\Guild\Classes\cGuild.vb" />
     <Compile Include="Functions\Guild\Guild.vb" />
     <Compile Include="Functions\Items\Alchemy.vb" />
+    <Compile Include="Functions\Items\Classes\cChatLinkItem.vb" />
     <Compile Include="Functions\Items\Classes\cInventoryItem.vb" />
     <Compile Include="Functions\Items\Classes\cItemDrop.vb" />
     <Compile Include="Functions\Items\Classes\cItem.vb" />

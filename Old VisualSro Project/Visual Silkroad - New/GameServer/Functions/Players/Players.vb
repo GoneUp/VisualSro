@@ -130,7 +130,7 @@ Namespace Functions
 
                 If .InGuild = True Then
                     Dim guild As cGuild = GameDB.GetGuild(.GuildID)
-                    Dim member As cGuild.GuildMember_ = GetMember(.GuildID, .CharacterId)
+                    Dim member As cGuild.GuildMember = GetMember(.GuildID, .CharacterId)
 
                     writer.Word(guild.Name.Length)
                     writer.String(guild.Name)

@@ -80,7 +80,7 @@ Module SilkroadData
             DumpCaveTeleporterFile(BasePath & "\data\cave_teleport.txt")
             Log.WriteSystemLog("Loaded " & RefCaveTeleporter.Count & " Cave-Teleporters.")
 
-            LoadAutoSpawn(BasePath & "data\npcpos.txt")
+            'LoadAutoSpawn(BasePath & "data\npcpos.txt")
             Log.WriteSystemLog("Loaded " & MobList.Count & " Autospawn Monster.")
             Log.WriteSystemLog("Loaded " & NpcList.Count & " Autospawn Npc's.")
 

@@ -2,28 +2,28 @@
 
 Namespace Functions
     Module MonsterAttack
-        Public Sub MonsterAttackPlayer(ByVal MobUniqueID As Integer, ByVal Index_ As Integer,
-                                       Optional ByVal SkillID As UInteger = 0)
-            If MobList.ContainsKey(MobUniqueID) = False Or Index_ = -1 Or PlayerData(Index_) Is Nothing Then
+        Public Sub MonsterAttackPlayer(ByVal mobUniqueID As Integer, ByVal Index_ As Integer,
+                                       Optional ByVal skillID As UInteger = 0)
+            If MobList.ContainsKey(mobUniqueID) = False Or Index_ = -1 Or PlayerData(Index_) Is Nothing Then
                 Exit Sub
             End If
-            If MobList(MobUniqueID).IsAttacking = True Then
+            If MobList(mobUniqueID).IsAttacking = True Then
                 Exit Sub
             End If
 
-            Dim Mob_ As cMonster = MobList(MobUniqueID)
-            Dim RefSkill As RefSkill
+            Dim Mob_ As cMonster = MobList(mobUniqueID)
+            Dim refSkill As RefSkill
 
             Mob_.AttackingId = PlayerData(Index_).UniqueID
 
             'Search for the right Skill
-            If SkillID = 0 Then
+            If skillID = 0 Then
                 Mob_.UsingSkillId = Monster_GetNextSkill(Mob_.UsingSkillId, Mob_.Pk2ID)
             Else
-                Mob_.UsingSkillId = SkillID
+                Mob_.UsingSkillId = skillID
             End If
 
-            RefSkill = GetSkill(Mob_.UsingSkillId)
+            refSkill = GetSkill(Mob_.UsingSkillId)
 
             'Do Until RefSkill.Effect_0 = "att"
             '    CheckForSkillEffects(MobUniqueID, RefSkill, Index_)
@@ -33,13 +33,13 @@ Namespace Functions
 
 
             Dim NumberAttack = 1, NumberVictims = 1, afterstate As UInteger
-            Dim AttObject As SilkroadObject = GetObject(PlayerData(Index_).Pk2ID)
+            Dim attObject As SilkroadObject = GetObject(PlayerData(Index_).Pk2ID)
             Dim RefMonster As SilkroadObject = GetObject(Mob_.Pk2ID)
 
 
-            Dim Distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
-            If Distance >= Math.Sqrt(RefSkill.Distance) And RefMonster.WalkSpeed > 0 Then
-                MoveMobToUser(MobUniqueID, PlayerData(Index_).Position, Math.Sqrt(RefSkill.Distance))
+            Dim distance As Double = CalculateDistance(PlayerData(Index_).Position, Mob_.Position)
+            If distance >= Math.Sqrt(refSkill.Distance) And RefMonster.WalkSpeed > 0 Then
+                MoveMobToUser(mobUniqueID, PlayerData(Index_).Position, Math.Sqrt(refSkill.Distance))
                 Exit Sub
             End If
 
@@ -52,7 +52,7 @@ Namespace Functions
             writer.Byte(2)
             writer.Byte(&H30)
 
-            writer.DWord(RefSkill.Pk2Id)
+            writer.DWord(refSkill.Pk2Id)
             writer.DWord(Mob_.UniqueID)
             writer.DWord(Id_Gen.GetSkillOverId)
             writer.DWord(PlayerData(Index_).UniqueID)
@@ -66,7 +66,7 @@ Namespace Functions
                 writer.DWord(PlayerData(Index_).UniqueID)
 
                 For i = 0 To NumberAttack - 1
-                    Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, RefSkill.Pk2Id)
+                    Dim Damage As UInteger = CalculateDamagePlayer(Index_, RefMonster, refSkill.Pk2Id)
                     Dim Crit As Byte = AttackGetCritical()
                     If Crit = True Then
                         Damage = Damage * 2
@@ -101,8 +101,8 @@ Namespace Functions
                 MobSetAttackingFromPlayer(Index_, Mob_.UniqueID, False)
             Else
                 UpdateHP(Index_)
-                Mob_.AttackTimerStart(RefSkill.UseDuration * 250)
-                Mob_.AttackEndTime = Date.Now.AddMilliseconds(RefSkill.UseDuration * 250)
+                Mob_.AttackTimerStart(refSkill.UseDuration * 250)
+                Mob_.AttackEndTime = Date.Now.AddMilliseconds(refSkill.UseDuration * 250)
             End If
         End Sub
 

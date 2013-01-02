@@ -435,7 +435,7 @@ Namespace GameDB
             count = tmp.Tables(0).Rows.Count
 
             For i = 0 To count - 1
-                Dim tmp_ As New cGuild.GuildMember_
+                Dim tmp_ As New cGuild.GuildMember
                 tmp_.CharacterID = CUInt(tmp.Tables(0).Rows(i).ItemArray(0))
                 tmp_.GuildID = CStr(tmp.Tables(0).Rows(i).ItemArray(1))
                 tmp_.DonantedGP = CUInt(tmp.Tables(0).Rows(i).ItemArray(2))

@@ -38,14 +38,14 @@ Namespace Functions
                         End If
 
                     Case 4
+                        'Use a Skill
                         Dim skillid As UInteger = packet.DWord
                         Dim type As Byte = packet.Byte()
                         'Type = 1--> Monster Attack --- Type = 0 --> Buff
-                        Dim refskill As RefSkill = GetSkill(skillid)
-
+               
                         Select Case type
                             Case 0
-                                PlayerBuff_BeginnCasting(skillid, Index_)
+                                PlayerBuffBeginnCasting(skillid, Index_)
                             Case 1
                                 Dim objectID As UInt32 = packet.DWord
 

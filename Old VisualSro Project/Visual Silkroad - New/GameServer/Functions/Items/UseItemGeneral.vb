@@ -5,7 +5,7 @@ Namespace Functions
     Module UseItemHandler
         Public Sub OnUseItem(ByVal packet As PacketReader, ByVal Index_ As Integer)
             Dim slot As Byte = packet.Byte
-            Dim unknown As Byte = packet.Word()
+            Dim unknown As UInt16 = packet.Word()
             Dim tid2 As Byte = packet.Byte()
             Dim tid3 As Byte = packet.Byte()
 

@@ -2,12 +2,11 @@
 
 Namespace Functions
     Module PlayerBuff
-        Public Sub PlayerBuff_BeginnCasting(ByVal skillID As UInt32, ByVal Index_ As Integer)
+        Public Sub PlayerBuffBeginnCasting(ByVal skillID As UInt32, ByVal Index_ As Integer)
             Dim refSkill As RefSkill = GetSkill(skillID)
             Dim refWeapon As New cRefItem
 
-            If _
-                PlayerData(Index_).Busy Or CheckIfUserOwnSkill(skillID, Index_) = False Or
+            If PlayerData(Index_).Busy Or CheckIfUserOwnSkill(skillID, Index_) = False Or
                 PlayerData(Index_).CastingId <> 0 Then
                 Exit Sub
             End If

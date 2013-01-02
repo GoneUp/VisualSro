@@ -31,9 +31,15 @@ Namespace Functions
             ElseIf mob.PosTracker.MoveState = cPositionTracker.enumMoveState.Walking Then
                 writer.Byte(mob.PosTracker.WalkPos.XSector)
                 writer.Byte(mob.PosTracker.WalkPos.YSector)
-                writer.Byte(BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.X)))
+
+                Dim testx() As Byte = BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.X))
+                Dim testy() As Byte = BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.Y))
+                Array.Reverse(testx)
+                Array.Reverse(testy)
+
+                writer.Byte(testx)
                 writer.Byte(BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.Z)))
-                writer.Byte(BitConverter.GetBytes(CShort(mob.PosTracker.WalkPos.Y)))
+                writer.Byte(testy)
             End If
 
             Dim alive As Boolean = True

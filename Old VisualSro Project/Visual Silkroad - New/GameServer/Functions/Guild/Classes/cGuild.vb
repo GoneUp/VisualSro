@@ -8,17 +8,17 @@
         Public NoticeTitle As String
         Public Notice As String
 
-        Public Member As New List(Of GuildMember_)
+        Public Member As New List(Of GuildMember)
 
-        Structure GuildMember_
+        Structure GuildMember
             Public CharacterID As UInteger
             Public GuildID As Long
             Public DonantedGP As UInteger
             Public GrantName As String
-            Public Rights As GuildRights_
+            Public Rights As GuildRights
         End Structure
 
-        Structure GuildRights_
+        Structure GuildRights
             Public Master As Boolean
             Public Invite As Boolean
             Public Kick As Boolean

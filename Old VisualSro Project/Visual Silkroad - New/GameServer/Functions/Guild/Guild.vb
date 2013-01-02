@@ -30,7 +30,7 @@ Namespace Functions
                     writer.String(char_.CharacterName)
 
                     'Rights
-                    If guild.Member(i).Rights.Master = True Then
+                    If guild.Member(i).Rights.Master Then
                         writer.Byte(0)
                         writer.Byte(char_.Level)
                         writer.DWord(guild.Member(i).DonantedGP)
@@ -72,7 +72,7 @@ Namespace Functions
         Public Sub LinkPlayerToGuild(ByVal Index_ As Integer)
             If PlayerData(Index_).GuildID <> -1 Then
                 Dim guild As cGuild = GameDB.GetGuild(PlayerData(Index_).GuildID)
-                Dim member As cGuild.GuildMember_ = GetMember(PlayerData(Index_).GuildID, PlayerData(Index_).CharacterId)
+                Dim member As cGuild.GuildMember = GetMember(PlayerData(Index_).GuildID, PlayerData(Index_).CharacterId)
 
                 Dim writer As New PacketWriter
                 writer.Create(ServerOpcodes.GAME_GUILD_LINK)
@@ -91,7 +91,7 @@ Namespace Functions
             End If
         End Sub
 
-        Public Function GetMember(ByVal guildID As UInteger, ByVal charID As UInteger) As cGuild.GuildMember_
+        Public Function GetMember(ByVal guildID As UInteger, ByVal charID As UInteger) As cGuild.GuildMember
             For i = 0 To GameDB.Guilds.Count - 1
                 If GameDB.Guilds(i).GuildID = guildID Then
                     For m = 0 To GameDB.Guilds(i).Member.Count - 1

@@ -2,47 +2,47 @@
 
 Namespace Functions
     Module Mastery
-        Public Sub OnUpMastery(ByVal packet As PacketReader, ByVal index_ As Integer)
-            Dim MasteryID As UInteger = packet.DWord
+        Public Sub OnUpMastery(ByVal packet As PacketReader, ByVal Index_ As Integer)
+            Dim masteryID As UInteger = packet.DWord
             Dim masterycount As UInteger = 0
             Dim writer As New PacketWriter
 
-            If PlayerData(index_).Skilling = True Then
+            If PlayerData(Index_).Skilling = True Then
                 Exit Sub
             End If
-            PlayerData(index_).Skilling = True
+            PlayerData(Index_).Skilling = True
 
 
             For i = 0 To GameDB.Masterys.Length - 1
                 If GameDB.Masterys(i) IsNot Nothing Then
-                    If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId Then
+                    If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId Then
                         masterycount += GameDB.Masterys(i).Level
                     End If
                 End If
             Next
-            If PlayerData(index_).Pk2ID >= 1907 And PlayerData(index_).Pk2ID <= 1932 Then  'Chinese Char
+            If PlayerData(Index_).Pk2ID >= 1907 And PlayerData(Index_).Pk2ID <= 1932 Then  'Chinese Char
                 If masterycount < Settings.ServerMasteryCap Then 'Free mastery
 
 
                     For i = 0 To GameDB.Masterys.Length - 1
                         If _
-                            GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And
-                            GameDB.Masterys(i).MasteryID = MasteryID Then
+                            GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And
+                            GameDB.Masterys(i).MasteryID = masteryID Then
 
                             Dim _lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
-                            If _lvldata IsNot Nothing AndAlso PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
+                            If _lvldata IsNot Nothing AndAlso PlayerData(Index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
                                 GameDB.Masterys(i).Level += 1
 
-                                PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
-                                UpdateSP(index_)
+                                PlayerData(Index_).SkillPoints -= _lvldata.SkillPoints
+                                UpdateSP(Index_)
 
-                                GameDB.SaveMastery(PlayerData(index_).CharacterId, GameDB.Masterys(i).MasteryID, GameDB.Masterys(i).Level)
+                                GameDB.SaveMastery(PlayerData(Index_).CharacterId, GameDB.Masterys(i).MasteryID, GameDB.Masterys(i).Level)
 
                                 writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                 writer.Byte(1)
                                 writer.DWord(GameDB.Masterys(i).MasteryID)
                                 writer.Byte(GameDB.Masterys(i).Level)
-                                Server.Send(writer.GetBytes, index_)
+                                Server.Send(writer.GetBytes, Index_)
 
                             Else
                                 'Not enough SP's
@@ -64,32 +64,32 @@ Namespace Functions
                 End If
 
 
-            ElseIf PlayerData(index_).Pk2ID >= 14717 And PlayerData(index_).Pk2ID <= 14743 Then
+            ElseIf PlayerData(Index_).Pk2ID >= 14717 And PlayerData(Index_).Pk2ID <= 14743 Then
                 'Europe Char = Diffrent Mastery Max system
-                Dim maxmastery As UInteger = PlayerData(index_).Level * 2
+                Dim maxmastery As UInteger = PlayerData(Index_).Level * 2
 
                 If masterycount < maxmastery Then
                     'Free mastery
 
                     For i = 0 To GameDB.Masterys.Length - 1
                         If GameDB.Masterys(i) IsNot Nothing Then
-                            If GameDB.Masterys(i).OwnerID = PlayerData(index_).CharacterId And
-                                GameDB.Masterys(i).MasteryID = MasteryID Then
+                            If GameDB.Masterys(i).OwnerID = PlayerData(Index_).CharacterId And
+                                GameDB.Masterys(i).MasteryID = masteryID Then
 
-                                Dim _lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
-                                If _lvldata IsNot Nothing AndAlso PlayerData(index_).SkillPoints - _lvldata.SkillPoints >= 0 Then
+                                Dim lvldata As LevelData = GetLevelData(GameDB.Masterys(i).Level + 1)
+                                If lvldata IsNot Nothing AndAlso PlayerData(Index_).SkillPoints - lvldata.SkillPoints >= 0 Then
                                     GameDB.Masterys(i).Level += 1
 
-                                    PlayerData(index_).SkillPoints -= _lvldata.SkillPoints
-                                    UpdateSP(index_)
+                                    PlayerData(Index_).SkillPoints -= lvldata.SkillPoints
+                                    UpdateSP(Index_)
 
-                                    GameDB.SaveMastery(PlayerData(index_).CharacterId, GameDB.Masterys(i).MasteryID, GameDB.Masterys(i).Level)
+                                    GameDB.SaveMastery(PlayerData(Index_).CharacterId, GameDB.Masterys(i).MasteryID, GameDB.Masterys(i).Level)
 
                                     writer.Create(ServerOpcodes.GAME_MASTERY_UP)
                                     writer.Byte(1)
                                     writer.DWord(GameDB.Masterys(i).MasteryID)
                                     writer.Byte(GameDB.Masterys(i).Level)
-                                    Server.Send(writer.GetBytes, index_)
+                                    Server.Send(writer.GetBytes, Index_)
 
                                 Else
                                     'Not enough SP's
@@ -110,7 +110,7 @@ Namespace Functions
                 End If
             End If
 
-            PlayerData(index_).Skilling = False
+            PlayerData(Index_).Skilling = False
         End Sub
 
         Public Sub OnAddSkill(ByVal packet As PacketReader, ByVal Index_ As Integer)
@@ -195,15 +195,14 @@ Namespace Functions
         End Sub
 
         Public Sub AddSkillToDB(ByVal toadd As cSkill)
-            Dim NewIndex As UInteger = GameDB.Skills.Length + 1
-            Array.Resize(GameDB.Skills, NewIndex)
-            GameDB.Skills(NewIndex - 1) = toadd
+            Dim newIndex As UInteger = GameDB.Skills.Length + 1
+            Array.Resize(GameDB.Skills, newIndex)
+            GameDB.Skills(newIndex - 1) = toadd
 
             GameDB.SaveSkillAdd(toadd.OwnerID, toadd.SkillID)
         End Sub
 
-
-        Public Function GetMasteryByID(ByVal MasteryID As UInteger, ByVal Index_ As Integer) As cMastery
+        Public Function GetMasteryByID(ByVal masteryID As UInteger, ByVal Index_ As Integer) As cMastery
             For i = 0 To GameDB.Masterys.Length - 1
 
                 If GameDB.Masterys(i) IsNot Nothing Then
@@ -217,7 +216,7 @@ Namespace Functions
             Return Nothing
         End Function
 
-        Public Function CheckIfUserOwnSkill(ByVal SkillID As UInteger, ByVal Index_ As Integer) As Boolean
+        Public Function CheckIfUserOwnSkill(ByVal skillID As UInteger, ByVal Index_ As Integer) As Boolean
             For i = 0 To GameDB.Skills.Length - 1
                 If GameDB.Skills(i) IsNot Nothing Then
                     If GameDB.Skills(i).OwnerID = PlayerData(Index_).CharacterId And GameDB.Skills(i).SkillID = SkillID Then

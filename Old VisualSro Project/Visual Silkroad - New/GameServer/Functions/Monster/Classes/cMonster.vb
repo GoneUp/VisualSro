@@ -76,9 +76,11 @@ Namespace Functions
         End Sub
 
         Public Sub AttackTimerElapsed()
-            m_attackTimer.Stop()
-
             Try
+                If m_attackTimer IsNot Nothing Then
+                    m_attackTimer.Stop()
+                End If
+
                 If Death = True And IsAttacking() Then
                     Exit Sub
                 End If
@@ -90,9 +92,7 @@ Namespace Functions
                     Dim index As Integer = sort(i).PlayerIndex
                     If PlayerData(index) IsNot Nothing Then
                         If PlayerData(index).Ingame And PlayerData(sort(i).PlayerIndex).Alive = True Then
-                            If _
-                                CalculateDistance(PlayerData(sort(i).PlayerIndex).Position, Me.Position) < 100 And
-                                sort(i).AttackingAllowed Then
+                            If CalculateDistance(PlayerData(sort(i).PlayerIndex).Position, Position) < 100 And sort(i).AttackingAllowed Then
                                 If cPositionTracker.enumSpeedMode.Walking Then
                                     SetMobRunning(UniqueID)
                                 End If
@@ -107,13 +107,12 @@ Namespace Functions
 
                 Next
 
+
+                m_attackTimer.Interval = 5000
+                m_attackTimer.Start()
             Catch ex As Exception
                 Log.WriteSystemLog("Timer Error: " & ex.Message & " Stack: " & ex.StackTrace & " Index: MAE")
-                '
             End Try
-
-            m_attackTimer.Interval = 5000
-            m_attackTimer.Start()
         End Sub
 
         Public Sub Disponse()

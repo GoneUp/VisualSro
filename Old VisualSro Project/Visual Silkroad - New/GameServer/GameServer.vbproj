@@ -73,6 +73,7 @@
     <OutputPath>bin\x86\Debug\</OutputPath>
     <NoWarn>41999,42016</NoWarn>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DefineDebug>true</DefineDebug>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -169,6 +170,7 @@
     <Compile Include="Functions\Players\Movement\Movement.vb" />
     <Compile Include="Functions\Players\PlayerAttack.vb" />
     <Compile Include="Functions\Players\PlayerBuff.vb" />
+    <Compile Include="Functions\Players\PlayerBuffEffects.vb" />
     <Compile Include="Functions\Skills\Classes\cBuff.vb" />
     <Compile Include="Functions\Skills\Classes\cMastery.vb" />
     <Compile Include="Functions\Exchange\Classes\cExchange.vb" />

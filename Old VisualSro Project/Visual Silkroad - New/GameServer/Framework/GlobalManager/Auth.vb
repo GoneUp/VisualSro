@@ -25,7 +25,7 @@ Namespace GlobalManager
             End If
         End Sub
 
-        Private Function CalculateNewKey(ByVal BaseKey As UInt16) As UInt32
+        Private Function CalculateNewKey(ByVal baseKey As UInt16) As UInt32
             CalculateNewKey = BaseKey
             CalculateNewKey *= 4
             CalculateNewKey *= Date.Now.DayOfYear
@@ -34,7 +34,7 @@ Namespace GlobalManager
         End Function
 
         Public Sub OnSendAuthInfo()
-            Dim clientstring As String = "AgentServer"
+            Const clientstring As String = "AgentServer"
 
             Dim writer As New PacketWriter
             writer.Create(ClientOpcodes.LOGIN_WHO_AM_I)

@@ -251,7 +251,7 @@ Namespace UserService
 
 #Region "Silk"
         Public Sub OnSilk(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager._ServerTypes.GameServer Then
+            If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager.ServerTypes.GameServer Then
                 Log.WriteSystemLog("OnGetSilk:: ServerType is wrong!!!")
                 If Settings.ServerDebugMode = False Then
                     Server.Disconnect(Index_)

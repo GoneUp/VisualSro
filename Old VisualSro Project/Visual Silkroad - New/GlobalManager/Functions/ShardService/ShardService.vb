@@ -7,7 +7,7 @@ Namespace Shard
             Dim serverId As UInt16 = SessionInfo(Index_).ServerId
 
             Select Case SessionInfo(Index_).Type
-                Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
+                Case cSessionInfo_GlobalManager.ServerTypes.GatewayServer
                     If Server_Gateway.ContainsKey(serverId) = False AndAlso Server_Gateway(serverId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
@@ -15,7 +15,7 @@ Namespace Shard
                         Server_Gateway(serverId).Online = True
                         Log.WriteSystemLog(String.Format("Gatewayserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                     End If
-                Case cSessionInfo_GlobalManager._ServerTypes.GameServer
+                Case cSessionInfo_GlobalManager.ServerTypes.GameServer
                     If Server_Game.ContainsKey(serverId) = False AndAlso Server_Game(serverId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
@@ -23,7 +23,7 @@ Namespace Shard
                         Server_Game(serverId).State = GameServer._ServerState.Online
                         Log.WriteSystemLog(String.Format("Gameserver [{0}] fully initialized!", Server.ClientList.GetIP(Index_)))
                     End If
-                Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
+                Case cSessionInfo_GlobalManager.ServerTypes.DownloadServer
                     If Server_Download.ContainsKey(serverId) = False AndAlso Server_Download(serverId).Online Then
                         Log.WriteSystemLog("Server not exitis or is already marked as online! NAME: " & SessionInfo(Index_).ClientName & " ID: " & SessionInfo(Index_).ServerId)
                     Else
@@ -49,11 +49,11 @@ Namespace Shard
             RemoveServer(serverId, SessionInfo(Index_).Type)
 
             Select Case SessionInfo(Index_).Type
-                Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
+                Case cSessionInfo_GlobalManager.ServerTypes.GatewayServer
                     Log.WriteSystemLog(String.Format("Gatewayserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
-                Case cSessionInfo_GlobalManager._ServerTypes.GameServer
+                Case cSessionInfo_GlobalManager.ServerTypes.GameServer
                     Log.WriteSystemLog(String.Format("Gameserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
-                Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
+                Case cSessionInfo_GlobalManager.ServerTypes.DownloadServer
                     Log.WriteSystemLog(String.Format("Downloadserver [{0}] turned off successfully!", Server.ClientList.GetIP(Index_)))
             End Select
 
@@ -77,11 +77,11 @@ Namespace Shard
             Dim maxNormalClients As UShort = packet.Word
             Dim maxClients As UShort = packet.Word
 
-            Dim IP As String = packet.String(packet.Word)
-            Dim Port As UShort = packet.Word
+            Dim ip As String = packet.String(packet.Word)
+            Dim port As UShort = packet.Word
 
             Select Case SessionInfo(Index_).Type
-                Case cSessionInfo_GlobalManager._ServerTypes.GatewayServer
+                Case cSessionInfo_GlobalManager.ServerTypes.GatewayServer
                     Dim tmp As GatewayServer
                     If Server_Gateway.ContainsKey(serverID) Then
                         tmp = Server_Gateway(serverID)
@@ -89,8 +89,8 @@ Namespace Shard
                         tmp = New GatewayServer
                     End If
 
-                    tmp.IP = IP
-                    tmp.Port = Port
+                    tmp.IP = ip
+                    tmp.Port = port
                     tmp.ServerId = serverID
                     tmp.OnlineClients = onlineClients
                     tmp.MaxNormalClients = maxNormalClients
@@ -104,7 +104,7 @@ Namespace Shard
                         firstAnnonce = True
                     End If
 
-                Case cSessionInfo_GlobalManager._ServerTypes.GameServer
+                Case cSessionInfo_GlobalManager.ServerTypes.GameServer
                     Dim tmp As GameServer
                     If Server_Game.ContainsKey(serverID) Then
                         tmp = Server_Game(serverID)
@@ -112,8 +112,8 @@ Namespace Shard
                         tmp = New GameServer
                     End If
 
-                    tmp.IP = IP
-                    tmp.Port = Port
+                    tmp.IP = ip
+                    tmp.Port = port
                     tmp.ServerId = serverID
                     tmp.OnlineClients = onlineClients
                     tmp.MaxNormalClients = maxNormalClients
@@ -139,7 +139,7 @@ Namespace Shard
                         firstAnnonce = True
                     End If
 
-                Case cSessionInfo_GlobalManager._ServerTypes.DownloadServer
+                Case cSessionInfo_GlobalManager.ServerTypes.DownloadServer
                     Dim tmp As DownloadServer
                     If Server_Download.ContainsKey(serverID) Then
                         tmp = Server_Download(serverID)
@@ -147,8 +147,8 @@ Namespace Shard
                         tmp = New DownloadServer
                     End If
 
-                    tmp.IP = IP
-                    tmp.Port = Port
+                    tmp.IP = ip
+                    tmp.Port = port
                     tmp.ServerId = serverID
                     tmp.OnlineClients = onlineClients
                     tmp.MaxNormalClients = maxNormalClients
@@ -167,7 +167,7 @@ Namespace Shard
             SendGlobalInfo(Index_, firstAnnonce)
         End Sub
 
-        Friend Sub SendGlobalInfo(ByVal Index_ As Integer, ByVal FirstAnnonce As Boolean)
+        Friend Sub SendGlobalInfo(ByVal Index_ As Integer, ByVal firstAnnonce As Boolean)
             Dim writer As New PacketWriter
             writer.Create(InternalServerOpcodes.GLOBAL_INFO)
             writer.Word(Server_Gateway.Count)

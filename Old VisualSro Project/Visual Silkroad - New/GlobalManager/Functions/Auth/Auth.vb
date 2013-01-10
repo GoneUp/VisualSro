@@ -43,13 +43,13 @@ Namespace Auth
 
             Select Case tmp.ClientName
                 Case "GatewayServer"
-                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.GatewayServer
+                    tmp.Type = cSessionInfo_GlobalManager.ServerTypes.GatewayServer
                 Case "AgentServer"
-                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.GameServer
+                    tmp.Type = cSessionInfo_GlobalManager.ServerTypes.GameServer
                 Case "DownloadServer"
-                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.DownloadServer
+                    tmp.Type = cSessionInfo_GlobalManager.ServerTypes.DownloadServer
                 Case "AdminTool"
-                    tmp.Type = cSessionInfo_GlobalManager._ServerTypes.AdminTool
+                    tmp.Type = cSessionInfo_GlobalManager.ServerTypes.AdminTool
             End Select
 
             Dim writer As New PacketWriter
@@ -59,7 +59,7 @@ Namespace Auth
             writer.String(name)
 
             If tmp.HandshakeComplete Then
-                If tmp.Type <> cSessionInfo_GlobalManager._ServerTypes.Unknown Then
+                If tmp.Type <> cSessionInfo_GlobalManager.ServerTypes.Unknown Then
                     If tmp.ProtocolVersion = Settings.ServerProtocolVersion Then
                         If GlobalDB.CheckServerCert(tmp.ServerId, tmp.ClientName, Server.ClientList.GetIP(Index_).Split(":")(0)) Then
                             writer.Byte(1)

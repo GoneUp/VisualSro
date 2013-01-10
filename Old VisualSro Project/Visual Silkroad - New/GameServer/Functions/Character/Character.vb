@@ -310,8 +310,7 @@ Namespace Functions
                     .Hit = hit
                     .Parry = parry
 
-                    .SetCharGroundStats()
-
+                 
                     Database.SaveQuery(
                         String.Format(
                             "INSERT INTO characters (id, account, name, chartype, volume, level, gold, sp, gm) VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",

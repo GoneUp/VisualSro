@@ -223,6 +223,7 @@
         AGENT_CHECK_USERAUTH = &H1011
         AGENT_SILK = &H1012
         AGENT_USERINFO = &H1013
+        AGENT_NEWS = &H1014
     End Enum
 
     Enum InternalServerOpcodes As UShort
@@ -240,7 +241,7 @@
         AGENT_CHECK_USERAUTH = &HC011
         AGENT_SILK = &HC012
         AGENT_USERINFO = &HC013
-        AGENT_LOGIN_MESSAGE = &HC014
+        AGENT_NEWS = &HC014
     End Enum
 
 

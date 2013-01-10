@@ -55,7 +55,6 @@ Friend Module Program
         Log.WriteSystemLog("Connected Database. Loading Data.")
 
         Dim succeed As Boolean = True
-        succeed = LoginDb.LoadData()
         succeed = Timers.LoadTimers(Server.MaxClients)
         succeed = Initalize(Server.MaxClients)
 
@@ -177,6 +176,7 @@ Friend Module Program
             Server.Start()
         End If
 
+        
         Log.WriteSystemLog("GMC: We are ready!")
     End Sub
 
@@ -225,7 +225,6 @@ Friend Module Program
                 Log.WriteSystemLog("Cleanup Server...")
 
                 GlobalDef.Initalize(Server.MaxClients)
-                LoginDb.LoadData()
                 Timers.LoadTimers(Server.MaxClients)
 
                 Log.WriteSystemLog("Reconnect GlobalManager...")

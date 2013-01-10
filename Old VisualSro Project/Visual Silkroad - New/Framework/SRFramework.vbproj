@@ -68,9 +68,7 @@
     <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="MySql.Data, Version=6.6.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -93,12 +91,12 @@
     <Compile Include="Framework\Classes\cIDGen.vb" />
     <Compile Include="Framework\Classes\cINI.vb" />
     <Compile Include="Framework\Classes\cUser.vb" />
-    <Compile Include="Framework\Classes\cUsermanager.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\cGM_Server_Base.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\DownloadServer.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\GameServer.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\GatewayServer.vb" />
     <Compile Include="Framework\Classes\GlobalManager Stuff\GlobalManagerClient.vb" />
+    <Compile Include="Framework\Classes\LauncherMessage.vb" />
     <Compile Include="Framework\Database\cDatabase.vb" />
     <Compile Include="Framework\Log\cLog.vb" />
     <Compile Include="Framework\Packets\Opcodes.vb" />

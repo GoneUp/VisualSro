@@ -2,13 +2,13 @@
 
     Private perfWnd As New PerfWnd
 
-    Public Sub CheckCommand(ByVal FullMessage As String)
+    Public Sub CheckCommand(ByVal fullMessage As String)
 
         Dim msg() As String = FullMessage.Split(" ")
 
         Select Case msg(0)
 
-            Case "/info"
+            Case "info"
                 Log.WriteSystemLog("This Emulator is from GoneUp.")
                 Log.WriteSystemLog("Specical Thanks to:")
                 Log.WriteSystemLog("Drew Benton")
@@ -19,54 +19,54 @@
                 Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
-            Case "/help"
+            Case "help"
                 Log.WriteSystemLog("Log: ")
                 Log.WriteSystemLog("/info for the credits")
                 Log.WriteSystemLog("/packets to enable packetlog")
                 Log.WriteSystemLog("/notice [Message] - To write a global Message ")
                 Log.WriteSystemLog("/clear")
 
-            Case "/packets"
+            Case "packets"
                 Settings.ServerDebugMode = True
-                GameServer.Log.WriteSystemLog("Log Packets started!")
+                Log.WriteSystemLog("Log Packets started!")
 
 
-            Case "/clear"
+            Case "clear"
                 Console.Clear()
 
 
-            Case "/notice"
+            Case "notice"
                 Functions.SendNotice(msg(1))
 
 
-            Case "/weather"
+            Case "weather"
                 Functions.OnSetWeather(CByte(msg(1)), CByte(msg(2)))
 
-            Case "/normalweather"
+            Case "normalweather"
                 Functions.OnSetWeather(1, 75)
 
-            Case "/rain"
+            Case "rain"
                 Functions.OnSetWeather(2, 75)
 
-            Case "/snow"
+            Case "snow"
                 Functions.OnSetWeather(3, 75)
 
-            Case "/count"
+            Case "count"
                 Log.WriteSystemLog(String.Format("Count Player:{0}!", Server.OnlineClients))
                 Log.WriteSystemLog(String.Format("Count Mob:{0}!", Functions.MobList.Count))
 
-            Case "/cleanup"
+            Case "cleanup"
                 Dim mem As Long = Process.GetCurrentProcess.PrivateMemorySize64
                 GC.Collect()
                 Log.WriteSystemLog(
                     "Cleanup Memory in mb: " & (mem - Process.GetCurrentProcess.PrivateMemorySize64) / 1024 / 1024)
 
-            Case "/end"
+            Case "end"
                 Log.WriteSystemLog("Ending Server....")
                 GlobalManager.OnSendServerShutdown()
 
 
-            Case "/debug"
+            Case "debug"
                 If Settings.ServerDebugMode Then
                     Settings.ServerDebugMode = False
                     Log.WriteSystemLog("Turned off DebugMode")
@@ -79,7 +79,7 @@
                 End If
 
 
-            Case "/killmobs"
+            Case "killmobs"
                 Log.WriteSystemLog("In Progress, Count: " & Functions.MobList.Count)
                 For Each key In Functions.MobList.Keys.ToList
                     If Functions.MobList.ContainsKey(key) Then
@@ -88,11 +88,11 @@
                 Next
                 Log.WriteSystemLog("Finished!")
 
-            Case "/respawnoff"
+            Case "respawnoff"
                 Settings.ServerSpawnRate = 0
                 Log.WriteSystemLog("Turned off Respawn")
 
-            Case "/save"
+            Case "save"
                 Dim path = AppDomain.CurrentDomain.BaseDirectory & "npcpos_saved.txt"
                 Dim cloack As New Stopwatch
                 cloack.Start()
@@ -101,14 +101,14 @@
                 cloack.Stop()
                 Log.WriteSystemLog("Save Fin! S:" & cloack.Elapsed().TotalSeconds)
 
-            Case "/online"
+            Case "online"
                 If Server.Online Then
                     Log.WriteSystemLog("Sure ;)")
                 Else
                     Log.WriteSystemLog("nope...")
                 End If
 
-            Case "/reinit"
+            Case "reinit"
                 Log.WriteSystemLog("Ending Server....")
                 For i = 0 To Server.MaxClients - 1
                     If SessionInfo(i) IsNot Nothing Then
@@ -134,7 +134,7 @@
 
 
 
-            Case "/gmre"
+            Case "gmre"
                 'GlobalManagerReConnect
                 Log.WriteSystemLog("GMC: Started disconnect...")
                 If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
@@ -146,11 +146,11 @@
                     GlobalManagerCon.Connect(Settings.GlobalMangerIp, Settings.GlobalMangerPort)
                 End If
 
-            Case "/wnd"
+            Case "wnd"
                 perfWnd.Text = "GS: PefWnd"
                 Dim thread As New Threading.Thread(AddressOf perfWnd.ShowDialog)
                 thread.Start()
-            Case "/writeimtable"
+            Case "writeimtable"
                 GameEdit.WriteItemMallTables()
         End Select
     End Sub

@@ -113,9 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console\Commands.vb" />
-    <Compile Include="Framework\Database\LoginDb.vb" />
     <Compile Include="Framework\GlobalManager\AgentService.vb" />
     <Compile Include="Framework\GlobalManager\Auth.vb" />
+    <Compile Include="Framework\GlobalManager\NewsService.vb" />
     <Compile Include="Framework\Settings\Settings.vb" />
     <Compile Include="Framework\Silkroad\Timers.vb" />
     <Compile Include="Framework\GlobalManager\ShardService.vb" />

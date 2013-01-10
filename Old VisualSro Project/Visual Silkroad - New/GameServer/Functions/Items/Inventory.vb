@@ -189,14 +189,12 @@ Namespace Functions
                 If Old_Slot <= 12 Then
                     'Unequip
                     Server.SendIfPlayerIsSpawned(CreateUnEquippacket(Index_, Old_Slot, New_Slot, False), Index_)
-                    PlayerData(Index_).SetCharGroundStats()
-                    PlayerData(Index_).AddItemsToStats(Index_)
+                    CharacterRecalculateStats(Index_)
                     OnStatsPacket(Index_)
                 ElseIf New_Slot <= 12 Then
                     'Equip
                     Server.SendIfPlayerIsSpawned(CreateEquippacket(Index_, Old_Slot, New_Slot, False), Index_)
-                    PlayerData(Index_).SetCharGroundStats()
-                    PlayerData(Index_).AddItemsToStats(Index_)
+                    CharacterRecalculateStats(Index_)
                     OnStatsPacket(Index_)
                 End If
 

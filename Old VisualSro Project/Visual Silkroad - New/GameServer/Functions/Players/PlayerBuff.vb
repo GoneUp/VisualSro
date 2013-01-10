@@ -28,7 +28,7 @@ Namespace Functions
             tmp.SkillID = skillID
             tmp.OwnerID = PlayerData(Index_).UniqueID
             tmp.DurationStart = Date.Now
-            tmp.DurationEnd = Date.Now.AddSeconds(refSkill.UseDuration)
+            tmp.DurationEnd = Date.Now.AddSeconds(GetBuffDuration(refSkill))
             tmp.Type = BuffType.SkillBuff
 
             PlayerData(Index_).Busy = True
@@ -72,7 +72,6 @@ Namespace Functions
             PlayerBuffInfo(Index_, 0)
             PlayerBuffIconpacket(Index_)
             AttackSendAttackEnd(Index_)
-
 
             'Clean Up
             PlayerData(Index_).Busy = False
@@ -122,22 +121,17 @@ Namespace Functions
             PlayerData(Index_).Buffs.Add(buff.OverID, buff)
             PlayerData(Index_).Buffs(buff.OverID).ElaspedTimerStart(refskill.UseDuration)
 
-            PlayerData(Index_).SetCharGroundStats()
-            PlayerData(Index_).AddItemsToStats(Index_)
-            PlayerData(Index_).AddBuffsToStats()
+            ParseBuffEffects(refskill, Index_)
+            CharacterRecalculateStats(Index_)
             OnStatsPacket(Index_)
-            UpdateSpeeds(Index_)
         End Sub
 
         Private Sub RemoveBuffFromList(ByVal skillOverId As UInteger, ByVal Index_ As Integer)
             PlayerData(Index_).Buffs(SkillOverId).Disponse()
             PlayerData(Index_).Buffs.Remove(SkillOverId)
 
-            PlayerData(Index_).SetCharGroundStats()
-            PlayerData(Index_).AddItemsToStats(Index_)
-            PlayerData(Index_).AddBuffsToStats()
+            CharacterRecalculateStats(Index_)
             OnStatsPacket(Index_)
-            UpdateSpeeds(Index_)
         End Sub
     End Module
 End Namespace

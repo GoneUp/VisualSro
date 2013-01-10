@@ -60,6 +60,9 @@ Namespace Functions
                 Case InternalServerOpcodes.AGENT_SEND_USERAUTH
                     GlobalManager.OnUserAuthReply(packet)
 
+                Case InternalServerOpcodes.AGENT_NEWS
+                    GlobalManager.OnNewsHandler(packet)
+
                 Case Else
                     Log.WriteSystemLog("gmc opCode: " & opcode) '& " Packet : " & packet.Byte)
             End Select

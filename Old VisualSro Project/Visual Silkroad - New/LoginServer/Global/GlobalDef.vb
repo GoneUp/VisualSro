@@ -1,4 +1,5 @@
 ﻿Imports SRFramework
+Imports System.Runtime.Serialization
 
 Module GlobalDef
     Public ReadOnly Database As New cDatabase
@@ -10,7 +11,11 @@ Module GlobalDef
     Public ReadOnly ShardDownloads As New Dictionary(Of UShort, DownloadServer)
     Public ReadOnly ShardGameservers As New Dictionary(Of UShort, GameServer)
 
+    Public LauncherMessages As New List(Of LauncherMessage)
+    Public BinFormatter As IFormatter = New Formatters.Binary.BinaryFormatter()
+
     Public SessionInfo(1) As cSessionInfo_LoginServer
+
 
     Public Function Initalize(ByVal maxClients As Integer) As Boolean
         Try
@@ -19,6 +24,8 @@ Module GlobalDef
             ShardGateways.Clear()
             ShardDownloads.Clear()
             ShardGameservers.Clear()
+
+            LauncherMessages.Clear()
         Catch ex As Exception
             Log.WriteSystemLog("GlobalDef Init failed! EX:" & ex.Message & " Stacktrace: " & ex.StackTrace)
             Return False

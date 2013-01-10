@@ -19,8 +19,7 @@ Namespace Functions
             GameMod.Damage.OnPlayerLogon(Index_)
 
             'Stats
-            PlayerData(Index_).SetCharGroundStats()
-            PlayerData(Index_).AddItemsToStats(Index_)
+            CharacterRecalculateStats(Index_)
             
             'Instance Stuff
             PlayerData(Index_).ChannelId = Settings.ServerWorldChannel

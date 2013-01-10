@@ -80,12 +80,14 @@ Namespace Timers
 
                 LoginInfoTimer(index_).Stop()
                 If index_ <> -1 AndAlso SessionInfo(index_) IsNot Nothing AndAlso SessionInfo(index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.LOGIN Then
-                    If LoginDb.LoginInfoMessages.Count > 0 Then
-                        If SessionInfo(index_).LoginTextIndex >= LoginDb.LoginInfoMessages.Count Then
+                    Dim msgList = From msg In LauncherMessages Where msg.Type = LauncherMessageTypes.Ingame Select msg
+
+                    If msgList.Count > 0 Then
+                        If SessionInfo(index_).LoginTextIndex >= msgList.Count Then
                             SessionInfo(index_).LoginTextIndex = 0
                         End If
 
-                        Dim tmpMsg As LoginDb.LoginInfoMessage = LoginDb.LoginInfoMessages(SessionInfo(index_).LoginTextIndex)
+                        Dim tmpMsg As LauncherMessage = msgList(SessionInfo(index_).LoginTextIndex)
                         Functions.LoginWriteSpecialText(tmpMsg.Text, index_)
 
                         If SessionInfo(index_) Is Nothing Then

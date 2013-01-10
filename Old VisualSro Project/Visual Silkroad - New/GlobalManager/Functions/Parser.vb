@@ -41,7 +41,8 @@ Namespace Functions
                         UserService.OnSilk(packet, Index_)
                     Case InternalClientOpcodes.AGENT_USERINFO
                         UserService.OnUserHandler(packet, Index_)
-
+                    Case InternalClientOpcodes.AGENT_NEWS
+                        Gateway.OnNewsRequest(Index_)
                 End Select
             End If
         End Sub

@@ -1,0 +1,172 @@
+    Client Sort TID
+    1 - Equippable Item
+            1 - Chinese Garment
+                    1 - Hat
+                    2 - Shoulder
+                    3 - Body
+                    4 - Pants
+                    5 - Hand
+                    6 - Shoes
+            2 - Chinese Protector
+                    1 - Hat
+                    2 - Shoulder
+                    3 - Body
+                    4 - Pants
+                    5 - Hand
+                    6 - Shoes
+            3 - Chinese Armor
+                    1 - Hat
+                    2 - Shoulder
+                    3 - Body
+                    4 - Pants
+                    5 - Hand
+                    6 - Shoes
+            4 - Sheild
+                    1 - Chinese Sheild
+                    2 - Europe Shield
+            5 - Chinese Jewelry
+                    1 - Earring
+                    2 - Necklace
+                    3 - Ring
+            6 - Weapon
+                    2 - Sword
+                    3 - Blade
+                    4 - Spear
+                    5 - Glaive
+                    6 - Bow
+                    7 - Onehand sword
+                    8 - Twohand sword
+                    9 - Dual axe
+                    10 - Dark staff
+                    11 - Twohand staff
+                    12 - Crossbow
+                    13 - Dagger
+                    14 - Harp
+                    15 - Light staff
+                    16 -
+            7 - Flag
+                    1 - Trader suit
+                    2 - Theif suit
+                    3 - Hunter suit
+                    5 - PvP Suit
+                    6 -
+                    7 -
+            9 - Robe
+                    1 - Hat
+                    2 - Shoulder
+                    3 - Body
+                    4 - Pants
+                    5 - Hand
+                    6 - Shoes
+            10 - Light Armor
+                    1 - Hat
+                    2 - Shoulder
+                    3 - Body
+                    4 - Pants
+                    5 - Hand
+                    6 - Shoes
+            11 - Heavy Armor
+                    1 - Hat
+                    2 - Shoulder
+                    3 - Body
+                    4 - Pants
+                    5 - Hand
+                    6 - Shoes
+            12 - Europe Jewelry
+                    1 - Earring
+                    2 - Necklace
+                    3 - Ring
+            13 - Avatar
+                    1 - Avatar Hat
+                    2 - Avatar Dress
+                    3 - Avatar Accessory
+                    4 - Avatar Flag
+            14 - Devil's Spirit
+                    1 - Devil's Spirit
+    2 - Summon
+            1 -
+                    1 -
+                    2 -
+            2 -
+                    0 - Transform item
+    3 - Consumable Item
+            1 - Potions
+                    1 - HP Potion
+                    2 - MP Potion
+                    3 - All Potion
+                    4 - Pet HP Potion
+                    6 - Pet Revival
+                    8 - Berserker regeneration pill
+                    9 - HGP Poition
+                    10 - Repair kit
+            2 - Pills
+                    1 - Purification Pill
+                    6 - Universal pill
+                    7 - Abnormal state recovery potion
+            3 - Scrolls
+                    1 - Return Scroll
+                    2 - Summon scroll
+                    3 - Reverse Return scroll
+                    4 - Stall Avatar
+                    5 - Global Chat
+                    6 - Fortress Mob Summon
+                    7 - Fortress Guard Summon
+                    8 - Construction manual
+                    9 - Fortress Item
+                    10 - Time Service
+                    11 -
+            4 - Ammo
+                    1 - Arrows
+                    2 - Bolts
+            5 - Gold
+                    0 - Gold
+                    1 -
+            6 - Fireworks/Bomb
+                    1 - Fire cracker
+                    2 - Vibration Bomb
+            7 - Campfire
+                    1 - Campfire
+            8 - Special Item
+                    0 - Special Event item
+                    1 - Trading item
+                    2 - Special Trading item
+            9 - Quest Item
+                    0 - Quest Item
+            10 - Item Enhancement Helpers
+                    1 - Elixir
+                    2 - Lucky Powder
+            11 - Alchemy
+                    1 - Alchemy Stone
+                    2 - Attribute Stone
+                    3 - Recipe
+                    4 - Alchemy material
+                    5 - Element
+                    6 - Rondo
+                    7 - Magic Stone
+            12 - Guild Item Scroll
+                    1 - Guild Mob Summon
+                    2 - Guild Emblem
+                    3 - Guild Member Summon
+            13 - Item Mall
+                    0 - Skill Edit
+                    1 - Expendables
+                    4 - Exp Time Service Ticket
+                    5 - Skill Time Service Ticket
+                    6 - Resurrection Scroll
+                    7 - Repair hammer
+                    8 - Gender switch tool
+                    9 - Skin changer
+                    10 - Long-range Storage Ticket
+                    11 - strengthening Scroll
+                    12 - Clock of Reincarnation
+                    13 - 0
+                    14 -
+                    15 - COS item
+                    16 - Avatar item
+                    17 -
+            14 - Item Mall Gambling
+                    1 - Magic POP Card
+                    2 - Item Exchange coupon
+            15 - Event Item
+                    1 - Pandora's Box
+                    2 - Event Item

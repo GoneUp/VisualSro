@@ -14,6 +14,7 @@ Namespace GlobalManager
 
             If success = 1 Then
                 Log.WriteSystemLog("GlobalManager: Init Complete!")
+                RequestNews()
                 GlobalManagerCon.InitComplete()
             Else
                 Log.WriteSystemLog("GlobalManager: Init failed!")

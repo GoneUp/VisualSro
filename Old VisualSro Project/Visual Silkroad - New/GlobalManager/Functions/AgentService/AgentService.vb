@@ -5,7 +5,7 @@ Namespace Agent
         
 #Region "UserAuth"
         Public Sub OnUserAuth(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager._ServerTypes.GatewayServer Then
+            If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager.ServerTypes.GatewayServer Then
                 Log.WriteSystemLog("OnSendUserAuth:: ServerType is wrong!!!")
                 If Settings.ServerDebugMode = False Then
                     Server.Disconnect(Index_)
@@ -118,7 +118,7 @@ Namespace Agent
         End Sub
 
         Public Sub OnCheckUserAuth(ByVal packet As PacketReader, ByVal Index_ As Integer)
-            If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager._ServerTypes.GameServer Then
+            If SessionInfo(Index_).Type <> cSessionInfo_GlobalManager.ServerTypes.GameServer Then
                 Log.WriteSystemLog("OnCheckUserAuth:: ServerType is wrong!!!")
                 If Settings.ServerDebugMode = False Then
                     Server.Disconnect(Index_)

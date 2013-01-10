@@ -3,9 +3,6 @@
 Namespace Functions
     Module PlayerStats
         Public Sub OnStatsPacket(ByVal Index_ As Integer)
-            PlayerData(Index_).SetCharGroundStats()
-            PlayerData(Index_).AddItemsToStats(Index_)
-
             Dim writer As New PacketWriter
             writer.Create(ServerOpcodes.GAME_CHARACTER_STATS)
             writer.DWord(PlayerData(Index_).MinPhy)

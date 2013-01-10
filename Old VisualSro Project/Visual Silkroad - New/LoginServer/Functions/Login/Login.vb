@@ -11,19 +11,17 @@ Namespace Functions
                 Return
             End If
 
-            Dim ClientString As String = packet.String(packet.Word)
+            Dim clientString As String = packet.String(packet.Word)
 
-            If ClientString = "SR_Client" Then
+            If clientString = "SR_Client" Then
                 Dim writer As New PacketWriter
-                Dim name As String = "GatewayServer"
+                Const name As String = "GatewayServer"
                 writer.Create(ServerOpcodes.LOGIN_SERVER_INFO)
                 writer.Word(name.Length)
                 writer.String(name)
                 writer.Byte(0)
                 Server.Send(writer.GetBytes, Index_)
             End If
-
-
         End Sub
         Public Sub ClientInfo(ByVal packet As PacketReader, ByVal Index_ As Integer)
             If SessionInfo(Index_) IsNot Nothing AndAlso SessionInfo(Index_).SRConnectionSetup = cSessionInfo_LoginServer.SRConnectionStatus.WHOAMI Then
@@ -139,7 +137,9 @@ Namespace Functions
                 Return
             End If
 
+            Dim newsList = From msg In LauncherMessages Where msg.Type = LauncherMessageTypes.Launcher Select msg
             Dim writer As New PacketWriter
+
             writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(1) 'Header Byte
             writer.Word(1) '1 Data Packet
@@ -148,19 +148,18 @@ Namespace Functions
 
             writer.Create(ServerOpcodes.LOGIN_MASSIVE_MESSAGE)
             writer.Byte(0) 'Data
-            writer.Byte(LoginDb.News.Count) 'nummer of news
+            writer.Byte(newsList.Count) 'nummer of news
 
-            For i = 0 To LoginDb.News.Count - 1
-                writer.Word(LoginDb.News(i).Title.Length)
-                writer.String(LoginDb.News(i).Title)
+            For i = 0 To newsList.Count - 1
+                writer.Word(newsList(i).Title.Length)
+                writer.String(newsList(i).Title)
 
-                writer.Word(LoginDb.News(i).Text.Length)
-                writer.String(LoginDb.News(i).Text)
+                writer.Word(newsList(i).Text.Length)
+                writer.String(newsList(i).Text)
 
-                writer.Date(LoginDb.News(i).Time)
+                writer.Date(newsList(i).Time)
             Next
-
-
+            
             Server.Send(writer.GetBytes, Index_)
         End Sub
 
@@ -175,14 +174,14 @@ Namespace Functions
                 Exit Sub
             End If
 
-            Dim NameServer As String = "SRO_Russia_Official"
+            Const nameServer As String = "SRO_Russia_Official"
             Dim writer As New PacketWriter
 
             writer.Create(ServerOpcodes.LOGIN_SERVER_LIST)
             writer.Byte(1) 'Nameserver
             writer.Byte(57) 'Nameserver ID
-            writer.Word(NameServer.Length)
-            writer.String(NameServer)
+            writer.Word(nameServer.Length)
+            writer.String(nameServer)
             writer.Byte(0) 'Out of nameservers
 
             Dim tmplist = ShardGameservers.Keys.ToList
@@ -210,7 +209,7 @@ Namespace Functions
                 Exit Sub
             End If
 
-            Dim loginMethod As Byte = packet.Byte()
+            Dim locale As Byte = packet.Byte()
             Dim id As String = packet.String(packet.Word).ToLower
             Dim pw As String = packet.String(packet.Word).ToLower
             Dim serverID As Integer = packet.Word

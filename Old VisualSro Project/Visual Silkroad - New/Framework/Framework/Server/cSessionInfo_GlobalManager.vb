@@ -7,9 +7,9 @@
     Public HandshakeComplete As Boolean = False
     Public Authorized As Boolean = False
 
-    Public Type As _ServerTypes = _ServerTypes.Unknown
+    Public Type As ServerTypes = ServerTypes.Unknown
 
-    Enum _ServerTypes
+    Enum ServerTypes
         Unknown = 0
         GlobalManager = 1
         GatewayServer = 2

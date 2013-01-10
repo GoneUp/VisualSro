@@ -6,7 +6,7 @@
 
         Select Case msg
 
-            Case "/info"
+            Case "info"
                 Log.WriteSystemLog("This Emulator is from GoneUp. ")
                 Log.WriteSystemLog("Specical Thanks to:")
                 Log.WriteSystemLog("Drew Benton")
@@ -17,18 +17,18 @@
                 Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
-            Case "/help"
+            Case "help"
                 Log.WriteSystemLog("Commands: ")
                 Log.WriteSystemLog("/info for the credits")
                 Log.WriteSystemLog("/packets to enable Log")
                 Log.WriteSystemLog("/clear")
 
-            Case "/packets"
+            Case "packets"
 
                 Settings.ServerDebugMode = True
                 Log.WriteSystemLog("PacketLog started!")
 
-            Case "/debug"
+            Case "debug"
                 If Settings.ServerDebugMode Then
                     Settings.ServerDebugMode = False
                     Log.WriteSystemLog("Turned off DebugMode")
@@ -38,22 +38,25 @@
                     Log.WriteSystemLog("Turned on DebugMode")
                 End If
 
-            Case "/clear"
+            Case "clear"
                 Console.Clear()
 
-            Case "/wnd"
+            Case "wnd"
                 perfWnd.Text = "GM: PefWnd"
                 perfWnd.ShowDialog()
 
-            Case "/end"
+            Case "end"
                 For i = 0 To SessionInfo.Count - 1
                     If SessionInfo(i) IsNot Nothing Then
                         Server.Disconnect(i)
                     End If
                 Next
                 Server.Stop()
-                DataBase.ExecuteQuerys()
+                Database.ExecuteQuerys()
                 End
+
+            Case "refreshnews"
+                Gateway.RefreshNewsOnGWs()
 
         End Select
 

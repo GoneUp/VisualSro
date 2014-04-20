@@ -43,7 +43,8 @@
 
             Case "wnd"
                 perfWnd.Text = "GM: PefWnd"
-                perfWnd.ShowDialog()
+                Dim thread As New Threading.Thread(AddressOf perfWnd.ShowDialog)
+                thread.Start()
 
             Case "end"
                 For i = 0 To SessionInfo.Count - 1

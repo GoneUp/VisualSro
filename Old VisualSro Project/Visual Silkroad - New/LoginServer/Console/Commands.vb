@@ -6,7 +6,7 @@
 
         Select Case msg
 
-            Case "/info"
+            Case "info"
                 Log.WriteSystemLog("This Emulator is from GoneUp. ")
                 Log.WriteSystemLog("Specical Thanks to:")
                 Log.WriteSystemLog("Drew Benton")
@@ -17,7 +17,7 @@
                 Log.WriteSystemLog("Cheat-Project Germany [cp-g.net] <-- Best Forum ever")
 
 
-            Case "/help"
+            Case "help"
                 Log.WriteSystemLog("Commands: ")
                 Log.WriteSystemLog("/info for the credits")
                 Log.WriteSystemLog("/debug to enable packetLoginServer.Log")
@@ -25,7 +25,7 @@
                 Log.WriteSystemLog("/count")
                 Log.WriteSystemLog("/end")
 
-            Case "/debug"
+            Case "debug"
                 If Settings.ServerDebugMode Then
                     Settings.ServerDebugMode = False
                     Log.WriteSystemLog("Turned off DebugMode")
@@ -34,13 +34,13 @@
                     Log.WriteSystemLog("Turned on DebugMode")
                 End If
 
-            Case "/count"
+            Case "count"
                 Log.WriteSystemLog("Sockets online: " & Server.OnlineClients)
 
-            Case "/clear"
+            Case "clear"
                 Console.Clear()
 
-            Case "/end"
+            Case "end"
                 GlobalManagerCon.UserSidedShutdown = False
                 If GlobalManagerCon.ManagerSocket IsNot Nothing AndAlso GlobalManagerCon.ManagerSocket.Connected Then
                     GlobalManager.OnSendServerShutdown()
@@ -49,7 +49,7 @@
                     GlobalManagerCon.ShutdownComplete()
                 End If
 
-            Case "/reinit"
+            Case "reinit"
                 Log.WriteSystemLog("Ending Server....")
                 For i = 0 To Server.MaxClients - 1
                     If SessionInfo(i) IsNot Nothing Then
@@ -61,7 +61,7 @@
                     Server.Stop()
                 End If
 
-       
+
                 GlobalManagerCon.UserSidedShutdown = True
                 GlobalManagerCon.ShutdownReason = SRFramework.GlobalManagerClient.GMCShutdownReason.Reinit
 
@@ -72,11 +72,12 @@
                     GlobalManagerCon.ShutdownComplete()
                 End If
 
-            Case "/wnd"
+            Case "wnd"
                 perfWnd.Text = "LS: PefWnd"
-                perfWnd.ShowDialog()
+                Dim thread As New Threading.Thread(AddressOf perfWnd.ShowDialog)
+                thread.Start()
 
-            Case "/gmre"
+            Case "gmre"
                 'GlobalManagerReConnect
                 Log.WriteSystemLog("GMC: Started disconnect...")
                 GlobalManagerCon.UserSidedShutdown = True

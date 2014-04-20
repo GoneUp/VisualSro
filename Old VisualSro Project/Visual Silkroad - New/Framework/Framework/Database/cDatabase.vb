@@ -154,10 +154,15 @@ Public Class cDatabase
     Public Function GetRowsCount(ByVal command As String) As Integer
         Dim count As Integer = 0
         Try
-            Dim tmpSqlDataAdapter = New MySqlDataAdapter(command, _connection)
-            Dim dataSet As New DataSet()
-            tmpSqlDataAdapter.Fill(dataSet)
-            count = dataSet.Tables(0).Rows.Count
+            Dim tmpCon As New MySqlConnection(_connectionString)
+            tmpCon.Open()
+
+            Dim command2 As New MySqlCommand(command, tmpCon)
+            count = command2.ExecuteScalar()
+
+            command2.Dispose()
+            tmpCon.Close()
+            tmpCon.Dispose()
         Catch exception As Exception
             RaiseEvent OnDatabaseError(exception, command)
         End Try
